@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model athletes {
+  id           Int            @id @default(autoincrement())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  number       String         @db.VarChar(2)
+  name         String         @db.VarChar(50)
+  birthdate    DateTime?
+  fpbNumber    Int?
+  idNumber     Int?
+  idType       String?        @db.VarChar(50)
+  active       Boolean?       @default(true)
+  gameAthletes gameAthletes[] // No onDelete here, handled in the join table
+}
+
+
+model gameAthletes {
+  gameId    Int
+  athleteId Int
+  athletes  athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade) // Cascading delete when athlete is deleted
+  games     games    @relation(fields: [gameId], references: [id], onDelete: Cascade)    // Cascading delete when game is deleted
+
+  @@id([gameId, athleteId]) // Composite primary key for many-to-many relation
+}
+
+model games {
+  id           Int            @id @default(autoincrement())
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  number       Int?
+  date         DateTime
+  away         Boolean
+  competition  String?        @db.VarChar(30)
+  subcomp      String?        @db.VarChar(30)
+  oponentId    Int
+  notes        String?        @db.VarChar(1000)
+  gameAthletes gameAthletes[] 
+  teams        teams          @relation(fields: [oponentId], references: [id])
+}
+
+model settings {
+  id           Int     @id
+  teamName     String  @db.VarChar(50)
+  shortName    String? @db.VarChar(6)
+  season       String? @db.VarChar(10)
+  homeLocation String? @db.VarChar(30)
+  image        String?  // For storing base64 images
+}
+
+model teams {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  name      String   @db.VarChar(50)
+  shortName String   @db.VarChar(6)
+  location  String   @db.VarChar(30)
+  image     String?
+  games     games[]
+}
+
+enum TeamType {
+  A
+  B
+}
