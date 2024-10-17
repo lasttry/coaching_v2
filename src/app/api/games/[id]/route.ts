@@ -3,8 +3,19 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+interface GameData {
+  date: string;
+  oponentId: number;
+  athleteIds: number[];
+  number?: number;
+  away?: boolean;
+  competition?: string;
+  subcomp?: string;
+  notes?: string;
+}
+
 // Utility function to validate the request payload
-const validateGameData = (data: any) => {
+const validateGameData = (data: GameData): string[] => {
   const errors: string[] = [];
 
   // Validate date
@@ -18,12 +29,13 @@ const validateGameData = (data: any) => {
   }
 
   // Validate athleteIds (must be an array of numbers)
-  if (!Array.isArray(data.athleteIds) || data.athleteIds.some((id: any) => typeof id !== 'number')) {
+  if (!Array.isArray(data.athleteIds) || data.athleteIds.some(id => typeof id !== 'number')) {
     errors.push('Valid athlete IDs are required.');
   }
 
   return errors;
 };
+
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const gameId = parseInt(params.id, 10);
@@ -65,7 +77,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    const data = await request.json();
+    const data: GameData = await request.json(); // Use GameData type
 
     // Validate the data
     const validationErrors = validateGameData(data);
@@ -87,7 +99,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         // Update the athletes associated with the game
         gameAthletes: {
           deleteMany: {}, // Remove all existing athletes for this game
-          create: data.athleteIds.map((athleteId: number) => ({
+          create: data.athleteIds.map(athleteId => ({
             athleteId,
           })),
         },
@@ -103,6 +115,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: 'An unknown error occurred.' }, { status: 500 });
   }
 }
+
 
 // DELETE method to delete a game by ID
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {

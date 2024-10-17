@@ -61,6 +61,7 @@ const NewGame = () => {
         setTeams(teamsData);
         setAvailableAthletes(sortAthletes(athletesData));
       } catch (err) {
+        console.error(err)
         setError('Failed to fetch data.');
       }
     }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import { Button, Box, Stack, Typography, TextField, Select, MenuItem, InputLabel } from '@mui/material';
+import { Button, Box, Stack, Typography, TextField, Select, MenuItem } from '@mui/material';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import dayjs from 'dayjs';
 import { SelectChangeEvent } from '@mui/material/Select'; // Add this line
@@ -34,13 +34,7 @@ interface Athlete {
 
 const EditGame = () => {
   const params = useParams<{ id: string }>();
-
-  if (!params?.id) {
-    console.error('id is missing');
-    return <div>Error: id not found</div>;
-  }
-
-  const { id } = params;
+  const id = params?.id; // Get id unconditionally
 
   const [form, setForm] = useState<GameFormData>({
     date: dayjs().format('YYYY-MM-DDTHH:mm'),
@@ -70,9 +64,6 @@ const EditGame = () => {
 
         const gameData = await gameResponse.json();
 
-        // Check if game and gameAthletes are defined before accessing them
-        const gameAthletes = gameData?.game?.gameAthletes || [];
-  
         setForm({
           date: dayjs(gameData.game.date).format('YYYY-MM-DDTHH:mm'),
           away: gameData.game.away,

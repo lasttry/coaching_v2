@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Stack, Typography } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 
@@ -19,7 +18,6 @@ const AthletesList = () => {
   const [athletes, setAthletes] = useState<Athlete[]>([]); // Use Athlete[] as the type for athletes array
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   // Fetch athletes when the component mounts
   useEffect(() => {
@@ -29,6 +27,7 @@ const AthletesList = () => {
         const data: Athlete[] = await response.json(); // Ensure the data is typed as Athlete[]
         setAthletes(data);
       } catch (err) {
+        console.log(err)
         setError('Failed to fetch athletes.');
       }
     }

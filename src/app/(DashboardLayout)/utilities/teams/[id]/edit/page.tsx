@@ -33,6 +33,7 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
         setForm(data);
         setImage(data.image || null); // Set the image to the existing base64 string, if any
       } catch (err) {
+        console.error(err)
         setError('Failed to fetch team data.');
       } finally {
         setLoading(false);

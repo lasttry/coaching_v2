@@ -8,19 +8,15 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Stack,
   Typography,
   Box,
-  IconButton
 } from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
-import { RemoveCircleOutline } from '@mui/icons-material';
 import dayjs from 'dayjs';
 
 // Define the types for games and teams
@@ -50,6 +46,7 @@ const GamesList = () => {
         const data: Game[] = await response.json();
         setGames(data);
       } catch (err) {
+        console.error(err)
         setError('Failed to fetch games.');
       }
     }
@@ -148,7 +145,12 @@ const GamesList = () => {
               </TableHead>
               <TableBody>
                 {games.map((game) => (
-                  <TableRow key={game.id}>
+                  <TableRow
+                    key={game.id}
+                    hover
+                    onClick={() => router.push(`/utilities/games/${game.id}`)} // Navigate to game details or edit page on row click
+                    sx={{ cursor: 'pointer' }} // Change cursor to indicate it's clickable
+                  >
                     <TableCell>
                       <Typography
                         sx={{
@@ -193,7 +195,7 @@ const GamesList = () => {
                       <Stack direction="row" spacing={2}>
                         {/* Edit Game Link */}
                         <Link href={`/utilities/games/${game.id}/edit`} passHref>
-                          <Button variant="contained" color="primary">
+                          <Button variant="contained" color="primary" onClick={(e) => e.stopPropagation()}>
                             Edit
                           </Button>
                         </Link>
@@ -202,7 +204,10 @@ const GamesList = () => {
                         <Button
                           variant="contained"
                           color="secondary"
-                          onClick={() => handleDelete(game.id)}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent the row click event
+                            handleDelete(game.id);
+                          }}
                         >
                           Delete
                         </Button>

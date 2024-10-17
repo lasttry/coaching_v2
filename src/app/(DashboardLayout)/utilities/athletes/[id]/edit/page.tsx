@@ -38,6 +38,7 @@ const EditAthlete = ({ params }: { params: { id: string } }) => {
         data.birthdate = formatDate(data.birthdate); // Format the birthdate for the input field
         setForm(data);
       } catch (err) {
+        console.error(err)
         setError('Failed to fetch athlete data.');
       } finally {
         setLoading(false);

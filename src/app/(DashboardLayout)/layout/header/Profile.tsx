@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Link from "next/link";
+import { signOut } from 'next-auth/react';
 import {
   Avatar,
   Box,
@@ -82,15 +82,14 @@ const Profile = () => {
           <ListItemText>My Tasks</ListItemText>
         </MenuItem>
         <Box mt={1} py={1} px={2}>
-          <Button
-            href="/authentication/login"
-            variant="outlined"
-            color="primary"
-            component={Link}
-            fullWidth
-          >
-            Logout
-          </Button>
+        <Button
+          onClick={() => signOut({ callbackUrl: '/auth/signin' })}  // Redirect to login after logout
+          variant="outlined"
+          color="primary"
+          fullWidth
+        >
+          Logout
+        </Button>
         </Box>
       </Menu>
     </Box>

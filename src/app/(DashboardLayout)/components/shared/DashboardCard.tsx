@@ -4,7 +4,7 @@ import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
 type Props = {
   title?: string;
   subtitle?: string;
-  action?: JSX.Element | any;
+  action?: JSX.Element | null; // Specify JSX.Element or null
   footer?: JSX.Element;
   cardheading?: string | JSX.Element;
   headtitle?: string | JSX.Element;

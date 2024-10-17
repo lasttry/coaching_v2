@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stack, Typography, Box } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableHead, TableRow, Stack, Typography, Box } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import Image from 'next/image'; // Import Next.js Image component
@@ -21,7 +20,6 @@ const TeamsList = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const router = useRouter();
 
   // Fetch teams when the component mounts
   useEffect(() => {
@@ -32,6 +30,7 @@ const TeamsList = () => {
         setTeams(data);
       } catch (err) {
         setError('Failed to fetch teams.');
+        console.log(err)
       }
     }
     fetchTeams();

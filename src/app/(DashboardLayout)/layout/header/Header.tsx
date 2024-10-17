@@ -76,15 +76,7 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
               },
             }}
           >
-            <Button
-              variant="contained"
-              disableElevation
-              color="primary"
-              target="_blank"
-              href="https://www.wrappixel.com/templates/spike-nextjs-admin-template/"
-            >
-              Upgrade to Pro
-            </Button>
+          {/* we can put a button */} 
           </Box>
           <Profile />
         </Stack>

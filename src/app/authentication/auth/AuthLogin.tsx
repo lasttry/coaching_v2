@@ -7,18 +7,18 @@ import {
   Button,
   Stack,
   Checkbox,
+  Link
 } from "@mui/material";
-import Link from "next/link";
-
 import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
 
 interface loginType {
   title?: string;
   subtitle?: JSX.Element | JSX.Element[];
   subtext?: JSX.Element | JSX.Element[];
+  onSubmit: () => void; // Add the onSubmit prop
 }
 
-const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
+const AuthLogin = ({ title, subtitle, subtext, onSubmit }: loginType) => (
   <>
     {title ? (
       <Typography fontWeight="700" variant="h2" mb={1}>
@@ -62,7 +62,7 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         <FormGroup>
           <FormControlLabel
             control={<Checkbox defaultChecked />}
-            label="Remeber this Device"
+            label="Remember this Device"
           />
         </FormGroup>
         <Typography
@@ -84,9 +84,8 @@ const AuthLogin = ({ title, subtitle, subtext }: loginType) => (
         variant="contained"
         size="large"
         fullWidth
-        component={Link}
-        href="/"
-        type="submit"
+        type="submit" // Ensure this triggers form submission
+        onClick={onSubmit} // Handle form submission
       >
         Sign In
       </Button>

@@ -21,7 +21,6 @@ model athletes {
   gameAthletes gameAthletes[] // No onDelete here, handled in the join table
 }
 
-
 model gameAthletes {
   gameId    Int
   athleteId Int
@@ -53,6 +52,8 @@ model settings {
   season       String? @db.VarChar(10)
   homeLocation String? @db.VarChar(30)
   image        String?  // For storing base64 images
+  backgroundColor String? @db.VarChar(7) // Store HEX values like #FFFFFF
+  foregroundColor String? @db.VarChar(7) // Store HEX values like #000000
 }
 
 model teams {
@@ -69,4 +70,14 @@ model teams {
 enum TeamType {
   A
   B
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(100)
+  email     String   @unique @db.VarChar(100) // Unique for authentication
+  password  String   // Hashed password
+  image     String?  // For storing user profile images as a URL or base64 string
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

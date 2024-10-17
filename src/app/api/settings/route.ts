@@ -10,12 +10,20 @@ interface SettingsData {
   season?: string;
   homeLocation?: string;
   image?: string; // Base64 image
+  backgroundColor?: string; // New field for background color
+  foregroundColor?: string; // New field for foreground color
 }
 
 // Helper function to validate season format
 const validateSeason = (season: string): boolean => {
   const regex = /^\d{4}\/\d{4}$/;
   return regex.test(season);
+};
+
+// Helper function to validate color format (e.g., hex color code)
+const validateColor = (color: string): boolean => {
+  const regex = /^#[0-9A-Fa-f]{6}$/; // Validate hex color codes
+  return regex.test(color);
 };
 
 // Validate incoming settings data
@@ -35,6 +43,15 @@ const validateSettings = (data: SettingsData) => {
   if (data.homeLocation && data.homeLocation.length > 30) {
     throw new Error('Home location must be less than 30 characters.');
   }
+
+  // Validate backgroundColor and foregroundColor if provided
+  if (data.backgroundColor && !validateColor(data.backgroundColor)) {
+    throw new Error('Background color must be a valid hex color code.');
+  }
+
+  if (data.foregroundColor && !validateColor(data.foregroundColor)) {
+    throw new Error('Foreground color must be a valid hex color code.');
+  }
 };
 
 // POST: Create or update the settings
@@ -45,18 +62,24 @@ export async function POST(request: Request) {
     // Validate the data before saving
     validateSettings(data);
 
-    // Update or create settings in the database, including the image
-    let settings = await prisma.settings.update({
-      where: { id: 1 }, // Assuming you're updating the first record
-      data,
-    });
+    let settings = await prisma.settings.findUnique({
+      where: { id: 1 },
+    });    
 
     // If no settings are found, create new ones
     if (!settings) {
       settings = await prisma.settings.create({
         data: { ...data, id: 1 },
       });
+    } else {
+      // Update or create settings in the database, including the image
+      settings = await prisma.settings.update({
+        where: { id: 1 }, // Assuming you're updating the first record
+        data,
+      });
     }
+
+
 
     return NextResponse.json(settings, { status: 201 }); // Respond with the created/updated settings
 
