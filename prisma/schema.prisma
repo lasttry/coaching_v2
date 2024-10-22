@@ -8,52 +8,60 @@ datasource db {
 }
 
 model athletes {
-  id           Int            @id @default(autoincrement())
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  number       String         @db.VarChar(2)
-  name         String         @db.VarChar(50)
-  birthdate    DateTime?
-  fpbNumber    Int?
-  idNumber     Int?
-  idType       String?        @db.VarChar(50)
-  active       Boolean?       @default(true)
-  gameAthletes gameAthletes[] // No onDelete here, handled in the join table
+  id               Int             @id @default(autoincrement())
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  number           String          @db.VarChar(2)
+  name             String          @db.VarChar(50)
+  birthdate        DateTime?
+  fpbNumber        Int?
+  idNumber         Int?
+  idType           String?         @db.VarChar(50)
+  active           Boolean?        @default(true)
+  reports          athleteReport[]
+  reportsSubmitted athleteReport[] @relation("ReportSubmittedBy")
+  gameAthletes     gameAthletes[]
+  statistics       statistic[]
+  timeEntry        timeEntry[]
 }
 
 model gameAthletes {
   gameId    Int
   athleteId Int
-  athletes  athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade) // Cascading delete when athlete is deleted
-  games     games    @relation(fields: [gameId], references: [id], onDelete: Cascade)    // Cascading delete when game is deleted
+  athletes  athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  games     games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
-  @@id([gameId, athleteId]) // Composite primary key for many-to-many relation
+  @@id([gameId, athleteId])
 }
 
 model games {
-  id           Int            @id @default(autoincrement())
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  number       Int?
-  date         DateTime
-  away         Boolean
-  competition  String?        @db.VarChar(30)
-  subcomp      String?        @db.VarChar(30)
-  oponentId    Int
-  notes        String?        @db.VarChar(1000)
-  gameAthletes gameAthletes[] 
-  teams        teams          @relation(fields: [oponentId], references: [id])
+  id                  Int             @id @default(autoincrement())
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  number              Int?
+  date                DateTime
+  away                Boolean
+  competition         String?         @db.VarChar(30)
+  subcomp             String?         @db.VarChar(30)
+  oponentId           Int
+  notes               String?         @db.VarChar(1000)
+  teamLostDefRebounds Int             @default(0)
+  athleteReports      athleteReport[]
+  gameAthletes        gameAthletes[]
+  teams               teams           @relation(fields: [oponentId], references: [id])
+  statistics          statistic[]
+  timeEntry           timeEntry[]
 }
 
 model settings {
-  id           Int     @id
-  teamName     String  @db.VarChar(50)
-  shortName    String? @db.VarChar(6)
-  season       String? @db.VarChar(10)
-  homeLocation String? @db.VarChar(30)
-  image        String?  // For storing base64 images
-  backgroundColor String? @db.VarChar(7) // Store HEX values like #FFFFFF
-  foregroundColor String? @db.VarChar(7) // Store HEX values like #000000
+  id              Int     @id
+  teamName        String  @db.VarChar(50)
+  shortName       String? @db.VarChar(6)
+  season          String? @db.VarChar(10)
+  homeLocation    String? @db.VarChar(30)
+  image           String?
+  backgroundColor String? @db.VarChar(7)
+  foregroundColor String? @db.VarChar(7)
 }
 
 model teams {
@@ -67,17 +75,73 @@ model teams {
   games     games[]
 }
 
-enum TeamType {
-  A
-  B
-}
-
 model User {
   id        Int      @id @default(autoincrement())
   name      String?  @db.VarChar(100)
-  email     String   @unique @db.VarChar(100) // Unique for authentication
-  password  String   // Hashed password
-  image     String?  // For storing user profile images as a URL or base64 string
+  email     String   @unique @db.VarChar(100)
+  password  String
+  image     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model statistic {
+  id                Int      @id @default(autoincrement())
+  gameId            Int
+  athleteId         Int
+  freeThrowScored   Int      @default(0)
+  freeThrowMissed   Int      @default(0)
+  fieldGoalScored   Int      @default(0)
+  fieldGoalMissed   Int      @default(0)
+  threePtsScored    Int      @default(0)
+  threePtsMissed    Int      @default(0)
+  assists           Int      @default(0)
+  defensiveRebounds Int      @default(0)
+  offensiveRebounds Int      @default(0)
+  blocks            Int      @default(0)
+  steals            Int      @default(0)
+  turnovers         Int      @default(0)
+  fouls             Int      @default(0)
+  totalRebounds     Int      @default(0)
+  athlete           athletes @relation(fields: [athleteId], references: [id])
+  game              games    @relation(fields: [gameId], references: [id])
+
+  @@unique([gameId, athleteId])
+}
+
+model timeEntry {
+  id          Int      @id @default(autoincrement())
+  gameId      Int
+  athleteId   Int
+  period      Int
+  entryMinute Int
+  entrySecond Int
+  exitMinute  Int?
+  exitSecond  Int?
+  athlete     athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  game        games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+  @@index([gameId, athleteId, period])
+}
+
+model athleteReport {
+  id                    Int      @id @default(autoincrement())
+  gameId                Int
+  athleteId             Int
+  submittedById         Int
+  teamObservation       String?  @db.VarChar(2000)
+  individualObservation String?  @db.VarChar(2000)
+  timePlayedObservation String?  @db.VarChar(2000)
+  createdAt             DateTime @default(now())
+  athlete               athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  game                  games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  submittedBy           athletes @relation("ReportSubmittedBy", fields: [submittedById], references: [id], onDelete: Cascade)
+
+  @@index([gameId, athleteId])
+  @@unique([gameId, athleteId])  // Add this line to create a unique constraint
+}
+
+enum TeamType {
+  A
+  B
 }

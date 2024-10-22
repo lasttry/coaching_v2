@@ -65,6 +65,7 @@ const EditGame = () => {
         const gameData = await gameResponse.json();
 
         setForm({
+          number: gameData.game.number || undefined, // Add this line
           date: dayjs(gameData.game.date).format('YYYY-MM-DDTHH:mm'),
           away: gameData.game.away,
           competition: gameData.game.competition,
@@ -165,12 +166,19 @@ const EditGame = () => {
     e.preventDefault();
 
     try {
+
+      // Ensure that the number is converted to an integer (or left as undefined if empty)
+      const updatedForm = {
+        ...form,
+        number: form.number ? parseInt(form.number as unknown as string, 10) : undefined,
+      };
+      console.log(updatedForm)
       const response = await fetch(`/api/games/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(updatedForm),
       });
 
       if (response.ok) {
@@ -216,6 +224,15 @@ const EditGame = () => {
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
+          {/* Number Field */}
+          <TextField
+            label="Game Number"
+            type="number"
+            name="number"
+            value={form.number || ''}
+            onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} 
+            required
+          />
           {/* Date Field */}
           <TextField
             label="Game Date"

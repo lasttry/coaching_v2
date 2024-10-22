@@ -6,11 +6,11 @@ const prisma = new PrismaClient();
 async function main() {
   // Seed example user
   const hashedPassword = await hash("P@ssw0rd1!", 10);
-  await prisma.user.delete({
-    where: {
-      email: 'user@diasantos.com',  // Replace with the specific email
-    },
-  });
+//  await prisma.user.delete({
+//    where: {
+//      email: 'user@diasantos.com',  // Replace with the specific email
+//    },
+//  });
   await prisma.user.create({
     data: {
       email: 'user@diasantos.com',

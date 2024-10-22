@@ -255,6 +255,11 @@ const NewGame = () => {
             onChange={handleChange}
           />
 
+          {/* Display selected athletes count */}
+          <Typography variant="h6" gutterBottom>
+            Number of selected athletes: {selectedAthletes.length}
+          </Typography>
+
           {/* Athlete Table */}
           <Box marginY={4}>
             <Typography variant="h6" gutterBottom>
