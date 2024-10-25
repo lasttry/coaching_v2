@@ -18,7 +18,7 @@ const GameDetails = () => {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [playtime, setPlaytime] = useState<Record<number, number>>({});
+  const [playtime, setPlaytime] = useState<Record<number, { totalTimePlayed: number; periods: Record<number, number> }>>({});
 
   const router = useRouter();
   const params = useParams<{ id: string }>();
@@ -150,11 +150,14 @@ const GameDetails = () => {
 
         {/* Display Time Played Per Period */}
         <Typography variant="body2" color="textSecondary">
-          {Object.keys(playtime[athlete.id]?.periods || {}).map((period) => (
-            <span key={`${athlete.id}-period-${period}`}>
-              Period {period}: {playtime[athlete.id].periods[period] ? `${Math.floor(playtime[athlete.id].periods[period] / 60)}m ${playtime[athlete.id].periods[period] % 60}s` : '0m 0s'}{' '}
-            </span>
-          ))}
+          {Object.keys(playtime[athlete.id]?.periods || {}).map((period) => {
+            const periodIndex = Number(period); // Convert period to a number
+            return (
+              <span key={`${athlete.id}-period-${period}`}>
+                Period {periodIndex}: {playtime[athlete.id].periods[periodIndex] ? `${Math.floor(playtime[athlete.id].periods[periodIndex] / 60)}m ${playtime[athlete.id].periods[periodIndex] % 60}s` : '0m 0s'}{' '}
+              </span>
+            );
+          })}
         </Typography>
       </Box>
     ))
@@ -181,7 +184,7 @@ const GameDetails = () => {
           <Button variant="contained" color="primary" onClick={() => router.push(`/utilities/games/${id}/reports`)}>
             Manage Reports
           </Button>
-          <Button onClick={() => generateReportsPDF(game)}>Export Reports to PDF</Button>
+          <Button onClick={() => game && generateReportsPDF(game)}>Export Reports to PDF</Button>
           <Button variant="outlined" color="secondary" onClick={() => window.history.back()}>
           Back
         </Button>

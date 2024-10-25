@@ -1,31 +1,39 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import { exec } from 'child_process';
 import crypto from 'crypto';
 
 // Replace this with your GitHub webhook secret
 const SECRET = process.env.GITHUB_WEBHOOK_SECRET || 'your-secret';
 
-const verifySignature = (req: NextApiRequest) => {
-  const signature = req.headers['x-hub-signature-256'] as string;
-  const hash = `sha256=${crypto.createHmac('sha256', SECRET).update(JSON.stringify(req.body)).digest('hex')}`;
+const verifySignature = (req: NextRequest) => {
+  const signature = req.headers.get('x-hub-signature-256') || '';
+  const hash = `sha256=${crypto
+    .createHmac('sha256', SECRET)
+    .update(JSON.stringify(req.body))
+    .digest('hex')}`;
   return signature === hash;
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST' || !verifySignature(req)) {
-    return res.status(403).json({ message: 'Unauthorized' });
+export async function POST(req: NextRequest) {
+  if (!verifySignature(req)) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 403 });
   }
 
-  exec('cd /var/www/coaching && git pull && npm install && npx prisma migrate deploy && pm2 restart coaching', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error: ${error.message}`);
-      return res.status(500).json({ error: error.message });
+  exec(
+    'cd /var/www/coaching && git pull && npm install && npx prisma migrate deploy && pm2 restart coaching',
+    (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error: ${error.message}`);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+      if (stderr) {
+        console.error(`Stderr: ${stderr}`);
+        return NextResponse.json({ error: stderr }, { status: 500 });
+      }
+      console.log(`Stdout: ${stdout}`);
+      return NextResponse.json({ message: 'Updated successfully' }, { status: 200 });
     }
-    if (stderr) {
-      console.error(`Stderr: ${stderr}`);
-      return res.status(500).json({ error: stderr });
-    }
-    console.log(`Stdout: ${stdout}`);
-    return res.status(200).json({ message: 'Updated successfully' });
-  });
+  );
+
+  return NextResponse.json({ message: 'Update triggered successfully' });
 }

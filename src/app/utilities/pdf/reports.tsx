@@ -1,6 +1,6 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { Game, Report } from '@/types/games/types';  // Make sure you import the correct Game type
+import { Game } from '@/types/games/types';  // Make sure you import the correct Game type
 import { generateHeader, generateGameDetailsHeader } from './utils'
 
 // Assuming the Game and Athlete types

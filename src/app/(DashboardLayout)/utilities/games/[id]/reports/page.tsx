@@ -20,6 +20,9 @@ interface Report {
   teamObservation: string;
   individualObservation: string;
   timePlayedObservation: string;
+  reviewdAthlete: {
+    name: string;
+  };
 }
 
 const GameReports = () => {

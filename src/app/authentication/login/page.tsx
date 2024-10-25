@@ -6,6 +6,11 @@ import PageContainer from "@/app/(DashboardLayout)/components/container/PageCont
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import AuthLogin from "../auth/AuthLogin";
 
+const handleLogin = () => {
+  console.log("Login form submitted");
+  // Additional login logic goes here (e.g., API call for authentication)
+};
+
 const Login2 = () => {
   return (
     <PageContainer title="Login" description="this is Login page">
@@ -48,12 +53,14 @@ const Login2 = () => {
                 <Logo />
               </Box>
               <AuthLogin
+                onSubmit={handleLogin}
                 subtext={
                   <Typography
                     variant="subtitle1"
                     textAlign="center"
                     color="textSecondary"
                     mb={1}
+                    
                   >
                     Your Social Campaigns
                   </Typography>

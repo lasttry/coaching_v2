@@ -25,7 +25,7 @@ export async function POST(request: Request) {
         updatedAt: new Date(), // Set updatedAt manually
         // Update the athletes associated with the game
         gameAthletes: {
-          create: data.athleteIds.map(athleteId => ({
+          create: data.athleteIds.map((athleteId: number) => ({
             athleteId,
           })),
         },

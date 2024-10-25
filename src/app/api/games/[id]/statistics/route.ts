@@ -45,9 +45,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
           gameId,
           athleteId: entry.athleteId,
           period: entry.period,
-          minute: entry.minute,
-          second: entry.second,
-          eventType: entry.eventType, // ENTRY or EXIT
+          entryMinute: entry.entryMinute,
+          entrySecond: entry.entrySecond,
+          exitMinute: entry.exitMinute,
+          exitSecond: entry.exitSecond,
         },
       });
     });
@@ -80,17 +81,19 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         },
         update: {
           period: entry.period,
-          minute: entry.minute,
-          second: entry.second,
-          eventType: entry.eventType,
+          entryMinute: entry.entryMinute,
+          entrySecond: entry.entrySecond,
+          exitMinute: entry.exitMinute,
+          exitSecond: entry.exitSecond,
         },
         create: {
           gameId,
           athleteId: entry.athleteId,
           period: entry.period,
-          minute: entry.minute,
-          second: entry.second,
-          eventType: entry.eventType,
+          entryMinute: entry.entryMinute,
+          entrySecond: entry.entrySecond,
+          exitMinute: entry.exitMinute,
+          exitSecond: entry.exitSecond,
         },
       });
     });

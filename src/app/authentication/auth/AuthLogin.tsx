@@ -18,6 +18,12 @@ interface loginType {
   onSubmit: () => void; // Add the onSubmit prop
 }
 
+const handleLogin = (event: React.FormEvent) => {
+  event.preventDefault();
+  console.log("Login form submitted");
+  // Add login logic here (e.g., API call to authenticate the user)
+};
+
 const AuthLogin = ({ title, subtitle, subtext, onSubmit }: loginType) => (
   <>
     {title ? (
@@ -48,6 +54,7 @@ const AuthLogin = ({ title, subtitle, subtext, onSubmit }: loginType) => (
           component="label"
           htmlFor="password"
           mb="5px"
+          onSubmit={handleLogin}
         >
           Password
         </Typography>
