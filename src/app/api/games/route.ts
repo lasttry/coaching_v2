@@ -17,12 +17,18 @@ export async function POST(request: Request) {
       data: {
         number: data.number,
         date: new Date(data.date),
-        away: data.away,
+        away: data.away != null ? Boolean(data.away) : false,
         competition: data.competition,
         subcomp: data.subcomp,
         oponentId: data.oponentId,
         notes: data.notes || null,
         updatedAt: new Date(), // Set updatedAt manually
+        // Update the athletes associated with the game
+        gameAthletes: {
+          create: data.athleteIds.map(athleteId => ({
+            athleteId,
+          })),
+        },
       },
     });
 

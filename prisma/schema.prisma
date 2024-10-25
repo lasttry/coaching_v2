@@ -8,21 +8,21 @@ datasource db {
 }
 
 model athletes {
-  id               Int             @id @default(autoincrement())
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
-  number           String          @db.VarChar(2)
-  name             String          @db.VarChar(50)
-  birthdate        DateTime?
-  fpbNumber        Int?
-  idNumber         Int?
-  idType           String?         @db.VarChar(50)
-  active           Boolean?        @default(true)
-  reports          athleteReport[]
-  reportsSubmitted athleteReport[] @relation("ReportSubmittedBy")
-  gameAthletes     gameAthletes[]
-  statistics       statistic[]
-  timeEntry        timeEntry[]
+  id              Int             @id @default(autoincrement())
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  number          String          @db.VarChar(2)
+  name            String          @db.VarChar(50)
+  birthdate       DateTime?
+  fpbNumber       Int?
+  idNumber        Int?
+  idType          String?         @db.VarChar(50)
+  active          Boolean?        @default(true)
+  reviewedAthlete athleteReport[] @relation("reviewdAthlete")
+  gameAthletes    gameAthletes[]
+  statistics      statistic[]
+  timeEntry       timeEntry[]
+  athleteReport   athleteReport[]
 }
 
 model gameAthletes {
@@ -128,17 +128,18 @@ model athleteReport {
   id                    Int      @id @default(autoincrement())
   gameId                Int
   athleteId             Int
-  submittedById         Int
+  reviewdAthleteId      Int
   teamObservation       String?  @db.VarChar(2000)
   individualObservation String?  @db.VarChar(2000)
   timePlayedObservation String?  @db.VarChar(2000)
   createdAt             DateTime @default(now())
-  athlete               athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  game                  games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  submittedBy           athletes @relation("ReportSubmittedBy", fields: [submittedById], references: [id], onDelete: Cascade)
 
+  athlete        athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  game           games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  reviewdAthlete athletes @relation("reviewdAthlete", fields: [reviewdAthleteId], references: [id], onDelete: Cascade)
+
+  @@unique([gameId, athleteId])
   @@index([gameId, athleteId])
-  @@unique([gameId, athleteId])  // Add this line to create a unique constraint
 }
 
 enum TeamType {

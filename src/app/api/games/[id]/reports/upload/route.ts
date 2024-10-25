@@ -16,12 +16,20 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     // Fetch the game from the database
     const game = await prisma.games.findUnique({
       where: { id: gameId },
+      include: { teams: true }
     });
 
     // Check if the game exists
     if (!game) {
       return NextResponse.json({ error: 'Game not found' }, { status: 404 });
     }
+    
+    // Delete all athlete reports related to this game
+    await prisma.athleteReport.deleteMany({
+      where: {
+        gameId: gameId,
+      },
+    });
 
     const reportPromises = [];
 
@@ -29,7 +37,9 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     for (const row of data) {
       // Ignore rows where the competition does not match
       console.log(`competition: ${game.competition}/campeonato: ${row['Campeonato']}`)
-      if (game.competition?.trim().toLowerCase() !== row['Campeonato'].trim().toLowerCase()) {
+      console.log(`game.teams.name: ${game.teams.name}/adversario: ${row['Adversário']}`)
+      if (game.competition?.trim().toLowerCase() !== row['Campeonato'].trim().toLowerCase() 
+        || (game.teams.name.trim().toLowerCase() !== row['Adversário'].trim().toLowerCase())) {
         continue;
       }
 
@@ -52,9 +62,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       if (!athleteSubmitted) {
         throw new Error(`Athlete not found for name: ${athleteName}`);
       }
+      console.log(`${athleteSubmitted.id} - ${athleteSubmitted.name}`)
 
       // Find the athlete being reviewed (self or another athlete)
-      const reviewAthlete = isSelf ? athleteSubmitted : await prisma.athletes.findFirst({
+      const reviewedAthlete = isSelf ? athleteSubmitted : await prisma.athletes.findFirst({
         where: {
           name: {
             contains: athleteNameReview,
@@ -63,7 +74,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         },
       });
 
-      if (!reviewAthlete) {
+      if (!reviewedAthlete) {
         throw new Error(`Athlete to review not found for name: ${athleteNameReview}`);
       }
 
@@ -77,19 +88,20 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         where: {
           gameId_athleteId: {
             gameId: gameId,
-            athleteId: reviewAthlete.id,
+            athleteId: athleteSubmitted.id,
           },
         },
         update: {
           teamObservation: teamObservation || null,
           individualObservation: individualObservation || null,
           timePlayedObservation: timePlayedObservation || null,
-          submittedById: athleteSubmitted.id,
+          athleteId: athleteSubmitted.id,
+          reviewdAthleteId: reviewedAthlete.id,
         },
         create: {
           gameId: gameId,
-          athleteId: reviewAthlete.id,
-          submittedById: athleteSubmitted.id,
+          athleteId: athleteSubmitted.id,
+          reviewdAthleteId: reviewedAthlete.id,
           teamObservation: teamObservation || null,
           individualObservation: individualObservation || null,
           timePlayedObservation: timePlayedObservation || null,
@@ -99,12 +111,15 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       reportPromises.push(reportPromise);
     }
 
-    // Execute all the upsert operations
-    await Promise.all(reportPromises);
+    // Execute all the upsert operations and capture the results
+    const results = await Promise.all(reportPromises);
+
+    // Log the results to see the outcome of each upsert operation
+    console.log('Upsert Results:', results);
 
     return NextResponse.json({ message: 'Reports processed successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error processing reports:', error);
-    return NextResponse.json({ error: 'Failed to process reports' }, { status: 500 });
+    return NextResponse.json({ error: `Failed to process reports: ${error}` }, { status: 500 });
   }
 }

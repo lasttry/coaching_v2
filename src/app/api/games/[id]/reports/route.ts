@@ -13,7 +13,13 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
   try {
     const reports = await prisma.athleteReport.findMany({
-      where: { gameId },
+      where: {
+        gameId: gameId,
+      },
+      include: {
+        athlete: true, // Includes the athlete related to the athleteId
+        reviewdAthlete: true, // Includes the athlete who submitted the report (submittedById)
+      },
     });
 
     return NextResponse.json(reports, { status: 200 });
@@ -35,6 +41,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const reqBody = await req.json();
     const reports = reqBody as Array<{
       athleteId: number;
+      reviewdAthleteId: number;
       gameId: number;
       teamObservation: string;
       individualObservation: string;

@@ -71,6 +71,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 // PUT method to update an existing game by ID
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
+  console.log("PUT")
   const gameId = parseInt(params.id, 10);
   if (isNaN(gameId)) {
     return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });

@@ -87,7 +87,7 @@ const GamesList = () => {
     <div suppressHydrationWarning={true}>
     <PageContainer title="Games" description="List of all games">
       <h1>Games</h1>
-      <Link href="/utilities/games/new">
+      <Link href="/utilities/games/manage/new">
         <Button variant="contained" color="primary">
           Add New Game
         </Button>
@@ -194,7 +194,7 @@ const GamesList = () => {
                     <TableCell align="right">
                       <Stack direction="row" spacing={2}>
                         {/* Edit Game Link */}
-                        <Link href={`/utilities/games/${game.id}/edit`} passHref>
+                        <Link href={`/utilities/games/manage/${game.id}`} passHref>
                           <Button variant="contained" color="primary" onClick={(e) => e.stopPropagation()}>
                             Edit
                           </Button>
