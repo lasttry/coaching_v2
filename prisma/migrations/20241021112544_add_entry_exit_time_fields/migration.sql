@@ -1,20 +1,3 @@
-/*
-  Warnings:
-
-  - You are about to drop the `TimeEntry` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE "TimeEntry" DROP CONSTRAINT "TimeEntry_athleteId_fkey";
-
--- DropForeignKey
-ALTER TABLE "TimeEntry" DROP CONSTRAINT "TimeEntry_gameId_fkey";
-
--- DropTable
-DROP TABLE "TimeEntry";
-
--- DropEnum
-DROP TYPE "TimeEventType";
 
 -- CreateTable
 CREATE TABLE "timeEntry" (

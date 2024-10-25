@@ -28,6 +28,7 @@ model athletes {
 model gameAthletes {
   gameId    Int
   athleteId Int
+  number    String?
   athletes  athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
   games     games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
