@@ -26,6 +26,7 @@ export interface Athlete {
   birthdate: string; // Athlete's birthdate
   fpbNumber: number;
   idNumber: number;
+  gameNumber?: string; // Game-specific number, initially the same as `number`
 }
 
 // Define the types for game and teams

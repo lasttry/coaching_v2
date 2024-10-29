@@ -4,14 +4,20 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 interface GameData {
+  number: number;
   date: string;
+  away: boolean;
+  competition?: string | null;
+  subcomp?: string | null;
   oponentId: number;
-  athleteIds: number[];
-  number?: number;
-  away?: boolean;
-  competition?: string;
-  subcomp?: string;
-  notes?: string;
+  notes?: string | null;
+  athleteIds: (number | null)[];
+  athletes: AthleteGameData[];
+}
+
+interface AthleteGameData {
+  athleteId: number;
+  gameNumber: string;
 }
 
 // Utility function to validate the request payload
@@ -28,10 +34,12 @@ const validateGameData = (data: GameData): string[] => {
     errors.push('Valid opponent ID is required.');
   }
 
-  // Validate athleteIds (must be an array of numbers)
-  if (!Array.isArray(data.athleteIds) || data.athleteIds.some(id => typeof id !== 'number')) {
-    errors.push('Valid athlete IDs are required.');
+  // Validate athleteIds (must be a non-empty array of numbers without null or undefined)
+  console.log(data.athletes)
+  if (!Array.isArray(data.athletes) || data.athletes.length === 0 || data.athletes.some(athlete => typeof athlete.athleteId !== 'number' || athlete.athleteId === null)) {
+    errors.push('Valid athlete objects with IDs are required.');
   }
+
 
   return errors;
 };
@@ -51,7 +59,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     },
     include: {
       gameAthletes: {
-        include: {
+        select: {
+          number: true, // Include the 'number' field
           athletes: true,
         },
       },
@@ -71,14 +80,14 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 // PUT method to update an existing game by ID
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  console.log("PUT")
   const gameId = parseInt(params.id, 10);
   if (isNaN(gameId)) {
     return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
   }
 
   try {
-    const data: GameData = await request.json(); // Use GameData type
+    const data: GameData & { athletes: { athleteId: number; gameNumber: string }[] } = await request.json();
+    console.log(data)
 
     // Validate the data
     const validationErrors = validateGameData(data);
@@ -86,7 +95,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       return NextResponse.json({ error: validationErrors.join(' ') }, { status: 400 });
     }
 
-    // Update the game details
+    // Update the game details with `gameNumber` for each athlete
     const updatedGame = await prisma.games.update({
       where: { id: gameId },
       data: {
@@ -97,11 +106,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         subcomp: data.subcomp,
         oponentId: data.oponentId,
         notes: data.notes || null,
-        // Update the athletes associated with the game
         gameAthletes: {
-          deleteMany: {}, // Remove all existing athletes for this game
-          create: data.athleteIds.map(athleteId => ({
+          deleteMany: {}, // Clear existing athletes
+          create: data.athletes.map(({ athleteId, gameNumber }) => ({
             athleteId,
+            number: gameNumber,
           })),
         },
       },
@@ -116,6 +125,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
     return NextResponse.json({ error: 'An unknown error occurred.' }, { status: 500 });
   }
 }
+
 
 
 // DELETE method to delete a game by ID

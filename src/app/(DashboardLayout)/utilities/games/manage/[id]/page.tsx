@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 import { GameFormData, Team, Athlete } from '@/types/games/types';
+import { useRef } from 'react';
 
 const GameFormPage = () => {
 
@@ -28,6 +29,8 @@ const GameFormPage = () => {
   const [selectedAthletes, setSelectedAthletes] = useState<Athlete[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
   const [detailedError, setDetailedError] = useState<string | null>(null);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   // Sort athletes by number, year of birth, and name
   const sortAthletes = (athletes: Athlete[]) => {
@@ -62,7 +65,12 @@ const GameFormPage = () => {
             throw new Error(`Failed to fetch athletes. Status: ${athletesResponse.status}`);
           }
           const athletesData: Athlete[] = await athletesResponse.json();
-
+          const modifiedAthletes = athletesData.map(athlete => ({
+            ...athlete,
+            gameNumber: athlete.number,
+          }));
+          console.log(modifiedAthletes)
+          setAvailableAthletes(sortAthletes(modifiedAthletes));
           // New game so lets return
           if (!id) {
             // only set all athletes as available if it's a new game
@@ -78,7 +86,7 @@ const GameFormPage = () => {
           }
   
           const gameData = await gameResponse.json();
-  
+          console.log(gameData)
           setForm({
             number: gameData.game.number || undefined, // Add this line
             date: dayjs(gameData.game.date).format('YYYY-MM-DDTHH:mm'),
@@ -97,9 +105,11 @@ const GameFormPage = () => {
           const available = athletesData.filter(
             (athlete: Athlete) => !selected.some((selectedAthlete: Athlete) => selectedAthlete.id === athlete.id)
           );
+          console.log(available)
     
           setAvailableAthletes(sortAthletes(available));
           setSelectedAthletes(sortAthletes(selected));
+          console.log(selected)
         } catch (err) {
           console.error('Error fetching data:', err);
           setError('Failed to fetch data. Please try again later.');
@@ -128,12 +138,22 @@ const GameFormPage = () => {
   
     // Add athlete to selected list
     const handleAddAthlete = (athlete: Athlete) => {
-      const updatedSelected = [...selectedAthletes, athlete];
+      const updatedSelected = [
+        ...selectedAthletes,
+        { ...athlete, gameNumber: athlete.number === '-1' ? '' : athlete.number },
+      ];
       const updatedAvailable = availableAthletes.filter((a) => a.id !== athlete.id);
   
       setSelectedAthletes(sortAthletes(updatedSelected));
       setAvailableAthletes(sortAthletes(updatedAvailable));
       setForm((prev) => ({ ...prev, athleteIds: [...prev.athleteIds, athlete.id] }));
+
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          inputRef.current.select();
+        }
+      }, 0);
     };
   
     // Remove athlete from selected list
@@ -150,47 +170,52 @@ const GameFormPage = () => {
     };
   
     // Handle form submission (PUT request)
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    const handleSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      setLoading(true);
 
-    try {
-      const method = id ? 'PUT' : 'POST'; // Use POST for create, PUT for update
-      const url = id ? `/api/games/${id}` : '/api/games';
-  
-      // Ensure that the number is converted to an integer (or left as undefined if empty)
-      const updatedForm = {
-        ...form,
-        number: form.number ? parseInt(form.number as unknown as string, 10) : undefined,
-      };
+      try {
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/api/games/${id}` : `/api/games`;
 
-      console.log(JSON.stringify(updatedForm))
-      const response = await fetch(url, {
-        method: method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedForm),
-      });
+        // Prepare updatedForm with selected athlete IDs and game numbers
+        const updatedForm = {
+          ...form,
+          number: form.number ? parseInt(form.number as unknown as string, 10) : undefined,
+          athletes: selectedAthletes.map((athlete) => ({
+            athleteId: athlete.id,
+            gameNumber: athlete.gameNumber,
+          })),
+        };
 
-      if (response.ok) {
-        setSuccess('Game updated successfully.');
-        setError(null);
-        setDetailedError(null);
+        console.log("Submitting:", JSON.stringify(updatedForm));
 
-        setTimeout(() => {
-          router.push('/utilities/games');
-        }, 2000);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to update game.');
-        setDetailedError(JSON.stringify(errorData, null, 2));
+        const response = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updatedForm),
+        });
+
+        if (response.ok) {
+          setSuccess('Game updated successfully.');
+          setError(null);
+          setDetailedError(null);
+          setTimeout(() => {
+            router.push('/utilities/games');
+          }, 2000);
+        } else {
+          const errorData = await response.json();
+          setError(errorData.error || 'Failed to update game.');
+          setDetailedError(JSON.stringify(errorData, null, 2));
+        }
+      } catch (err) {
+        setError('An unknown error occurred.');
+        setDetailedError(err instanceof Error ? err.message : String(err));
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      setError('An unknown error occurred.');
-      setDetailedError(err instanceof Error ? err.message : String(err));
-    }
-  };
+    };
+
 
   if (loading) return <CircularProgress />;
 
@@ -311,7 +336,23 @@ const GameFormPage = () => {
                 {/* Selected athletes */}
                 {selectedAthletes.map((athlete) => (
                   <TableRow key={athlete.id}>
-                    <TableCell>{athlete.number}</TableCell>
+                    <TableCell>
+                    <TextField
+                      value={athlete.gameNumber || ""}
+                      inputRef={athlete.number !== '-1' ? inputRef : null}
+                      onChange={(e) => {
+                        const updatedGameNumber = e.target.value;
+                        console.log(`changed: ${updatedGameNumber}`)
+                        setSelectedAthletes((prev) =>
+                          prev.map((a) =>
+                            a.id === athlete.id
+                              ? { ...a, gameNumber: updatedGameNumber }
+                              : a
+                          )
+                        );
+                      }}
+                    />
+                    </TableCell>
                     <TableCell>{athlete.name}</TableCell>
                     <TableCell>{dayjs(athlete.birthdate).year()}</TableCell>
                     <TableCell>Selected</TableCell>
