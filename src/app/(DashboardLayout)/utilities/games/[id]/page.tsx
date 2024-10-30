@@ -9,7 +9,7 @@ import { Game } from '@/types/games/types'
 import { generatePDF, generateStatisticsPDF } from '@/app/utilities/pdf/pdfUtils'; // Import PDF utility
 import { generateReportsPDF } from '@/app/utilities/pdf/reports'
 
-import { Settings } from '@app/types/settings/types'
+import { Settings } from '@/types/settings/types'
 
 
 const GameDetails = () => {

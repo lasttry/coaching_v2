@@ -32,14 +32,16 @@ export const generateReportsPDF = async (game: Game) => {
 
   top = generateGameDetailsHeader(doc, top, game, settings)
   
-  // Prepare table headers
-  const tableHead = [['Athlete Number', 'Athlete Name', 'Team Observation', 'Individual Observation', 'Time Played Observation']];
 
   // Prepare table body
+  console.log(reports)
   const tableBody = athletes.flatMap((athlete: Athlete) => {
-    const report = reports[athlete.id];
+    const report = reports.find((r: any) => r.athleteId === athlete.id);
+    console.log(report)
+    //console.log(report.reviewdAthlete)
     return [
-      ["atleta:", `${athlete.number} - ${athlete.name}`,],
+      ["Atleta:", `${athlete.number === "-1" ? "" : athlete.number + " - "}${athlete.name}`,],
+      ["Atleta Revisto:", report ? (report.reviewdAthlete ? report.reviewdAthlete.name : "Próprio") : "NÃO FEZ"],
       ["Observação Equipa:", report ? report.teamObservation : 'NÃO FEZ'],
       ["Observação Individual:", report ? report.individualObservation : 'NÃO FEZ'],
       ["Tempo Jogado:", report ? report.timePlayedObservation : 'NÃO FEZ'],

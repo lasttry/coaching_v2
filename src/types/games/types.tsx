@@ -1,14 +1,19 @@
 import { jsPDF } from 'jspdf'; // Import jsPDF for PDF generation
 
-export interface GameFormData {
-  number?: number;
-  date: string;
-  away: boolean;
-  competition?: string;
-  subcomp?: string;
-  oponentId: string | number; // Can be empty string if no selection
-  notes?: string;
-  athleteIds: number[]; // Selected athletes
+export interface GameFormDataInterface{
+  number?: number,
+  date: string,
+  away: boolean,
+  oponentId: number,
+  competition?: string,
+  subcomp?: string,
+  notes?: string,
+  athletes: GameFormAthletesInterface[]
+}
+
+export interface GameFormAthletesInterface{
+  number: string,
+  athlete: Athlete
 }
 
 export interface Team {

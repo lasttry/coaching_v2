@@ -95,6 +95,7 @@ const GameReports = () => {
       complete: async function(results) {
         const rows = results.data;
 
+        console.log(JSON.stringify(rows))
         // Process each row of the CSV and send it to the server for insertion/updating
         const response = await fetch(`/api/games/${gameId}/reports/upload`, {
           method: 'POST',

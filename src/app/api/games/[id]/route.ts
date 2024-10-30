@@ -1,27 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { GameFormDataInterface } from '@/types/games/types';
 
 const prisma = new PrismaClient();
 
-interface GameData {
-  number: number;
-  date: string;
-  away: boolean;
-  competition?: string | null;
-  subcomp?: string | null;
-  oponentId: number;
-  notes?: string | null;
-  athleteIds: (number | null)[];
-  athletes: AthleteGameData[];
-}
-
-interface AthleteGameData {
-  athleteId: number;
-  gameNumber: string;
-}
-
 // Utility function to validate the request payload
-const validateGameData = (data: GameData): string[] => {
+const validateGameData = (data: GameFormDataInterface): string[] => {
   const errors: string[] = [];
 
   // Validate date
@@ -34,16 +18,8 @@ const validateGameData = (data: GameData): string[] => {
     errors.push('Valid opponent ID is required.');
   }
 
-  // Validate athleteIds (must be a non-empty array of numbers without null or undefined)
-  console.log(data.athletes)
-  if (!Array.isArray(data.athletes) || data.athletes.length === 0 || data.athletes.some(athlete => typeof athlete.athleteId !== 'number' || athlete.athleteId === null)) {
-    errors.push('Valid athlete objects with IDs are required.');
-  }
-
-
   return errors;
 };
-
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const gameId = parseInt(params.id, 10);
@@ -67,7 +43,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       teams: true,
     },
   });
-
+  console.log(game)
   if (!game) {
     return NextResponse.json({ error: 'Game not found' }, { status: 404 });
   }
@@ -86,7 +62,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    const data: GameData & { athletes: { athleteId: number; gameNumber: string }[] } = await request.json();
+    console.log("PUT")
+    const data: GameFormDataInterface = await request.json();
     console.log(data)
 
     // Validate the data
@@ -108,14 +85,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         notes: data.notes || null,
         gameAthletes: {
           deleteMany: {}, // Clear existing athletes
-          create: data.athletes.map(({ athleteId, gameNumber }) => ({
-            athleteId,
-            number: gameNumber,
+          create: data.athletes.map((athlete) => ({
+            athleteId: athlete.athlete.id,
+            number: athlete.number,
           })),
         },
       },
     });
-
+    console.log(updatedGame)
     return NextResponse.json(updatedGame, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {

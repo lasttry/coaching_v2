@@ -8,10 +8,9 @@ import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material'
 import dayjs from 'dayjs';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import { GameFormDataInterface, Team, Athlete, GameFormAthletesInterface } from '@/types/games/types';
+import { GameFormData, Team, Athlete, GameFormAthletes } from '@/types/games/types';
 import { useRef } from 'react';
-
-
+import { AddToQueueSharp } from '@mui/icons-material';
 
 const GameFormPage = () => {
 
@@ -20,105 +19,119 @@ const GameFormPage = () => {
   const id = params?.id === 'new' ? null : params?.id; // Get id unconditionally
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState<GameFormDataInterface>({
-    number: 0,
+  const [form, setForm] = useState<GameFormData>({
     date: dayjs().format('YYYY-MM-DDTHH:mm'),
     away: false,
-    oponentId: 1, // Set default to empty string
+    oponentId: '', // Set default to empty string
     athletes: [], // Initialize as empty array
-    competition: "",
-    subcomp: "",
-    notes: ""
   });
   const [teams, setTeams] = useState<Team[]>([]);
-  const [availableAthletes, setAvailableAthletes] = useState<GameFormAthletesInterface[]>([]);
-  const [selectedAthletes, setSelectedAthletes] = useState<GameFormAthletesInterface[]>([]);
+  const [availableAthletes, setAvailableAthletes] = useState<Athlete[]>([]);
+  const [selectedAthletes, setSelectedAthletes] = useState<Athlete[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
   const [detailedError, setDetailedError] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-    // Sort athletes by number, year of birth, and name
-    const sortAthletes = (athletes: GameFormAthletesInterface[]) => {
-      return athletes.sort((a, b) => {
-        const numberCompare = parseInt(a.athlete.number) - parseInt(b.athlete.number);
-        if (numberCompare !== 0) return numberCompare;
+  // Sort athletes by number, year of birth, and name
+  const sortAthletes = (athletes: Athlete[]) => {
+    return athletes.sort((a, b) => {
+      const numberCompare = parseInt(a.number) - parseInt(b.number);
+      if (numberCompare !== 0) return numberCompare;
 
-        const yearCompare = dayjs(a.athlete.birthdate).year() - dayjs(b.athlete.birthdate).year();
-        if (yearCompare !== 0) return yearCompare;
+      const yearCompare = dayjs(a.birthdate).year() - dayjs(b.birthdate).year();
+      if (yearCompare !== 0) return yearCompare;
 
-        return a.athlete.name.localeCompare(b.athlete.name);
-      });
-    };
+      return a.name.localeCompare(b.name);
+    });
+  };
 
-      // Fetch data if editing (i.e., if id exists)
+  // Fetch data if editing (i.e., if id exists)
   useEffect(() => {
-    async function fetchData() {
-      console.log(id)
-      try {
-        // Fetch available teams
-        const teamsResponse = await fetch('/api/teams');
-        if (!teamsResponse.ok) {
-          throw new Error(`Failed to fetch teams. Status: ${teamsResponse.status}`);
-        }
-        const teamsData: Team[] = await teamsResponse.json();
-        setTeams(teamsData);
-        console.log(`teams set ${teamsData}`)
+      async function fetchData() {
+        console.log(id)
+        try {
+          // Fetch available teams
+          const teamsResponse = await fetch('/api/teams');
+          if (!teamsResponse.ok) {
+            throw new Error(`Failed to fetch teams. Status: ${teamsResponse.status}`);
+          }
+          const teamsData: Team[] = await teamsResponse.json();
+          setTeams(teamsData);
+          console.log(`teams set ${teamsData}`)
+    
+          // Fetch athletes
+          const athletesResponse = await fetch('/api/athletes');
+          if (!athletesResponse.ok) {
+            throw new Error(`Failed to fetch athletes. Status: ${athletesResponse.status}`);
+          }
+          const athletesData: Athlete[] = await athletesResponse.json();
+          const modifiedAthletes = athletesData.map(athlete => ({
+            ...athlete,
+            gameNumber: athlete.number,
+          }));
+          console.log(modifiedAthletes)
+          setAvailableAthletes(sortAthletes(modifiedAthletes));
+          // New game so lets return
+          if (!id) {
+            // only set all athletes as available if it's a new game
+            setAvailableAthletes(sortAthletes(athletesData));
+            return;
+          }
+
+          // Fetch game details
+          const gameResponse = await fetch(`/api/games/${id}`);
   
-        // Fetch athletes
-        const athletesResponse = await fetch('/api/athletes');
-        if (!athletesResponse.ok) {
-          throw new Error(`Failed to fetch athletes. Status: ${athletesResponse.status}`);
+          if (!gameResponse.ok) {
+            throw new Error(`Failed to fetch game details. Status: ${gameResponse.status}`);
+          }
+  
+          const gameData = await gameResponse.json();
+          console.log(gameData)
+          const athletesArray = gameData.game.gameAthletes.map((gameAthlete) => ({
+            athlete: gameAthlete.athletes.name,  // Access `name` or other properties of the nested `athletes` object
+            number: gameAthlete.athletes.number, // Access `number` directly from `athletes` if it’s stored there
+          }));
+          console.log("Athletes Array")
+          console.log(athletesArray)
+          setForm({
+            number: gameData.game.number || undefined, // Add this line
+            date: dayjs(gameData.game.date).format('YYYY-MM-DDTHH:mm'),
+            away: gameData.game.away,
+            competition: gameData.game.competition,
+            subcomp: gameData.game.subcomp,
+            oponentId: gameData.game.oponentId || '', 
+            notes: gameData.game.notes,
+            athletes: athletesArray,
+          });
+    
+          console.log(athletesData)
+          console.log(athletesArray)
+          const selected = athletesData.filter((athlete) =>
+            athletesArray.some(
+              (selected) => selected.athlete === athlete.name
+            )
+          );
+          console.log("selected:")
+          console.log(selected)
+    
+          const available = athletesData.filter(
+            (athlete: Athlete) => !selected.some((selectedAthlete: Athlete) => selectedAthlete.id === athlete.id)
+          );
+          console.log("available")
+          console.log(available)
+    
+          setAvailableAthletes(sortAthletes(available));
+          setSelectedAthletes(sortAthletes(selected));
+          console.log(selected)
+        } catch (err) {
+          console.error('Error fetching data:', err);
+          setError('Failed to fetch data. Please try again later.');
+          setDetailedError(err instanceof Error ? err.message : String(err));
         }
-        const athletesData: Athlete[] = await athletesResponse.json();
-        const athletes = athletesData.map((athlete) => ({
-          number: String(athlete.number), // assuming `number` is a string and needs conversion to number
-          athlete, // embeds the entire athlete object
-        }));
-        setAvailableAthletes(sortAthletes(athletes));
-        // New game so lets return
-        if (!id) {
-          // only set all athletes as available if it's a new game
-          return;
-        }
-
-        // Fetch game details
-        const gameResponse = await fetch(`/api/games/${id}`);
-        if (!gameResponse.ok) {
-          throw new Error(`Failed to fetch game details. Status: ${gameResponse.status}`);
-        }
-
-        const gameData = await gameResponse.json();
-        const gameAthletes = gameData.game.gameAthletes.map((gameAthlete: any) => ({
-          athlete: gameAthlete.athletes,  // Access `name` or other properties of the nested `athletes` object
-          number: gameAthlete.number === "" ? gameAthlete.athletes.number : gameAthlete.number, // Access `number` directly from `athletes` if it’s stored there
-        }));
-
-        setForm({
-          number: gameData.game.number || 0, // Add this line
-          date: dayjs(gameData.game.date).format('YYYY-MM-DDTHH:mm') ?? "",
-          away: gameData.game.away ?? false,
-          competition: gameData.game.competition ?? "",
-          subcomp: gameData.game.subcomp ?? "",
-          oponentId: gameData.game.oponentId || '',
-          notes: gameData.game.notes ?? "",
-          athletes: gameAthletes,
-        });
-
-        const available = athletes.filter(
-          (athlete: GameFormAthletesInterface) => !gameAthletes.some((selectedAthlete: GameFormAthletesInterface) => selectedAthlete.athlete.id === athlete.athlete.id)
-        );
-
-        setAvailableAthletes(sortAthletes(available));
-        setSelectedAthletes(sortAthletes(gameAthletes));
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to fetch data. Please try again later.');
-        setDetailedError(err instanceof Error ? err.message : String(err));
       }
-    }
-
-    fetchData();
+    
+      fetchData();
   }, [id]);
 
     // Handle input change for form fields
@@ -138,16 +151,16 @@ const GameFormPage = () => {
     };
   
     // Add athlete to selected list
-    const handleAddAthlete = (athlete: GameFormAthletesInterface) => {
+    const handleAddAthlete = (athlete: Athlete) => {
       const updatedSelected = [
         ...selectedAthletes,
-        { ...athlete, number: athlete.athlete.number === '-1' ? '' : String(athlete.athlete.number) },
+        { ...athlete, gameNumber: athlete.number === '-1' ? '' : athlete.number },
       ];
-      const updatedAvailable = availableAthletes.filter((a) => a.athlete.id !== athlete.athlete.id);
+      const updatedAvailable = availableAthletes.filter((a) => a.id !== athlete.id);
   
       setSelectedAthletes(sortAthletes(updatedSelected));
       setAvailableAthletes(sortAthletes(updatedAvailable));
-      setForm((prev) => ({ ...prev, athletes: [...prev.athletes, athlete] }));
+      setForm((prev) => ({ ...prev, athleteIds: [...prev.athleteIds, athlete.id] }));
 
       setTimeout(() => {
         if (inputRef.current) {
@@ -158,15 +171,15 @@ const GameFormPage = () => {
     };
   
     // Remove athlete from selected list
-    const handleRemoveAthlete = (athlete: GameFormAthletesInterface) => {
+    const handleRemoveAthlete = (athlete: Athlete) => {
       const updatedAvailable = [...availableAthletes, athlete];
-      const updatedSelected = selectedAthletes.filter((a) => a.athlete.id !== athlete.athlete.id);
+      const updatedSelected = selectedAthletes.filter((a) => a.id !== athlete.id);
   
       setAvailableAthletes(sortAthletes(updatedAvailable));
       setSelectedAthletes(sortAthletes(updatedSelected));
       setForm((prev) => ({
         ...prev,
-        athletes: prev.athletes.filter((ath) => ath.athlete.id !== athlete.athlete.id),
+        athleteIds: prev.athleteIds.filter((id) => id !== athlete.id),
       }));
     };
   
@@ -179,16 +192,22 @@ const GameFormPage = () => {
         const method = id ? 'PUT' : 'POST';
         const url = id ? `/api/games/${id}` : `/api/games`;
 
-        const updateForm = {
+        // Prepare updatedForm with selected athlete IDs and game numbers
+        const updatedForm = {
           ...form,
-          athletes: selectedAthletes
-        }
-        console.log("Submitting:", JSON.stringify(updateForm));
+          number: form.number ? parseInt(form.number as unknown as string, 10) : undefined,
+          athletes: selectedAthletes.map((athlete) => ({
+            athleteId: athlete.id,
+            gameNumber: athlete.gameNumber,
+          })),
+        };
+
+        console.log("Submitting:", JSON.stringify(updatedForm));
 
         const response = await fetch(url, {
           method,
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updateForm),
+          body: JSON.stringify(updatedForm),
         });
 
         if (response.ok) {
@@ -330,26 +349,26 @@ const GameFormPage = () => {
               <TableBody>
                 {/* Selected athletes */}
                 {selectedAthletes.map((athlete) => (
-                  <TableRow key={athlete.athlete.id}>
+                  <TableRow key={athlete.id}>
                     <TableCell>
                     <TextField
-                      value={ athlete.number === "" ? String(athlete.athlete.number) : athlete.number }
+                      value={ athlete.gameNumber === "" ? athlete.number : athlete.gameNumber }
                       inputRef={inputRef}
                       onChange={(e) => {
                         const updatedGameNumber = e.target.value;
                         console.log(`changed: ${updatedGameNumber}`)
                         setSelectedAthletes((prev) =>
                           prev.map((a) =>
-                            a.athlete.id === athlete.athlete.id
-                              ? { ...a, number: updatedGameNumber }
+                            a.id === athlete.id
+                              ? { ...a, gameNumber: updatedGameNumber }
                               : a
                           )
                         );
                       }}
                     />
                     </TableCell>
-                    <TableCell>{athlete.athlete.name}</TableCell>
-                    <TableCell>{dayjs(athlete.athlete.birthdate).year()}</TableCell>
+                    <TableCell>{athlete.name}</TableCell>
+                    <TableCell>{dayjs(athlete.birthdate).year()}</TableCell>
                     <TableCell>Selected</TableCell>
                     <TableCell align="right">
                       <Button
@@ -365,10 +384,10 @@ const GameFormPage = () => {
 
                 {/* Available athletes */}
                 {availableAthletes.map((athlete) => (
-                  <TableRow key={athlete.athlete.id}>
-                    <TableCell>{athlete.athlete.number}</TableCell>
-                    <TableCell>{athlete.athlete.name}</TableCell>
-                    <TableCell>{dayjs(athlete.athlete.birthdate).year()}</TableCell>
+                  <TableRow key={athlete.id}>
+                    <TableCell>{athlete.number}</TableCell>
+                    <TableCell>{athlete.name}</TableCell>
+                    <TableCell>{dayjs(athlete.birthdate).year()}</TableCell>
                     <TableCell>Available</TableCell>
                     <TableCell align="right">
                       <Button

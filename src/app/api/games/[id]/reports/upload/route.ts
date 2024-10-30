@@ -47,36 +47,31 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       const athleteName = row['Atleta'].trim();
       const athleteNameReview = row['Atleta a analizar'].trim();
       const isSelf = athleteNameReview.toLowerCase().includes('eu'); // If "Eu", it's self
-      console.log(`isSelf: ${isSelf}/athleteName: ${athleteNameReview}`);
+      console.log(`athleteName: ${athleteName}/isSelf: ${isSelf}/athleteNameReview: ${athleteNameReview}`);
 
       // Find the athlete who submitted the report
       const athleteSubmitted = await prisma.athletes.findFirst({
         where: {
-          name: {
-            contains: athleteName,
-            mode: 'insensitive', // Case-insensitive search
-          },
+          name: athleteName
         },
       });
 
       if (!athleteSubmitted) {
         throw new Error(`Athlete not found for name: ${athleteName}`);
       }
-      console.log(`${athleteSubmitted.id} - ${athleteSubmitted.name}`)
+      console.log(`Sumitted athlete: ${athleteSubmitted.id} - ${athleteSubmitted.name}`)
 
       // Find the athlete being reviewed (self or another athlete)
       const reviewedAthlete = isSelf ? athleteSubmitted : await prisma.athletes.findFirst({
         where: {
-          name: {
-            contains: athleteNameReview,
-            mode: 'insensitive',
-          },
+          name: athleteNameReview
         },
       });
 
       if (!reviewedAthlete) {
         throw new Error(`Athlete to review not found for name: ${athleteNameReview}`);
       }
+      console.log(`reviewed Athlete: ${reviewedAthlete.id} - ${reviewedAthlete.name}`)
 
       // Extract the observations from the row
       const teamObservation = row['Relatório de jogo - Equipa'];
