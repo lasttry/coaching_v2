@@ -1,25 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { GameFormDataInterface } from '@/types/games/types';
+import { validateGameData } from '../utils/utils';
 
 const prisma = new PrismaClient();
 
-// Utility function to validate the request payload
-const validateGameData = (data: GameFormDataInterface): string[] => {
-  const errors: string[] = [];
 
-  // Validate date
-  if (!data.date || isNaN(Date.parse(data.date))) {
-    errors.push('Valid game date is required.');
-  }
-
-  // Validate opponent
-  if (!data.oponentId || typeof data.oponentId !== 'number') {
-    errors.push('Valid opponent ID is required.');
-  }
-
-  return errors;
-};
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   const gameId = parseInt(params.id, 10);
@@ -62,9 +48,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   }
 
   try {
-    console.log("PUT")
     const data: GameFormDataInterface = await request.json();
-    console.log(data)
 
     // Validate the data
     const validationErrors = validateGameData(data);
