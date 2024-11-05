@@ -143,6 +143,34 @@ model athleteReport {
   @@index([gameId, athleteId])
 }
 
+model macrocycle {
+  id        Int      @id @default(autoincrement())
+  startDate DateTime
+  endDate   DateTime
+  notes     String?  @db.VarChar(1000)
+  mesocycles mesocycle[]
+}
+
+model mesocycle {
+  id          Int      @id @default(autoincrement())
+  startDate   DateTime
+  endDate     DateTime
+  notes       String?  @db.VarChar(1000)
+  macrocycle  macrocycle @relation(fields: [macrocycleId], references: [id])
+  macrocycleId Int
+  microcycles microcycle[]
+}
+
+model microcycle {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  responsible String   @db.VarChar(100)
+  time        String   @db.VarChar(50)
+  notes       String?  @db.VarChar(1000)
+  mesocycle   mesocycle @relation(fields: [mesocycleId], references: [id])
+  mesocycleId Int
+}
+
 enum TeamType {
   A
   B
