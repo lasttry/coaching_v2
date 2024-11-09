@@ -23,6 +23,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
       gameAthletes: {
         select: {
           number: true, // Include the 'number' field
+          period1: true,
+          period2: true,
+          period3: true,
+          period4: true,
           athletes: true,
         },
       },
@@ -76,6 +80,10 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
           create: data.athletes.map((athlete) => ({
             athleteId: athlete.athletes.id,
             number: athlete.number,
+            period1: athlete.period1,
+            period2: athlete.period2,
+            period3: athlete.period3,
+            period4: athlete.period4
           })),
         },
       },

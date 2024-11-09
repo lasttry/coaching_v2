@@ -92,6 +92,10 @@ const GameFormPage = () => {
         const gameAthletes = gameData.game.gameAthletes.map((gameAthlete: any) => ({
           athletes: gameAthlete.athletes,  // Access `name` or other properties of the nested `athletes` object
           number: gameAthlete.number === "" ? gameAthlete.athletes.number : gameAthlete.number, // Access `number` directly from `athletes` if it’s stored there
+          period1: gameAthlete.period1,
+          period2: gameAthlete.period2,
+          period3: gameAthlete.period3,
+          period4: gameAthlete.period4
         }));
 
         setForm({
@@ -332,21 +336,44 @@ const GameFormPage = () => {
                 {selectedAthletes.map((athlete) => (
                   <TableRow key={athlete.athletes.id}>
                     <TableCell>
-                    <TextField
-                      value={ athlete.number === "" ? String(athlete.athletes.number) : athlete.number }
-                      inputRef={inputRef}
-                      onChange={(e) => {
-                        const updatedGameNumber = e.target.value;
-                        console.log(`changed: ${updatedGameNumber}`)
-                        setSelectedAthletes((prev) =>
-                          prev.map((a) =>
-                            a.athletes.id === athlete.athletes.id
-                              ? { ...a, number: updatedGameNumber }
-                              : a
-                          )
-                        );
-                      }}
-                    />
+                      <TextField
+                        value={athlete.number === "" ? String(athlete.athletes.number) : athlete.number}
+                        inputRef={inputRef}
+                        onChange={(e) => {
+                          const updatedGameNumber = e.target.value;
+                          console.log(`changed: ${updatedGameNumber}`);
+                          setSelectedAthletes((prev) =>
+                            prev.map((a) =>
+                              a.athletes.id === athlete.athletes.id
+                                ? { ...a, number: updatedGameNumber }
+                                : a
+                            )
+                          );
+                        }}
+                      />
+
+                      {/* Period Checkboxes */}
+                      <Stack direction="row" spacing={1} marginTop={1}>
+                        {[1, 2, 3, 4].map((period) => (
+                          <label key={`period-${period}`}>
+                            <input
+                              type="checkbox"
+                              checked={Boolean(athlete[`period${period}`])} // Dynamically accessing the period property
+                              onChange={(e) => {
+                                const isChecked = e.target.checked;
+                                setSelectedAthletes((prev) =>
+                                  prev.map((a) =>
+                                    a.athletes.id === athlete.athletes.id
+                                      ? { ...a, [`period${period}`]: isChecked } // Update the selected period state
+                                      : a
+                                  )
+                                );
+                              }}
+                            />
+                            <Typography variant="body2" sx={{ ml: 0.5 }}>P{period}</Typography>
+                          </label>
+                        ))}
+                      </Stack>
                     </TableCell>
                     <TableCell>{athlete.athletes.name}</TableCell>
                     <TableCell>{dayjs(athlete.athletes.birthdate).year()}</TableCell>

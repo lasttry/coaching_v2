@@ -71,7 +71,10 @@ const athletesTableBody = (game: Game): ((string | number)[][] | undefined) => {
     entry.athletes.idNumber === 0 ? '' : entry.athletes.idNumber,
     entry.athletes.name,
     entry.number === "-1" ? '' : entry.number,
-    '', '', '', '', '', '', '', ''
+    '', entry.period1 ? 'X' : '',
+    '', entry.period2 ? 'X' : '',
+    '', entry.period3 ? 'X' : '',
+    '', entry.period4 ? 'X' : ''
   ]);
 }
 

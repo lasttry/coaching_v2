@@ -13,6 +13,10 @@ export interface GameFormDataInterface{
 
 export interface GameFormAthletesInterface{
   number: string,
+  period1: boolean,
+  period2: boolean,
+  period3: boolean,
+  period4: boolean,
   athletes: Athlete
 }
 
