@@ -74,6 +74,10 @@ const GameFormPage = () => {
         const athletes = athletesData.map((athlete) => ({
           number: String(athlete.number), // assuming `number` is a string and needs conversion to number
           athletes: athlete, // embeds the entire athlete object
+          period1: false,
+          period2: false,
+          period3: false,
+          period4: false
         }));
         setAvailableAthletes(sortAthletes(athletes));
         // New game so lets return
@@ -358,13 +362,13 @@ const GameFormPage = () => {
                           <label key={`period-${period}`}>
                             <input
                               type="checkbox"
-                              checked={Boolean(athlete[`period${period}`])} // Dynamically accessing the period property
+                              checked={Boolean(athlete[`period${period}` as keyof GameFormAthletesInterface])} // Cast to key of GameFormAthletesInterface
                               onChange={(e) => {
                                 const isChecked = e.target.checked;
                                 setSelectedAthletes((prev) =>
                                   prev.map((a) =>
                                     a.athletes.id === athlete.athletes.id
-                                      ? { ...a, [`period${period}`]: isChecked } // Update the selected period state
+                                      ? { ...a, [`period${period}`]: isChecked }
                                       : a
                                   )
                                 );
