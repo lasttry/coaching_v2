@@ -223,11 +223,11 @@ export const generatePDF = (game: Game, settings: Settings | null) => {
   const afterResultsTableY = doc.lastAutoTable?.finalY ?? 0;
     // Second column: "Notas" with lorem ipsum text
     doc.setFontSize(18);
-    doc.text('Notas', 120, afterPlayersTableY + 10); // Title for second column
-    doc.setFontSize(12);
+    doc.text('Notas', 80, afterPlayersTableY + 10); // Title for second column
+    doc.setFontSize(10);
 
-    const loremText = doc.splitTextToSize(`${game.notes === null ? "" : game.notes}`, 80);
-    doc.text(loremText, 120, afterPlayersTableY + 15); // Text under the "Notas" header
+    const loremText = doc.splitTextToSize(`${game.notes === null ? "" : game.notes}`, 120);
+    doc.text(loremText, 80, afterPlayersTableY + 15); // Text under the "Notas" header
 
     doc.setFontSize(18);
     const pageHeight = doc.internal.pageSize.height;
