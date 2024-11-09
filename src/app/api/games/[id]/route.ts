@@ -3,22 +3,21 @@ import { PrismaClient } from "@prisma/client";
 import { GameFormDataInterface } from "@/types/games/types";
 import { validateGameData } from "../utils/utils";
 
+type Params = Promise<{ id: number }>;
 const prisma = new PrismaClient();
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } },
-) {
-  const gameId = parseInt(params.id, 10);
+export async function GET(req: NextRequest, segmentData: { params: Params }) {
+  const params = await segmentData.params;
+  const id = Number(params.id);
 
-  if (!gameId) {
+  if (!id) {
     return NextResponse.json({ error: "Invalid Game ID" }, { status: 400 });
   }
 
   const settings = await prisma.settings.findFirst();
   const game = await prisma.games.findUnique({
     where: {
-      id: gameId,
+      id,
     },
     include: {
       gameAthletes: {
@@ -42,11 +41,9 @@ export async function GET(
 }
 
 // PUT method to update an existing game by ID
-export async function PUT(
-  request: Request,
-  { params }: { params: { id: string } },
-) {
-  const gameId = parseInt(params.id, 10);
+export async function PUT(request: Request, segmentData: { params: Params }) {
+  const params = await segmentData.params;
+  const gameId = params.id;
   if (isNaN(gameId)) {
     return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
   }
@@ -103,9 +100,10 @@ export async function PUT(
 // DELETE method to delete a game by ID
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  segmentData: { params: Params },
 ) {
-  const gameId = parseInt(params.id, 10);
+  const params = await segmentData.params;
+  const gameId = params.id;
   if (isNaN(gameId)) {
     return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
   }

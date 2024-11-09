@@ -7,14 +7,15 @@ import {
   Button,
   Stack,
   Checkbox,
-  Link
+  Link,
 } from "@mui/material";
 import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
+import { ReactNode } from "react";
 
 interface loginType {
   title?: string;
-  subtitle?: JSX.Element | JSX.Element[];
-  subtext?: JSX.Element | JSX.Element[];
+  subtitle?: ReactNode | ReactNode[];
+  subtext?: ReactNode | ReactNode[];
   onSubmit: () => void; // Add the onSubmit prop
 }
 

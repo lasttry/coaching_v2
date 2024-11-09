@@ -1,10 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import { TextField, Button, Box, Stack, Typography } from '@mui/material';
-import Image from 'next/image'; // For displaying the image
+import { use } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer";
+import { TextField, Button, Box, Stack, Typography } from "@mui/material";
+import Image from "next/image"; // For displaying the image
 
 // Define the Team type based on the schema
 interface Team {
@@ -15,7 +16,10 @@ interface Team {
   image?: string; // Image is optional
 }
 
-const EditTeam = ({ params }: { params: { id: string } }) => {
+type Params = Promise<{ id: string }>;
+
+const EditTeam = (props: { params: Params }) => {
+  const params = use(props.params);
   const [form, setForm] = useState<Team | null>(null); // Initialize form as null until data is fetched
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,8 +37,8 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
         setForm(data);
         setImage(data.image || null); // Set the image to the existing base64 string, if any
       } catch (err) {
-        console.error(err)
-        setError('Failed to fetch team data.');
+        console.error(err);
+        setError("Failed to fetch team data.");
       } finally {
         setLoading(false);
       }
@@ -48,7 +52,7 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
     const { name, value } = e.target;
     if (form) {
       setForm((prev) => ({ ...prev!, [name]: value }));
-      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: '' })); // Reset error for this field
+      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: "" })); // Reset error for this field
     }
   };
 
@@ -68,7 +72,7 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
   const handleRemoveImage = () => {
     setImage(null); // Remove image preview
     if (form) {
-      setForm((prev) => ({ ...prev!, image: '' })); // Mark the image as removed in the form data
+      setForm((prev) => ({ ...prev!, image: "" })); // Mark the image as removed in the form data
     }
   };
 
@@ -78,17 +82,17 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
 
     // Validate name
     if (!form?.name) {
-      errors.name = 'Team name is required';
+      errors.name = "Team name is required";
     }
 
     // Validate short name
     if (!form?.shortName) {
-      errors.shortName = 'Short name is required';
+      errors.shortName = "Short name is required";
     }
 
     // Validate location
     if (!form?.location) {
-      errors.location = 'Location is required';
+      errors.location = "Location is required";
     }
 
     setFormErrors(errors);
@@ -106,9 +110,9 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
 
     try {
       const response = await fetch(`/api/teams/${params.id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...form,
@@ -117,21 +121,21 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
       });
 
       if (response.ok) {
-        setSuccess('Team updated successfully.');
+        setSuccess("Team updated successfully.");
         setError(null);
         setTimeout(() => {
-          router.push('/utilities/teams'); // Redirect to the teams list page after 2 seconds
+          router.push("/utilities/teams"); // Redirect to the teams list page after 2 seconds
         }, 2000);
       } else {
         const errorData = await response.json();
-        setError(errorData.error || 'Failed to update team.');
+        setError(errorData.error || "Failed to update team.");
         setTimeout(() => {
           setError(null);
         }, 5000);
       }
     } catch (err) {
-      console.error('Error updating team:', err);
-      setError('An unknown error occurred.');
+      console.error("Error updating team:", err);
+      setError("An unknown error occurred.");
       setTimeout(() => {
         setError(null);
       }, 5000);
@@ -140,7 +144,7 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
 
   // Handle cancel action to return to the teams list
   const handleCancel = () => {
-    router.push('/utilities/teams'); // Redirect to teams list
+    router.push("/utilities/teams"); // Redirect to teams list
   };
 
   if (loading) return <p>Loading...</p>;
@@ -154,8 +158,17 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
           {/* Image Preview */}
           {image ? (
             <Box>
-              <Image src={image} alt={form?.name || 'Team Image'} width={64} height={64} />
-              <Button variant="outlined" color="secondary" onClick={handleRemoveImage}>
+              <Image
+                src={image}
+                alt={form?.name || "Team Image"}
+                width={64}
+                height={64}
+              />
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleRemoveImage}
+              >
                 Remove Image
               </Button>
             </Box>
@@ -166,14 +179,19 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
           {/* Image Upload Field */}
           <Box>
             <label htmlFor="team-image">Upload New Image</label>
-            <input type="file" id="team-image" accept="image/*" onChange={handleImageChange} />
+            <input
+              type="file"
+              id="team-image"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
           </Box>
 
           {/* Name Field */}
           <TextField
             label="Team Name"
             name="name"
-            value={form?.name || ''}
+            value={form?.name || ""}
             onChange={handleChange}
             required
             error={!!formErrors.name}
@@ -184,7 +202,7 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
           <TextField
             label="Short Name"
             name="shortName"
-            value={form?.shortName || ''}
+            value={form?.shortName || ""}
             onChange={handleChange}
             required
             error={!!formErrors.shortName}
@@ -195,7 +213,7 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
           <TextField
             label="Location"
             name="location"
-            value={form?.location || ''}
+            value={form?.location || ""}
             onChange={handleChange}
             required
             error={!!formErrors.location}
@@ -208,14 +226,21 @@ const EditTeam = ({ params }: { params: { id: string } }) => {
             </Button>
 
             {/* Cancel Button */}
-            <Button type="button" variant="outlined" color="secondary" onClick={handleCancel}>
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              onClick={handleCancel}
+            >
               Cancel
             </Button>
           </Box>
 
           {/* Success/Error Messages */}
-          {success && <Typography sx={{ color: 'green' }}>{success}</Typography>}
-          {error && <Typography sx={{ color: 'red' }}>{error}</Typography>}
+          {success && (
+            <Typography sx={{ color: "green" }}>{success}</Typography>
+          )}
+          {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
         </Stack>
       </form>
     </PageContainer>

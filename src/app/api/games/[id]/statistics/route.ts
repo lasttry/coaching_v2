@@ -1,14 +1,16 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
+type Params = Promise<{ id: number }>;
 const prisma = new PrismaClient();
 
 // Handle GET request
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, segmentData: { params: Params }) {
+  const params = await segmentData.params;
   const gameId = Number(params.id);
 
   if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
   }
 
   try {
@@ -17,22 +19,29 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
     });
 
     if (!statistics || statistics.length === 0) {
-      return NextResponse.json({ error: 'Statistics not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Statistics not found" },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json(statistics, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'An error occurred while fetching statistics' }, { status: 500 });
+    return NextResponse.json(
+      { error: "An error occurred while fetching statistics" },
+      { status: 500 },
+    );
   }
 }
 
 // POST: Create new time entries for a game
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, segmentData: { params: Params }) {
+  const params = await segmentData.params;
   const gameId = Number(params.id);
 
   if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
   }
 
   try {
@@ -55,19 +64,26 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
     await Promise.all(createPromises);
 
-    return NextResponse.json({ message: 'Time entries added successfully' }, { status: 200 });
+    return NextResponse.json(
+      { message: "Time entries added successfully" },
+      { status: 200 },
+    );
   } catch (error) {
-    console.error('Error adding time entries:', error);
-    return NextResponse.json({ error: 'Failed to add time entries' }, { status: 500 });
+    console.error("Error adding time entries:", error);
+    return NextResponse.json(
+      { error: "Failed to add time entries" },
+      { status: 500 },
+    );
   }
 }
 
 // PUT: Update existing time entries for a game
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const gameId = Number(params.id);
+export async function PUT(req: NextRequest, segmentData: { params: Params }) {
+  const params = await segmentData.params;
+  const gameId = params.id;
 
   if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
   }
 
   try {
@@ -100,10 +116,15 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
     await Promise.all(updatePromises);
 
-    return NextResponse.json({ message: 'Time entries updated successfully' }, { status: 200 });
+    return NextResponse.json(
+      { message: "Time entries updated successfully" },
+      { status: 200 },
+    );
   } catch (error) {
-    console.error('Error updating time entries:', error);
-    return NextResponse.json({ error: 'Failed to update time entries' }, { status: 500 });
+    console.error("Error updating time entries:", error);
+    return NextResponse.json(
+      { error: "Failed to update time entries" },
+      { status: 500 },
+    );
   }
 }
-

@@ -13,28 +13,28 @@ export async function GET(
 
   if (isNaN(id)) {
     return NextResponse.json(
-      { error: "Invalid Macrocycle ID" },
+      { error: "Invalid Mesocycle ID" },
       { status: 400 },
     );
   }
 
   try {
-    const macroCiclo = await prisma.macrocycle.findUnique({
+    const mesocycle = await prisma.mesocycle.findUnique({
       where: { id },
     });
 
-    if (!macroCiclo) {
+    if (!mesocycle) {
       return NextResponse.json(
-        { error: "Macrocycle not found" },
+        { error: "Mesocycle not found" },
         { status: 404 },
       );
     }
 
-    return NextResponse.json(macroCiclo);
+    return NextResponse.json(mesocycle);
   } catch (error) {
-    console.error("Error fetching Macrocycle:", error);
+    console.error("Error fetching Mesocycle:", error);
     return NextResponse.json(
-      { error: "Error fetching Macrocycle" },
+      { error: "Error fetching Mesocycle" },
       { status: 500 },
     );
   }
@@ -48,7 +48,7 @@ export async function PUT(
 
   if (isNaN(id)) {
     return NextResponse.json(
-      { error: "Invalid macrocycle ID" },
+      { error: "Invalid mesocyclo ID" },
       { status: 400 },
     );
   }
@@ -56,7 +56,7 @@ export async function PUT(
   try {
     const data = await request.json();
 
-    const updatedMacrocycle = await prisma.macrocycle.update({
+    const updateMesocycle = await prisma.mesocycle.update({
       where: { id },
       data: {
         number: Number(data.number),
@@ -64,14 +64,15 @@ export async function PUT(
         notes: data.notes,
         startDate: new Date(data.startDate),
         endDate: new Date(data.endDate),
+        macrocycleId: data.macrocycleId
       },
     });
 
-    return NextResponse.json(updatedMacrocycle, { status: 200 });
+    return NextResponse.json(updateMesocycle, { status: 200 });
   } catch (error) {
-    console.error("Error updating macrocycle:", error);
+    console.error("Error updating mesocycle:", error);
     return NextResponse.json(
-      { error: "Error updating macrocycle" },
+      { error: "Error updating mesocycle" },
       { status: 500 },
     );
   }
@@ -86,21 +87,21 @@ export async function DELETE(
 
   if (isNaN(id)) {
     return NextResponse.json(
-      { error: "Invalid macrociclo ID" },
+      { error: "Invalid mesocycle ID" },
       { status: 400 },
     );
   }
 
   try {
-    await prisma.macrocycle.delete({
+    await prisma.mesocycle.delete({
       where: { id },
     });
 
     return NextResponse.json({}, { status: 204 });
   } catch (error) {
-    console.error("Error deleting macrocycle:", error);
+    console.error("Error deleting mesocycle:", error);
     return NextResponse.json(
-      { error: "Error deleting macrocycle" },
+      { error: "Error deleting mesocycle" },
       { status: 500 },
     );
   }

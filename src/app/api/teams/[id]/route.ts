@@ -1,14 +1,16 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
+type Params = Promise<{ id: number }>;
 const prisma = new PrismaClient();
 
 // GET handler for fetching a team by ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+export async function GET(request: Request, segmentData: { params: Params }) {
+  const params = await segmentData.params;
+  const id = params.id;
 
   if (isNaN(id)) {
-    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
   }
 
   try {
@@ -17,21 +19,22 @@ export async function GET(request: Request, { params }: { params: { id: string }
     });
 
     if (!team) {
-      return NextResponse.json({ error: 'Team not found' }, { status: 404 });
+      return NextResponse.json({ error: "Team not found" }, { status: 404 });
     }
 
     return NextResponse.json(team);
   } catch (error) {
-    console.error('Error fetching team:', error);
-    return NextResponse.json({ error: 'Error fetching team' }, { status: 500 });
+    console.error("Error fetching team:", error);
+    return NextResponse.json({ error: "Error fetching team" }, { status: 500 });
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+export async function PUT(request: Request, segmentData: { params: Params }) {
+  const params = await segmentData.params;
+  const id = params.id;
 
   if (isNaN(id)) {
-    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
   }
 
   try {
@@ -49,17 +52,21 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 
     return NextResponse.json(updatedTeam, { status: 200 });
   } catch (error) {
-    console.error('Error updating team:', error);
-    return NextResponse.json({ error: 'Error updating team' }, { status: 500 });
+    console.error("Error updating team:", error);
+    return NextResponse.json({ error: "Error updating team" }, { status: 500 });
   }
 }
 
 // DELETE handler for deleting a team
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const id = parseInt(params.id);
+export async function DELETE(
+  request: Request,
+  segmentData: { params: Params },
+) {
+  const params = await segmentData.params;
+  const id = params.id;
 
   if (isNaN(id)) {
-    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
+    return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
   }
 
   try {
@@ -69,7 +76,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 
     return NextResponse.json({}, { status: 204 });
   } catch (error) {
-    console.error('Error deleting team:', error);
-    return NextResponse.json({ error: 'Error deleting team' }, { status: 500 });
+    console.error("Error deleting team:", error);
+    return NextResponse.json({ error: "Error deleting team" }, { status: 500 });
   }
 }

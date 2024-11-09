@@ -16,38 +16,49 @@ export async function POST(request: Request) {
     }
 
 
-    const newMacrocycle = await prisma.macrocycle.create({
+    const newMesocycle = await prisma.mesocycle.create({
       data: {
         number: Number(data.number),
         name: data.name,
         startDate: new Date(data.startDate),
         endDate: new Date(data.endDate),
         notes: data.notes,
+        macrocycleId: data.macrocycleId
       },
     });
 
     // Return the created macrocycle in JSON format
-    return NextResponse.json(newMacrocycle, { status: 201 });
+    return NextResponse.json(newMesocycle, { status: 201 });
   } catch (error) {
-    console.error("Error creating macrocycle:", error);
+    console.error("Error creating mesocycle:", error);
 
     return NextResponse.json(
-      { error: "Error creating macrocycle" },
+      { error: "Error creating mesocycle" },
       { status: 500 }
     );
   }
 }
 
-// GET handler to fetch all teams
+// GET handler for fetching a team by ID
 export async function GET() {
+
   try {
-    const macrocycle = await prisma.macrocycle.findMany({
-      orderBy: { number: 'asc' }, // Order by 'number' in ascending order
+    const mesocycle = await prisma.mesocycle.findMany({
     });
 
-    return NextResponse.json(macrocycle);
+    if (!mesocycle) {
+      return NextResponse.json(
+        { error: "Mesocycles not found" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(mesocycle);
   } catch (error) {
-    console.error('Error fetching macrocycle data:', error);
-    return NextResponse.json({ error: 'Failed to fetch macrocycle data' }, { status: 500 });
+    console.error("Error fetching mesocycles:", error);
+    return NextResponse.json(
+      { error: "Error fetching mesocycle" },
+      { status: 500 },
+    );
   }
 }
