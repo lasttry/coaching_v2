@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -106,82 +106,7 @@ const MesoCyclesList = () => {
                     </TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
-                  {macroCycles.map((macroCycle) => (
-                    <React.Fragment key={macroCycle.id}>
-                      <TableRow>
-                        <TableCell colSpan={5}>
-                          <Typography variant="h6" fontWeight="bold">
-                            {`MacroCycle #${macroCycle.number}`}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                      {macroCycle.mesoCycles
-                        .sort((a, b) => a.number - b.number)
-                        .map((mesoCycle) => (
-                          <TableRow
-                            key={mesoCycle.id}
-                            hover
-                            onClick={() => router.push(`/utilities/cycles/mesocycles/manage/${mesoCycle.id}`)}
-                            sx={{ cursor: 'pointer' }}
-                          >
-                            <TableCell>
-                              <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
-                                {mesoCycle.number}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
-                                {dayjs(mesoCycle.startDate).format('YYYY-MM-DD')}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
-                                {dayjs(mesoCycle.endDate).format('YYYY-MM-DD')}
-                              </Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Typography
-                                sx={{
-                                  fontSize: '14px',
-                                  color: 'textSecondary',
-                                  whiteSpace: 'pre-line',
-                                }}
-                              >
-                                {mesoCycle.notes || 'N/A'}
-                              </Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                              <Stack direction="row" spacing={2}>
-                                {/* Edit MesoCycle Link */}
-                                <Link href={`/utilities/mesocycles/manage/${mesoCycle.id}`} passHref>
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    Edit
-                                  </Button>
-                                </Link>
 
-                                {/* Delete MesoCycle Button */}
-                                <Button
-                                  variant="contained"
-                                  color="secondary"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDelete(mesoCycle.id);
-                                  }}
-                                >
-                                  Delete
-                                </Button>
-                              </Stack>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </React.Fragment>
-                  ))}
-                </TableBody>
               </Table>
             </Box>
           </Box>

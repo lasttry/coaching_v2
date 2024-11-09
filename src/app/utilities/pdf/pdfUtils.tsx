@@ -54,7 +54,7 @@ const timedPeriod = () => {
 
 
 const athletesTableBody = (game: Game): ((string | number)[][] | undefined) => { 
-  return game.athletes?.sort((a, b) => {
+  return game.gameAthletes?.sort((a, b) => {
     // First, sort by number, with -1 always last
     const numberA = parseInt(a.number);
     const numberB = parseInt(b.number);
@@ -64,13 +64,13 @@ const athletesTableBody = (game: Game): ((string | number)[][] | undefined) => {
     if (numberA !== numberB) return numberA - numberB;
 
     // If numbers are the same, sort by name
-    return a.name.localeCompare(b.name);
+    return a.athletes.name.localeCompare(b.athletes.name);
   })
   .map((entry) => [
-    entry.fpbNumber === 0 ? '' : entry.fpbNumber,
-    entry.idNumber === 0 ? '' : entry.idNumber,
-    entry.name,
-    entry.number === "-1" ? '' : entry.number, 
+    entry.athletes.fpbNumber === 0 ? '' : entry.athletes.fpbNumber,
+    entry.athletes.idNumber === 0 ? '' : entry.athletes.idNumber,
+    entry.athletes.name,
+    entry.number === "-1" ? '' : entry.number,
     '', '', '', '', '', '', '', ''
   ]);
 }

@@ -13,7 +13,7 @@ export interface GameFormDataInterface{
 
 export interface GameFormAthletesInterface{
   number: string,
-  athlete: Athlete
+  athletes: Athlete
 }
 
 export interface Team {
@@ -31,7 +31,7 @@ export interface Athlete {
   birthdate: string; // Athlete's birthdate
   fpbNumber: number;
   idNumber: number;
-  gameNumber?: string; // Game-specific number, initially the same as `number`
+  gameNumber: string; // Game-specific number, initially the same as `number`
 }
 
 // Define the types for game and teams
@@ -44,7 +44,7 @@ export interface Game {
   subcomp?: string;
   notes?: string;
   teams?: Team;
-  athletes?: Athlete[];
+  gameAthletes?: GameFormAthletesInterface[];
 }
 
 export interface jsPDFWithAutoTable extends jsPDF {

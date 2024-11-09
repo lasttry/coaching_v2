@@ -62,7 +62,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
 
     // Update the game details with `gameNumber` for each athlete
     const updatedGame = await prisma.games.update({
-      where: { id: gameId },
+      where: { id: Number(gameId) },
       data: {
         number: data.number,
         date: new Date(data.date),
@@ -74,7 +74,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
         gameAthletes: {
           deleteMany: {}, // Clear existing athletes
           create: data.athletes.map((athlete) => ({
-            athleteId: athlete.athlete.id,
+            athleteId: athlete.athletes.id,
             number: athlete.number,
           })),
         },

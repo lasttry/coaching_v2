@@ -41,13 +41,13 @@ const GameFormPage = () => {
     // Sort athletes by number, year of birth, and name
     const sortAthletes = (athletes: GameFormAthletesInterface[]) => {
       return athletes.sort((a, b) => {
-        const numberCompare = parseInt(a.athlete.number) - parseInt(b.athlete.number);
+        const numberCompare = parseInt(a.athletes.number) - parseInt(b.athletes.number);
         if (numberCompare !== 0) return numberCompare;
 
-        const yearCompare = dayjs(a.athlete.birthdate).year() - dayjs(b.athlete.birthdate).year();
+        const yearCompare = dayjs(a.athletes.birthdate).year() - dayjs(b.athletes.birthdate).year();
         if (yearCompare !== 0) return yearCompare;
 
-        return a.athlete.name.localeCompare(b.athlete.name);
+        return a.athletes.name.localeCompare(b.athletes.name);
       });
     };
 
@@ -73,7 +73,7 @@ const GameFormPage = () => {
         const athletesData: Athlete[] = await athletesResponse.json();
         const athletes = athletesData.map((athlete) => ({
           number: String(athlete.number), // assuming `number` is a string and needs conversion to number
-          athlete, // embeds the entire athlete object
+          athletes: athlete, // embeds the entire athlete object
         }));
         setAvailableAthletes(sortAthletes(athletes));
         // New game so lets return
@@ -90,7 +90,7 @@ const GameFormPage = () => {
 
         const gameData = await gameResponse.json();
         const gameAthletes = gameData.game.gameAthletes.map((gameAthlete: any) => ({
-          athlete: gameAthlete.athletes,  // Access `name` or other properties of the nested `athletes` object
+          athletes: gameAthlete.athletes,  // Access `name` or other properties of the nested `athletes` object
           number: gameAthlete.number === "" ? gameAthlete.athletes.number : gameAthlete.number, // Access `number` directly from `athletes` if it’s stored there
         }));
 
@@ -106,7 +106,7 @@ const GameFormPage = () => {
         });
 
         const available = athletes.filter(
-          (athlete: GameFormAthletesInterface) => !gameAthletes.some((selectedAthlete: GameFormAthletesInterface) => selectedAthlete.athlete.id === athlete.athlete.id)
+          (athlete: GameFormAthletesInterface) => !gameAthletes.some((selectedAthlete: GameFormAthletesInterface) => selectedAthlete.athletes.id === athlete.athletes.id)
         );
 
         setAvailableAthletes(sortAthletes(available));
@@ -141,9 +141,9 @@ const GameFormPage = () => {
     const handleAddAthlete = (athlete: GameFormAthletesInterface) => {
       const updatedSelected = [
         ...selectedAthletes,
-        { ...athlete, number: athlete.athlete.number === '-1' ? '' : String(athlete.athlete.number) },
+        { ...athlete, number: athlete.athletes.number === '-1' ? '' : String(athlete.athletes.number) },
       ];
-      const updatedAvailable = availableAthletes.filter((a) => a.athlete.id !== athlete.athlete.id);
+      const updatedAvailable = availableAthletes.filter((a) => a.athletes.id !== athlete.athletes.id);
   
       setSelectedAthletes(sortAthletes(updatedSelected));
       setAvailableAthletes(sortAthletes(updatedAvailable));
@@ -160,13 +160,13 @@ const GameFormPage = () => {
     // Remove athlete from selected list
     const handleRemoveAthlete = (athlete: GameFormAthletesInterface) => {
       const updatedAvailable = [...availableAthletes, athlete];
-      const updatedSelected = selectedAthletes.filter((a) => a.athlete.id !== athlete.athlete.id);
+      const updatedSelected = selectedAthletes.filter((a) => a.athletes.id !== athlete.athletes.id);
   
       setAvailableAthletes(sortAthletes(updatedAvailable));
       setSelectedAthletes(sortAthletes(updatedSelected));
       setForm((prev) => ({
         ...prev,
-        athletes: prev.athletes.filter((ath) => ath.athlete.id !== athlete.athlete.id),
+        athletes: prev.athletes.filter((ath) => ath.athletes.id !== athlete.athletes.id),
       }));
     };
   
@@ -330,17 +330,17 @@ const GameFormPage = () => {
               <TableBody>
                 {/* Selected athletes */}
                 {selectedAthletes.map((athlete) => (
-                  <TableRow key={athlete.athlete.id}>
+                  <TableRow key={athlete.athletes.id}>
                     <TableCell>
                     <TextField
-                      value={ athlete.number === "" ? String(athlete.athlete.number) : athlete.number }
+                      value={ athlete.number === "" ? String(athlete.athletes.number) : athlete.number }
                       inputRef={inputRef}
                       onChange={(e) => {
                         const updatedGameNumber = e.target.value;
                         console.log(`changed: ${updatedGameNumber}`)
                         setSelectedAthletes((prev) =>
                           prev.map((a) =>
-                            a.athlete.id === athlete.athlete.id
+                            a.athletes.id === athlete.athletes.id
                               ? { ...a, number: updatedGameNumber }
                               : a
                           )
@@ -348,8 +348,8 @@ const GameFormPage = () => {
                       }}
                     />
                     </TableCell>
-                    <TableCell>{athlete.athlete.name}</TableCell>
-                    <TableCell>{dayjs(athlete.athlete.birthdate).year()}</TableCell>
+                    <TableCell>{athlete.athletes.name}</TableCell>
+                    <TableCell>{dayjs(athlete.athletes.birthdate).year()}</TableCell>
                     <TableCell>Selected</TableCell>
                     <TableCell align="right">
                       <Button
@@ -365,10 +365,10 @@ const GameFormPage = () => {
 
                 {/* Available athletes */}
                 {availableAthletes.map((athlete) => (
-                  <TableRow key={athlete.athlete.id}>
-                    <TableCell>{athlete.athlete.number}</TableCell>
-                    <TableCell>{athlete.athlete.name}</TableCell>
-                    <TableCell>{dayjs(athlete.athlete.birthdate).year()}</TableCell>
+                  <TableRow key={athlete.athletes.id}>
+                    <TableCell>{athlete.athletes.number}</TableCell>
+                    <TableCell>{athlete.athletes.name}</TableCell>
+                    <TableCell>{dayjs(athlete.athletes.birthdate).year()}</TableCell>
                     <TableCell>Available</TableCell>
                     <TableCell align="right">
                       <Button

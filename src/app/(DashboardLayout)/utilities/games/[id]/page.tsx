@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button, Typography, Box, Stack, CircularProgress } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
@@ -11,8 +11,11 @@ import { generateReportsPDF } from '@/app/utilities/pdf/reports'
 
 import { Settings } from '@/types/settings/types'
 
+type Params = Promise<{ id: string }>;
 
-const GameDetails = () => {
+const GameDetails = (props: { params: Params }) => {
+  const params = use(props.params);
+  const id = params?.id; // Get id unconditionally
 
   const [game, setGame] = useState<Game | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -21,50 +24,40 @@ const GameDetails = () => {
   const [playtime, setPlaytime] = useState<Record<number, { totalTimePlayed: number; periods: Record<number, number> }>>({});
 
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const id = params?.id; // Get id unconditionally
 
   useEffect(() => {
-
     async function fetchPlaytimeData() {
       try {
-        // Fetch total play time with period breakdown
         const playtimeResponse = await fetch(`/api/games/${id}/times/playtime`);
         if (playtimeResponse.ok) {
           const playtimeData = await playtimeResponse.json();
-  
-          // Create a map of playtime data by athleteId
-          const playtimeMap = playtimeData.reduce((acc: Record<number, { totalTimePlayed: number, periods: Record<number, number> }>, entry: { athleteId: number, totalTimePlayed: number, periods: Record<number, number> }) => {
+          const playtimeMap = playtimeData.reduce((acc: Record<number, { totalTimePlayed: number; periods: Record<number, number> }>, entry: { athleteId: number; totalTimePlayed: number; periods: Record<number, number> }) => {
             acc[entry.athleteId] = {
               totalTimePlayed: entry.totalTimePlayed,
-              periods: entry.periods
+              periods: entry.periods,
             };
             return acc;
           }, {});
-          setPlaytime(playtimeMap);  // Set playtime data for athletes
+          setPlaytime(playtimeMap);
         }
       } catch (error) {
         console.error('Failed to fetch playtime data:', error);
       }
     }
-  
-    fetchPlaytimeData();
 
-    async function fetchGameDetails() {
+    async function fetchGame() {
       try {
         const response = await fetch(`/api/games/${id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch game details');
         }
-  
+
         const gameData = await response.json();
         setGame({
           ...gameData.game,
-          athletes: gameData.game.athletes || [], // Ensure athletes is always an array
-          teams: gameData.game.teams || { name: 'Unknown Team' }, // Default team name
+          teams: gameData.game.teams || { name: 'Unknown Team' },
         });
         setSettings(gameData.settings);
-  
         setLoading(false);
       } catch (err) {
         console.error(err);
@@ -72,33 +65,8 @@ const GameDetails = () => {
         setLoading(false);
       }
     }
-  
-    fetchGameDetails();
-    
-    async function fetchGame() {
-      try {
-        const response = await fetch(`/api/games/${id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch game details');
-        }
-        
-        const gameData = await response.json();
 
-        console.log('Fetched Game Data:', gameData); // Log to ensure correct data
-        setGame({
-          ...gameData.game,
-          athletes: gameData.game.athletes || [],  // Ensure athletes is always an array
-          teams: gameData.game.teams || { name: 'Unknown Team' }, // Default team name
-        });
-        setSettings(gameData.settings);
-        setLoading(false);
-      } catch (err) {
-        console.error(err)
-        setError('Failed to load game details.');
-        setLoading(false);
-      }
-    }
-  
+    fetchPlaytimeData();
     fetchGame();
   }, [id]);
 
@@ -140,21 +108,21 @@ const GameDetails = () => {
   Athletes
 </Typography>
 <Box marginY={2}>
-  {game?.athletes?.length ? (
-    game.athletes.map((athlete) => (
-      <Box key={athlete.id} marginY={1}>
+  {game?.gameAthletes?.length ? (
+    game.gameAthletes.map((athlete) => (
+      <Box key={athlete.athletes.id} marginY={1}>
         {/* Display Athlete Info */}
         <Typography>
-          {athlete.number} - {athlete.name} ({dayjs(athlete.birthdate).format('YYYY')}) - Total Time Played: {playtime[athlete.id] ? `${Math.floor(playtime[athlete.id].totalTimePlayed / 60)}m ${playtime[athlete.id].totalTimePlayed % 60}s` : '0m 0s'}
+          {athlete.number} - {athlete.athletes.name} ({dayjs(athlete.athletes.birthdate).format('YYYY')})
         </Typography>
 
         {/* Display Time Played Per Period */}
         <Typography variant="body2" color="textSecondary">
-          {Object.keys(playtime[athlete.id]?.periods || {}).map((period) => {
+          {Object.keys(playtime[athlete.athletes.id]?.periods || {}).map((period) => {
             const periodIndex = Number(period); // Convert period to a number
             return (
-              <span key={`${athlete.id}-period-${period}`}>
-                Period {periodIndex}: {playtime[athlete.id].periods[periodIndex] ? `${Math.floor(playtime[athlete.id].periods[periodIndex] / 60)}m ${playtime[athlete.id].periods[periodIndex] % 60}s` : '0m 0s'}{' '}
+              <span key={`${athlete.athletes.id}-period-${period}`}>
+                Period {periodIndex}: {playtime[athlete.athletes.id].periods[periodIndex] ? `${Math.floor(playtime[athlete.athletes.id].periods[periodIndex] / 60)}m ${playtime[athlete.athletes.id].periods[periodIndex] % 60}s` : '0m 0s'}{' '}
               </span>
             );
           })}
@@ -185,6 +153,8 @@ const GameDetails = () => {
             Manage Reports
           </Button>
           <Button onClick={() => game && generateReportsPDF(game)}>Export Reports to PDF</Button>
+          <Button onClick={() => game && console.log(game)}>log</Button>
+
           <Button variant="outlined" color="secondary" onClick={() => window.history.back()}>
           Back
         </Button>

@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         // Update the athletes associated with the game
         gameAthletes: {
           create: data.athletes.map((athlete: GameFormAthletesInterface) => ({
-            athleteId: athlete.athlete.id,
+            athleteId: athlete.athletes.id,
             number: athlete.number,
           })),
         },

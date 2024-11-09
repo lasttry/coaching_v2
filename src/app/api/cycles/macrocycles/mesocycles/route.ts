@@ -18,7 +18,7 @@ export async function GET(request: Request, segmentData: { params: Params }) {
 
   try {
     const mesocycle = await prisma.mesocycle.findUnique({
-      where: { macrocycle: id },
+      where: { id },
     });
 
     if (!mesocycle) {
