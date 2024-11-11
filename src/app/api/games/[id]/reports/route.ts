@@ -6,6 +6,7 @@ type Params = Promise<{ id: number }>;
 
 // GET: Retrieve all reports for a specific game
 export async function GET(req: NextRequest, segmentData: { params: Params }) {
+  console.log("getting athleteReports - step1")
   const params = await segmentData.params;
   const gameId = params.id;
 
@@ -14,16 +15,17 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   }
 
   try {
-    const reports = await prisma.athleteReport.findMany({
+    console.log(`getting athleteReports ${gameId}`)
+    const payload = {
       where: {
-        gameId: gameId,
+        gameId: Number(gameId),
       },
       include: {
         athlete: true, // Includes the athlete related to the athleteId
         reviewdAthlete: true, // Includes the athlete who submitted the report (submittedById)
       },
-    });
-
+    }
+    const reports = await prisma.athleteReport.findMany(payload);
     return NextResponse.json(reports, { status: 200 });
   } catch (error) {
     console.error("Error fetching reports:", error);
@@ -53,23 +55,30 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
       individualObservation: string;
       timePlayedObservation: string;
     }>;
+    console.log(reports)
 
-    const updatePromises = reports.map((report) =>
-      prisma.athleteReport.upsert({
+    const updatePromises = reports.map((report) => {
+      const payload = {
         where: {
           gameId_athleteId: {
-            gameId: report.gameId,
-            athleteId: report.athleteId,
+            gameId: Number(report.gameId),
+            athleteId: Number(report.athleteId),
           },
         },
         update: {
+          reviewdAthleteId: report.reviewdAthleteId,
           teamObservation: report.teamObservation,
           individualObservation: report.individualObservation,
           timePlayedObservation: report.timePlayedObservation,
         },
         create: report,
-      }),
-    );
+      };
+
+      console.log(payload);
+
+      // Return each upsert promise to be collected in updatePromises
+      return prisma.athleteReport.upsert(payload);
+    });
 
     await Promise.all(updatePromises);
 

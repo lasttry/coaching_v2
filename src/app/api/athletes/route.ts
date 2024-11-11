@@ -7,9 +7,13 @@ const prisma = new PrismaClient();
 export async function GET() {
   try {
     const athletes = await prisma.athletes.findMany();
+    if (!athletes || athletes.length === 0) {
+      return NextResponse.json({ error: "No atheltes found." }, { status: 404 });
+    }
     return NextResponse.json(athletes);
   } catch (error) {
-    console.error('Error fetching athletes:', error);
+    console.log('Error fetching athletes:');
+    console.log(error)
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
