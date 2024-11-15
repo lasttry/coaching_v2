@@ -18,7 +18,7 @@ model athletes {
   idNumber        Int?
   idType          String?         @db.VarChar(50)
   active          Boolean?        @default(true)
-  reviewedAthlete athleteReport[] @relation("reviewdAthlete")
+  reviewedAthlete athleteReport[] @relation("reviewedAthlete")
   gameAthletes    gameAthletes[]
   statistics      statistic[]
   timeEntry       timeEntry[]
@@ -133,7 +133,7 @@ model athleteReport {
   id                    Int      @id @default(autoincrement())
   gameId                Int
   athleteId             Int
-  reviewdAthleteId      Int
+  reviewedAthleteId     Int?
   teamObservation       String?  @db.VarChar(2000)
   individualObservation String?  @db.VarChar(2000)
   timePlayedObservation String?  @db.VarChar(2000)
@@ -141,7 +141,7 @@ model athleteReport {
 
   athlete        athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
   game           games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  reviewdAthlete athletes @relation("reviewdAthlete", fields: [reviewdAthleteId], references: [id], onDelete: Cascade)
+  reviewedAthlete athletes? @relation("reviewedAthlete", fields: [reviewedAthleteId], references: [id], onDelete: Cascade)
 
   @@unique([gameId, athleteId])
   @@index([gameId, athleteId])

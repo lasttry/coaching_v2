@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { GameAthleteReport } from "@/types/games/types";
 
 const prisma = new PrismaClient();
 type Params = Promise<{ id: number }>;
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
       },
       include: {
         athlete: true, // Includes the athlete related to the athleteId
-        reviewdAthlete: true, // Includes the athlete who submitted the report (submittedById)
+        reviewedAthlete: true, // Includes the athlete who submitted the report (submittedById)
       },
     }
     const reports = await prisma.athleteReport.findMany(payload);
@@ -47,14 +48,8 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
 
   try {
     const reqBody = await req.json();
-    const reports = reqBody as Array<{
-      athleteId: number;
-      reviewdAthleteId: number;
-      gameId: number;
-      teamObservation: string;
-      individualObservation: string;
-      timePlayedObservation: string;
-    }>;
+    const reports = reqBody as Array<GameAthleteReport>;
+    console.log("received reports")
     console.log(reports)
 
     const updatePromises = reports.map((report) => {
@@ -66,14 +61,22 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
           },
         },
         update: {
-          reviewdAthleteId: report.reviewdAthleteId,
+          reviewedAthleteId: report.reviewedAthleteId,
           teamObservation: report.teamObservation,
           individualObservation: report.individualObservation,
           timePlayedObservation: report.timePlayedObservation,
         },
-        create: report,
+        create: {
+          gameId: report.gameId,
+          athleteId: report.athleteId,
+          reviewedAthleteId: report.reviewedAthleteId,
+          teamObservation: report.teamObservation,
+          individualObservation: report.individualObservation,
+          timePlayedObservation: report.timePlayedObservation,
+        },
       };
 
+      console.log("payload")
       console.log(payload);
 
       // Return each upsert promise to be collected in updatePromises
@@ -87,7 +90,7 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error updating or creating reports:", error);
+    console.log(error)
     return NextResponse.json(
       { error: "Failed to save reports" },
       { status: 500 },

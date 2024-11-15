@@ -107,7 +107,7 @@ const AthletesList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {athletes.map((athlete) => (
+            {Array.isArray(athletes) && athletes.map((athlete) => (
               <TableRow key={athlete.id}>
                 <TableCell>{athlete.number}</TableCell>
                 <TableCell>{athlete.name}</TableCell>

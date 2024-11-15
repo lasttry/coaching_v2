@@ -56,3 +56,15 @@ export interface jsPDFWithAutoTable extends jsPDF {
     finalY: number;
   };
 }
+
+export interface GameAthleteReport {
+  id: number;
+  gameId: number;
+  athleteId: number;
+  athlete?: Athlete;
+  reviewedAthleteId: number;
+  reviewedAthlete?: Athlete;
+  teamObservation: string;
+  individualObservation: string;
+  timePlayedObservation: string;
+}

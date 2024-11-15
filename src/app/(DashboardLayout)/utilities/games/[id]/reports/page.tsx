@@ -1,35 +1,46 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Box, Button, TextField, Stack, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
-import { useParams } from 'next/navigation';
-import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
+import React, { useState, useEffect, use } from 'react';
+import { Box, Typography, Tabs, Tab, Paper, Container, Stack, Select, MenuItem, TextField, Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { Athlete, GameAthleteReport } from '@/types/games/types';
 
-interface Athlete {
-  id: number;
-  name: string;
-  number: string;
-}
+const StyledTabs = styled(Tabs)({
+  borderBottom: '2px solid #e0e0e0',
+  '& .MuiTab-root': {
+    textTransform: 'none',
+    fontSize: '1.1rem',
+    fontWeight: 600,
+    padding: '12px 16px',
+  },
+  '& .Mui-selected': {
+    color: '#3f51b5',
+    fontWeight: 'bold',
+  },
+  '& .MuiTabs-indicator': {
+    backgroundColor: '#3f51b5',
+  },
+});
 
-interface AthleteReport {
-  id?: number;
-  gameId: number;
-  athleteId: number;
-  reviewdAthleteId: number;
-  teamObservation: string;
-  individualObservation: string;
-  timePlayedObservation: string;
-}
+const StyledTabPanel = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  marginTop: theme.spacing(2),
+  backgroundColor: '#f5f5f5',
+  borderRadius: '8px',
+}));
 
-const GameAthleteReportsPage = () => {
-  const params = useParams<{ id: string }>();
-  const gameId = Number(params?.id);
+type Params = Promise<{ id: string }>;
 
-  const [athletes, setAthletes] = useState<Athlete[]>([]);
-  const [reports, setReports] = useState<Record<number, AthleteReport>>({});
+const AthletesReportPage = (props: { params: Params }) => {
+  const params = use(props.params);
+  const gameId = params?.id;
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const [reports, setReports] = useState<GameAthleteReport[]>([]);
+  const [activeTab, setActiveTab] = useState(0);
 
   useEffect(() => {
     async function fetchAthletesAndReports() {
@@ -42,15 +53,10 @@ const GameAthleteReportsPage = () => {
         if (!athletesRes.ok || !reportsRes.ok) throw new Error('Failed to fetch data.');
 
         const athletesData: Athlete[] = await athletesRes.json();
-        const reportsData: AthleteReport[] = await reportsRes.json();
-
-        const reportsMap = reportsData.reduce((acc, report) => {
-          acc[report.athleteId] = report;
-          return acc;
-        }, {} as Record<number, AthleteReport>);
+        const reportsData: GameAthleteReport[] = await reportsRes.json();
 
         setAthletes(athletesData);
-        setReports(reportsMap);
+        setReports(reportsData);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -61,16 +67,35 @@ const GameAthleteReportsPage = () => {
     fetchAthletesAndReports();
   }, [gameId]);
 
-  const handleInputChange = (athleteId: number, field: keyof AthleteReport, value: string | number) => {
-    setReports((prevReports) => ({
-      ...prevReports,
-      [athleteId]: {
-        ...prevReports[athleteId],
-        [field]: value,
-        athleteId,
-        gameId,
-      },
-    }));
+  const handleInputChange = (athleteId: number, field: keyof GameAthleteReport, value: string | number) => {
+    setReports((prevReports) => {
+      const reportIndex = prevReports.findIndex((report) => report.athleteId === athleteId);
+
+      if (reportIndex >= 0) {
+        return prevReports.map((report, index) =>
+          index === reportIndex ? { ...report, [field]: value } : report
+        );
+      } else {
+        return [
+          ...prevReports,
+          {
+            id: Date.now(),
+            gameId: Number(gameId),
+            athleteId,
+            reviewedAthleteId: athleteId,
+            teamObservation: '',
+            individualObservation: '',
+            timePlayedObservation: '',
+            [field]: value,
+          } as GameAthleteReport,
+        ];
+      }
+    });
+    console.log(reports)
+  };
+
+  const handleChange = (_: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
   };
 
   const handleSaveReports = async () => {
@@ -78,6 +103,7 @@ const GameAthleteReportsPage = () => {
     setSuccess(null);
 
     const reportsArray = Object.values(reports);
+    console.log(JSON.stringify(reportsArray));
     try {
       const response = await fetch(`/api/games/${gameId}/reports`, {
         method: 'PUT',
@@ -99,71 +125,55 @@ const GameAthleteReportsPage = () => {
     }
   };
 
-  if (loading) return <CircularProgress />;
-  if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <PageContainer title="Athlete Reports" description="Manage reports for each athlete">
-      <Stack spacing={3}>
-        <Typography variant="h4" gutterBottom>
+    <Container maxWidth="md">
+      <Box my={4}>
+        <Typography variant="h4" fontWeight={700} textAlign="center" gutterBottom>
           Athlete Reports
         </Typography>
+        <Typography variant="body1" color="textSecondary" textAlign="center">
+          Easily navigate between athletes using the tabs below.
+        </Typography>
+      </Box>
 
-        {success && <Typography color="success">{success}</Typography>}
-        {error && <Typography color="error">{error}</Typography>}
+      {success && <Typography color="success">{success}</Typography>}
+      {error && <Typography color="error">{error}</Typography>}
 
+      <StyledTabs value={activeTab} onChange={handleChange} centered>
         {athletes.map((athlete) => (
-          <Box key={athlete.id} padding={2} border="1px solid gray" marginY={2}>
-            <Typography variant="h5">
-              {athlete.number} - {athlete.name}
-            </Typography>
+          <Tab key={athlete.id} label={athlete.name} />
+        ))}
+      </StyledTabs>
 
-            {/* Reviewd Athlete Dropdown */}
-            <Select
-              value={reports[athlete.id]?.reviewdAthleteId || athlete.id}
-              onChange={(e) => handleInputChange(athlete.id, 'reviewdAthleteId', Number(e.target.value))}
-              fullWidth
-            >
-              {athletes.map((otherAthlete) => (
-                <MenuItem key={otherAthlete.id} value={otherAthlete.id}>
-                  {otherAthlete.name}
-                </MenuItem>
-              ))}
-            </Select>
-
-            <TextField
+      {athletes[activeTab] && (
+        <StyledTabPanel>
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
+            {athletes[activeTab].name}
+          </Typography>
+          <Select
+            value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.reviewedAthleteId || athletes[activeTab].id}
+            onChange={(e) => handleInputChange(athletes[activeTab].id, 'reviewedAthleteId', Number(e.target.value))}
+            fullWidth
+          >
+            {athletes.map((otherAthlete) => (
+              <MenuItem key={otherAthlete.id} value={otherAthlete.id}>
+                {otherAthlete.name}
+              </MenuItem>
+            ))}
+          </Select>
+          <TextField
               label="Team Observation"
               name="teamObservation"
               multiline
               minRows={3}
               fullWidth
-              value={reports[athlete.id]?.teamObservation || ''}
-              onChange={(e) => handleInputChange(athlete.id, 'teamObservation', e.target.value)}
+              value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.teamObservation || ''}
+              onChange={(e) => handleInputChange(athletes[activeTab].id, 'teamObservation', e.target.value)}
               margin="normal"
             />
-            <TextField
-              label="Individual Observation"
-              name="individualObservation"
-              multiline
-              minRows={3}
-              fullWidth
-              value={reports[athlete.id]?.individualObservation || ''}
-              onChange={(e) => handleInputChange(athlete.id, 'individualObservation', e.target.value)}
-              margin="normal"
-            />
-            <TextField
-              label="Time Played Observation"
-              name="timePlayedObservation"
-              multiline
-              minRows={3}
-              fullWidth
-              value={reports[athlete.id]?.timePlayedObservation || ''}
-              onChange={(e) => handleInputChange(athlete.id, 'timePlayedObservation', e.target.value)}
-              margin="normal"
-            />
-          </Box>
-        ))}
-
+        </StyledTabPanel>
+      )}
         <Box display="flex" justifyContent="space-between" marginTop={4}>
           <Button variant="contained" color="primary" onClick={handleSaveReports}>
             Save Reports
@@ -172,9 +182,8 @@ const GameAthleteReportsPage = () => {
             Cancel
           </Button>
         </Box>
-      </Stack>
-    </PageContainer>
+    </Container>
   );
 };
 
-export default GameAthleteReportsPage;
+export default AthletesReportPage;

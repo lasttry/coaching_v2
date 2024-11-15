@@ -7,11 +7,12 @@ const prisma = new PrismaClient();
 // GET handler for fetching a team by ID
 export async function GET(request: Request, segmentData: { params: Params }) {
   const params = await segmentData.params;
-  const id = params.id;
+  const id = Number(params.id);
 
   if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
-  }
+  } else
+    console.log(`Getting information from team with id ${id}`)
 
   try {
     const team = await prisma.teams.findUnique({
@@ -24,14 +25,14 @@ export async function GET(request: Request, segmentData: { params: Params }) {
 
     return NextResponse.json(team);
   } catch (error) {
-    console.error("Error fetching team:", error);
+    console.error(error);
     return NextResponse.json({ error: "Error fetching team" }, { status: 500 });
   }
 }
 
 export async function PUT(request: Request, segmentData: { params: Params }) {
   const params = await segmentData.params;
-  const id = params.id;
+  const id = Number(params.id);
 
   if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
@@ -63,7 +64,7 @@ export async function DELETE(
   segmentData: { params: Params },
 ) {
   const params = await segmentData.params;
-  const id = params.id;
+  const id = Number(params.id);
 
   if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
