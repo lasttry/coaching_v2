@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, use } from 'react';
-import { Box, Typography, Tabs, Tab, Paper, Container, Stack, Select, MenuItem, TextField, Button } from '@mui/material';
+import { Box, Typography, Tabs, Tab, Paper, Container, Stack, Select, MenuItem, TextField, Button, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Athlete, GameAthleteReport } from '@/types/games/types';
 
@@ -140,11 +140,29 @@ const AthletesReportPage = (props: { params: Params }) => {
       {success && <Typography color="success">{success}</Typography>}
       {error && <Typography color="error">{error}</Typography>}
 
-      <StyledTabs value={activeTab} onChange={handleChange} centered>
-        {athletes.map((athlete) => (
-          <Tab key={athlete.id} label={athlete.name} />
-        ))}
-      </StyledTabs>
+      <StyledTabs
+  value={activeTab}
+  onChange={handleChange}
+  variant="scrollable"
+  scrollButtons="auto"
+  allowScrollButtonsMobile
+>
+  {athletes.map((athlete) => {
+    const hasReport = reports.some((report) => report.athleteId === athlete.id);
+    return (
+      <Tooltip key={athlete.id} title={hasReport ? '' : 'No report available'}>
+        <Tab
+          label={athlete.name}
+          style={{
+            backgroundColor: hasReport ? 'transparent' : '#f8d7da',
+            color: hasReport ? 'inherit' : '#721c24',
+            fontWeight: hasReport ? 'normal' : 'bold',
+          }}
+        />
+      </Tooltip>
+    );
+  })}
+</StyledTabs>
 
       {athletes[activeTab] && (
         <StyledTabPanel>
@@ -170,6 +188,26 @@ const AthletesReportPage = (props: { params: Params }) => {
               fullWidth
               value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.teamObservation || ''}
               onChange={(e) => handleInputChange(athletes[activeTab].id, 'teamObservation', e.target.value)}
+              margin="normal"
+            />
+          <TextField
+              label="Individual Observation"
+              name="individualObservation"
+              multiline
+              minRows={3}
+              fullWidth
+              value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.individualObservation || ''}
+              onChange={(e) => handleInputChange(athletes[activeTab].id, 'individualObservation', e.target.value)}
+              margin="normal"
+            />
+          <TextField
+              label="Time Played Observation"
+              name="timePlayedObservation"
+              multiline
+              minRows={3}
+              fullWidth
+              value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.timePlayedObservation || ''}
+              onChange={(e) => handleInputChange(athletes[activeTab].id, 'timePlayedObservation', e.target.value)}
               margin="normal"
             />
         </StyledTabPanel>
