@@ -3,7 +3,7 @@
 import React, { useState, useEffect, use } from 'react';
 import { Box, Typography, Tabs, Tab, Paper, Container, Stack, Select, MenuItem, TextField, Button, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Athlete, GameAthleteReport } from '@/types/games/types';
+import { AthleteInterface, GameAthleteReport } from '@/types/games/types';
 
 const StyledTabs = styled(Tabs)({
   borderBottom: '2px solid #e0e0e0',
@@ -38,7 +38,7 @@ const AthletesReportPage = (props: { params: Params }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [athletes, setAthletes] = useState<Athlete[]>([]);
+  const [athletes, setAthletes] = useState<AthleteInterface[]>([]);
   const [reports, setReports] = useState<GameAthleteReport[]>([]);
   const [activeTab, setActiveTab] = useState(0);
 
@@ -52,7 +52,7 @@ const AthletesReportPage = (props: { params: Params }) => {
 
         if (!athletesRes.ok || !reportsRes.ok) throw new Error('Failed to fetch data.');
 
-        const athletesData: Athlete[] = await athletesRes.json();
+        const athletesData: AthleteInterface[] = await athletesRes.json();
         const reportsData: GameAthleteReport[] = await reportsRes.json();
 
         setAthletes(athletesData);

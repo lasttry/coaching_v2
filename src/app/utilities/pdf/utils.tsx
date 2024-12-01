@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import dayjs from 'dayjs';
 import { Settings } from '@/types/settings/types'
-import { Game, jsPDFWithAutoTable } from '@/types/games/types'
+import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types'
 
 export const generateHeader = (doc: jsPDF, settings: Settings | null, top: number = 25): number => {
   // Set font size for H1 equivalent
@@ -30,7 +30,7 @@ export const generateHeader = (doc: jsPDF, settings: Settings | null, top: numbe
   return lineY + 5;
 };
 
-export const generateGameDetailsHeader = (doc: jsPDFWithAutoTable, top: number, game: Game, settings: Settings | null): number => {
+export const generateGameDetailsHeader = (doc: jsPDFWithAutoTable, top: number, game: GameInterface, settings: Settings | null): number => {
 
   autoTable(doc, {
     startY: top,  // Start the table below the HR line

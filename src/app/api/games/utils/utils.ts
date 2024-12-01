@@ -1,7 +1,7 @@
-import { GameFormDataInterface } from '@/types/games/types';
+import { GameInterface } from '@/types/games/types';
 
 // Utility function to validate the request payload
-export const validateGameData = (data: GameFormDataInterface): string[] => {
+export const validateGameData = (data: GameInterface): string[] => {
   const errors: string[] = [];
 
   if (!data.number)

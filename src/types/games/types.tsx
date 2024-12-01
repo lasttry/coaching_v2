@@ -1,54 +1,48 @@
 import { jsPDF } from 'jspdf'; // Import jsPDF for PDF generation
 
-export interface GameFormDataInterface{
-  number?: number,
-  date: string,
-  away: boolean,
-  oponentId: number,
-  competition?: string,
-  subcomp?: string,
-  notes?: string,
-  athletes: GameFormAthletesInterface[]
-}
-
-export interface GameFormAthletesInterface{
-  number: string,
-  period1: boolean,
-  period2: boolean,
-  period3: boolean,
-  period4: boolean,
-  athletes: Athlete
-}
-
-export interface Team {
-  id: number;
-  name: string;
-  shortName: string;
-  image: string;
-  location: string;
-}
-
-export interface Athlete {
-  id: number;
-  name: string;
-  number: string;
-  birthdate: string; // Athlete's birthdate
-  fpbNumber: number;
-  idNumber: number;
-  gameNumber: string; // Game-specific number, initially the same as `number`
-}
-
-// Define the types for game and teams
-export interface Game {
-  id: number;
+export interface GameInterface {
+  id?: number;
   number: number;
   date: string;
   away: boolean;
   competition?: string;
   subcomp?: string;
+  oponentId?: number;
+  oponent?: TeamInterface;
   notes?: string;
-  teams?: Team;
-  gameAthletes?: GameFormAthletesInterface[];
+  teams?: TeamInterface;
+  gameAthletes: GameAthleteInterface[];
+}
+
+export interface TeamInterface {
+  id: number;
+  name: number;
+  shortName: string;
+  location: string;
+  image: string;
+  games: GameInterface[];
+}
+
+export interface GameAthleteInterface {
+  gameId?: number;
+  game?: GameInterface;
+  athlete: AthleteInterface;
+  number: string;
+  period1: boolean;
+  period2: boolean;
+  period3 : boolean;
+  period4: boolean
+}
+
+export interface AthleteInterface {
+  id: number;
+  number: string;
+  name: string;
+  birthdate: string;
+  fpbNumber: number;
+  idNumber: number;
+  idType: string;
+  active: boolean
 }
 
 export interface jsPDFWithAutoTable extends jsPDF {
@@ -61,9 +55,9 @@ export interface GameAthleteReport {
   id: number;
   gameId: number;
   athleteId: number;
-  athlete?: Athlete;
+  athlete?: AthleteInterface;
   reviewedAthleteId: number;
-  reviewedAthlete?: Athlete;
+  reviewedAthlete?: AthleteInterface;
   teamObservation: string;
   individualObservation: string;
   timePlayedObservation: string;

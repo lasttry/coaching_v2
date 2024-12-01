@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { Button, Typography, Box, Stack, CircularProgress } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
-import { Game } from '@/types/games/types'
+import { GameInterface } from '@/types/games/types'
 import { generatePDF, generateStatisticsPDF } from '@/app/utilities/pdf/pdfUtils'; // Import PDF utility
 import { generateReportsPDF } from '@/app/utilities/pdf/reports'
 
@@ -17,7 +17,7 @@ const GameDetails = (props: { params: Params }) => {
   const params = use(props.params);
   const id = params?.id; // Get id unconditionally
 
-  const [game, setGame] = useState<Game | null>(null);
+  const [game, setGame] = useState<GameInterface | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +96,7 @@ const GameDetails = (props: { params: Params }) => {
       <Box marginY={2}>
         <Typography variant="body1"><strong>Number:</strong> {game?.number || 'N/A'}</Typography>
         <Typography variant="body1"><strong>Date:</strong> {dayjs(game?.date).format('YYYY-MM-DD HH:mm')}</Typography>
-        <Typography variant="body1"><strong>Opponent:</strong> {game?.teams?.name || 'N/A'}</Typography>
+        <Typography variant="body1"><strong>Opponent:</strong> {game?.oponent?.name || 'N/A'}</Typography>
         <Typography variant="body1"><strong>Competition:</strong> {game?.competition || 'N/A'}</Typography>
         <Typography variant="body1"><strong>Subcompetition:</strong> {game?.subcomp || 'N/A'}</Typography>
         <Typography variant="body1"><strong>Notes:</strong> {game?.notes || 'No notes'}</Typography>
@@ -109,20 +109,20 @@ const GameDetails = (props: { params: Params }) => {
 </Typography>
 <Box marginY={2}>
   {game?.gameAthletes?.length ? (
-    game.gameAthletes.map((athlete) => (
-      <Box key={athlete.athletes.id} marginY={1}>
+    game.gameAthletes.map((athletes) => (
+      <Box key={athletes.athlete.id} marginY={1}>
         {/* Display Athlete Info */}
         <Typography>
-          {athlete.number} - {athlete.athletes.name} ({dayjs(athlete.athletes.birthdate).format('YYYY')})
+          {athletes.number} - {athletes.athlete.name} ({dayjs(athletes.athlete.birthdate).format('YYYY')})
         </Typography>
 
         {/* Display Time Played Per Period */}
         <Typography variant="body2" color="textSecondary">
-          {Object.keys(playtime[athlete.athletes.id]?.periods || {}).map((period) => {
+          {Object.keys(playtime[athletes.athlete.id]?.periods || {}).map((period) => {
             const periodIndex = Number(period); // Convert period to a number
             return (
-              <span key={`${athlete.athletes.id}-period-${period}`}>
-                Period {periodIndex}: {playtime[athlete.athletes.id].periods[periodIndex] ? `${Math.floor(playtime[athlete.athletes.id].periods[periodIndex] / 60)}m ${playtime[athlete.athletes.id].periods[periodIndex] % 60}s` : '0m 0s'}{' '}
+              <span key={`${athletes.athlete.id}-period-${period}`}>
+                Period {periodIndex}: {playtime[athletes.athlete.id].periods[periodIndex] ? `${Math.floor(playtime[athletes.athlete.id].periods[periodIndex] / 60)}m ${playtime[athletes.athlete.id].periods[periodIndex] % 60}s` : '0m 0s'}{' '}
               </span>
             );
           })}

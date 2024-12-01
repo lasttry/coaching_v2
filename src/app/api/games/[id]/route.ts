@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { GameFormDataInterface } from "@/types/games/types";
+import { GameAthleteInterface, GameInterface } from "@/types/games/types";
 import { validateGameData } from "../utils/utils";
 
 type Params = Promise<{ id: number }>;
@@ -27,10 +27,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
           period2: true,
           period3: true,
           period4: true,
-          athletes: true,
+          athlete: true,
         },
       },
-      teams: true,
+      oponent: true,
     },
   });
   console.log(game);
@@ -39,7 +39,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   }
 
   // Include athletes in the response
-  const athletes = game.gameAthletes.map((ga) => ga.athletes);
+  const athletes = game.gameAthletes.map((ga) => ga.athlete);
 
   return NextResponse.json({ settings, game: { ...game, athletes } });
 }
@@ -47,13 +47,13 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 // PUT method to update an existing game by ID
 export async function PUT(request: Request, segmentData: { params: Params }) {
   const params = await segmentData.params;
-  const gameId = params.id;
+  const gameId = Number(params.id);
   if (isNaN(gameId)) {
     return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
   }
 
   try {
-    const data: GameFormDataInterface = await request.json();
+    const data: GameInterface = await request.json();
 
     // Validate the data
     const validationErrors = validateGameData(data);
@@ -66,7 +66,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
 
     // Update the game details with `gameNumber` for each athlete
     const updatedGame = await prisma.games.update({
-      where: { id: Number(gameId) },
+      where: { id: gameId },
       data: {
         number: data.number,
         date: new Date(data.date),
@@ -76,15 +76,17 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
         oponentId: data.oponentId,
         notes: data.notes || null,
         gameAthletes: {
-          deleteMany: {}, // Clear existing athletes
-          create: data.athletes.map((athlete) => ({
-            athleteId: athlete.athletes.id,
-            number: athlete.number,
-            period1: athlete.period1,
-            period2: athlete.period2,
-            period3: athlete.period3,
-            period4: athlete.period4
-          })),
+          deleteMany: {
+            gameId: gameId,
+          },
+          create: data.gameAthletes?.map((athlete: GameAthleteInterface) => ({
+            athleteId: athlete.athlete?.id, // Ensure athleteId exists
+            number: athlete.number || '', // Provide a fallback for number
+            period1: athlete.period1 || false, // Provide fallback for periods
+            period2: athlete.period2 || false,
+            period3: athlete.period3 || false,
+            period4: athlete.period4 || false,
+          })) || [], // Fallback to an empty array if data.gameAthletes is undefined or null
         },
       },
     });

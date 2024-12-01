@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { validateGameData } from './utils/utils';
-import { GameFormAthletesInterface } from '@/types/games/types';
+import { GameAthleteInterface } from '@/types/games/types';
 
 const prisma = new PrismaClient();
 
@@ -27,8 +27,8 @@ export async function POST(request: Request) {
         updatedAt: new Date(), // Set updatedAt manually
         // Update the athletes associated with the game
         gameAthletes: {
-          create: data.athletes.map((athlete: GameFormAthletesInterface) => ({
-            athleteId: athlete.athletes.id,
+          create: data.athletes.map((athlete: GameAthleteInterface) => ({
+            athleteId: athlete.athlete.id,
             number: athlete.number,
           })),
         },
@@ -45,11 +45,12 @@ export async function POST(request: Request) {
 // GET handler for fetching all games
 export async function GET() {
   try {
-    const games = await prisma.games.findMany({
+    const payload = {
       include: {
-        teams: true, // Include team details in the response
+        oponent: true, // Include team details in the response
       },
-    });
+    };
+    const games = await prisma.games.findMany(payload);
     return NextResponse.json(games);
   } catch (error) {
     console.error('Error fetching games:', error);

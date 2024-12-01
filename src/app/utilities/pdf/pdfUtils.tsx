@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import dayjs from 'dayjs';
 
-import { Game, jsPDFWithAutoTable } from '@/types/games/types'
+import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types'
 import { Settings } from '@/types/settings/types'
 import { generateHeader, generateGameDetailsHeader } from './utils'
 
@@ -53,7 +53,7 @@ const timedPeriod = () => {
 };
 
 
-const athletesTableBody = (game: Game): ((string | number)[][] | undefined) => { 
+const athletesTableBody = (game: GameInterface): ((string | number)[][] | undefined) => {
   return game.gameAthletes?.sort((a, b) => {
     // First, sort by number, with -1 always last
     const numberA = parseInt(a.number);
@@ -64,12 +64,12 @@ const athletesTableBody = (game: Game): ((string | number)[][] | undefined) => {
     if (numberA !== numberB) return numberA - numberB;
 
     // If numbers are the same, sort by name
-    return a.athletes.name.localeCompare(b.athletes.name);
+    return a.athlete.name.localeCompare(b.athlete.name);
   })
   .map((entry) => [
-    entry.athletes.fpbNumber === 0 ? '' : entry.athletes.fpbNumber,
-    entry.athletes.idNumber === 0 ? '' : entry.athletes.idNumber,
-    entry.athletes.name,
+    entry.athlete.fpbNumber === 0 ? '' : entry.athlete.fpbNumber,
+    entry.athlete.idNumber === 0 ? '' : entry.athlete.idNumber,
+    entry.athlete.name,
     entry.number === "-1" ? '' : entry.number,
     '', entry.period1 ? 'X' : '',
     '', entry.period2 ? 'X' : '',
@@ -78,7 +78,7 @@ const athletesTableBody = (game: Game): ((string | number)[][] | undefined) => {
   ]);
 }
 
-const timedAthletesTableBody = (game: Game) => {
+const timedAthletesTableBody = (game: GameInterface) => {
   return athletesTableBody(game)?.flatMap((entry) => {
     return [
       [
@@ -95,7 +95,7 @@ const timedAthletesTableBody = (game: Game) => {
   });
 };
 
-const statisticsAthletesTableBody = (game: Game) => {
+const statisticsAthletesTableBody = (game: GameInterface) => {
   return athletesTableBody(game)?.flatMap((entry) => {
     return [
       [
@@ -131,7 +131,7 @@ const statisticsAthletesTableBody = (game: Game) => {
 
 
 // Helper function to create game details PDF
-export const generatePDF = (game: Game, settings: Settings | null) => {
+export const generatePDF = (game: GameInterface, settings: Settings | null) => {
   const doc = new jsPDF() as jsPDFWithAutoTable;
   const pageWidth = doc.internal.pageSize.getWidth(); // Get the page width
 
@@ -249,7 +249,7 @@ export const generatePDF = (game: Game, settings: Settings | null) => {
 };
 
 // Helper function for statistics PDF
-export const generateStatisticsPDF = (game: Game, settings: Settings) => {
+export const generateStatisticsPDF = (game: GameInterface, settings: Settings) => {
   const doc = new jsPDF({
     orientation: "landscape",
   }) as jsPDFWithAutoTable;

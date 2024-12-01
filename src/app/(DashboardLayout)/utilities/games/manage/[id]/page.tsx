@@ -1,67 +1,66 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import { Button, Box, Stack, Typography, TextField, Select, MenuItem, CircularProgress } from '@mui/material';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import dayjs from 'dayjs';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import { GameFormDataInterface, Team, Athlete, GameFormAthletesInterface } from '@/types/games/types';
+import { GameInterface, TeamInterface, AthleteInterface, GameAthleteInterface } from '@/types/games/types';
 import { useRef } from 'react';
 
+type Params = Promise<{ id: string }>;
 
-
-const GameFormPage = () => {
-
+const GameFormPage = (props: { params: Params }) => {
   const router = useRouter();
-  const params = useParams<{ id: string }>();
-  const id = params?.id === 'new' ? null : params?.id; // Get id unconditionally
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState<GameFormDataInterface>({
+  const [form, setForm] = useState<GameInterface>({
     number: 0,
-    date: dayjs().format('YYYY-MM-DDTHH:mm'),
+    date: dayjs(new Date()).format('YYYY-MM-DDTHH:mm') ?? "",
     away: false,
-    oponentId: 1, // Set default to empty string
-    athletes: [], // Initialize as empty array
     competition: "",
     subcomp: "",
-    notes: ""
+    notes: "",
+    gameAthletes: [],
+    oponentId: undefined,
   });
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [availableAthletes, setAvailableAthletes] = useState<GameFormAthletesInterface[]>([]);
-  const [selectedAthletes, setSelectedAthletes] = useState<GameFormAthletesInterface[]>([]);
+  const [teams, setTeams] = useState<TeamInterface[]>([]);
+  const [availableAthletes, setAvailableAthletes] = useState<GameAthleteInterface[]>([]);
+  const [selectedAthletes, setSelectedAthletes] = useState<GameAthleteInterface[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
   const [detailedError, setDetailedError] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-    // Sort athletes by number, year of birth, and name
-    const sortAthletes = (athletes: GameFormAthletesInterface[]) => {
-      return athletes.sort((a, b) => {
-        const numberCompare = parseInt(a.athletes.number) - parseInt(b.athletes.number);
-        if (numberCompare !== 0) return numberCompare;
+  const params = use(props.params);
+  const gameId = params?.id;
+  // Sort athletes by number, year of birth, and name
+  const sortAthletes = (athletes: GameAthleteInterface[]) => {
+    return athletes.sort((a, b) => {
+      const numberCompare = parseInt(a.athlete.number) - parseInt(b.athlete.number);
+      if (numberCompare !== 0) return numberCompare;
 
-        const yearCompare = dayjs(a.athletes.birthdate).year() - dayjs(b.athletes.birthdate).year();
-        if (yearCompare !== 0) return yearCompare;
+      const yearCompare = dayjs(a.athlete.birthdate).year() - dayjs(b.athlete.birthdate).year();
+      if (yearCompare !== 0) return yearCompare;
 
-        return a.athletes.name.localeCompare(b.athletes.name);
-      });
-    };
+      return a.athlete.name.localeCompare(b.athlete.name);
+    });
+  };
 
       // Fetch data if editing (i.e., if id exists)
   useEffect(() => {
     async function fetchData() {
-      console.log(id)
       try {
         // Fetch available teams
         const teamsResponse = await fetch('/api/teams');
         if (!teamsResponse.ok) {
           throw new Error(`Failed to fetch teams. Status: ${teamsResponse.status}`);
         }
-        const teamsData: Team[] = await teamsResponse.json();
+        const teamsData: TeamInterface[] = await teamsResponse.json();
         setTeams(teamsData);
         console.log(`teams set ${teamsData}`)
   
@@ -70,31 +69,32 @@ const GameFormPage = () => {
         if (!athletesResponse.ok) {
           throw new Error(`Failed to fetch athletes. Status: ${athletesResponse.status}`);
         }
-        const athletesData: Athlete[] = await athletesResponse.json();
+        const athletesData: AthleteInterface[] = await athletesResponse.json();
         const athletes = athletesData.map((athlete) => ({
-          number: String(athlete.number), // assuming `number` is a string and needs conversion to number
-          athletes: athlete, // embeds the entire athlete object
+          athlete: athlete,
+          number: athlete.number,
           period1: false,
           period2: false,
           period3: false,
           period4: false
         }));
         setAvailableAthletes(sortAthletes(athletes));
+        console.log("athletes sorted")
         // New game so lets return
-        if (!id) {
-          // only set all athletes as available if it's a new game
-          return;
+        if (gameId === 'new') {
+            return;
         }
 
         // Fetch game details
-        const gameResponse = await fetch(`/api/games/${id}`);
+        const gameResponse = await fetch(`/api/games/${gameId}`);
         if (!gameResponse.ok) {
           throw new Error(`Failed to fetch game details. Status: ${gameResponse.status}`);
         }
 
         const gameData = await gameResponse.json();
+        console.log(gameData)
         const gameAthletes = gameData.game.gameAthletes.map((gameAthlete: any) => ({
-          athletes: gameAthlete.athletes,  // Access `name` or other properties of the nested `athletes` object
+          athlete: gameAthlete.athlete,  // Access `name` or other properties of the nested `athletes` object
           number: gameAthlete.number === "" ? gameAthlete.athletes.number : gameAthlete.number, // Access `number` directly from `athletes` if it’s stored there
           period1: gameAthlete.period1,
           period2: gameAthlete.period2,
@@ -110,13 +110,20 @@ const GameFormPage = () => {
           subcomp: gameData.game.subcomp ?? "",
           oponentId: gameData.game.oponentId || '',
           notes: gameData.game.notes ?? "",
-          athletes: gameAthletes,
+          gameAthletes: gameAthletes,
         });
+        console.log("set game data ok")
 
+        console.log(gameAthletes)
+        console.log(athletes)
         const available = athletes.filter(
-          (athlete: GameFormAthletesInterface) => !gameAthletes.some((selectedAthlete: GameFormAthletesInterface) => selectedAthlete.athletes.id === athlete.athletes.id)
+          (athlete: GameAthleteInterface) =>
+            !gameAthletes.some(
+              (gameAthlete: GameAthleteInterface) =>
+                gameAthlete.athlete.id === athlete.athlete.id
+            )
         );
-
+        console.log(available)
         setAvailableAthletes(sortAthletes(available));
         setSelectedAthletes(sortAthletes(gameAthletes));
       } catch (err) {
@@ -127,7 +134,7 @@ const GameFormPage = () => {
     }
 
     fetchData();
-  }, [id]);
+  }, [gameId]);
 
     // Handle input change for form fields
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,16 +153,16 @@ const GameFormPage = () => {
     };
   
     // Add athlete to selected list
-    const handleAddAthlete = (athlete: GameFormAthletesInterface) => {
+    const handleAddAthlete = (athlete: GameAthleteInterface) => {
       const updatedSelected = [
         ...selectedAthletes,
-        { ...athlete, number: athlete.athletes.number === '-1' ? '' : String(athlete.athletes.number) },
+        { ...athlete, number: athlete.athlete.number === '-1' ? '' : String(athlete.athlete.number) },
       ];
-      const updatedAvailable = availableAthletes.filter((a) => a.athletes.id !== athlete.athletes.id);
+      const updatedAvailable = availableAthletes.filter((a) => a.athlete.id !== athlete.athlete.id);
   
       setSelectedAthletes(sortAthletes(updatedSelected));
       setAvailableAthletes(sortAthletes(updatedAvailable));
-      setForm((prev) => ({ ...prev, athletes: [...prev.athletes, athlete] }));
+      setForm((prev) => ({ ...prev, gameAthletes: [...prev.gameAthletes, athlete] }));
 
       setTimeout(() => {
         if (inputRef.current) {
@@ -166,15 +173,15 @@ const GameFormPage = () => {
     };
   
     // Remove athlete from selected list
-    const handleRemoveAthlete = (athlete: GameFormAthletesInterface) => {
+    const handleRemoveAthlete = (athlete: GameAthleteInterface) => {
       const updatedAvailable = [...availableAthletes, athlete];
-      const updatedSelected = selectedAthletes.filter((a) => a.athletes.id !== athlete.athletes.id);
+      const updatedSelected = selectedAthletes.filter((a) => a.athlete.id !== athlete.athlete.id);
   
       setAvailableAthletes(sortAthletes(updatedAvailable));
       setSelectedAthletes(sortAthletes(updatedSelected));
       setForm((prev) => ({
         ...prev,
-        athletes: prev.athletes.filter((ath) => ath.athletes.id !== athlete.athletes.id),
+        athletes: prev.gameAthletes.filter((ath) => ath.athlete.id !== athlete.athlete.id),
       }));
     };
   
@@ -184,8 +191,8 @@ const GameFormPage = () => {
       setLoading(true);
 
       try {
-        const method = id ? 'PUT' : 'POST';
-        const url = id ? `/api/games/${id}` : `/api/games`;
+        const method = gameId !== "new" ? 'PUT' : 'POST';
+        const url = gameId !== "new" ? `/api/games/${gameId}` : `/api/games`;
 
         const updateForm = {
           ...form,
@@ -223,8 +230,8 @@ const GameFormPage = () => {
   if (loading) return <CircularProgress />;
 
   return (
-    <PageContainer title={id ? 'Edit Game' : 'Create Game'} description={id ? 'Edit Game' : 'Create Game'}>
-      <h1>{id ? 'Edit Game' : 'Create Game'}</h1>
+    <PageContainer title={gameId ? 'Edit Game' : 'Create Game'} description={gameId ? 'Edit Game' : 'Create Game'}>
+      <h1>{gameId ? 'Edit Game' : 'Create Game'}</h1>
 
       {error ? (
         <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
@@ -251,7 +258,7 @@ const GameFormPage = () => {
             label="Game Number"
             type="number"
             name="number"
-            value={form.number || ''}
+            value={form?.number || ''}
             onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} 
             required
           />
@@ -260,7 +267,7 @@ const GameFormPage = () => {
             label="Game Date"
             type="datetime-local"
             name="date"
-            value={form.date}
+            value={form?.date}
             onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} 
             required
           />
@@ -269,7 +276,7 @@ const GameFormPage = () => {
           <Box>
             <Select
               name="away"
-              value={form.away ? "true" : "false"}
+              value={form?.away ? "true" : "false"}
               onChange={(e) => handleSelectChange(e as React.ChangeEvent<HTMLInputElement>)}
             >
               <MenuItem value="false">Home</MenuItem>
@@ -280,7 +287,7 @@ const GameFormPage = () => {
           {/* Opponent Select */}
           <Select
             name="oponentId"
-            value={teams.length > 0 ? form.oponentId : ''}
+            value={teams.length > 0 ? form?.oponentId || '' : ''}
             onChange={handleSelectChange}
             displayEmpty
           >
@@ -298,7 +305,7 @@ const GameFormPage = () => {
           <TextField
             label="Competition"
             name="competition"
-            value={form.competition || ''}
+            value={form?.competition}
             onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
           />
 
@@ -306,7 +313,7 @@ const GameFormPage = () => {
           <TextField
             label="Subcompetition"
             name="subcomp"
-            value={form.subcomp || ''}
+            value={form?.subcomp || ''}
             onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
           />
 
@@ -314,7 +321,7 @@ const GameFormPage = () => {
           <TextField
             label="Notes"
             name="notes"
-            value={form.notes || ''}
+            value={form?.notes || ''}
             multiline
             rows={4}
             onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
@@ -338,17 +345,17 @@ const GameFormPage = () => {
               <TableBody>
                 {/* Selected athletes */}
                 {selectedAthletes.map((athlete) => (
-                  <TableRow key={athlete.athletes.id}>
+                  <TableRow key={athlete.athlete.id}>
                     <TableCell>
                       <TextField
-                        value={athlete.number === "" ? String(athlete.athletes.number) : athlete.number}
+                        value={athlete.number === "" ? String(athlete.athlete.number) : athlete.number}
                         inputRef={inputRef}
                         onChange={(e) => {
                           const updatedGameNumber = e.target.value;
                           console.log(`changed: ${updatedGameNumber}`);
                           setSelectedAthletes((prev) =>
                             prev.map((a) =>
-                              a.athletes.id === athlete.athletes.id
+                              a.athlete.id === athlete.athlete.id
                                 ? { ...a, number: updatedGameNumber }
                                 : a
                             )
@@ -362,12 +369,12 @@ const GameFormPage = () => {
                           <label key={`period-${period}`}>
                             <input
                               type="checkbox"
-                              checked={Boolean(athlete[`period${period}` as keyof GameFormAthletesInterface])} // Cast to key of GameFormAthletesInterface
+                              checked={Boolean(athlete[`period${period}` as keyof GameAthleteInterface])} // Cast to key of GameFormAthletesInterface
                               onChange={(e) => {
                                 const isChecked = e.target.checked;
                                 setSelectedAthletes((prev) =>
                                   prev.map((a) =>
-                                    a.athletes.id === athlete.athletes.id
+                                    a.athlete.id === athlete.athlete.id
                                       ? { ...a, [`period${period}`]: isChecked }
                                       : a
                                   )
@@ -379,8 +386,8 @@ const GameFormPage = () => {
                         ))}
                       </Stack>
                     </TableCell>
-                    <TableCell>{athlete.athletes.name}</TableCell>
-                    <TableCell>{dayjs(athlete.athletes.birthdate).year()}</TableCell>
+                    <TableCell>{athlete.athlete.name}</TableCell>
+                    <TableCell>{dayjs(athlete.athlete.birthdate).year()}</TableCell>
                     <TableCell>Selected</TableCell>
                     <TableCell align="right">
                       <Button
@@ -396,10 +403,10 @@ const GameFormPage = () => {
 
                 {/* Available athletes */}
                 {availableAthletes.map((athlete) => (
-                  <TableRow key={athlete.athletes.id}>
-                    <TableCell>{athlete.athletes.number}</TableCell>
-                    <TableCell>{athlete.athletes.name}</TableCell>
-                    <TableCell>{dayjs(athlete.athletes.birthdate).year()}</TableCell>
+                  <TableRow key={athlete.athlete.id}>
+                    <TableCell>{athlete.athlete.number}</TableCell>
+                    <TableCell>{athlete.athlete.name}</TableCell>
+                    <TableCell>{dayjs(athlete.athlete.birthdate).year()}</TableCell>
                     <TableCell>Available</TableCell>
                     <TableCell align="right">
                       <Button

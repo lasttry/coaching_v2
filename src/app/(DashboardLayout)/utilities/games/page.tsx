@@ -18,22 +18,10 @@ import {
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import dayjs from 'dayjs';
-
-// Define the types for games and teams
-interface Game {
-  id: number;
-  date: string;
-  away: boolean;
-  competition?: string;
-  subcomp?: string;
-  notes?: string;
-  teams: {
-    name: string;
-  };
-}
+import { GameInterface } from '@/types/games/types';
 
 const GamesList = () => {
-  const [games, setGames] = useState<Game[]>([]);
+  const [games, setGames] = useState<GameInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
@@ -43,7 +31,7 @@ const GamesList = () => {
     async function fetchGames() {
       try {
         const response = await fetch('/api/games'); // Fetching games from the API
-        const data: Game[] = await response.json();
+        const data: GameInterface[] = await response.json();
         setGames(data);
       } catch (err) {
         console.error(err)
@@ -168,7 +156,7 @@ const GamesList = () => {
                           fontWeight: '500',
                         }}
                       >
-                        {game.teams.name}
+                        { game.oponent?.name }
                       </Typography>
                     </TableCell>
                     <TableCell>
@@ -206,7 +194,7 @@ const GamesList = () => {
                           color="secondary"
                           onClick={(e) => {
                             e.stopPropagation(); // Prevent the row click event
-                            handleDelete(game.id);
+                            handleDelete(game.id ? game.id : -1);
                           }}
                         >
                           Delete

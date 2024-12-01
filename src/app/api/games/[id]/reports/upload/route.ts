@@ -18,7 +18,7 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
     // Fetch the game from the database
     const game = await prisma.games.findUnique({
       where: { id: gameId },
-      include: { teams: true },
+      include: { oponent: true },
     });
 
     // Check if the game exists
@@ -42,12 +42,12 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
         `competition: ${game.competition}/campeonato: ${row["Campeonato"]}`,
       );
       console.log(
-        `game.teams.name: ${game.teams.name}/adversario: ${row["Adversário"]}`,
+        `game.teams.name: ${game.oponent.name}/adversario: ${row["Adversário"]}`,
       );
       if (
         game.competition?.trim().toLowerCase() !==
           row["Campeonato"].trim().toLowerCase() ||
-        game.teams.name.trim().toLowerCase() !==
+        game.oponent.name.trim().toLowerCase() !==
           row["Adversário"].trim().toLowerCase()
       ) {
         continue;

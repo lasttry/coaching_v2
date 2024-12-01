@@ -18,7 +18,7 @@ export async function GET(req: Request, segmentData: { params: Params }) {
         gameId: id,
       },
       include: {
-        athletes: true, // Include the related athletes information
+        athlete: true, // Include the related athletes information
       },
     });
 

@@ -33,8 +33,8 @@ model gameAthletes {
   period2   Boolean?
   period3   Boolean?
   period4   Boolean?
-  athletes  athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  games     games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  athlete   athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  game      games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
   @@id([gameId, athleteId])
 }
@@ -49,13 +49,16 @@ model games {
   competition         String?         @db.VarChar(30)
   subcomp             String?         @db.VarChar(30)
   oponentId           Int
+  oponent             teams           @relation(fields: [oponentId], references: [id])
   notes               String?         @db.VarChar(1000)
   teamLostDefRebounds Int             @default(0)
   athleteReports      athleteReport[]
   gameAthletes        gameAthletes[]
-  teams               teams           @relation(fields: [oponentId], references: [id])
   statistics          statistic[]
   timeEntry           timeEntry[]
+
+  defensiveObjectives   defensiveObjective[]
+  offensiveObjectives   offensiveObjective[]
 }
 
 model settings {
@@ -180,6 +183,27 @@ model microcycle {
   mesocycle   mesocycle @relation(fields: [mesocycleId], references: [id])
   mesocycleId Int
 }
+
+model defensiveObjective {
+  id       Int     @id @default(autoincrement())
+  title    String  @db.VarChar(255)
+  description String? @db.Text
+  gameId   Int
+  game     games   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model offensiveObjective {
+  id       Int     @id @default(autoincrement())
+  title    String  @db.VarChar(255)
+  description String? @db.Text
+  gameId   Int
+  game     games   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 
 enum TeamType {
   A
