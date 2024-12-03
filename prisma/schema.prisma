@@ -57,8 +57,7 @@ model games {
   statistics          statistic[]
   timeEntry           timeEntry[]
 
-  defensiveObjectives   defensiveObjective[]
-  offensiveObjectives   offensiveObjective[]
+  objectives objectives[] @relation("objectives")
 }
 
 model settings {
@@ -142,8 +141,8 @@ model athleteReport {
   timePlayedObservation String?  @db.VarChar(2000)
   createdAt             DateTime @default(now())
 
-  athlete        athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  game           games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  athlete         athletes  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  game            games     @relation(fields: [gameId], references: [id], onDelete: Cascade)
   reviewedAthlete athletes? @relation("reviewedAthlete", fields: [reviewedAthleteId], references: [id], onDelete: Cascade)
 
   @@unique([gameId, athleteId])
@@ -151,59 +150,56 @@ model athleteReport {
 }
 
 model macrocycle {
-  id        Int      @id @default(autoincrement())
-  name      String?
-  number    Int?
-  startDate DateTime
-  endDate   DateTime
-  notes     String?  @db.VarChar(1000)
+  id         Int         @id @default(autoincrement())
+  name       String?
+  number     Int?
+  startDate  DateTime
+  endDate    DateTime
+  notes      String?     @db.VarChar(1000)
   mesocycles mesocycle[]
 }
 
 model mesocycle {
-  id          Int      @id @default(autoincrement())
-  number      Int?
-  name        String?
-  startDate   DateTime
-  endDate     DateTime
-  notes       String?  @db.VarChar(1000)
-  macrocycle  macrocycle @relation(fields: [macrocycleId], references: [id])
+  id           Int          @id @default(autoincrement())
+  number       Int?
+  name         String?
+  startDate    DateTime
+  endDate      DateTime
+  notes        String?      @db.VarChar(1000)
+  macrocycle   macrocycle   @relation(fields: [macrocycleId], references: [id])
   macrocycleId Int
-  microcycles microcycle[]
+  microcycles  microcycle[]
 }
 
 model microcycle {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   number      Int?
   name        String?
   date        DateTime
-  responsible String   @db.VarChar(100)
-  time        String   @db.VarChar(50)
-  notes       String?  @db.VarChar(1000)
+  responsible String    @db.VarChar(100)
+  time        String    @db.VarChar(50)
+  notes       String?   @db.VarChar(1000)
   mesocycle   mesocycle @relation(fields: [mesocycleId], references: [id])
   mesocycleId Int
 }
 
-model defensiveObjective {
-  id       Int     @id @default(autoincrement())
-  title    String  @db.VarChar(255)
-  description String? @db.Text
-  gameId   Int
-  game     games   @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model objectives {
+  id          Int           @id @default(autoincrement())
+  title       String        @db.VarChar(255)
+  description String?       @db.Text
+  gameId      Int
+  game        games         @relation("objectives", fields: [gameId], references: [id], onDelete: Cascade) // Relation to `games`
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  type        objectiveType
 }
 
-model offensiveObjective {
-  id       Int     @id @default(autoincrement())
-  title    String  @db.VarChar(255)
-  description String? @db.Text
-  gameId   Int
-  game     games   @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+enum objectiveType {
+  OFFENSIVE
+  DEFENSIVE
+  TEAM
+  INDIVIDUAL
 }
-
 
 enum TeamType {
   A

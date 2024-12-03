@@ -3,12 +3,13 @@
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import { Button, Box, Stack, Typography, TextField, Select, MenuItem, CircularProgress } from '@mui/material';
+import { Button, Box, Stack, Typography, TextField, Select, MenuItem, CircularProgress, IconButton } from '@mui/material';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 import dayjs from 'dayjs';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import { GameInterface, TeamInterface, AthleteInterface, GameAthleteInterface } from '@/types/games/types';
+import { GameInterface, TeamInterface, AthleteInterface, GameAthleteInterface, ObjectiveInterface, ObjectiveType } from '@/types/games/types';
 import { useRef } from 'react';
 
 type Params = Promise<{ id: string }>;
@@ -27,10 +28,12 @@ const GameFormPage = (props: { params: Params }) => {
     notes: "",
     gameAthletes: [],
     oponentId: undefined,
+    objectives: [], // Add default
   });
   const [teams, setTeams] = useState<TeamInterface[]>([]);
   const [availableAthletes, setAvailableAthletes] = useState<GameAthleteInterface[]>([]);
   const [selectedAthletes, setSelectedAthletes] = useState<GameAthleteInterface[]>([]);
+  const [objectives, setObjectives] = useState<ObjectiveInterface[]>([]);
   const [success, setSuccess] = useState<string | null>(null);
   const [detailedError, setDetailedError] = useState<string | null>(null);
 
@@ -39,6 +42,35 @@ const GameFormPage = (props: { params: Params }) => {
   const params = use(props.params);
   const gameId = params?.id;
   // Sort athletes by number, year of birth, and name
+
+  const handleAddObjective = () => {
+    setObjectives([...objectives, { title: "", description: "", type: ObjectiveType.TEAM }]);
+  };
+
+  const handleObjectiveChange = (index: number, field: string, value: string | ObjectiveType) => {
+    const updatedObjectives = [...objectives];
+    updatedObjectives[index] = {
+      ...updatedObjectives[index],
+      [field]: value,
+    };
+    setObjectives(updatedObjectives);
+    setForm((prev) => ({ ...prev, objectives: updatedObjectives }));
+  };
+
+  const handleRemoveObjective = (index: number) => {
+    const updatedObjectives = [...objectives];
+    updatedObjectives.splice(index, 1);
+    setObjectives(updatedObjectives);
+    setForm((prev) => ({ ...prev, objectives: updatedObjectives }));
+  };
+
+  const objectiveTypeLabels: Record<ObjectiveType, string> = {
+    TEAM: "Equipa",
+    OFFENSIVE: "Ofensivo",
+    DEFENSIVE: "Defensivo",
+    INDIVIDUAL: "Individual",
+  };
+
   const sortAthletes = (athletes: GameAthleteInterface[]) => {
     return athletes.sort((a, b) => {
       const numberCompare = parseInt(a.athlete.number) - parseInt(b.athlete.number);
@@ -126,6 +158,8 @@ const GameFormPage = (props: { params: Params }) => {
         console.log(available)
         setAvailableAthletes(sortAthletes(available));
         setSelectedAthletes(sortAthletes(gameAthletes));
+
+        setObjectives(gameData.game.objectives);
       } catch (err) {
         console.error('Error fetching data:', err);
         setError('Failed to fetch data. Please try again later.');
@@ -196,7 +230,8 @@ const GameFormPage = (props: { params: Params }) => {
 
         const updateForm = {
           ...form,
-          athletes: selectedAthletes
+          athletes: selectedAthletes,
+          objectives: objectives,
         }
         console.log("Submitting:", JSON.stringify(updateForm));
 
@@ -326,6 +361,55 @@ const GameFormPage = (props: { params: Params }) => {
             rows={4}
             onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
           />
+          <Box marginY={4}>
+            <Typography variant="h6" gutterBottom>
+              Objectives
+            </Typography>
+            {objectives.map((objective, index) => (
+              <Box key={`objective-${index}`} display="flex" flexDirection="column" mb={2}>
+                <TextField
+                  fullWidth
+                  value={objective.title}
+                  onChange={(e) => handleObjectiveChange(index, 'title', e.target.value)}
+                  placeholder={`Objective Title ${index + 1}`}
+                  label="Title"
+                  margin="normal"
+                />
+                <TextField
+                  fullWidth
+                  value={objective.description}
+                  onChange={(e) => handleObjectiveChange(index, 'description', e.target.value)}
+                  placeholder={`Objective Description ${index + 1}`}
+                  label="Description"
+                  margin="normal"
+                  multiline
+                  rows={3}
+                />
+                <Select
+                  value={objective.type}
+                  onChange={(e) => handleObjectiveChange(index, 'type', e.target.value as ObjectiveType)}
+                  displayEmpty
+                >
+                  {Object.values(ObjectiveType).map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {objectiveTypeLabels[type]}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <IconButton
+                  onClick={() => handleRemoveObjective(index)}
+                  color="error"
+                  sx={{ alignSelf: 'flex-end' }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Box>
+            ))}
+            <Button variant="outlined" onClick={handleAddObjective} sx={{ mt: 2 }}>
+              Add Objective
+            </Button>
+          </Box>
+
 
           {/* Athlete Table */}
           <Box marginY={4}>

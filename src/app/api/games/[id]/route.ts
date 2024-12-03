@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { GameAthleteInterface, GameInterface } from "@/types/games/types";
+import { GameAthleteInterface, GameInterface, ObjectiveInterface } from "@/types/games/types";
 import { validateGameData } from "../utils/utils";
 
 type Params = Promise<{ id: number }>;
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   }
 
   const settings = await prisma.settings.findFirst();
-  const game = await prisma.games.findUnique({
+  const payload = {
     where: {
       id,
     },
@@ -31,8 +31,11 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
         },
       },
       oponent: true,
+      objectives: true,
     },
-  });
+  }
+  console.log(payload)
+  const game = await prisma.games.findUnique(payload);
   console.log(game);
   if (!game) {
     return NextResponse.json({ error: "Game not found" }, { status: 404 });
@@ -41,7 +44,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   // Include athletes in the response
   const athletes = game.gameAthletes.map((ga) => ga.athlete);
 
-  return NextResponse.json({ settings, game: { ...game, athletes } });
+  return NextResponse.json({ settings, game: { ...game, athletes, objectives: game.objectives || [] } });
 }
 
 // PUT method to update an existing game by ID
@@ -65,7 +68,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
     }
 
     // Update the game details with `gameNumber` for each athlete
-    const updatedGame = await prisma.games.update({
+    const payload = {
       where: { id: gameId },
       data: {
         number: data.number,
@@ -73,7 +76,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
         away: data.away,
         competition: data.competition,
         subcomp: data.subcomp,
-        oponentId: data.oponentId,
+        oponentId: Number(data.oponentId),
         notes: data.notes || null,
         gameAthletes: {
           deleteMany: {
@@ -88,8 +91,20 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
             period4: athlete.period4 || false,
           })) || [], // Fallback to an empty array if data.gameAthletes is undefined or null
         },
+        objectives: {
+          deleteMany: {
+            gameId: gameId,
+          },
+          create: data.objectives?.map((objective: ObjectiveInterface) => ({
+            title: objective.title,
+            description: objective.description,
+            type: objective.type
+          }))
+        },
       },
-    });
+    }
+    console.log(payload)
+    const updatedGame = await prisma.games.update(payload);
     console.log(updatedGame);
     return NextResponse.json(updatedGame, { status: 200 });
   } catch (error) {

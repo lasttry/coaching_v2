@@ -1,8 +1,8 @@
 import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import autoTable, { RowInput } from 'jspdf-autotable';
 import dayjs from 'dayjs';
 
-import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types'
+import { GameInterface, jsPDFWithAutoTable, ObjectiveInterface } from '@/types/games/types'
 import { Settings } from '@/types/settings/types'
 import { generateHeader, generateGameDetailsHeader } from './utils'
 
@@ -243,6 +243,61 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
       doc.line(8, currentHeight, pageWidth - 8, currentHeight);
       currentHeight += 8;
       i++;
+    }
+
+    // Goals of the game if there are any.
+    if (game.objectives?.length || game.objectives?.length) {
+      doc.addPage();
+
+      console.log(game.objectives)
+      const groupedObjectives: Record<string, RowInput[]> = {
+        TEAM: [],
+        OFFENSIVE: [],
+        DEFENSIVE: [],
+        INDIVIDUAL: [],
+      };
+      const objectiveTypeHeaders: Record<string, string> = {
+        TEAM: "Objectivos da Equipa",
+        OFFENSIVE: "Objectivos Ofensivos",
+        DEFENSIVE: "Objectivos Defensivos",
+        INDIVIDUAL: "Objectivos Individuais",
+      };
+
+      // Group objectives by their type
+      game.objectives?.forEach((objective) => {
+        const type = objective.type;
+        groupedObjectives[type].push(
+          [{ content: objective.title, styles: { fontStyle: "bold", fillColor: [230, 230, 230] } }], // Title row
+          [{ content: objective.description || "", styles: { fontStyle: "normal", fillColor: [255, 255, 255] } }], // Description row
+          [{ content: "", styles: { fillColor: [255, 255, 255] }}] // Separator row
+        );
+      });
+      console.log(groupedObjectives)
+
+      // Draw the table
+      let startY = 15;
+      Object.entries(groupedObjectives).forEach(([type, rows]) => {
+        autoTable(doc, {
+          startY: startY, // Position the table below previous content
+          margin: { top: 10, left: 10, right: 10 },
+          tableWidth: doc.internal.pageSize.getWidth() - 20,
+          head: [[objectiveTypeHeaders[type] || type]], // Table header
+          body: rows,
+          headStyles: {
+            fillColor: `${settings?.backgroundColor}`,  // Background color (RGB)
+            textColor: `${settings?.foregroundColor}`,  // Foreground text color (white)
+            fontStyle: 'bold',  // Optional: make the header text bold
+          },
+          columnStyles: {
+            0: { cellWidth: 'auto', halign: 'left' }, // Adjust title column to auto-width
+            1: { cellWidth: 'auto', halign: 'left' }, // Adjust description column to auto-width
+          },
+        });
+        if (doc.lastAutoTable?.finalY) {
+          startY = doc.lastAutoTable.finalY + 5; // Position next table 10 points below the previous
+        }
+      });
+
     }
 
     doc.save(`Folha_de_Jogo_${game.id}.pdf`);
