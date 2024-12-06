@@ -269,7 +269,6 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
         groupedObjectives[type].push(
           [{ content: objective.title, styles: { fontStyle: "bold", fillColor: [230, 230, 230] } }], // Title row
           [{ content: objective.description || "", styles: { fontStyle: "normal", fillColor: [255, 255, 255] } }], // Description row
-          [{ content: "", styles: { fillColor: [255, 255, 255] }}] // Separator row
         );
       });
       console.log(groupedObjectives)
@@ -294,7 +293,7 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
           },
         });
         if (doc.lastAutoTable?.finalY) {
-          startY = doc.lastAutoTable.finalY + 5; // Position next table 10 points below the previous
+          startY = doc.lastAutoTable.finalY; // Position next table 10 points below the previous
         }
       });
 
