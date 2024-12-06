@@ -35,7 +35,7 @@ const MicrocyclesList = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsData, setDetailsData] = useState(null);
 
-  const openDetailsOverlay = async (microcycleId) => {
+  const openDetailsOverlay = async (microcycleId: Number) => {
     try {
       const response = await fetch(`/api/cycles/microcycles/${microcycleId}/details`);
       const data = await response.json();
@@ -307,7 +307,7 @@ const MicrocyclesList = () => {
                                   color="primary"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    openDetailsOverlay(cycle.id);
+                                    openDetailsOverlay(microcycle.id);
                                   }}
                                 >
                                   View Details

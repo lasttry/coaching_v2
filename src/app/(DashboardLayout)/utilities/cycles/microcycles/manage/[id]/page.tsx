@@ -13,7 +13,7 @@ import {
   IconButton,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import dayjs from 'dayjs';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import { Microcycle, Macrocycle, Mesocycle, SessionGoal } from '@/types/cycles/types';
 
@@ -32,8 +32,8 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
   const [microcycle, setMicrocycle] = useState<Partial<Microcycle>>({
     number: undefined,
     name: '',
-    startDate: '',
-    endDate: '',
+    startDate: new Date(dayjs().toISOString()),
+    endDate: new Date(dayjs().add(1, 'week').toISOString()),
     notes: '',
     mesocycleId: undefined,
     sessionGoals: [],
@@ -51,13 +51,9 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
         if (isEditing) {
           const response = await fetch(`/api/cycles/microcycles/${microcycleId}`);
           const data: Microcycle = await response.json();
-          console.log(data)
-          setMicrocycle({
-            ...data,
-            startDate: data.startDate.slice(0, 10), // For date input compatibility
-            endDate: data.endDate.slice(0, 10),
-          });
-          setSelectedMacrocycle(data.mesocycle.macrocycle.id);
+          console.log(data);
+          setMicrocycle(data);
+          setSelectedMacrocycle(data.mesocycle?.macrocycle?.id || null);
         }
       } catch (err) {
         console.error(err);
@@ -115,7 +111,7 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
   const handleAddSessionGoal = () => {
     setMicrocycle((prev) => ({
       ...prev,
-      sessionGoals: [...(prev.sessionGoals || []), { duration: '', note: '', coach: '' }],
+      sessionGoals: [...(prev.sessionGoals || []), { duration: 0, note: '', coach: '' }],
     }));
   };
 
@@ -201,14 +197,14 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
             label="Start Date"
             type="date"
             value={microcycle.startDate || ''}
-            onChange={(e) => setMicrocycle((prev) => ({ ...prev, startDate: e.target.value }))}
+            onChange={(e) => setMicrocycle((prev) => ({ ...prev, startDate: new Date(e.target.value) }))}
             required
           />
           <TextField
             label="End Date"
             type="date"
             value={microcycle.endDate || ''}
-            onChange={(e) => setMicrocycle((prev) => ({ ...prev, endDate: e.target.value }))}
+            onChange={(e) => setMicrocycle((prev) => ({ ...prev, endDate: new Date(e.target.value) }))}
             required
           />
           <TextField

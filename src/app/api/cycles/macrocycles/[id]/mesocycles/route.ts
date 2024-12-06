@@ -1,32 +1,31 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { NextRequest } from "next/server";
 
+type Params = Promise<{ id: number }>;
 const prisma = new PrismaClient();
 
-// Handler for GET request to fetch Mesocycles by Macrocycle ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const macrocycleId = parseInt(params.id);
+export async function GET(req: NextRequest, segmentData: { params: Params }) {
+  const params = await segmentData.params;
+  const id = Number(params.id);
 
-  if (isNaN(macrocycleId)) {
-    return NextResponse.json({ error: 'Invalid Macrocycle ID' }, { status: 400 });
+  if (isNaN(id)) {
+    return NextResponse.json({ error: "Invalid Macrocycle ID" }, { status: 400 });
   }
 
   try {
     const mesocycles = await prisma.mesocycle.findMany({
       where: {
-        macrocycleId: macrocycleId,
+        macrocycleId: id,
       },
       orderBy: {
-        startDate: 'asc', // Order by start date ascending
+        startDate: 'desc',
       },
     });
 
-    return NextResponse.json(mesocycles);
+    return NextResponse.json(mesocycles, { status: 200 });
   } catch (error) {
-    console.error('Error fetching Mesocycles:', error);
-    return NextResponse.json(
-      { error: 'An error occurred while fetching Mesocycles.' },
-      { status: 500 }
-    );
+    console.error("Error fetching mesocycles:", error);
+    return NextResponse.json({ error: "Failed to fetch mesocycles." }, { status: 500 });
   }
 }

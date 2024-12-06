@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
   Button,
@@ -10,28 +10,30 @@ import {
   Stack,
   CircularProgress,
   Select,
+  SelectChangeEvent,
   MenuItem,
 } from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
 import { Mesocycle, Macrocycle } from '@/types/cycles/types';
+type Params = Promise<{ id: string }>;
 
-const MesocycleForm = () => {
+const MesocycleForm = (props: { params: Params }) => {
   const router = useRouter();
-  const { id } = useParams<{ id: string }>();
+  const params = use(props.params);
+  const id = params?.id; // Use segmentData to retrieve the ID
   const isEditing = id !== 'new';
 
   const [loading, setLoading] = useState(false);
   const [macrocycles, setMacrocycles] = useState<Macrocycle[]>([]);
   const [form, setForm] = useState<Mesocycle>({
-    id: undefined,
+    id: 0,
     number: undefined,
     name: '',
-    startDate: dayjs().toISOString(),
-    endDate: dayjs().add(1, 'month').toISOString(),
+    startDate: new Date(dayjs().toISOString()),
+    endDate: new Date(dayjs().add(1, 'month').toISOString()),
     notes: '',
-    macrocycleId: undefined,
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -117,8 +119,11 @@ const MesocycleForm = () => {
           {/* Macrocycle Dropdown */}
           <Select
             name="macrocycleId"
-            value={form.macrocycleId || ''}
-            onChange={handleChange}
+            value={form.macrocycleId ? String(form.macrocycleId) : ''}
+            onChange={(e: SelectChangeEvent<string>) => {
+              const value = parseInt(e.target.value, 10); // Convert string value to number
+              setForm((prev) => ({ ...prev, macrocycleId: value }));
+            }}
             fullWidth
             required
             displayEmpty
@@ -127,11 +132,12 @@ const MesocycleForm = () => {
               Select a Macrocycle
             </MenuItem>
             {macrocycles.map((macrocycle) => (
-              <MenuItem key={macrocycle.id} value={macrocycle.id}>
+              <MenuItem key={macrocycle.id} value={String(macrocycle.id)}>
                 {macrocycle.name || `Macrocycle ${macrocycle.number || 'N/A'}`}
               </MenuItem>
             ))}
           </Select>
+
 
           {/* Mesocycle Number */}
           <TextField

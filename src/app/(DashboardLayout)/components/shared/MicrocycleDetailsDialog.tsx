@@ -1,7 +1,23 @@
 import React from 'react';
-import { Dialog, DialogTitle, DialogContent, Table, TableBody, TableRow, TableCell, Typography, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Table, TableBody, TableRow, TableCell, Typography } from '@mui/material';
 
-const MicrocycleDetailsDialog = ({ open, onClose, data }) => {
+interface Session {
+  durations: string[];
+  notes: string[];
+}
+
+interface Data {
+  days: string[];
+  sessions: Session[];
+}
+
+interface MicrocycleDetailsDialogProps {
+  open: boolean;
+  onClose: () => void;
+  data?: Data;
+}
+
+const MicrocycleDetailsDialog: React.FC<MicrocycleDetailsDialogProps> = ({ open, onClose, data }) => {
   if (!data) return null;
 
   return (

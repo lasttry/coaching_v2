@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Button,
   TextField,
@@ -15,19 +15,23 @@ import PageContainer from '@/app/(DashboardLayout)/components/container/PageCont
 import dayjs from 'dayjs';
 import { Macrocycle } from '@/types/cycles/types';
 
-const MacrocycleForm = () => {
+type Params = Promise<{ id: string }>;
+
+const MacrocycleForm = (props: { params: Params }) => {
   const router = useRouter();
-  const { id } = useParams<{ id: string }>();
+  const params = use(props.params);
+  const id = params?.id; // Use segmentData to retrieve the ID
   const isEditing = id !== 'new';
 
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<Macrocycle>({
-    id: undefined,
+    id: 0,
     name: '',
     number: undefined,
-    startDate: dayjs().toISOString(),
-    endDate: dayjs().add(1, 'month').toISOString(),
+    startDate: new Date(dayjs().toISOString()),
+    endDate: new Date(dayjs().add(1, 'month').toISOString()),
     notes: '',
+    mesocycles: []
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -59,7 +63,7 @@ const MacrocycleForm = () => {
 
     try {
       const method = isEditing ? 'PUT' : 'POST';
-      const url = isEditing ? `/api/cycles/macrocycles/${id}` : `/api/cycles/macrocycles`;
+      const url = isEditing ? `/api/cycles/macrocycles/${id}` : '/api/cycles/macrocycles';
 
       const response = await fetch(url, {
         method,
@@ -121,7 +125,15 @@ const MacrocycleForm = () => {
             name="startDate"
             type="datetime-local"
             value={dayjs(form.startDate).format('YYYY-MM-DDTHH:mm')}
-            onChange={(e) => handleChange({ ...e, target: { ...e.target, value: new Date(e.target.value).toISOString() } })}
+            onChange={(e) => {
+              const { name, value } = e.target;
+              handleChange({
+                target: {
+                  name,
+                  value: new Date(value).toISOString(),
+                },
+              } as React.ChangeEvent<HTMLInputElement>);
+            }}
             fullWidth
             required
           />
@@ -130,7 +142,15 @@ const MacrocycleForm = () => {
             name="endDate"
             type="datetime-local"
             value={dayjs(form.endDate).format('YYYY-MM-DDTHH:mm')}
-            onChange={(e) => handleChange({ ...e, target: { ...e.target, value: new Date(e.target.value).toISOString() } })}
+            onChange={(e) => {
+              const { name, value } = e.target;
+              handleChange({
+                target: {
+                  name,
+                  value: new Date(value).toISOString(),
+                },
+              } as React.ChangeEvent<HTMLInputElement>);
+            }}
             fullWidth
             required
           />

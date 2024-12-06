@@ -15,9 +15,9 @@ export interface Mesocycle {
   startDate: Date;
   endDate: Date;
   notes?: string | null;
-  macrocycleId: number;
-  macrocycle: Macrocycle;
-  microcycles: Microcycle[];
+  macrocycleId?: number;
+  macrocycle?: Macrocycle;
+  microcycles?: Microcycle[];
 }
 
 export interface Microcycle {
@@ -33,10 +33,10 @@ export interface Microcycle {
 }
 
 export interface SessionGoal {
-  id: number;
+  id?: number;
   duration: number; // Duration in minutes
-  note?: string | null; // Additional notes
+  note: string | null; // Additional notes
   coach: string; // Coach responsible for the session goal
-  microcycleId: number; // Foreign key to the associated microcycle
-  microcycle: Microcycle; // Reference to the parent microcycle
+  microcycleId?: number; // Foreign key to the associated microcycle
+  microcycle?: Microcycle; // Reference to the parent microcycle
 }

@@ -1,24 +1,23 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { NextRequest } from "next/server";
 
 const prisma = new PrismaClient();
 
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve a specific microcycle
-export async function GET(
-  request: Request,
-  { params }: { params: Params }
-) {
-  const { id } = await params;
+export async function GET(req: NextRequest, segmentData: { params: Params }) {
+  const params = await segmentData.params;
+  const id = Number(params.id);
 
-  if (isNaN(Number(id))) {
+  if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid microcycle ID" }, { status: 400 });
   }
 
   try {
     const microcycle = await prisma.microcycle.findUnique({
-      where: { id: Number(id) },
+      where: { id },
       include: {
         mesocycle: {
           include: {
@@ -38,19 +37,21 @@ export async function GET(
 
     return NextResponse.json(microcycle);
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching microcycle:", error);
     return NextResponse.json({ error: "Failed to fetch microcycle" }, { status: 500 });
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+// PUT: Update a specific microcycle
+export async function PUT(req: NextRequest, segmentData: { params: Params }) {
+  const params = await segmentData.params;
   const id = Number(params.id);
 
   if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid microcycle ID" }, { status: 400 });
   }
 
-  const body = await request.json();
+  const body = await req.json();
 
   try {
     const sessionGoals = body.sessionGoals.map((goal: { duration: string; note: string; coach: string }) => ({
@@ -58,7 +59,7 @@ export async function PUT(request: Request, { params }: { params: { id: string }
       note: goal.note,
       coach: goal.coach,
     }));
-    console.log(sessionGoals)
+
     const payload = {
       where: { id },
       data: {
@@ -70,14 +71,14 @@ export async function PUT(request: Request, { params }: { params: { id: string }
         mesocycleId: body.mesocycleId,
         sessionGoals: {
           deleteMany: {}, // Remove all existing session goals
-          create: sessionGoals
+          create: sessionGoals,
         },
       },
       include: {
         sessionGoals: true,
       },
-    }
-    console.log(payload)
+    };
+
     const updatedMicrocycle = await prisma.microcycle.update(payload);
 
     return NextResponse.json(updatedMicrocycle);
@@ -88,24 +89,22 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE: Delete a specific microcycle
-export async function DELETE(
-  request: Request,
-  { params }: { params: Params }
-) {
-  const { id } = await params;
+export async function DELETE(req: NextRequest, segmentData: { params: Params }) {
+  const params = await segmentData.params;
+  const id = Number(params.id);
 
-  if (isNaN(Number(id))) {
+  if (isNaN(id)) {
     return NextResponse.json({ error: "Invalid microcycle ID" }, { status: 400 });
   }
 
   try {
     await prisma.microcycle.delete({
-      where: { id: Number(id) },
+      where: { id },
     });
 
     return NextResponse.json({ message: "Microcycle deleted successfully" });
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting microcycle:", error);
     return NextResponse.json({ error: "Failed to delete microcycle" }, { status: 500 });
   }
 }
