@@ -1,172 +1,207 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import {
   Button,
   TextField,
-  MenuItem,
   Box,
   Typography,
   Stack,
+  CircularProgress,
+  Select,
+  MenuItem,
 } from '@mui/material';
-import { Macrocycle, Mesocycle, MaxNumbers } from '@/types/cycles/types';
+
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
+import { Mesocycle, Macrocycle } from '@/types/cycles/types';
 
-type Params = Promise<{ id: string }>;
-
-const MesoCycleForm = (props: { params: Params }) => {
-  const params = use(props.params);
-  const id = params.id === 'new' ? null : params.id;
-  const [mesoCycle, setMesoCycle] = useState<Partial<Mesocycle>>({
-    number: -1,
-    startDate: dayjs().format('YYYY-MM-DD'),
-    endDate: dayjs().add(1, 'month').format('YYYY-MM-DD'),
-    notes: '',
-    macrocycleId: 0,
-  });
-  const [macroCycles, setMacroCycles] = useState<Macrocycle[]>([]);
-  const [error, setError] = useState<string | null>(null);
+const MesocycleForm = () => {
   const router = useRouter();
+  const { id } = useParams<{ id: string }>();
+  const isEditing = id !== 'new';
+
+  const [loading, setLoading] = useState(false);
+  const [macrocycles, setMacrocycles] = useState<Macrocycle[]>([]);
+  const [form, setForm] = useState<Mesocycle>({
+    id: undefined,
+    number: undefined,
+    name: '',
+    startDate: dayjs().toISOString(),
+    endDate: dayjs().add(1, 'month').toISOString(),
+    notes: '',
+    macrocycleId: undefined,
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch MacroCycles for the dropdown
-    async function fetchMacroCycles() {
+    async function fetchData() {
       try {
-        const response = await fetch('/api/cycles/macrocycles');
-        const data: Macrocycle[] = await response.json();
-        setMacroCycles(data);
-      } catch (err) {
-        console.error('Error fetching macrocycles:', err);
-        setError('Failed to load macrocycles.');
-      }
-    }
+        setLoading(true);
 
-    // Fetch Mesocycle data if editing an existing one
-    async function fetchMesoCycle() {
-      if(!id) {
-        console.log("getting max number")
-        try {
-          const response = await fetch(`/api/cycles/mesocycles/maxNumber`);
-          const maxNumber: MaxNumbers = await response.json();
-          console.log(maxNumber.maxNumber)
-          setMesoCycle({ ...mesoCycle, number: (maxNumber.maxNumber + 1) });
-        } catch (err) {
-          console.error('Error fetching maxNumber:', err);
-          setError('Failed to load maxNumber.');
-        }        
-      }
-      if (id) {
-        try {
-          const response = await fetch(`/api/cycles/mesocycles/${id}`);
-          const data: Mesocycle = await response.json();
-          setMesoCycle(data);
-        } catch (err) {
-          console.error('Error fetching mesocycle:', err);
-          setError('Failed to load mesocycle.');
+        // Fetch all macrocycles for the dropdown
+        const macrocyclesResponse = await fetch('/api/cycles/macrocycles');
+        const macrocyclesData: Macrocycle[] = await macrocyclesResponse.json();
+        setMacrocycles(macrocyclesData);
+
+        if (isEditing) {
+          // Fetch mesocycle data if editing
+          const mesocycleResponse = await fetch(`/api/cycles/mesocycles/${id}`);
+          const mesocycleData: Mesocycle = await mesocycleResponse.json();
+          setForm(mesocycleData);
         }
+      } catch (err) {
+        setError('Failed to fetch data.');
+      } finally {
+        setLoading(false);
       }
     }
 
-    fetchMacroCycles();
-    fetchMesoCycle();
-  }, [id]);
+    fetchData();
+  }, [id, isEditing]);
 
-  // Handle form submission
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name!]: value }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
-      const response = await fetch(`/api/cycles/mesocycles/${id || ''}`, {
-        method: id ? 'PUT' : 'POST',
+      const method = isEditing ? 'PUT' : 'POST';
+      const url = isEditing ? `/api/cycles/mesocycles/${id}` : '/api/cycles/mesocycles';
+
+      const response = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mesoCycle),
+        body: JSON.stringify(form),
       });
 
       if (response.ok) {
-        router.push('/utilities/cycles/mesocycles');
+        setSuccess('Mesocycle saved successfully.');
+        setTimeout(() => router.push('/utilities/cycles/mesocycles'), 2000);
       } else {
-        setError('Failed to save mesocycle.');
+        throw new Error('Failed to save Mesocycle.');
       }
     } catch (err) {
-      console.error('Error saving mesocycle:', err);
-      setError('An error occurred while saving the mesocycle.');
+      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) return <CircularProgress />;
+
   return (
-    <PageContainer title={id ? 'Edit Mesocycle' : 'Add Mesocycle'}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        {id ? 'Edit Mesocycle' : 'Add Mesocycle'}
-      </Typography>
+    <PageContainer title={isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}>
+      <h1>{isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}</h1>
 
       {error && (
-        <Typography variant="body1" color="error" gutterBottom>
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
           {error}
+        </Typography>
+      )}
+
+      {success && (
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
+          {success}
         </Typography>
       )}
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
-
           {/* Macrocycle Dropdown */}
-          <TextField
-            select
-            label="Macrocycle"
-            value={mesoCycle.macrocycleId  ? mesoCycle.macrocycleId : ""}
-            onChange={(e) => setMesoCycle({ ...mesoCycle, macrocycleId: Number(e.target.value) })}
+          <Select
+            name="macrocycleId"
+            value={form.macrocycleId || ''}
+            onChange={handleChange}
+            fullWidth
             required
+            displayEmpty
           >
-            {macroCycles.map((macro) => (
-              <MenuItem key={macro.id} value={macro.id}>
-                {macro.number} - {macro.name}
+            <MenuItem value="" disabled>
+              Select a Macrocycle
+            </MenuItem>
+            {macrocycles.map((macrocycle) => (
+              <MenuItem key={macrocycle.id} value={macrocycle.id}>
+                {macrocycle.name || `Macrocycle ${macrocycle.number || 'N/A'}`}
               </MenuItem>
             ))}
-          </TextField>
+          </Select>
 
           {/* Mesocycle Number */}
           <TextField
             label="Number"
+            name="number"
             type="number"
-            value={mesoCycle.number}
-            onChange={(e) => setMesoCycle({ ...mesoCycle, number: Number(e.target.value) })}
+            value={form.number || ''}
+            onChange={handleChange}
+            fullWidth
+          />
+
+          {/* Mesocycle Name */}
+          <TextField
+            label="Name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            fullWidth
             required
           />
 
           {/* Start Date */}
           <TextField
             label="Start Date"
-            type="date"
-            value={mesoCycle.startDate}
-            onChange={(e) => setMesoCycle({ ...mesoCycle, startDate: e.target.value })}
-            InputLabelProps={{ shrink: true }}
+            name="startDate"
+            type="datetime-local"
+            value={dayjs(form.startDate).format('YYYY-MM-DDTHH:mm')}
+            onChange={(e) =>
+              handleChange({
+                ...e,
+                target: { ...e.target, value: new Date(e.target.value).toISOString() },
+              })
+            }
+            fullWidth
             required
           />
 
           {/* End Date */}
           <TextField
             label="End Date"
-            type="date"
-            value={mesoCycle.endDate}
-            onChange={(e) => setMesoCycle({ ...mesoCycle, endDate: e.target.value })}
-            InputLabelProps={{ shrink: true }}
+            name="endDate"
+            type="datetime-local"
+            value={dayjs(form.endDate).format('YYYY-MM-DDTHH:mm')}
+            onChange={(e) =>
+              handleChange({
+                ...e,
+                target: { ...e.target, value: new Date(e.target.value).toISOString() },
+              })
+            }
+            fullWidth
             required
           />
 
           {/* Notes */}
           <TextField
             label="Notes"
+            name="notes"
+            value={form.notes}
+            onChange={handleChange}
+            fullWidth
             multiline
-            minRows={4}
-            value={mesoCycle.notes}
-            onChange={(e) => setMesoCycle({ ...mesoCycle, notes: e.target.value })}
+            rows={4}
           />
 
-          {/* Submit Button */}
-          <Box>
-            <Button variant="contained" color="primary" type="submit">
-              {id ? 'Update Mesocycle' : 'Create Mesocycle'}
+          <Box display="flex" justifyContent="space-between">
+            <Button type="submit" variant="contained" color="primary">
+              Save
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={() => router.push('/utilities/cycles/mesocycles')}>
+              Cancel
             </Button>
           </Box>
         </Stack>
@@ -175,4 +210,4 @@ const MesoCycleForm = (props: { params: Params }) => {
   );
 };
 
-export default MesoCycleForm;
+export default MesocycleForm;

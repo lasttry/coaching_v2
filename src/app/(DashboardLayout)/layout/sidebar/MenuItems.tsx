@@ -11,6 +11,7 @@ const Menuitems = [
   { navlabel: true, subheader: "Jogos", },
   { id: uniqueId(), title: "Jogos", icon: IconBallBasketball, href: "/utilities/games", },
   { navlabel: true, subheader: "Treinos", },
+  { id: uniqueId(), title: "Microciclos", icon: IconBallBasketball, href: "/utilities/cycles/microcycles", },
   { id: uniqueId(), title: "Mesociclos", icon: IconBallBasketball, href: "/utilities/cycles/mesocycles", },
   { id: uniqueId(), title: "Macrociclos", icon: IconBallBasketball, href: "/utilities/cycles/macrocycles", },
   { navlabel: true, subheader: "Definições", },

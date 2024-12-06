@@ -141,7 +141,7 @@ const MacroCyclesList = () => {
                     <TableRow
                       key={cycle.id}
                       hover
-                      onClick={() => router.push(`/utilities/cycles/macrocycles/manage/${cycle.id}`)} // Navigate to macro cycle details or edit page on row click
+                      oonClick={() => router.push(`/utilities/cycles/macrocycles/manage/${cycle.id}`)} // Navigate to macro cycle details or edit page on row click
                       sx={{ cursor: 'pointer' }}
                     >
                       <TableCell>

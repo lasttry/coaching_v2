@@ -18,4 +18,3 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json({ error: 'Failed to fetch objectives.' }, { status: 500 });
   }
 }
-

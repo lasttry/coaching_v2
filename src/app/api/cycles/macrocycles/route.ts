@@ -3,51 +3,51 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// GET: List all macrocycles
+export async function GET() {
+  try {
+    const macrocycles = await prisma.macrocycle.findMany({
+      include: {
+        mesocycles: true, // Include related mesocycles
+      },
+    });
+
+    return NextResponse.json(macrocycles);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: "Failed to fetch macrocycles" }, { status: 500 });
+  }
+}
+
+// POST: Create a new macrocycle
 export async function POST(request: Request) {
   try {
     const data = await request.json();
 
-    if (!data || typeof data !== 'object') {
-      console.error("Invalid data format:", data);
+    // Validate required fields
+    const { name, number, startDate, endDate, notes } = data;
+    if (!startDate || !endDate) {
       return NextResponse.json(
-        { error: "Invalid input data" },
+        { error: "Start date and end date are required" },
         { status: 400 }
       );
     }
 
-
-    const newMacrocycle = await prisma.macrocycle.create({
+    const payload = {
       data: {
-        number: Number(data.number),
-        name: data.name,
-        startDate: new Date(data.startDate),
-        endDate: new Date(data.endDate),
-        notes: data.notes,
+        name,
+        number: Number(number),
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        notes,
       },
-    });
+    }
+    console.log(payload)
+    const newMacrocycle = await prisma.macrocycle.create(payload);
 
-    // Return the created macrocycle in JSON format
     return NextResponse.json(newMacrocycle, { status: 201 });
   } catch (error) {
-    console.error("Error creating macrocycle:", error);
-
-    return NextResponse.json(
-      { error: "Error creating macrocycle" },
-      { status: 500 }
-    );
-  }
-}
-
-// GET handler to fetch all teams
-export async function GET() {
-  try {
-    const macrocycle = await prisma.macrocycle.findMany({
-      orderBy: { number: 'asc' }, // Order by 'number' in ascending order
-    });
-
-    return NextResponse.json(macrocycle);
-  } catch (error) {
-    console.error('Error fetching macrocycle data:', error);
-    return NextResponse.json({ error: 'Failed to fetch macrocycle data' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ error: "Failed to create macrocycle" }, { status: 500 });
   }
 }

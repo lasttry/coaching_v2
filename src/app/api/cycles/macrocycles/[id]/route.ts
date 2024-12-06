@@ -2,106 +2,92 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-type Params = Promise<{ id: number }>
 
-// GET handler for fetching a team by ID
+type Params = Promise<{ id: number }>;
+
+// GET: Retrieve a specific macrocycle
 export async function GET(
   request: Request,
-  segmentData: { params: Params }) {
-    const params = await segmentData.params
-    const id = Number(params.id);
+  { params }: { params: Params }
+) {
+  const { id } = await params;
 
-  if (isNaN(id)) {
-    return NextResponse.json(
-      { error: "Invalid Macrocycle ID" },
-      { status: 400 },
-    );
+  if (isNaN(Number(id))) {
+    return NextResponse.json({ error: "Invalid macrocycle ID" }, { status: 400 });
   }
 
   try {
-    const macroCiclo = await prisma.macrocycle.findUnique({
-      where: { id },
+    const macrocycle = await prisma.macrocycle.findUnique({
+      where: { id: Number(id) },
+      include: { mesocycles: true },
     });
 
-    if (!macroCiclo) {
+    if (!macrocycle) {
       return NextResponse.json(
         { error: "Macrocycle not found" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
-    return NextResponse.json(macroCiclo);
+    return NextResponse.json(macrocycle);
   } catch (error) {
-    console.error("Error fetching Macrocycle:", error);
-    return NextResponse.json(
-      { error: "Error fetching Macrocycle" },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ error: "Failed to fetch macrocycle" }, { status: 500 });
   }
 }
 
+// PUT: Update a specific macrocycle
 export async function PUT(
   request: Request,
-  segmentData: { params: Params }) {
-    const params = await segmentData.params
-    const id = Number(params.id);
+  { params }: { params: Params }
+) {
+  const { id } = await params;
 
-  if (isNaN(id)) {
-    return NextResponse.json(
-      { error: "Invalid macrocycle ID" },
-      { status: 400 },
-    );
+  if (isNaN(Number(id))) {
+    return NextResponse.json({ error: "Invalid macrocycle ID" }, { status: 400 });
   }
 
   try {
     const data = await request.json();
+    const { name, number, startDate, endDate, notes } = data;
 
     const updatedMacrocycle = await prisma.macrocycle.update({
-      where: { id },
+      where: { id: Number(id) },
       data: {
-        number: Number(data.number),
-        name: data.name,
-        notes: data.notes,
-        startDate: new Date(data.startDate),
-        endDate: new Date(data.endDate),
+        name,
+        number,
+        startDate: startDate ? new Date(startDate) : undefined,
+        endDate: endDate ? new Date(endDate) : undefined,
+        notes,
       },
     });
 
-    return NextResponse.json(updatedMacrocycle, { status: 200 });
+    return NextResponse.json(updatedMacrocycle);
   } catch (error) {
-    console.error("Error updating macrocycle:", error);
-    return NextResponse.json(
-      { error: "Error updating macrocycle" },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ error: "Failed to update macrocycle" }, { status: 500 });
   }
 }
 
-// DELETE handler for deleting a team
+// DELETE: Delete a specific macrocycle
 export async function DELETE(
   request: Request,
-  segmentData: { params: Params }) {
-    const params = await segmentData.params
-    const id = params.id;
+  { params }: { params: Params }
+) {
+  const { id } = await params;
 
-  if (isNaN(id)) {
-    return NextResponse.json(
-      { error: "Invalid macrociclo ID" },
-      { status: 400 },
-    );
+  if (isNaN(Number(id))) {
+    return NextResponse.json({ error: "Invalid macrocycle ID" }, { status: 400 });
   }
 
   try {
     await prisma.macrocycle.delete({
-      where: { id },
+      where: { id: Number(id) },
     });
 
-    return NextResponse.json({}, { status: 204 });
+    return NextResponse.json({ message: "Macrocycle deleted successfully" });
   } catch (error) {
-    console.error("Error deleting macrocycle:", error);
-    return NextResponse.json(
-      { error: "Error deleting macrocycle" },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ error: "Failed to delete macrocycle" }, { status: 500 });
   }
 }

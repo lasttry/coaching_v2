@@ -1,189 +1,160 @@
 'use client';
 
-import { use } from "react";
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
   Button,
   TextField,
-  Typography,
   Box,
+  Typography,
+  Stack,
   CircularProgress,
 } from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import dayjs from 'dayjs';
 import { Macrocycle } from '@/types/cycles/types';
 
-type Params = Promise<{ id: string }>;
-
-const MacroCycleForm = (props: { params: Params }) => {
-  const params = use(props.params);
-  const id = params.id === 'new' ? null : params.id;
+const MacrocycleForm = () => {
   const router = useRouter();
-  const [macroCycle, setMacroCycle] = useState<Macrocycle>({
+  const { id } = useParams<{ id: string }>();
+  const isEditing = id !== 'new';
+
+  const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState<Macrocycle>({
+    id: undefined,
     name: '',
-    startDate: dayjs().format('YYYY-MM-DD'),
-    endDate: dayjs().add(3, 'month').format('YYYY-MM-DD'),
+    number: undefined,
+    startDate: dayjs().toISOString(),
+    endDate: dayjs().add(1, 'month').toISOString(),
     notes: '',
   });
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  function formatDateFromPrisma(date: Date | string): string | null {
-    if (!date) return null;
-    
-    const parsedDate = typeof date === 'string' ? new Date(date) : date;
-    if (isNaN(parsedDate.getTime())) return null; // Check for invalid date
-  
-    return parsedDate.toISOString().split('T')[0]; // Format as "yyyy-MM-dd"
-  }
-
-  // Fetch the MacroCycle data for editing if id is present
   useEffect(() => {
-    console.log(id)
-    if (id) {
+    if (isEditing) {
       setLoading(true);
       fetch(`/api/cycles/macrocycles/${id}`)
         .then((response) => response.json())
         .then((data: Macrocycle) => {
-          console.log(data)
-          if(data.notes === null)
-            data.notes = "";
-          if(data.number === null)
-            data.number = -1
-          setMacroCycle(data);
+          setForm(data);
           setLoading(false);
         })
-        .catch((err) => {
-          console.error(err);
-          setError('Failed to fetch MacroCycle data.');
+        .catch(() => {
+          setError('Failed to load Macrocycle data.');
           setLoading(false);
         });
     }
-  }, [id]);
+  }, [id, isEditing]);
 
-  // Handle form submission for adding/editing MacroCycle
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setLoading(true);
 
     try {
-      console.log(JSON.stringify(macroCycle))
-      const response = await fetch(`/api/cycles/macrocycles${id ? `/${id}` : ''}`, {
-        method: id ? 'PUT' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(macroCycle),
+      const method = isEditing ? 'PUT' : 'POST';
+      const url = isEditing ? `/api/cycles/macrocycles/${id}` : `/api/cycles/macrocycles`;
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
       });
 
       if (response.ok) {
-        setSuccess(`MacroCycle ${id ? 'updated' : 'added'} successfully.`);
-        setTimeout(() => {
-          router.push('/utilities/cycles/macrocycles');
-        }, 2000);
+        setSuccess('Macrocycle saved successfully.');
+        setTimeout(() => router.push('/utilities/cycles/macrocycles'), 2000);
       } else {
-        setError('Failed to save MacroCycle.');
+        throw new Error('Failed to save Macrocycle.');
       }
     } catch (err) {
-      console.error(err);
-      setError('An error occurred while saving the MacroCycle.');
+      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <PageContainer title={`${id ? 'Edit' : 'Add'} MacroCycle`} description="MacroCycle Form">
-      <h1>{id ? 'Edit' : 'Add'} MacroCycle</h1>
+  if (loading) return <CircularProgress />;
 
-      {/* Success/Error Messages */}
-      {success ? (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
-          {success}
-        </Typography>
-      ) : <></>}
-      {error ? (
+  return (
+    <PageContainer title={isEditing ? 'Edit Macrocycle' : 'Create Macrocycle'}>
+      <h1>{isEditing ? 'Edit Macrocycle' : 'Create Macrocycle'}</h1>
+
+      {error && (
         <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
           {error}
         </Typography>
-      ) : <></>}
+      )}
 
-      {loading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <DashboardCard>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 2,
-              mt: 3,
-            }}
-          >
-            <TextField
-              label="Number"
-              type="number"
-              value={macroCycle.number}
-              onChange={(e) => {
-                const value = e.target.value;
-                if (value === "" || (Number(value) > 0 && Number.isInteger(Number(value)))) {
-                  setMacroCycle({ ...macroCycle, number: Number(e.target.value) })
-                }
-              }}
-              InputLabelProps={{ shrink: true }}
-            />
-            {/* Name Field */}
-            <TextField
-              label="Name"
-              value={macroCycle.name }
-              onChange={(e) => setMacroCycle({ ...macroCycle, name: e.target.value })}
-            />
-            {/* Start Date Field */}
-            <TextField
-              label="Start Date"
-              type="date"
-              value={formatDateFromPrisma(macroCycle.startDate)}
-              onChange={(e) => setMacroCycle({ ...macroCycle, startDate: e.target.value })}
-              InputLabelProps={{ shrink: true }}
-              required
-            />
+      {success && (
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
+          {success}
+        </Typography>
+      )}
 
-            {/* End Date Field */}
-            <TextField
-              label="End Date"
-              type="date"
-              value={formatDateFromPrisma(macroCycle.endDate)}
-              onChange={(e) => setMacroCycle({ ...macroCycle, endDate: e.target.value || '' })}
-              InputLabelProps={{ shrink: true }}
-              required
-            />
-
-            {/* Notes Field */}
-            <TextField
-              label="Notes"
-              value={macroCycle.notes }
-              onChange={(e) => setMacroCycle({ ...macroCycle, notes: e.target.value })}
-              multiline
-              rows={4}
-            />
-
-            {/* Submit Button */}
-            <Button type="submit" variant="contained" color="primary" disabled={loading}>
-              {id ? 'Update' : 'Add'} MacroCycle
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={3}>
+          <TextField
+            label="Name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Number"
+            name="number"
+            type="number"
+            value={form.number || ''}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            label="Start Date"
+            name="startDate"
+            type="datetime-local"
+            value={dayjs(form.startDate).format('YYYY-MM-DDTHH:mm')}
+            onChange={(e) => handleChange({ ...e, target: { ...e.target, value: new Date(e.target.value).toISOString() } })}
+            fullWidth
+            required
+          />
+          <TextField
+            label="End Date"
+            name="endDate"
+            type="datetime-local"
+            value={dayjs(form.endDate).format('YYYY-MM-DDTHH:mm')}
+            onChange={(e) => handleChange({ ...e, target: { ...e.target, value: new Date(e.target.value).toISOString() } })}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Notes"
+            name="notes"
+            value={form.notes}
+            onChange={handleChange}
+            fullWidth
+            multiline
+            rows={4}
+          />
+          <Box display="flex" justifyContent="space-between">
+            <Button type="submit" variant="contained" color="primary">
+              Save
+            </Button>
+            <Button variant="outlined" color="secondary" onClick={() => router.push('/utilities/cycles/macrocycles')}>
+              Cancel
             </Button>
           </Box>
-        </DashboardCard>
-      )}
+        </Stack>
+      </form>
     </PageContainer>
   );
 };
 
-export default MacroCycleForm;
+export default MacrocycleForm;

@@ -172,15 +172,25 @@ model mesocycle {
 }
 
 model microcycle {
-  id          Int       @id @default(autoincrement())
-  number      Int?
-  name        String?
-  date        DateTime
-  responsible String    @db.VarChar(100)
-  time        String    @db.VarChar(50)
-  notes       String?   @db.VarChar(1000)
-  mesocycle   mesocycle @relation(fields: [mesocycleId], references: [id])
-  mesocycleId Int
+  id           Int           @id @default(autoincrement())
+  number       Int?
+  name         String?
+  startDate    DateTime
+  endDate      DateTime
+  notes        String?       @db.VarChar(1000)
+  mesocycle    mesocycle     @relation(fields: [mesocycleId], references: [id])
+  mesocycleId  Int
+  sessionGoals sessionGoal[] // One-to-many relationship with practiceGoal
+}
+
+model sessionGoal {
+  id           Int        @id @default(autoincrement())
+  duration     Int // Duration in minutes
+  note         String?    @db.VarChar(1000)
+  coach        String     @db.VarChar(255) // Responsible person
+  sessionDate  DateTime
+  microcycle   microcycle @relation(fields: [microcycleId], references: [id], onDelete: Cascade)
+  microcycleId Int
 }
 
 model objectives {
@@ -199,6 +209,13 @@ enum objectiveType {
   DEFENSIVE
   TEAM
   INDIVIDUAL
+}
+
+model Drill {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  svg       String
+  createdAt DateTime @default(now())
 }
 
 enum TeamType {

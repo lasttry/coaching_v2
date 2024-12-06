@@ -2,107 +2,98 @@ import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-type Params = Promise<{ id: number }>
 
-// GET handler for fetching a team by ID
+type Params = Promise<{ id: number }>;
+
+// GET: Retrieve a specific mesocycle
 export async function GET(
   request: Request,
-  segmentData: { params: Params }) {
-    const params = await segmentData.params
-    const id = Number(params.id);
+  { params }: { params: Params }
+) {
+  const { id } = await params;
 
-  if (isNaN(id)) {
-    return NextResponse.json(
-      { error: "Invalid Mesocycle ID" },
-      { status: 400 },
-    );
+  if (isNaN(Number(id))) {
+    return NextResponse.json({ error: "Invalid mesocycle ID" }, { status: 400 });
   }
 
   try {
     const mesocycle = await prisma.mesocycle.findUnique({
-      where: { id },
+      where: { id: Number(id) },
+      include: {
+        microcycles: true,
+        macrocycle: true,
+      },
     });
 
     if (!mesocycle) {
       return NextResponse.json(
         { error: "Mesocycle not found" },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
     return NextResponse.json(mesocycle);
   } catch (error) {
-    console.error("Error fetching Mesocycle:", error);
-    return NextResponse.json(
-      { error: "Error fetching Mesocycle" },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ error: "Failed to fetch mesocycle" }, { status: 500 });
   }
 }
 
+// PUT: Update a specific mesocycle
 export async function PUT(
   request: Request,
-  segmentData: { params: Params }) {
-    const params = await segmentData.params
-    const id = Number(params.id);
+  { params }: { params: Params }
+) {
+  const { id } = await params;
 
-  if (isNaN(id)) {
-    return NextResponse.json(
-      { error: "Invalid mesocyclo ID" },
-      { status: 400 },
-    );
+  if (isNaN(Number(id))) {
+    return NextResponse.json({ error: "Invalid mesocycle ID" }, { status: 400 });
   }
 
   try {
     const data = await request.json();
+    const { name, number, startDate, endDate, notes, macrocycleId } = data;
 
-    const updateMesocycle = await prisma.mesocycle.update({
-      where: { id },
+    const payload = {
+      where: { id: Number(id) },
       data: {
-        number: Number(data.number),
-        name: data.name,
-        notes: data.notes,
-        startDate: new Date(data.startDate),
-        endDate: new Date(data.endDate),
-        macrocycleId: data.macrocycleId
+        name,
+        number: Number(number),
+        startDate: startDate ? new Date(startDate) : undefined,
+        endDate: endDate ? new Date(endDate) : undefined,
+        notes,
+        macrocycleId,
       },
-    });
+    }
+    console.log(payload)
+    const updatedMesocycle = await prisma.mesocycle.update(payload);
 
-    return NextResponse.json(updateMesocycle, { status: 200 });
+    return NextResponse.json(updatedMesocycle);
   } catch (error) {
-    console.error("Error updating mesocycle:", error);
-    return NextResponse.json(
-      { error: "Error updating mesocycle" },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ error: "Failed to update mesocycle" }, { status: 500 });
   }
 }
 
-// DELETE handler for deleting a team
+// DELETE: Delete a specific mesocycle
 export async function DELETE(
   request: Request,
-  segmentData: { params: Params }) {
-    const params = await segmentData.params
-    const id = params.id;
+  { params }: { params: Params }
+) {
+  const { id } = await params;
 
-  if (isNaN(id)) {
-    return NextResponse.json(
-      { error: "Invalid mesocycle ID" },
-      { status: 400 },
-    );
+  if (isNaN(Number(id))) {
+    return NextResponse.json({ error: "Invalid mesocycle ID" }, { status: 400 });
   }
 
   try {
     await prisma.mesocycle.delete({
-      where: { id },
+      where: { id: Number(id) },
     });
 
-    return NextResponse.json({}, { status: 204 });
+    return NextResponse.json({ message: "Mesocycle deleted successfully" });
   } catch (error) {
-    console.error("Error deleting mesocycle:", error);
-    return NextResponse.json(
-      { error: "Error deleting mesocycle" },
-      { status: 500 },
-    );
+    console.error(error);
+    return NextResponse.json({ error: "Failed to delete mesocycle" }, { status: 500 });
   }
 }
