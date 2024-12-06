@@ -127,7 +127,7 @@ const GameFormPage = (props: { params: Params }) => {
         console.log(gameData)
         const gameAthletes = gameData.game.gameAthletes.map((gameAthlete: any) => ({
           athlete: gameAthlete.athlete,  // Access `name` or other properties of the nested `athletes` object
-          number: gameAthlete.number === "" ? gameAthlete.athletes.number : gameAthlete.number, // Access `number` directly from `athletes` if it’s stored there
+          number: gameAthlete && gameAthlete.number === "" ? gameAthlete.athletes?.number || 0 : gameAthlete?.number || 0,
           period1: gameAthlete.period1,
           period2: gameAthlete.period2,
           period3: gameAthlete.period3,
