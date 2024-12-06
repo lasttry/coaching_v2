@@ -2,9 +2,13 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+type Params = Promise<{ id: number }>;
 
-export async function GET(request, { params }) {
-  const { id } = params;
+export async function GET(
+  request: Request,
+  { params }: { params: Params }
+) {
+  const { id } = await params;
 
   // Validate the ID parameter
   if (!id || isNaN(Number(id))) {
@@ -36,7 +40,7 @@ export async function GET(request, { params }) {
 
     // Format session data for front-end use
     const sessions = microcycleDetails.sessionGoals.map((session) => ({
-      durations: [session.time, session.duration],
+      durations: [session.duration],
       notes: [session.note, session.coach],
     }));
 

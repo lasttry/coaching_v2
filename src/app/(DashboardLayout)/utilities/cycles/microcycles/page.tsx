@@ -35,7 +35,7 @@ const MicrocyclesList = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsData, setDetailsData] = useState(null);
 
-  const openDetailsOverlay = async (microcycleId: Number) => {
+  const openDetailsOverlay = async (microcycleId: number) => {
     try {
       const response = await fetch(`/api/cycles/microcycles/${microcycleId}/details`);
       const data = await response.json();
@@ -56,20 +56,30 @@ const MicrocyclesList = () => {
     async function fetchMicrocycles() {
       try {
         const response = await fetch('/api/cycles/microcycles'); // Fetching microcycles from the API
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const microcycles: Microcycle[] = await response.json();
         console.log('Fetched microcycles:', microcycles);
-  
+
         // Group Microcycles by Macrocycle → Mesocycle with null safety checks
-        const groupedData = microcycles.reduce((acc, microcycle) => {
+        const groupedData = microcycles.reduce<Record<number, {
+          macrocycle: Macrocycle;
+          mesocycles: Record<number, {
+            mesocycle: Mesocycle;
+            microcycles: Microcycle[];
+          }>;
+        }>>((acc, microcycle) => {
           const macrocycle = microcycle.mesocycle?.macrocycle;
           const mesocycle = microcycle.mesocycle;
-  
+
           // Ensure both macrocycle and mesocycle exist
           if (!macrocycle || !mesocycle) {
-            console.warn('Missing macrocycle or mesocycle for microcycle:', microcycle);
+            console.warn('Skipping microcycle due to missing macrocycle or mesocycle:', microcycle);
             return acc;
           }
-  
+
           // Initialize macrocycle group if not already present
           if (!acc[macrocycle.id]) {
             acc[macrocycle.id] = {
@@ -77,7 +87,7 @@ const MicrocyclesList = () => {
               mesocycles: {},
             };
           }
-  
+
           // Initialize mesocycle group if not already present
           if (!acc[macrocycle.id].mesocycles[mesocycle.id]) {
             acc[macrocycle.id].mesocycles[mesocycle.id] = {
@@ -85,13 +95,13 @@ const MicrocyclesList = () => {
               microcycles: [],
             };
           }
-  
+
           // Add microcycle to the corresponding mesocycle
           acc[macrocycle.id].mesocycles[mesocycle.id].microcycles.push(microcycle);
-  
+
           return acc;
         }, {});
-  
+
         // Convert grouped data to an array and sort each group by date ascending
         const groupedArray = Object.values(groupedData).map((macroGroup) => ({
           ...macroGroup,
@@ -102,17 +112,17 @@ const MicrocyclesList = () => {
             ),
           })),
         }));
-  
+
         setData(groupedArray); // Update state with grouped and sorted data
       } catch (err) {
         console.error('Error fetching microcycles:', err);
         setError('Failed to fetch microcycles.');
       }
     }
-  
+
     fetchMicrocycles();
   }, []);
-  
+
   
 
   // Handle microcycle deletion
@@ -307,7 +317,7 @@ const MicrocyclesList = () => {
                                   color="primary"
                                   onClick={(e) => {
                                     e.stopPropagation();
-                                    openDetailsOverlay(microcycle.id);
+                                    openDetailsOverlay(cycle.id);
                                   }}
                                 >
                                   View Details

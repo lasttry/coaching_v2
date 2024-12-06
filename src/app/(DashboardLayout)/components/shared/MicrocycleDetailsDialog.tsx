@@ -14,7 +14,7 @@ interface Data {
 interface MicrocycleDetailsDialogProps {
   open: boolean;
   onClose: () => void;
-  data?: Data;
+  data?: Data | null;
 }
 
 const MicrocycleDetailsDialog: React.FC<MicrocycleDetailsDialogProps> = ({ open, onClose, data }) => {

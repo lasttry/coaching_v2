@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { Box, Typography, Stack, Button, Select, MenuItem, TextField } from '@mui/material';
-import { Stage, Layer, Line, Circle, Text, Canvas } from 'react-konva';
+import { Stage, Layer, Line, Circle, Text } from 'react-konva';
 
 
 const BasketballDrillPage = () => {

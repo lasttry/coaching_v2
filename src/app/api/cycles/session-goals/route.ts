@@ -35,6 +35,7 @@ export async function POST(request: Request) {
 
     const newSessionGoal = await prisma.sessionGoal.create({
       data: {
+        sessionDate: new Date(),
         duration,
         note,
         coach,

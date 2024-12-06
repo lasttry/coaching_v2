@@ -34,6 +34,7 @@ export interface Microcycle {
 
 export interface SessionGoal {
   id?: number;
+  sessionDate?: Date;
   duration: number; // Duration in minutes
   note: string | null; // Additional notes
   coach: string; // Coach responsible for the session goal
