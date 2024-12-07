@@ -37,8 +37,8 @@ export const generateGameDetailsHeader = (doc: jsPDFWithAutoTable, top: number, 
     head: [], // Table headers
     body: [
       ['Jogo', `${game.number}`, 'Competição', `${game.competition}`],
-      ['Local', `${game.away ? game.teams?.location : settings?.homeLocation}`, '', `${game.subcomp}`],
-      ['Adversário', `${game.teams?.name}`, 'Data/Hora', `${dayjs(game.date).format('YYYY-MM-DD HH:mm')}`],
+      ['Local', `${game.away ? game.oponent?.location : settings?.homeLocation}`, '', `${game.subcomp}`],
+      ['Adversário', `${game.oponent?.name}`, 'Data/Hora', `${dayjs(game.date).format('YYYY-MM-DD HH:mm')}`],
     ],
     theme: 'grid', // Use grid to draw borders
   });
