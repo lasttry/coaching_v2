@@ -41,10 +41,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json({ error: "Game not found" }, { status: 404 });
   }
 
-  // Include athletes in the response
-  const athletes = game.gameAthletes.map((ga) => ga.athlete);
-
-  return NextResponse.json({ settings, game: { ...game, athletes, objectives: game.objectives || [] } });
+  return NextResponse.json({ settings, game: { ...game, objectives: game.objectives || [] } });
 }
 
 // PUT method to update an existing game by ID

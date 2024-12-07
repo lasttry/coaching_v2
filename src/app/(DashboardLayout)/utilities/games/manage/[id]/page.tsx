@@ -127,7 +127,7 @@ const GameFormPage = (props: { params: Params }) => {
         console.log(gameData)
         const gameAthletes = gameData.game.gameAthletes.map((gameAthlete: any) => ({
           athlete: gameAthlete.athlete,  // Access `name` or other properties of the nested `athletes` object
-          number: gameAthlete && gameAthlete.number === "" ? gameAthlete.athletes?.number || 0 : gameAthlete?.number || 0,
+          number: gameAthlete && gameAthlete.number === "" ? gameAthlete.athlete?.number || 0 : gameAthlete?.number || 0,
           period1: gameAthlete.period1,
           period2: gameAthlete.period2,
           period3: gameAthlete.period3,
@@ -215,7 +215,7 @@ const GameFormPage = (props: { params: Params }) => {
       setSelectedAthletes(sortAthletes(updatedSelected));
       setForm((prev) => ({
         ...prev,
-        athletes: prev.gameAthletes.filter((ath) => ath.athlete.id !== athlete.athlete.id),
+        gameAthletes: prev.gameAthletes.filter((ath) => ath.athlete.id !== athlete.athlete.id),
       }));
     };
   
@@ -230,10 +230,10 @@ const GameFormPage = (props: { params: Params }) => {
 
         const updateForm = {
           ...form,
-          athletes: selectedAthletes,
+          gameAthletes: selectedAthletes,
           objectives: objectives,
         }
-        console.log("Submitting:", JSON.stringify(updateForm));
+        console.log(updateForm);
 
         const response = await fetch(url, {
           method,
