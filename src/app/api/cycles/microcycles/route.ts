@@ -28,14 +28,17 @@ export async function POST(request: Request) {
   const body = await request.json();
 
   try {
-    const newMicrocycle = await prisma.microcycle.create({
+    console.log(`Request Body:`, body);
+    const payload = {
       data: {
         number: body.number,
         name: body.name,
         startDate: body.startDate,
         endDate: body.endDate,
         notes: body.notes,
-        mesocycleId: body.mesocycleId,
+        mesocycle: {
+          connect: { id: body.mesocycle.id }, // Provide the ID of the related mesocycle
+        },
         sessionGoals: {
           create: body.sessionGoals.map((goal: { duration: string; note: string; coach: string }) => ({
             duration: goal.duration,
@@ -47,7 +50,9 @@ export async function POST(request: Request) {
       include: {
         sessionGoals: true,
       },
-    });
+    }
+    console.log([payload])
+    const newMicrocycle = await prisma.microcycle.create(payload);
 
     return NextResponse.json(newMicrocycle);
   } catch (error) {

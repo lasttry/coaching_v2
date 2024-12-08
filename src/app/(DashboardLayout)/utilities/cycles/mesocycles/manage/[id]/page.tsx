@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
   Button,
   TextField,
@@ -17,12 +17,13 @@ import {
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
 import { MesocycleInterface, MacrocycleInterface } from '@/types/cycles/types';
+
 type Params = Promise<{ id: string }>;
 
 const MesocycleForm = (props: { params: Params }) => {
   const router = useRouter();
   const params = use(props.params);
-  const id = params?.id; // Use segmentData to retrieve the ID
+  const id = params?.id; // Retrieve the ID from segmentData
   const isEditing = id !== 'new';
 
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,7 @@ const MesocycleForm = (props: { params: Params }) => {
     startDate: new Date(dayjs().toISOString()),
     endDate: new Date(dayjs().add(1, 'month').toISOString()),
     notes: '',
+    macrocycleId: undefined,
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -98,6 +100,8 @@ const MesocycleForm = (props: { params: Params }) => {
 
   if (loading) return <CircularProgress />;
 
+  const selectedMacrocycle = macrocycles.find((macro) => macro.id === form.macrocycleId);
+
   return (
     <PageContainer title={isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}>
       <h1>{isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}</h1>
@@ -121,7 +125,7 @@ const MesocycleForm = (props: { params: Params }) => {
             name="macrocycleId"
             value={form.macrocycleId ? String(form.macrocycleId) : ''}
             onChange={(e: SelectChangeEvent<string>) => {
-              const value = parseInt(e.target.value, 10); // Convert string value to number
+              const value = parseInt(e.target.value, 10);
               setForm((prev) => ({ ...prev, macrocycleId: value }));
             }}
             fullWidth
@@ -137,7 +141,6 @@ const MesocycleForm = (props: { params: Params }) => {
               </MenuItem>
             ))}
           </Select>
-
 
           {/* Mesocycle Number */}
           <TextField
@@ -162,32 +165,26 @@ const MesocycleForm = (props: { params: Params }) => {
           {/* Start Date */}
           <TextField
             label="Start Date"
-            name="startDate"
-            type="datetime-local"
-            value={dayjs(form.startDate).format('YYYY-MM-DDTHH:mm')}
-            onChange={(e) =>
-              handleChange({
-                ...e,
-                target: { ...e.target, value: new Date(e.target.value).toISOString() },
-              })
-            }
-            fullWidth
+            type="date"
+            value={dayjs(form.startDate).format('YYYY-MM-DD')}
+            onChange={(e) => setForm((prev) => ({ ...prev, startDate: new Date(dayjs(e.target.value).toISOString()) }))}
+            inputProps={{
+              min: selectedMacrocycle ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD') : undefined,
+              max: selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined,
+            }}
             required
           />
 
           {/* End Date */}
           <TextField
             label="End Date"
-            name="endDate"
-            type="datetime-local"
-            value={dayjs(form.endDate).format('YYYY-MM-DDTHH:mm')}
-            onChange={(e) =>
-              handleChange({
-                ...e,
-                target: { ...e.target, value: new Date(e.target.value).toISOString() },
-              })
-            }
-            fullWidth
+            type="date"
+            value={dayjs(form.endDate).format('YYYY-MM-DD')}
+            onChange={(e) => setForm((prev) => ({ ...prev, endDate: new Date(dayjs(e.target.value).toISOString()) }))}
+            inputProps={{
+              min: form.startDate ? dayjs(form.startDate).format('YYYY-MM-DD') : undefined,
+              max: selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined,
+            }}
             required
           />
 
