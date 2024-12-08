@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { NextRequest } from "next/server";
+import { SessionGoalInterface } from "@/types/cycles/types";
 
 const prisma = new PrismaClient();
 
@@ -17,7 +18,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 
   try {
     const microcycle = await prisma.microcycle.findUnique({
-      where: { id },
+      where: { id: Number(id) },
       include: {
         mesocycle: {
           include: {
@@ -40,6 +41,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     console.error("Error fetching microcycle:", error);
     return NextResponse.json({ error: "Failed to fetch microcycle" }, { status: 500 });
   }
+
 }
 
 // PUT: Update a specific microcycle
@@ -54,11 +56,16 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
   const body = await req.json();
 
   try {
-    const sessionGoals = body.sessionGoals.map((goal: { duration: string; note: string; coach: string }) => ({
-      duration: Number(goal.duration),
-      note: goal.note,
-      coach: goal.coach,
-    }));
+
+    const sessionGoals = body.sessionGoals
+    ? body.sessionGoals.map((goal: any, index: number) => ({
+        duration: parseInt(goal.duration, 10),
+        note: goal.note || null,
+        coach: goal.coach,
+        date: new Date(goal.date),
+        order: goal.order ? goal.order : index + 1
+      }))
+    : [];
 
     const payload = {
       where: { id },
@@ -68,22 +75,23 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
         startDate: new Date(body.startDate),
         endDate: new Date(body.endDate),
         notes: body.notes,
-        mesocycleId: body.mesocycleId,
+        mesocycle: {
+          connect: { id: body.mesocycleId },
+        },
         sessionGoals: {
           deleteMany: {}, // Remove all existing session goals
           create: sessionGoals,
         },
       },
-      include: {
-        sessionGoals: true,
-      },
     };
-
+    console.log(payload)
+    console.log(sessionGoals)
     const updatedMicrocycle = await prisma.microcycle.update(payload);
 
     return NextResponse.json(updatedMicrocycle);
   } catch (error) {
-    console.error("Error updating microcycle:", error);
+    console.error("Error updating microcycle:");
+    console.error(error)
     return NextResponse.json({ error: "Failed to update microcycle" }, { status: 500 });
   }
 }

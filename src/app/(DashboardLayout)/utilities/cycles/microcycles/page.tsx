@@ -23,11 +23,11 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
-import { Microcycle, Mesocycle, Macrocycle } from '@/types/cycles/types';
+import { MicrocycleInterface, MesocycleInterface, MacrocycleInterface } from '@/types/cycles/types';
 
 const MicrocyclesList = () => {
   const [data, setData] = useState<
-    { macrocycle: Macrocycle; mesocycles: { mesocycle: Mesocycle; microcycles: Microcycle[] }[] }[]
+    { macrocycle: MacrocycleInterface; mesocycles: { mesocycle: MesocycleInterface; microcycles: MicrocycleInterface[] }[] }[]
   >([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -39,6 +39,7 @@ const MicrocyclesList = () => {
     try {
       const response = await fetch(`/api/cycles/microcycles/${microcycleId}/details`);
       const data = await response.json();
+      console.log(data)
       setDetailsData(data);
       setDetailsOpen(true);
     } catch (err) {
@@ -60,15 +61,15 @@ const MicrocyclesList = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const microcycles: Microcycle[] = await response.json();
+        const microcycles: MicrocycleInterface[] = await response.json();
         console.log('Fetched microcycles:', microcycles);
 
         // Group Microcycles by Macrocycle → Mesocycle with null safety checks
         const groupedData = microcycles.reduce<Record<number, {
-          macrocycle: Macrocycle;
+          macrocycle: MacrocycleInterface;
           mesocycles: Record<number, {
-            mesocycle: Mesocycle;
-            microcycles: Microcycle[];
+            mesocycle: MesocycleInterface;
+            microcycles: MicrocycleInterface[];
           }>;
         }>>((acc, microcycle) => {
           const macrocycle = microcycle.mesocycle?.macrocycle;

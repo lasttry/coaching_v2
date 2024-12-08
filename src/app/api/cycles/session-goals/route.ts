@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, sessionGoal } from "@prisma/client";
+import { SessionGoalInterface } from "@/types/cycles/types";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +23,7 @@ export async function GET() {
 // POST: Create a new session goal
 export async function POST(request: Request) {
   try {
-    const data = await request.json();
+    const data: SessionGoalInterface = await request.json();
 
     // Validate required fields
     const { duration, note, coach, microcycleId } = data;
@@ -35,11 +36,14 @@ export async function POST(request: Request) {
 
     const newSessionGoal = await prisma.sessionGoal.create({
       data: {
-        sessionDate: new Date(),
+        date: new Date(Date.now()),
         duration,
         note,
         coach,
-        microcycleId,
+        order: data.order,                     // Add the required `order` field
+        microcycle: {              // Link to the related microcycle
+          connect: { id: microcycleId }, // Ensure `microcycleId` is valid
+        },
       },
     });
 

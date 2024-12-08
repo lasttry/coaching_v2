@@ -18,10 +18,10 @@ import {
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from "@/app/(DashboardLayout)/components/shared/DashboardCard";
 import dayjs from 'dayjs';
-import { Macrocycle } from '@/types/cycles/types';
+import { MacrocycleInterface } from '@/types/cycles/types';
 
 const MacroCyclesList = () => {
-  const [macroCycles, setMacroCycles] = useState<Macrocycle[]>([]);
+  const [macroCycles, setMacroCycles] = useState<MacrocycleInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
@@ -31,7 +31,7 @@ const MacroCyclesList = () => {
     async function fetchMacroCycles() {
       try {
         const response = await fetch('/api/cycles/macrocycles'); // Fetching macro cycles from the API
-        const data: Macrocycle[] = await response.json();
+        const data: MacrocycleInterface[] = await response.json();
         setMacroCycles(data);
       } catch (err) {
         console.error(err);

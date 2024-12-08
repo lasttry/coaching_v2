@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "objectiveType" AS ENUM ('OFFENSIVE', 'DEFENSIVE', 'TEAM', 'INDIVIDUAL');
+
+-- CreateEnum
 CREATE TYPE "TeamType" AS ENUM ('A', 'B');
 
 -- CreateTable
@@ -22,6 +25,10 @@ CREATE TABLE "gameAthletes" (
     "gameId" INTEGER NOT NULL,
     "athleteId" INTEGER NOT NULL,
     "number" TEXT,
+    "period1" BOOLEAN,
+    "period2" BOOLEAN,
+    "period3" BOOLEAN,
+    "period4" BOOLEAN,
 
     CONSTRAINT "gameAthletes_pkey" PRIMARY KEY ("gameId","athleteId")
 );
@@ -125,13 +132,87 @@ CREATE TABLE "athleteReport" (
     "id" SERIAL NOT NULL,
     "gameId" INTEGER NOT NULL,
     "athleteId" INTEGER NOT NULL,
-    "reviewdAthleteId" INTEGER NOT NULL,
     "teamObservation" VARCHAR(2000),
     "individualObservation" VARCHAR(2000),
     "timePlayedObservation" VARCHAR(2000),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "reviewedAthleteId" INTEGER,
 
     CONSTRAINT "athleteReport_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "macrocycle" (
+    "id" SERIAL NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "notes" VARCHAR(1000),
+    "number" INTEGER,
+    "name" TEXT,
+
+    CONSTRAINT "macrocycle_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "mesocycle" (
+    "id" SERIAL NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "notes" VARCHAR(1000),
+    "macrocycleId" INTEGER NOT NULL,
+    "number" INTEGER,
+    "name" TEXT,
+
+    CONSTRAINT "mesocycle_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "microcycle" (
+    "id" SERIAL NOT NULL,
+    "notes" VARCHAR(1000),
+    "mesocycleId" INTEGER NOT NULL,
+    "number" INTEGER,
+    "name" TEXT,
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "microcycle_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "sessionGoal" (
+    "id" SERIAL NOT NULL,
+    "duration" INTEGER NOT NULL,
+    "note" VARCHAR(1000),
+    "coach" VARCHAR(255) NOT NULL,
+    "microcycleId" INTEGER NOT NULL,
+    "date" TIMESTAMP(3) NOT NULL,
+    "order" INTEGER NOT NULL,
+
+    CONSTRAINT "sessionGoal_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "objectives" (
+    "id" SERIAL NOT NULL,
+    "title" VARCHAR(255) NOT NULL,
+    "description" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "gameId" INTEGER NOT NULL,
+    "type" "objectiveType" NOT NULL,
+
+    CONSTRAINT "objectives_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Drill" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT,
+    "svg" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Drill_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -177,4 +258,16 @@ ALTER TABLE "athleteReport" ADD CONSTRAINT "athleteReport_athleteId_fkey" FOREIG
 ALTER TABLE "athleteReport" ADD CONSTRAINT "athleteReport_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES "games"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "athleteReport" ADD CONSTRAINT "athleteReport_reviewdAthleteId_fkey" FOREIGN KEY ("reviewdAthleteId") REFERENCES "athletes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "athleteReport" ADD CONSTRAINT "athleteReport_reviewedAthleteId_fkey" FOREIGN KEY ("reviewedAthleteId") REFERENCES "athletes"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "mesocycle" ADD CONSTRAINT "mesocycle_macrocycleId_fkey" FOREIGN KEY ("macrocycleId") REFERENCES "macrocycle"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "microcycle" ADD CONSTRAINT "microcycle_mesocycleId_fkey" FOREIGN KEY ("mesocycleId") REFERENCES "mesocycle"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "sessionGoal" ADD CONSTRAINT "sessionGoal_microcycleId_fkey" FOREIGN KEY ("microcycleId") REFERENCES "microcycle"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "objectives" ADD CONSTRAINT "objectives_gameId_fkey" FOREIGN KEY ("gameId") REFERENCES "games"("id") ON DELETE CASCADE ON UPDATE CASCADE;

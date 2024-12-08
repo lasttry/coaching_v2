@@ -18,11 +18,11 @@ model athletes {
   idNumber        Int?
   idType          String?         @db.VarChar(50)
   active          Boolean?        @default(true)
+  athleteReport   athleteReport[]
   reviewedAthlete athleteReport[] @relation("reviewedAthlete")
   gameAthletes    gameAthletes[]
   statistics      statistic[]
   timeEntry       timeEntry[]
-  athleteReport   athleteReport[]
 }
 
 model gameAthletes {
@@ -49,15 +49,14 @@ model games {
   competition         String?         @db.VarChar(30)
   subcomp             String?         @db.VarChar(30)
   oponentId           Int
-  oponent             teams           @relation(fields: [oponentId], references: [id])
   notes               String?         @db.VarChar(1000)
   teamLostDefRebounds Int             @default(0)
   athleteReports      athleteReport[]
   gameAthletes        gameAthletes[]
+  oponent             teams           @relation(fields: [oponentId], references: [id])
+  objectives          objectives[]    @relation("objectives")
   statistics          statistic[]
   timeEntry           timeEntry[]
-
-  objectives objectives[] @relation("objectives")
 }
 
 model settings {
@@ -132,18 +131,17 @@ model timeEntry {
 }
 
 model athleteReport {
-  id                    Int      @id @default(autoincrement())
+  id                    Int       @id @default(autoincrement())
   gameId                Int
   athleteId             Int
+  teamObservation       String?   @db.VarChar(2000)
+  individualObservation String?   @db.VarChar(2000)
+  timePlayedObservation String?   @db.VarChar(2000)
+  createdAt             DateTime  @default(now())
   reviewedAthleteId     Int?
-  teamObservation       String?  @db.VarChar(2000)
-  individualObservation String?  @db.VarChar(2000)
-  timePlayedObservation String?  @db.VarChar(2000)
-  createdAt             DateTime @default(now())
-
-  athlete         athletes  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  game            games     @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  reviewedAthlete athletes? @relation("reviewedAthlete", fields: [reviewedAthleteId], references: [id], onDelete: Cascade)
+  athlete               athletes  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  game                  games     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  reviewedAthlete       athletes? @relation("reviewedAthlete", fields: [reviewedAthleteId], references: [id], onDelete: Cascade)
 
   @@unique([gameId, athleteId])
   @@index([gameId, athleteId])
@@ -151,64 +149,58 @@ model athleteReport {
 
 model macrocycle {
   id         Int         @id @default(autoincrement())
-  name       String?
-  number     Int?
   startDate  DateTime
   endDate    DateTime
   notes      String?     @db.VarChar(1000)
+  number     Int?
+  name       String?
   mesocycles mesocycle[]
 }
 
 model mesocycle {
   id           Int          @id @default(autoincrement())
-  number       Int?
-  name         String?
   startDate    DateTime
   endDate      DateTime
   notes        String?      @db.VarChar(1000)
-  macrocycle   macrocycle   @relation(fields: [macrocycleId], references: [id])
   macrocycleId Int
+  number       Int?
+  name         String?
+  macrocycle   macrocycle   @relation(fields: [macrocycleId], references: [id])
   microcycles  microcycle[]
 }
 
 model microcycle {
   id           Int           @id @default(autoincrement())
+  notes        String?       @db.VarChar(1000)
+  mesocycleId  Int
   number       Int?
   name         String?
-  startDate    DateTime
   endDate      DateTime
-  notes        String?       @db.VarChar(1000)
+  startDate    DateTime
   mesocycle    mesocycle     @relation(fields: [mesocycleId], references: [id])
-  mesocycleId  Int
-  sessionGoals sessionGoal[] // One-to-many relationship with practiceGoal
+  sessionGoals sessionGoal[]
 }
 
 model sessionGoal {
   id           Int        @id @default(autoincrement())
-  duration     Int // Duration in minutes
+  duration     Int
   note         String?    @db.VarChar(1000)
-  coach        String     @db.VarChar(255) // Responsible person
-  sessionDate  DateTime
-  microcycle   microcycle @relation(fields: [microcycleId], references: [id], onDelete: Cascade)
+  coach        String     @db.VarChar(255)
   microcycleId Int
+  date         DateTime
+  order        Int
+  microcycle   microcycle @relation(fields: [microcycleId], references: [id], onDelete: Cascade)
 }
 
 model objectives {
   id          Int           @id @default(autoincrement())
   title       String        @db.VarChar(255)
-  description String?       @db.Text
-  gameId      Int
-  game        games         @relation("objectives", fields: [gameId], references: [id], onDelete: Cascade) // Relation to `games`
+  description String?
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
+  gameId      Int
   type        objectiveType
-}
-
-enum objectiveType {
-  OFFENSIVE
-  DEFENSIVE
-  TEAM
-  INDIVIDUAL
+  game        games         @relation("objectives", fields: [gameId], references: [id], onDelete: Cascade)
 }
 
 model Drill {
@@ -216,6 +208,13 @@ model Drill {
   name      String?
   svg       String
   createdAt DateTime @default(now())
+}
+
+enum objectiveType {
+  OFFENSIVE
+  DEFENSIVE
+  TEAM
+  INDIVIDUAL
 }
 
 enum TeamType {

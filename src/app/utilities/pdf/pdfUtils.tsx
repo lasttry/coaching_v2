@@ -194,7 +194,7 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
   autoTable(doc, {
     startY: afterPlayersTableY + 15, // Position the table below the title
     margin: { left: 10 },
-    head: [['', `${ game.away ? game.teams?.shortName : settings?.shortName }`, `${ game.away ? settings?.shortName : game.teams?.shortName }`]],
+    head: [['', `${ game.away ? game.oponent?.shortName : settings?.shortName }`, `${ game.away ? settings?.shortName : game.teams?.shortName }`]],
     body: [
       ['1º Periodo', '', ''],
       ['2º Periodo', '', ''],

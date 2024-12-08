@@ -16,7 +16,7 @@ import {
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
-import { Mesocycle, Macrocycle } from '@/types/cycles/types';
+import { MesocycleInterface, MacrocycleInterface } from '@/types/cycles/types';
 type Params = Promise<{ id: string }>;
 
 const MesocycleForm = (props: { params: Params }) => {
@@ -26,8 +26,8 @@ const MesocycleForm = (props: { params: Params }) => {
   const isEditing = id !== 'new';
 
   const [loading, setLoading] = useState(false);
-  const [macrocycles, setMacrocycles] = useState<Macrocycle[]>([]);
-  const [form, setForm] = useState<Mesocycle>({
+  const [macrocycles, setMacrocycles] = useState<MacrocycleInterface[]>([]);
+  const [form, setForm] = useState<MesocycleInterface>({
     id: 0,
     number: undefined,
     name: '',
@@ -45,13 +45,13 @@ const MesocycleForm = (props: { params: Params }) => {
 
         // Fetch all macrocycles for the dropdown
         const macrocyclesResponse = await fetch('/api/cycles/macrocycles');
-        const macrocyclesData: Macrocycle[] = await macrocyclesResponse.json();
+        const macrocyclesData: MacrocycleInterface[] = await macrocyclesResponse.json();
         setMacrocycles(macrocyclesData);
 
         if (isEditing) {
           // Fetch mesocycle data if editing
           const mesocycleResponse = await fetch(`/api/cycles/mesocycles/${id}`);
-          const mesocycleData: Mesocycle = await mesocycleResponse.json();
+          const mesocycleData: MesocycleInterface = await mesocycleResponse.json();
           setForm(mesocycleData);
         }
       } catch (err) {

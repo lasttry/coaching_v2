@@ -13,7 +13,7 @@ import {
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
-import { Macrocycle } from '@/types/cycles/types';
+import { MacrocycleInterface } from '@/types/cycles/types';
 
 type Params = Promise<{ id: string }>;
 
@@ -24,7 +24,7 @@ const MacrocycleForm = (props: { params: Params }) => {
   const isEditing = id !== 'new';
 
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState<Macrocycle>({
+  const [form, setForm] = useState<MacrocycleInterface>({
     id: 0,
     name: '',
     number: undefined,
@@ -41,7 +41,7 @@ const MacrocycleForm = (props: { params: Params }) => {
       setLoading(true);
       fetch(`/api/cycles/macrocycles/${id}`)
         .then((response) => response.json())
-        .then((data: Macrocycle) => {
+        .then((data: MacrocycleInterface) => {
           setForm(data);
           setLoading(false);
         })
