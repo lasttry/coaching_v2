@@ -8,6 +8,7 @@ export async function GET() {
   try {
     const microcycles = await prisma.microcycle.findMany({
       include: {
+        sessionGoals: true,
         mesocycle: {
           include: {
             macrocycle: true,

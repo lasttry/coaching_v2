@@ -59,7 +59,7 @@ const SessionGoalsTables = ({ data }: { data: any[] }) => {
                   {day.weekday}, {day.day}
                 </Typography>
                 <Typography variant="subtitle1">
-                  Total Duration: {Math.floor(day.totalDuration / 60)}h {day.totalDuration % 60}m
+                  Duração Total: {Math.floor(day.totalDuration / 60)}h {day.totalDuration % 60}m
                 </Typography>
               </TableCell>
             ))}

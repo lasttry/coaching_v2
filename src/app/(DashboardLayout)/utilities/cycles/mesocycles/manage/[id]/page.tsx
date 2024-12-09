@@ -105,19 +105,16 @@ const MesocycleForm = (props: { params: Params }) => {
   return (
     <PageContainer title={isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}>
       <h1>{isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}</h1>
-
       {error && (
         <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
           {error}
         </Typography>
       )}
-
       {success && (
         <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
           {success}
         </Typography>
       )}
-
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
           {/* Macrocycle Dropdown */}
@@ -141,7 +138,6 @@ const MesocycleForm = (props: { params: Params }) => {
               </MenuItem>
             ))}
           </Select>
-
           {/* Mesocycle Number */}
           <TextField
             label="Number"
@@ -151,7 +147,6 @@ const MesocycleForm = (props: { params: Params }) => {
             onChange={handleChange}
             fullWidth
           />
-
           {/* Mesocycle Name */}
           <TextField
             label="Name"
@@ -161,29 +156,43 @@ const MesocycleForm = (props: { params: Params }) => {
             fullWidth
             required
           />
-
           {/* Start Date */}
           <TextField
             label="Start Date"
             type="date"
             value={dayjs(form.startDate).format('YYYY-MM-DD')}
             onChange={(e) => setForm((prev) => ({ ...prev, startDate: new Date(dayjs(e.target.value).toISOString()) }))}
-            inputProps={{
-              min: selectedMacrocycle ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD') : undefined,
-              max: selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined,
+            inputRef={(input) => {
+              if (input) {
+                input.setAttribute(
+                  "min",
+                  selectedMacrocycle ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD') : undefined,
+                );
+                input.setAttribute(
+                  "max",
+                  selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined,
+                );
+              }
             }}
             required
           />
-
           {/* End Date */}
           <TextField
             label="End Date"
             type="date"
             value={dayjs(form.endDate).format('YYYY-MM-DD')}
             onChange={(e) => setForm((prev) => ({ ...prev, endDate: new Date(dayjs(e.target.value).toISOString()) }))}
-            inputProps={{
-              min: form.startDate ? dayjs(form.startDate).format('YYYY-MM-DD') : undefined,
-              max: selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined,
+            inputRef={(input) => {
+              if (input) {
+                input.setAttribute(
+                  "min",
+                  form.startDate ? dayjs(form.startDate).format('YYYY-MM-DD') : undefined,
+                );
+                input.setAttribute(
+                  "max",
+                  selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined,
+                );
+              }
             }}
             required
           />

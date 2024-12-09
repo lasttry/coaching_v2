@@ -23,7 +23,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
-import { MicrocycleInterface, MesocycleInterface, MacrocycleInterface } from '@/types/cycles/types';
+import { MicrocycleInterface, MesocycleInterface, MacrocycleInterface, SessionGoalInterface } from '@/types/cycles/types';
 
 const MicrocyclesList = () => {
   const [data, setData] = useState<
@@ -33,14 +33,21 @@ const MicrocyclesList = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
   const [detailsOpen, setDetailsOpen] = useState(false);
-  const [detailsData, setDetailsData] = useState(null);
+  const [detailsData, setDetailsData] = useState<SessionGoalInterface[] | null>(null);
+  const [currentMacrocycle, setCurrentMacrocycle] = useState<MacrocycleInterface | null>(null);
+  const [currentMesocycle, setCurrentMesocycle] = useState<MesocycleInterface | null>(null);
 
   const openDetailsOverlay = async (microcycleId: number) => {
     try {
-      const response = await fetch(`/api/cycles/microcycles/${microcycleId}/details`);
-      const data = await response.json();
-      console.log(data)
-      setDetailsData(data);
+      const currentData = findMicrocycleById(microcycleId)
+      console.log(currentData)
+      if (currentData && currentData.microcycle.sessionGoals) {
+        setDetailsData(currentData.microcycle.sessionGoals);
+        setCurrentMacrocycle(currentData.macrocycle);
+        setCurrentMesocycle(currentData.mesocycle)
+      } else {
+        setDetailsData(null); // Set to null if sessionGoals is undefined
+      }
       setDetailsOpen(true);
     } catch (err) {
       console.error('Error fetching details:', err);
@@ -50,6 +57,24 @@ const MicrocyclesList = () => {
   const closeDetailsOverlay = () => {
     setDetailsOpen(false);
     setDetailsData(null);
+    setCurrentMacrocycle(null);
+    setCurrentMesocycle(null);
+  };
+
+  const findMicrocycleById = (microcycleId: number) => {
+    for (const macroGroup of data) {
+      for (const mesoGroup of macroGroup.mesocycles) {
+        const foundMicrocycle = mesoGroup.microcycles.find((micro) => micro.id === microcycleId);
+        if (foundMicrocycle) {
+          return {
+            macrocycle: macroGroup.macrocycle,
+            mesocycle: mesoGroup.mesocycle,
+            microcycle: foundMicrocycle
+          };
+        }
+      }
+    }
+    return null; // Return null if no microcycle is found
   };
 
   // Fetch the list of microcycles grouped by Macrocycle and Mesocycle
@@ -169,6 +194,8 @@ const MicrocyclesList = () => {
         open={detailsOpen}
         onClose={closeDetailsOverlay}
         data={detailsData}
+        macrocycle={currentMacrocycle}
+        mesocycle={currentMesocycle}
       />
       <PageContainer title="Microcycles" description="List of all microcycles grouped by Macrocycle and Mesocycle">
         <h1>Microcycles</h1>
