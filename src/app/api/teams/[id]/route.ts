@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
-const prisma = new PrismaClient();
 
 // GET handler for fetching a team by ID
 export async function GET(request: Request, segmentData: { params: Params }) {

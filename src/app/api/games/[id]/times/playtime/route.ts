@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
-const prisma = new PrismaClient();
 
 // GET: Retrieve all time entries for a specific game and calculate total time played
 export async function GET(req: NextRequest, segmentData: { params: Params }) {
@@ -27,12 +26,12 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 
     // Determine the maximum number of periods in the game, ensuring a minimum of 4 periods
     const maxPeriod = Math.max(
-      timeEntries.reduce((max, entry) => Math.max(max, entry.period), 0),
+      timeEntries.reduce((max: number, entry: any) => Math.max(max, entry.period), 0),
       4,
     );
 
     // Group time entries by athlete and calculate total playtime
-    const playtimeResults = timeEntries.reduce((acc: any, entry) => {
+    const playtimeResults = timeEntries.reduce((acc: any, entry: any) => {
       const athleteId = entry.athleteId;
 
       // Initialize athlete's data if not already present

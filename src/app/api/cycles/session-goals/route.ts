@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient, sessionGoal } from "@prisma/client";
 import { SessionGoalInterface } from "@/types/cycles/types";
+import { prisma } from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 
 // GET: List all session goals
 export async function GET() {

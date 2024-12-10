@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { GameAthleteReport } from "@/types/games/types";
+import { prisma } from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve all reports for a specific game

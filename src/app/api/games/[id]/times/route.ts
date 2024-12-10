@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
-const prisma = new PrismaClient();
 
 // GET: Retrieve all time entries for a specific game
 export async function GET(req: NextRequest, segmentData: { params: Params }) {

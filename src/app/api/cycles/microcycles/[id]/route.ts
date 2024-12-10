@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { NextRequest } from "next/server";
-import { SessionGoalInterface } from "@/types/cycles/types";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
 

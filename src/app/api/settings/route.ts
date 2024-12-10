@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server'; // Use Next.js's response helper
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // Define interface for Settings data
 interface SettingsData {

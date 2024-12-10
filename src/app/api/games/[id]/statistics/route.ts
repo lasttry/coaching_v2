@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
-const prisma = new PrismaClient();
 
 // Handle GET request
 export async function GET(req: NextRequest, segmentData: { params: Params }) {

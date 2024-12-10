@@ -1,7 +1,6 @@
-import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from '@/lib/prisma';
 
-const prisma = new PrismaClient();
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve all objectives for a game

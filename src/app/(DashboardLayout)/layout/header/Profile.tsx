@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { signOut } from 'next-auth/react';
+import { signOut } from "next-auth/react"
 import {
   Avatar,
   Box,
@@ -83,7 +83,7 @@ const Profile = () => {
         </MenuItem>
         <Box mt={1} py={1} px={2}>
         <Button
-          onClick={() => signOut({ callbackUrl: '/auth/signin' })}  // Redirect to login after logout
+          onClick={() => signOut()}  // Redirect to login after logout
           variant="outlined"
           color="primary"
           fullWidth

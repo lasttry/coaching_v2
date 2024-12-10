@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from '@/lib/prisma';
 import { GameAthleteInterface, GameInterface, ObjectiveInterface } from "@/types/games/types";
 import { validateGameData } from "../utils/utils";
 
 type Params = Promise<{ id: number }>;
-const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest, segmentData: { params: Params }) {
   const params = await segmentData.params;
