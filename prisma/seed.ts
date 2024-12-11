@@ -36,13 +36,13 @@ async function main() {
 
     // Remove any existing user with the same email
   await prisma.user.deleteMany({
-    where: { email: "admin@diasantos.com" },
+    //where: { email: "ricardo@diasantos.com" },
   });
   // Store the user in the database
   await prisma.user.create({
     data: {
-      name: "Admin User", // Replace with desired name
-      email: "admin@diasantos.com", // Replace with desired email
+      name: "Ricardo Santos", // Replace with desired name
+      email: "ricardo@diasantos.com", // Replace with desired email
       password: `${salt}:${hashedPassword}`, // Store salt and hash in the format `salt:hash`
     },
   });

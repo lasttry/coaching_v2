@@ -2,7 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable, { RowInput } from 'jspdf-autotable';
 import dayjs from 'dayjs';
 
-import { GameInterface, jsPDFWithAutoTable, ObjectiveInterface } from '@/types/games/types'
+import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types'
 import { Settings } from '@/types/settings/types'
 import { generateHeader, generateGameDetailsHeader } from './utils'
 

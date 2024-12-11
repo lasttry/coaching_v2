@@ -3,6 +3,7 @@ import { styled, Container, Box } from "@mui/material";
 import React, { useState } from "react";
 import Header from "@/app/(DashboardLayout)/layout/header/Header";
 import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
+import { SessionProvider } from "next-auth/react";
 
 const MainWrapper = styled("div")(() => ({
   display: "flex",
@@ -57,7 +58,7 @@ export default function RootLayout({
           {/* Page Route */}
           {/* ------------------------------------------- */}
           <Box sx={{ minHeight: "calc(100vh - 170px)", py: 3  }}>
-            {children}
+            <SessionProvider>{children}</SessionProvider>
           </Box>
           {/* ------------------------------------------- */}
           {/* End Page */}

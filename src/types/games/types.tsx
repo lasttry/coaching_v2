@@ -26,12 +26,14 @@ export interface ObjectiveInterface {
   type: ObjectiveType; // The type of objective (enum)
 }
 
+/* eslint-disable no-unused-vars */
 export enum ObjectiveType {
   OFFENSIVE = "OFFENSIVE",
   DEFENSIVE = "DEFENSIVE",
   TEAM = "TEAM",
   INDIVIDUAL = "INDIVIDUAL",
 }
+/* eslint-enable no-unused-vars */
 
 export interface TeamInterface {
   id: number;
