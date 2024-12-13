@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     if (validationErrors.length > 0) {
       return NextResponse.json({ error: validationErrors.join(' ') }, { status: 400 });
     }
-
+    console.log(data)
     const newGame = await prisma.games.create({
       data: {
         number: Number(data.number),
@@ -27,7 +27,7 @@ export async function POST(request: Request) {
         updatedAt: new Date(), // Set updatedAt manually
         // Update the athletes associated with the game
         gameAthletes: {
-          create: data.athletes.map((athlete: GameAthleteInterface) => ({
+          create: data.gameAthletes.map((athlete: GameAthleteInterface) => ({
             athleteId: athlete.athlete.id,
             number: athlete.number,
           })),
