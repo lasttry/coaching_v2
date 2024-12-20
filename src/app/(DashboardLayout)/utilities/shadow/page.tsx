@@ -1,9 +1,9 @@
 'use client';
+import React from 'react';
 import { Paper, Box, Grid } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
-
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body1,
@@ -19,7 +19,6 @@ const lightTheme = createTheme({ palette: { mode: 'light' } });
 const Shadow = () => {
   return (
     <PageContainer title="Shadow" description="this is Shadow">
-
       <DashboardCard title="Shadow">
         <Grid container spacing={2}>
           {[lightTheme, darkTheme].map((theme, index) => (

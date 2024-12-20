@@ -31,8 +31,11 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: stderr }, { status: 500 });
       }
       console.log(`Stdout: ${stdout}`);
-      return NextResponse.json({ message: 'Updated successfully' }, { status: 200 });
-    }
+      return NextResponse.json(
+        { message: 'Updated successfully' },
+        { status: 200 },
+      );
+    },
   );
 
   return NextResponse.json({ message: 'Update triggered successfully' });

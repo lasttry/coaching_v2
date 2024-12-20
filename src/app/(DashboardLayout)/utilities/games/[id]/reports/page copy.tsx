@@ -1,7 +1,16 @@
 'use client';
-
+import React from 'react';
 import { useState, useEffect } from 'react';
-import { Box, Button, TextField, Stack, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Stack,
+  Typography,
+  CircularProgress,
+  Select,
+  MenuItem,
+} from '@mui/material';
 import { useParams } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 
@@ -39,15 +48,19 @@ const GameAthleteReportsPage = () => {
           fetch(`/api/games/${gameId}/reports`),
         ]);
 
-        if (!athletesRes.ok || !reportsRes.ok) throw new Error('Failed to fetch data.');
+        if (!athletesRes.ok || !reportsRes.ok)
+          throw new Error('Failed to fetch data.');
 
         const athletesData: Athlete[] = await athletesRes.json();
         const reportsData: AthleteReport[] = await reportsRes.json();
 
-        const reportsMap = reportsData.reduce((acc, report) => {
-          acc[report.athleteId] = report;
-          return acc;
-        }, {} as Record<number, AthleteReport>);
+        const reportsMap = reportsData.reduce(
+          (acc, report) => {
+            acc[report.athleteId] = report;
+            return acc;
+          },
+          {} as Record<number, AthleteReport>,
+        );
 
         setAthletes(athletesData);
         setReports(reportsMap);
@@ -61,7 +74,11 @@ const GameAthleteReportsPage = () => {
     fetchAthletesAndReports();
   }, [gameId]);
 
-  const handleInputChange = (athleteId: number, field: keyof AthleteReport, value: string | number) => {
+  const handleInputChange = (
+    athleteId: number,
+    field: keyof AthleteReport,
+    value: string | number,
+  ) => {
     setReports((prevReports) => ({
       ...prevReports,
       [athleteId]: {
@@ -91,7 +108,9 @@ const GameAthleteReportsPage = () => {
         setSuccess('Reports saved successfully.');
       } else {
         const errorData = await response.json();
-        setError(`Failed to save reports: ${errorData.error || 'Unknown error'}`);
+        setError(
+          `Failed to save reports: ${errorData.error || 'Unknown error'}`,
+        );
       }
     } catch (error: any) {
       console.error('Failed to save reports:', error);
@@ -103,7 +122,10 @@ const GameAthleteReportsPage = () => {
   if (error) return <Typography color="error">{error}</Typography>;
 
   return (
-    <PageContainer title="Athlete Reports" description="Manage reports for each athlete">
+    <PageContainer
+      title="Athlete Reports"
+      description="Manage reports for each athlete"
+    >
       <Stack spacing={3}>
         <Typography variant="h4" gutterBottom>
           Athlete Reports
@@ -121,7 +143,13 @@ const GameAthleteReportsPage = () => {
             {/* Reviewd Athlete Dropdown */}
             <Select
               value={reports[athlete.id]?.reviewdAthleteId || athlete.id}
-              onChange={(e) => handleInputChange(athlete.id, 'reviewdAthleteId', Number(e.target.value))}
+              onChange={(e) =>
+                handleInputChange(
+                  athlete.id,
+                  'reviewdAthleteId',
+                  Number(e.target.value),
+                )
+              }
               fullWidth
             >
               {athletes.map((otherAthlete) => (
@@ -138,7 +166,9 @@ const GameAthleteReportsPage = () => {
               minRows={3}
               fullWidth
               value={reports[athlete.id]?.teamObservation || ''}
-              onChange={(e) => handleInputChange(athlete.id, 'teamObservation', e.target.value)}
+              onChange={(e) =>
+                handleInputChange(athlete.id, 'teamObservation', e.target.value)
+              }
               margin="normal"
             />
             <TextField
@@ -148,7 +178,13 @@ const GameAthleteReportsPage = () => {
               minRows={3}
               fullWidth
               value={reports[athlete.id]?.individualObservation || ''}
-              onChange={(e) => handleInputChange(athlete.id, 'individualObservation', e.target.value)}
+              onChange={(e) =>
+                handleInputChange(
+                  athlete.id,
+                  'individualObservation',
+                  e.target.value,
+                )
+              }
               margin="normal"
             />
             <TextField
@@ -158,17 +194,31 @@ const GameAthleteReportsPage = () => {
               minRows={3}
               fullWidth
               value={reports[athlete.id]?.timePlayedObservation || ''}
-              onChange={(e) => handleInputChange(athlete.id, 'timePlayedObservation', e.target.value)}
+              onChange={(e) =>
+                handleInputChange(
+                  athlete.id,
+                  'timePlayedObservation',
+                  e.target.value,
+                )
+              }
               margin="normal"
             />
           </Box>
         ))}
 
         <Box display="flex" justifyContent="space-between" marginTop={4}>
-          <Button variant="contained" color="primary" onClick={handleSaveReports}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveReports}
+          >
             Save Reports
           </Button>
-          <Button variant="outlined" color="secondary" onClick={() => window.history.back()}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => window.history.back()}
+          >
             Cancel
           </Button>
         </Box>

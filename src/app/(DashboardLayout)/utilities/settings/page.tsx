@@ -1,21 +1,15 @@
 'use client';
-
+import React from 'react';
 import { useState, useEffect } from 'react';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
-import BlankCard from "@/app/(DashboardLayout)/components/shared/BlankCard";
+import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
+import BlankCard from '@/app/(DashboardLayout)/components/shared/BlankCard';
 import { CompactPicker } from 'react-color';
 import { ColorResult } from 'react-color';
 import Grid from '@mui/material/Grid2';
-import {
-  Box,
-  Typography,
-  Button,
-  Stack,
-  CardContent,
-} from "@mui/material";
-import Image from 'next/image';  // Import Image component from next/image
+import { Box, Typography, Button, Stack, CardContent } from '@mui/material';
+import Image from 'next/image'; // Import Image component from next/image
 
 // Define interface for Settings data
 interface SettingsData {
@@ -56,7 +50,7 @@ const SettingsPage = () => {
   }, []);
 
   const handleChange = (field: keyof SettingsData, value: string | File) => {
-    setSettings(prevState => ({
+    setSettings((prevState) => ({
       ...prevState,
       [field]: value,
     }));
@@ -65,23 +59,25 @@ const SettingsPage = () => {
   const defaultColorResult: ColorResult = {
     hex: '#ffffff',
     hsl: { h: 0, s: 0, l: 1, a: 1 },
-    rgb: { r: 255, g: 255, b: 255, a: 1 }
+    rgb: { r: 255, g: 255, b: 255, a: 1 },
   };
-  
-  const handleColorChange = (color: ColorResult = defaultColorResult, field: keyof SettingsData) => {
+
+  const handleColorChange = (
+    color: ColorResult = defaultColorResult,
+    field: keyof SettingsData,
+  ) => {
     setSettings((prevState) => ({
       ...prevState,
       [field]: color.hex,
     }));
   };
-  
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setSettings(prevState => ({
+        setSettings((prevState) => ({
           ...prevState,
           image: reader.result as string, // Set the base64 string of the image
         }));
@@ -124,10 +120,16 @@ const SettingsPage = () => {
           {success === true && (
             <BlankCard>
               <CardContent>
-                <Typography variant="h5" sx={{ color: (theme) => theme.palette.success.main }}>
+                <Typography
+                  variant="h5"
+                  sx={{ color: (theme) => theme.palette.success.main }}
+                >
                   Alterações gravadas
                 </Typography>
-                <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
+                <Typography
+                  variant="body1"
+                  sx={{ color: (theme) => theme.palette.success.main }}
+                >
                   As alterações foram gravadas com sucesso.
                 </Typography>
               </CardContent>
@@ -137,10 +139,16 @@ const SettingsPage = () => {
           {success === false && (
             <BlankCard>
               <CardContent>
-                <Typography variant="h5" sx={{ color: (theme) => theme.palette.error.main }}>
+                <Typography
+                  variant="h5"
+                  sx={{ color: (theme) => theme.palette.error.main }}
+                >
                   Erro ao gravar as alterações
                 </Typography>
-                <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
+                <Typography
+                  variant="body1"
+                  sx={{ color: (theme) => theme.palette.error.main }}
+                >
                   {errorMessage}
                 </Typography>
               </CardContent>
@@ -150,7 +158,12 @@ const SettingsPage = () => {
           <form onSubmit={handleSubmit}>
             <Stack spacing={3}>
               <Box>
-                <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="teamName">
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={600}
+                  component="label"
+                  htmlFor="teamName"
+                >
                   Team Name
                 </Typography>
                 <CustomTextField
@@ -158,13 +171,20 @@ const SettingsPage = () => {
                   variant="outlined"
                   fullWidth
                   value={settings.teamName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('teamName', e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('teamName', e.target.value)
+                  }
                   required
                 />
               </Box>
 
               <Box>
-                <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="shortName">
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={600}
+                  component="label"
+                  htmlFor="shortName"
+                >
                   Short Name
                 </Typography>
                 <CustomTextField
@@ -172,11 +192,18 @@ const SettingsPage = () => {
                   variant="outlined"
                   fullWidth
                   value={settings.shortName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('shortName', e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('shortName', e.target.value)
+                  }
                 />
               </Box>
               <Box>
-                <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="season">
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={600}
+                  component="label"
+                  htmlFor="season"
+                >
                   Season (YYYY/YYYY)
                 </Typography>
                 <CustomTextField
@@ -184,12 +211,19 @@ const SettingsPage = () => {
                   variant="outlined"
                   fullWidth
                   value={settings.season}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('season', e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('season', e.target.value)
+                  }
                 />
               </Box>
 
               <Box>
-                <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="homeLocation">
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={600}
+                  component="label"
+                  htmlFor="homeLocation"
+                >
                   Home Location
                 </Typography>
                 <CustomTextField
@@ -197,22 +231,39 @@ const SettingsPage = () => {
                   variant="outlined"
                   fullWidth
                   value={settings.homeLocation}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleChange('homeLocation', e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    handleChange('homeLocation', e.target.value)
+                  }
                 />
               </Box>
 
               {/* Display the uploaded image */}
               {settings.image && (
                 <Box>
-                  <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="imagePreview">
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight={600}
+                    component="label"
+                    htmlFor="imagePreview"
+                  >
                     Image Preview
                   </Typography>
-                  <Image src={settings.image} alt="Uploaded Image" width={200} height={200} />
+                  <Image
+                    src={settings.image}
+                    alt="Uploaded Image"
+                    width={200}
+                    height={200}
+                  />
                 </Box>
               )}
 
               <Box>
-                <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="image">
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={600}
+                  component="label"
+                  htmlFor="image"
+                >
                   Upload Image
                 </Typography>
                 <input type="file" id="image" onChange={handleImageChange} />
@@ -221,27 +272,43 @@ const SettingsPage = () => {
               {/* Background and Foreground color pickers side by side */}
               <Grid container spacing={2}>
                 {/* Background color picker */}
-                <Grid size={{ xs:6 }}>
+                <Grid size={{ xs: 6 }}>
                   <Box>
-                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="backgroundColor" sx={{ display: 'block', marginBottom: 1 }}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      component="label"
+                      htmlFor="backgroundColor"
+                      sx={{ display: 'block', marginBottom: 1 }}
+                    >
                       Background Color
                     </Typography>
                     <CompactPicker
                       color={settings.backgroundColor || '#ffffff'}
-                      onChangeComplete={(color) => handleColorChange(color, 'backgroundColor')}
+                      onChangeComplete={(color) =>
+                        handleColorChange(color, 'backgroundColor')
+                      }
                     />
                   </Box>
                 </Grid>
 
                 {/* Foreground color picker */}
-                <Grid size={{ xs:6 }}>
+                <Grid size={{ xs: 6 }}>
                   <Box>
-                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="foregroundColor" sx={{ display: 'block', marginBottom: 1 }}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      component="label"
+                      htmlFor="foregroundColor"
+                      sx={{ display: 'block', marginBottom: 1 }}
+                    >
                       Foreground Color
                     </Typography>
                     <CompactPicker
                       color={settings.foregroundColor || '#000000'}
-                      onChangeComplete={(color) => handleColorChange(color, 'foregroundColor')}
+                      onChangeComplete={(color) =>
+                        handleColorChange(color, 'foregroundColor')
+                      }
                     />
                   </Box>
                 </Grid>

@@ -1,6 +1,6 @@
-import React from "react";
-import { Card, CardContent, Typography, Stack, Box } from "@mui/material";
-import { ReactNode } from "react";
+import React from 'react';
+import { Card, CardContent, Typography, Stack, Box } from '@mui/material';
+import { ReactNode } from 'react';
 
 type Props = {
   title?: string;
@@ -35,24 +35,24 @@ const DashboardCard = ({
           </Typography>
         </CardContent>
       ) : (
-        <CardContent sx={{ p: "30px" }}>
+        <CardContent sx={{ p: '30px' }}>
           {title ? (
             <Stack
               direction="row"
               spacing={2}
               justifyContent="space-between"
-              alignItems={"center"}
+              alignItems={'center'}
               mb={3}
             >
               <Box>
-                {title ? <Typography variant="h5">{title}</Typography> : ""}
+                {title ? <Typography variant="h5">{title}</Typography> : ''}
 
                 {subtitle ? (
                   <Typography variant="subtitle2" color="textSecondary">
                     {subtitle}
                   </Typography>
                 ) : (
-                  ""
+                  ''
                 )}
               </Box>
               {action}

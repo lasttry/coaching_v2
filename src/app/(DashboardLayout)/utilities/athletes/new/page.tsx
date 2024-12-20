@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
@@ -37,7 +37,12 @@ const NewAthlete = () => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === 'fpbNumber' || name === 'idNumber' ? (value ? Number(value) : null) : value,
+      [name]:
+        name === 'fpbNumber' || name === 'idNumber'
+          ? value
+            ? Number(value)
+            : null
+          : value,
     }));
     setFormErrors((prevErrors) => ({ ...prevErrors, [name]: '' })); // Reset error for this field
   };
@@ -196,13 +201,20 @@ const NewAthlete = () => {
             </Button>
 
             {/* Cancel Button */}
-            <Button type="button" variant="outlined" color="secondary" onClick={handleCancel}>
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              onClick={handleCancel}
+            >
               Cancel
             </Button>
           </Box>
 
           {/* Success/Error Messages */}
-          {success && <Typography sx={{ color: 'green' }}>{success}</Typography>}
+          {success && (
+            <Typography sx={{ color: 'green' }}>{success}</Typography>
+          )}
           {error && <Typography sx={{ color: 'red' }}>{error}</Typography>}
         </Stack>
       </form>

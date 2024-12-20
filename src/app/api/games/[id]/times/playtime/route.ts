@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   const gameId = Number(params.id);
 
   if (isNaN(gameId)) {
-    return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
   }
 
   try {
@@ -20,13 +20,16 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
         athlete: true, // Include athlete details
       },
       orderBy: {
-        period: "asc", // Order by period for consistent calculations
+        period: 'asc', // Order by period for consistent calculations
       },
     });
 
     // Determine the maximum number of periods in the game, ensuring a minimum of 4 periods
     const maxPeriod = Math.max(
-      timeEntries.reduce((max: number, entry: any) => Math.max(max, entry.period), 0),
+      timeEntries.reduce(
+        (max: number, entry: any) => Math.max(max, entry.period),
+        0,
+      ),
       4,
     );
 
@@ -86,11 +89,11 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json(resultArray, { status: 200 });
   } catch (error) {
     console.error(
-      "Error fetching time entries or calculating playtime:",
+      'Error fetching time entries or calculating playtime:',
       error,
     );
     return NextResponse.json(
-      { error: "Failed to calculate time entries" },
+      { error: 'Failed to calculate time entries' },
       { status: 500 },
     );
   }

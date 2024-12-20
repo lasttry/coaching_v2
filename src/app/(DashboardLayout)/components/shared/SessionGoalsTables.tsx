@@ -1,7 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Box, Table, TableHead, TableRow, TableCell, TableBody, Typography } from '@mui/material';
+import {
+  Box,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Typography,
+} from '@mui/material';
 import dayjs from 'dayjs';
 
 const SessionGoalsTables = ({ data }: { data: any[] }) => {
@@ -28,7 +36,10 @@ const SessionGoalsTables = ({ data }: { data: any[] }) => {
           ...group,
           goals: group.goals.sort((a: any, b: any) => a.order - b.order),
         }))
-        .sort((a: any, b: any) => new Date(a.day).getTime() - new Date(b.day).getTime());
+        .sort(
+          (a: any, b: any) =>
+            new Date(a.day).getTime() - new Date(b.day).getTime(),
+        );
 
       setGroupedData(sortedGroupedData);
     }
@@ -40,7 +51,13 @@ const SessionGoalsTables = ({ data }: { data: any[] }) => {
 
   return (
     <Box sx={{ overflowX: 'auto', padding: 2 }}>
-      <Table sx={{ border: '1px solid', borderCollapse: 'collapse', tableLayout: 'auto' }}>
+      <Table
+        sx={{
+          border: '1px solid',
+          borderCollapse: 'collapse',
+          tableLayout: 'auto',
+        }}
+      >
         <TableHead>
           <TableRow>
             {groupedData.map((day, index) => (
@@ -52,14 +69,16 @@ const SessionGoalsTables = ({ data }: { data: any[] }) => {
                   fontSize: '1.1rem',
                   padding: 2,
                   borderBottom: '2px solid black',
-                  borderRight: index < groupedData.length - 1 ? '1px solid black' : 'none',
+                  borderRight:
+                    index < groupedData.length - 1 ? '1px solid black' : 'none',
                 }}
               >
                 <Typography variant="h6">
                   {day.weekday}, {day.day}
                 </Typography>
                 <Typography variant="subtitle1">
-                  Duração Total: {Math.floor(day.totalDuration / 60)}h {day.totalDuration % 60}m
+                  Duração Total: {Math.floor(day.totalDuration / 60)}h{' '}
+                  {day.totalDuration % 60}m
                 </Typography>
               </TableCell>
             ))}
@@ -72,7 +91,8 @@ const SessionGoalsTables = ({ data }: { data: any[] }) => {
                 key={index}
                 sx={{
                   verticalAlign: 'top',
-                  borderRight: index < groupedData.length - 1 ? '1px solid black' : 'none',
+                  borderRight:
+                    index < groupedData.length - 1 ? '1px solid black' : 'none',
                   padding: 2,
                 }}
               >
@@ -86,8 +106,7 @@ const SessionGoalsTables = ({ data }: { data: any[] }) => {
                           textAlign: 'left',
                           borderBottom: '1px solid black',
                         }}
-                      >
-                      </TableCell>
+                      ></TableCell>
                       <TableCell
                         sx={{
                           width: 'auto', // Multiline content

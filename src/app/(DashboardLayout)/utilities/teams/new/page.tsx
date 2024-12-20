@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,7 +16,11 @@ interface TeamFormData {
 }
 
 const NewTeam = () => {
-  const [form, setForm] = useState<TeamFormData>({ name: '', shortName: '', location: '' });
+  const [form, setForm] = useState<TeamFormData>({
+    name: '',
+    shortName: '',
+    location: '',
+  });
   const [image, setImage] = useState<string | null>(null); // For storing the base64 image string
   const [imagePreview, setImagePreview] = useState<string | null>(null); // For previewing the image
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -120,8 +125,17 @@ const NewTeam = () => {
           {/* Image Preview */}
           {imagePreview ? (
             <Box>
-              <Image src={imagePreview} alt="Team Image" width={64} height={64} />
-              <Button variant="outlined" color="secondary" onClick={handleRemoveImage}>
+              <Image
+                src={imagePreview}
+                alt="Team Image"
+                width={64}
+                height={64}
+              />
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleRemoveImage}
+              >
                 Remove Image
               </Button>
             </Box>
@@ -132,7 +146,12 @@ const NewTeam = () => {
           {/* Image Upload Field */}
           <Box>
             <label htmlFor="team-image">Upload Image</label>
-            <input type="file" id="team-image" accept="image/*" onChange={handleImageChange} />
+            <input
+              type="file"
+              id="team-image"
+              accept="image/*"
+              onChange={handleImageChange}
+            />
           </Box>
 
           {/* Name Field */}
@@ -174,13 +193,20 @@ const NewTeam = () => {
             </Button>
 
             {/* Cancel Button */}
-            <Button type="button" variant="outlined" color="secondary" onClick={() => router.push('/utilities/teams')}>
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push('/utilities/teams')}
+            >
               Cancel
             </Button>
           </Box>
 
           {/* Success/Error Messages */}
-          {success && <Typography sx={{ color: 'green' }}>{success}</Typography>}
+          {success && (
+            <Typography sx={{ color: 'green' }}>{success}</Typography>
+          )}
           {error && <Typography sx={{ color: 'red' }}>{error}</Typography>}
         </Stack>
       </form>

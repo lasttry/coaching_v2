@@ -4,10 +4,8 @@ import { GameInterface } from '@/types/games/types';
 export const validateGameData = (data: GameInterface): string[] => {
   const errors: string[] = [];
 
-  if (!data.number)
-    errors.push('Game number is required.')
-  if(isNaN(Number(data.number)))
-    errors.push('Game number is not a number')
+  if (!data.number) errors.push('Game number is required.');
+  if (isNaN(Number(data.number))) errors.push('Game number is not a number');
   // Validate date
   if (!data.date || isNaN(Date.parse(data.date))) {
     errors.push('Valid game date is required.');

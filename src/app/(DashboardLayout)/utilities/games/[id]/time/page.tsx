@@ -2,8 +2,21 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Paper, IconButton } from '@mui/material';
-import dayjs from 'dayjs';
+import {
+  Box,
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  Paper,
+  IconButton,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 // Define the types
@@ -44,9 +57,11 @@ const GameTimes = () => {
           return;
         }
         const athleteData = await athleteRes.json();
-        console.log("athleteData")
-        console.log(athleteData)
-        const athletes = athleteData.map((entry: { athleteId: number, athletes: Athlete }) => entry.athletes);
+        console.log('athleteData');
+        console.log(athleteData);
+        const athletes = athleteData.map(
+          (entry: { athleteId: number; athletes: Athlete }) => entry.athletes,
+        );
         setAthletes(athletes || []);
 
         // Fetch existing times
@@ -65,6 +80,7 @@ const GameTimes = () => {
           console.log('No times found');
         }
       } catch (err) {
+        console.log(err);
         setError('Failed to load athletes or times');
       }
     }
@@ -76,11 +92,16 @@ const GameTimes = () => {
     return <Typography>Loading...</Typography>;
   }
 
-  const handleTimeChange = (athleteId: number, index: number, field: keyof TimeEntry, value: string | number) => {
+  const handleTimeChange = (
+    athleteId: number,
+    index: number,
+    field: keyof TimeEntry,
+    value: string | number,
+  ) => {
     setTimes((prevTimes) => ({
       ...prevTimes,
       [athleteId]: prevTimes[athleteId].map((time, i) =>
-        i === index ? { ...time, [field]: value } : time
+        i === index ? { ...time, [field]: value } : time,
       ),
     }));
   };
@@ -102,18 +123,18 @@ const GameTimes = () => {
   };
 
   const handleRemoveTime = async (athleteId: number, index: number) => {
-    const entryId = times[athleteId][index].id;  // Get the entry ID
-    if (!entryId) return;  // Make sure there is an ID to delete
-  
+    const entryId = times[athleteId][index].id; // Get the entry ID
+    if (!entryId) return; // Make sure there is an ID to delete
+
     try {
       const response = await fetch(`/api/games/${entryId}/times`, {
         method: 'DELETE',
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to delete the time entry');
       }
-  
+
       // Update local state after successful deletion
       setTimes((prevTimes) => ({
         ...prevTimes,
@@ -124,11 +145,10 @@ const GameTimes = () => {
       setError('Failed to delete time entry.');
     }
   };
-  
 
   const handleSaveTimes = async () => {
-    console.log("times:")
-    console.log(JSON.stringify(Object.values(times).flat()))
+    console.log('times:');
+    console.log(JSON.stringify(Object.values(times).flat()));
     try {
       const response = await fetch(`/api/games/${gameId}/times`, {
         method: 'PUT',
@@ -146,6 +166,7 @@ const GameTimes = () => {
         setError(errorData.message || 'Failed to save times');
       }
     } catch (err) {
+      console.log(err);
       setError('Failed to save times');
     }
   };
@@ -178,7 +199,14 @@ const GameTimes = () => {
                     <TableCell>
                       <TextField
                         value={time.period}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'period', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(
+                            athlete.id,
+                            index,
+                            'period',
+                            Number(e.target.value),
+                          )
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -188,7 +216,14 @@ const GameTimes = () => {
                       <TextField
                         label="Entry Minute"
                         value={time.entryMinute}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'entryMinute', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(
+                            athlete.id,
+                            index,
+                            'entryMinute',
+                            Number(e.target.value),
+                          )
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -198,7 +233,14 @@ const GameTimes = () => {
                       <TextField
                         label="Entry Second"
                         value={time.entrySecond}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'entrySecond', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(
+                            athlete.id,
+                            index,
+                            'entrySecond',
+                            Number(e.target.value),
+                          )
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -208,7 +250,14 @@ const GameTimes = () => {
                       <TextField
                         label="Exit Minute"
                         value={time.exitMinute || ''}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'exitMinute', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(
+                            athlete.id,
+                            index,
+                            'exitMinute',
+                            Number(e.target.value),
+                          )
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -218,14 +267,23 @@ const GameTimes = () => {
                       <TextField
                         label="Exit Second"
                         value={time.exitSecond || ''}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'exitSecond', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(
+                            athlete.id,
+                            index,
+                            'exitSecond',
+                            Number(e.target.value),
+                          )
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
                       />
                     </TableCell>
                     <TableCell>
-                      <IconButton onClick={() => handleRemoveTime(athlete.id, index)}>
+                      <IconButton
+                        onClick={() => handleRemoveTime(athlete.id, index)}
+                      >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
@@ -233,7 +291,11 @@ const GameTimes = () => {
                 ))}
                 <TableRow>
                   <TableCell colSpan={7}>
-                    <Button onClick={() => handleAddTime(athlete.id)} variant="outlined" fullWidth>
+                    <Button
+                      onClick={() => handleAddTime(athlete.id)}
+                      variant="outlined"
+                      fullWidth
+                    >
                       {`Add Time for ${athlete.name}`}
                     </Button>
                   </TableCell>
@@ -248,7 +310,11 @@ const GameTimes = () => {
         <Button variant="contained" color="primary" onClick={handleSaveTimes}>
           Save Times
         </Button>
-        <Button variant="outlined" color="secondary" onClick={() => router.push(`/utilities/games/${gameId}`)}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => router.push(`/utilities/games/${gameId}`)}
+        >
           Back to Game
         </Button>
       </Stack>

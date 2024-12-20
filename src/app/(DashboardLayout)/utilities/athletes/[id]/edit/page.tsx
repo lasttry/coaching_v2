@@ -1,10 +1,10 @@
-"use client";
-
-import { use } from "react";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import PageContainer from "@/app/(DashboardLayout)/components/container/PageContainer"; // Corrected import path
-import { TextField, Button, Box, Stack, Typography } from "@mui/material";
+'use client';
+import React from 'react';
+import { use } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer'; // Corrected import path
+import { TextField, Button, Box, Stack, Typography } from '@mui/material';
 
 // Define the Athlete type based on the schema
 interface Athlete {
@@ -30,7 +30,7 @@ const EditAthlete = (props: { params: Params }) => {
 
   // Convert ISO date to "yyyy-MM-dd"
   const formatDate = (dateString: string) => {
-    return dateString.split("T")[0]; // Convert "yyyy-MM-ddTHH:mm:ss.sssZ" to "yyyy-MM-dd"
+    return dateString.split('T')[0]; // Convert "yyyy-MM-ddTHH:mm:ss.sssZ" to "yyyy-MM-dd"
   };
 
   // Fetch the athlete data when the component mounts
@@ -43,7 +43,7 @@ const EditAthlete = (props: { params: Params }) => {
         setForm(data);
       } catch (err) {
         console.error(err);
-        setError("Failed to fetch athlete data.");
+        setError('Failed to fetch athlete data.');
       } finally {
         setLoading(false);
       }
@@ -57,7 +57,7 @@ const EditAthlete = (props: { params: Params }) => {
     const { name, value } = e.target;
     if (form) {
       setForm((prev) => ({ ...prev!, [name]: value }));
-      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: "" })); // Reset error for this field
+      setFormErrors((prevErrors) => ({ ...prevErrors, [name]: '' })); // Reset error for this field
     }
   };
 
@@ -67,29 +67,29 @@ const EditAthlete = (props: { params: Params }) => {
 
     // Validate number
     if (!form?.number) {
-      errors.number = "Number is required";
+      errors.number = 'Number is required';
     }
 
     // Validate name
     if (!form?.name) {
-      errors.name = "Name is required";
+      errors.name = 'Name is required';
     }
 
     // Validate birthdate
     if (!form?.birthdate) {
-      errors.birthdate = "Birthdate is required";
+      errors.birthdate = 'Birthdate is required';
     } else if (isNaN(new Date(form.birthdate).getTime())) {
-      errors.birthdate = "Birthdate is invalid";
+      errors.birthdate = 'Birthdate is invalid';
     }
 
     // Validate FPB number if provided
     if (form?.fpbNumber && isNaN(Number(form.fpbNumber))) {
-      errors.fpbNumber = "FPB Number must be a valid number";
+      errors.fpbNumber = 'FPB Number must be a valid number';
     }
 
     // Validate ID number if provided
     if (form?.idNumber && isNaN(Number(form.idNumber))) {
-      errors.idNumber = "ID Number must be a valid number";
+      errors.idNumber = 'ID Number must be a valid number';
     }
 
     setFormErrors(errors);
@@ -108,29 +108,29 @@ const EditAthlete = (props: { params: Params }) => {
 
     try {
       const response = await fetch(`/api/athletes/${params.id}`, {
-        method: "PUT",
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(form),
       });
 
       if (response.ok) {
-        setSuccess("Athlete updated successfully.");
+        setSuccess('Athlete updated successfully.');
         setError(null);
         setTimeout(() => {
-          router.push("/utilities/athletes"); // Redirect to the list page after 2 seconds
+          router.push('/utilities/athletes'); // Redirect to the list page after 2 seconds
         }, 2000);
       } else {
         const errorData = await response.json();
-        setError(errorData.error || "Failed to update athlete.");
+        setError(errorData.error || 'Failed to update athlete.');
         setTimeout(() => {
           setError(null);
         }, 5000);
       }
     } catch (err) {
-      console.error("Error updating athlete:", err);
-      setError("An unknown error occurred.");
+      console.error('Error updating athlete:', err);
+      setError('An unknown error occurred.');
       setTimeout(() => {
         setError(null);
       }, 5000);
@@ -139,7 +139,7 @@ const EditAthlete = (props: { params: Params }) => {
 
   // Handle cancel action to return to the athletes list
   const handleCancel = () => {
-    router.push("/utilities/athletes"); // Redirect to athletes list
+    router.push('/utilities/athletes'); // Redirect to athletes list
   };
 
   if (loading) return <p>Loading...</p>;
@@ -154,7 +154,7 @@ const EditAthlete = (props: { params: Params }) => {
           <TextField
             label="Number"
             name="number"
-            value={form?.number || ""}
+            value={form?.number || ''}
             onChange={handleChange}
             required
             error={!!formErrors.number}
@@ -165,7 +165,7 @@ const EditAthlete = (props: { params: Params }) => {
           <TextField
             label="Name"
             name="name"
-            value={form?.name || ""}
+            value={form?.name || ''}
             onChange={handleChange}
             required
             error={!!formErrors.name}
@@ -177,7 +177,7 @@ const EditAthlete = (props: { params: Params }) => {
             label="Birthdate"
             name="birthdate"
             type="date"
-            value={form?.birthdate || ""}
+            value={form?.birthdate || ''}
             onChange={handleChange}
             required
             error={!!formErrors.birthdate}
@@ -188,7 +188,7 @@ const EditAthlete = (props: { params: Params }) => {
           <TextField
             label="FPB Number"
             name="fpbNumber"
-            value={form?.fpbNumber || ""}
+            value={form?.fpbNumber || ''}
             onChange={handleChange}
             error={!!formErrors.fpbNumber}
             helperText={formErrors.fpbNumber}
@@ -198,7 +198,7 @@ const EditAthlete = (props: { params: Params }) => {
           <TextField
             label="ID Number"
             name="idNumber"
-            value={form?.idNumber || ""}
+            value={form?.idNumber || ''}
             onChange={handleChange}
             error={!!formErrors.idNumber}
             helperText={formErrors.idNumber}
@@ -208,7 +208,7 @@ const EditAthlete = (props: { params: Params }) => {
           <TextField
             label="ID Type"
             name="idType"
-            value={form?.idType || ""}
+            value={form?.idType || ''}
             onChange={handleChange}
           />
 
@@ -230,9 +230,9 @@ const EditAthlete = (props: { params: Params }) => {
 
           {/* Success/Error Messages */}
           {success && (
-            <Typography sx={{ color: "green" }}>{success}</Typography>
+            <Typography sx={{ color: 'green' }}>{success}</Typography>
           )}
-          {error && <Typography sx={{ color: "red" }}>{error}</Typography>}
+          {error && <Typography sx={{ color: 'red' }}>{error}</Typography>}
         </Stack>
       </form>
     </PageContainer>

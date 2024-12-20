@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Box,
   AppBar,
@@ -7,13 +7,12 @@ import {
   Stack,
   IconButton,
   Badge,
-  Button,
-} from "@mui/material";
-import PropTypes from "prop-types";
+} from '@mui/material';
+import PropTypes from 'prop-types';
 
 // components
-import Profile from "./Profile";
-import { IconBellRinging, IconMenu } from "@tabler/icons-react";
+import Profile from './Profile';
+import { IconBellRinging, IconMenu } from '@tabler/icons-react';
 
 interface ItemType {
   toggleMobileSidebar: (event: React.MouseEvent<HTMLElement>) => void;
@@ -24,17 +23,17 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
   const AppBarStyled = styled(AppBar)(({ theme }) => ({
-    boxShadow: "none",
+    boxShadow: 'none',
     background: theme.palette.background.paper,
-    justifyContent: "center",
-    backdropFilter: "blur(4px)",
+    justifyContent: 'center',
+    backdropFilter: 'blur(4px)',
     borderRadius: 13,
-    [theme.breakpoints.up("lg")]: {
-      minHeight: "70px",
+    [theme.breakpoints.up('lg')]: {
+      minHeight: '70px',
     },
   }));
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
-    width: "100%",
+    width: '100%',
     color: theme.palette.text.secondary,
   }));
 
@@ -47,8 +46,8 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
           onClick={toggleMobileSidebar}
           sx={{
             display: {
-              lg: "none",
-              xs: "inline",
+              lg: 'none',
+              xs: 'inline',
             },
           }}
         >
@@ -71,12 +70,12 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
           <Box
             sx={{
               display: {
-                xs: "none",
-                sm: "block",
+                xs: 'none',
+                sm: 'block',
               },
             }}
           >
-          {/* we can put a button */} 
+            {/* we can put a button */}
           </Box>
           <Profile />
         </Stack>

@@ -1,9 +1,21 @@
 'use client';
-
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Paper } from '@mui/material';
-import dayjs from 'dayjs';
+import {
+  Box,
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  Paper,
+} from '@mui/material';
 
 // Define types
 interface Athlete {
@@ -59,9 +71,11 @@ const GameStatistics = () => {
           return;
         }
         const athleteData = await athleteRes.json();
-        const athletes = athleteData.map((entry: GameAthlete) => entry.athletes);
+        const athletes = athleteData.map(
+          (entry: GameAthlete) => entry.athletes,
+        );
         setAthletes(athletes || []);
-  
+
         // Initialize statistics with default values for each athlete
         const initialStats: Record<number, Statistic> = {};
         athletes.forEach((athlete: Athlete) => {
@@ -85,32 +99,38 @@ const GameStatistics = () => {
             fouls: 0,
           };
         });
-  
+
         // Fetch existing statistics if available
         const statsRes = await fetch(`/api/games/${gameId}/statistics`);
         if (statsRes.ok) {
           const statsData: Statistic[] = await statsRes.json();
-  
+
           // Overwrite initialStats with the fetched statistics
           statsData.forEach((stat: Statistic) => {
             initialStats[stat.athleteId] = stat;
           });
         } else {
-          console.log('No existing statistics found, initializing with defaults');
+          console.log(
+            'No existing statistics found, initializing with defaults',
+          );
         }
-  
+
         setStatistics(initialStats); // Ensure statistics are properly set in state
-        console.log(initialStats)
-      } catch (error) {
+        console.log(initialStats);
+      } catch (err) {
+        console.log(err);
         setError('Failed to load athletes or statistics');
       }
     }
-  
+
     fetchAthletesAndStatistics();
   }, [gameId]);
-  
 
-  const handleStatisticChange = (athleteId: number, field: keyof Statistic, value: string) => {
+  const handleStatisticChange = (
+    athleteId: number,
+    field: keyof Statistic,
+    value: string,
+  ) => {
     setStatistics((prevStats) => ({
       ...prevStats,
       [athleteId]: {
@@ -122,7 +142,7 @@ const GameStatistics = () => {
 
   const handleSaveStatistics = async () => {
     try {
-      console.log(statistics)
+      console.log(statistics);
       const response = await fetch(`/api/games/${gameId}/statistics`, {
         method: 'PUT', // Use PUT to update the existing statistics
         headers: {
@@ -139,6 +159,7 @@ const GameStatistics = () => {
         setError(errorData.message || 'Failed to update statistics');
       }
     } catch (err) {
+      console.log(err);
       setError('Failed to update statistics');
     }
   };
@@ -175,12 +196,23 @@ const GameStatistics = () => {
               <TableRow key={athlete.id}>
                 <TableCell>{`${athlete.number} - ${athlete.name}`}</TableCell>
                 {Object.keys(statistics[athlete.id] || {})
-                  .filter((field) => !excludedFields.includes(field as keyof Statistic)) // Filter out excluded fields
+                  .filter(
+                    (field) =>
+                      !excludedFields.includes(field as keyof Statistic),
+                  ) // Filter out excluded fields
                   .map((stat) => (
                     <TableCell key={stat}>
                       <TextField
-                        value={statistics[athlete.id]?.[stat as keyof Statistic] || 0}
-                        onChange={(e) => handleStatisticChange(athlete.id, stat as keyof Statistic, e.target.value)}
+                        value={
+                          statistics[athlete.id]?.[stat as keyof Statistic] || 0
+                        }
+                        onChange={(e) =>
+                          handleStatisticChange(
+                            athlete.id,
+                            stat as keyof Statistic,
+                            e.target.value,
+                          )
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -199,10 +231,18 @@ const GameStatistics = () => {
       </TableContainer>
 
       <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-        <Button variant="contained" color="primary" onClick={handleSaveStatistics}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSaveStatistics}
+        >
           Save Statistics
         </Button>
-        <Button variant="outlined" color="secondary" onClick={() => router.push(`/utilities/games/${gameId}`)}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => router.push(`/utilities/games/${gameId}`)}
+        >
           Back to Game
         </Button>
       </Stack>

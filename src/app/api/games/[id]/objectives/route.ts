@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
@@ -14,6 +14,9 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json({ objectives });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'Failed to fetch objectives.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch objectives.' },
+      { status: 500 },
+    );
   }
 }

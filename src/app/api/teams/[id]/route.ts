@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
@@ -9,9 +9,8 @@ export async function GET(request: Request, segmentData: { params: Params }) {
   const id = Number(params.id);
 
   if (isNaN(id)) {
-    return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
-  } else
-    console.log(`Getting information from team with id ${id}`)
+    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
+  } else console.log(`Getting information from team with id ${id}`);
 
   try {
     const team = await prisma.teams.findUnique({
@@ -19,13 +18,13 @@ export async function GET(request: Request, segmentData: { params: Params }) {
     });
 
     if (!team) {
-      return NextResponse.json({ error: "Team not found" }, { status: 404 });
+      return NextResponse.json({ error: 'Team not found' }, { status: 404 });
     }
 
     return NextResponse.json(team);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Error fetching team" }, { status: 500 });
+    return NextResponse.json({ error: 'Error fetching team' }, { status: 500 });
   }
 }
 
@@ -34,7 +33,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
   const id = Number(params.id);
 
   if (isNaN(id)) {
-    return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
   }
 
   try {
@@ -52,8 +51,8 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
 
     return NextResponse.json(updatedTeam, { status: 200 });
   } catch (error) {
-    console.error("Error updating team:", error);
-    return NextResponse.json({ error: "Error updating team" }, { status: 500 });
+    console.error('Error updating team:', error);
+    return NextResponse.json({ error: 'Error updating team' }, { status: 500 });
   }
 }
 
@@ -66,7 +65,7 @@ export async function DELETE(
   const id = Number(params.id);
 
   if (isNaN(id)) {
-    return NextResponse.json({ error: "Invalid team ID" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
   }
 
   try {
@@ -76,7 +75,7 @@ export async function DELETE(
 
     return NextResponse.json({}, { status: 204 });
   } catch (error) {
-    console.error("Error deleting team:", error);
-    return NextResponse.json({ error: "Error deleting team" }, { status: 500 });
+    console.error('Error deleting team:', error);
+    return NextResponse.json({ error: 'Error deleting team' }, { status: 500 });
   }
 }

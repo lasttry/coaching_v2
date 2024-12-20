@@ -1,24 +1,25 @@
-"use client";
-import { styled, Container, Box } from "@mui/material";
-import React, { useState } from "react";
-import Header from "@/app/(DashboardLayout)/layout/header/Header";
-import Sidebar from "@/app/(DashboardLayout)/layout/sidebar/Sidebar";
-import { SessionProvider } from "next-auth/react";
+'use client';
+import { styled, Container, Box } from '@mui/material';
+import React, { useState } from 'react';
+import Header from '@/app/(DashboardLayout)/layout/header/Header';
+import Sidebar from '@/app/(DashboardLayout)/layout/sidebar/Sidebar';
+import { SessionProvider } from 'next-auth/react';
+import { SettingsProvider } from '@/context/SettingsContext';
 
-const MainWrapper = styled("div")(() => ({
-  display: "flex",
-  minHeight: "100vh",
-  width: "100%",
-  padding: "20px",
+const MainWrapper = styled('div')(() => ({
+  display: 'flex',
+  minHeight: '100vh',
+  width: '100%',
+  padding: '20px',
 }));
 
-const PageWrapper = styled("div")(() => ({
-  display: "flex",
+const PageWrapper = styled('div')(() => ({
+  display: 'flex',
   flexGrow: 1,
-  paddingBottom: "60px",
-  flexDirection: "column",
+  paddingBottom: '60px',
+  flexDirection: 'column',
   zIndex: 1,
-  backgroundColor: "transparent",
+  backgroundColor: 'transparent',
 }));
 
 export default function RootLayout({
@@ -47,7 +48,7 @@ export default function RootLayout({
         {/* ------------------------------------------- */}
         <Container
           sx={{
-            maxWidth: "1300px !important",
+            maxWidth: '1300px !important',
           }}
         >
           {/* ------------------------------------------- */}
@@ -57,8 +58,10 @@ export default function RootLayout({
           {/* ------------------------------------------- */}
           {/* Page Route */}
           {/* ------------------------------------------- */}
-          <Box sx={{ minHeight: "calc(100vh - 170px)", py: 3  }}>
-            <SessionProvider>{children}</SessionProvider>
+          <Box sx={{ minHeight: 'calc(100vh - 170px)', py: 3 }}>
+            <SessionProvider>
+              <SettingsProvider>{children}</SettingsProvider>
+            </SessionProvider>
           </Box>
           {/* ------------------------------------------- */}
           {/* End Page */}

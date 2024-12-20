@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { useState } from 'react';
 import {
   Box,
@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { signIn } from 'next-auth/react'; // Import signIn from NextAuth
 import { useRouter } from 'next/navigation';
-import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField"; // Adjust the path based on your folder structure
+import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField'; // Adjust the path based on your folder structure
 
 const SignInPage = () => {
   const [username, setUsername] = useState('');
@@ -46,7 +46,12 @@ const SignInPage = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      height="100vh"
+    >
       <Box
         component="form"
         onSubmit={handleSignIn} // Attach form submit handler
@@ -117,8 +122,8 @@ const SignInPage = () => {
               href="/"
               fontWeight="500"
               sx={{
-                textDecoration: "none",
-                color: "primary.main",
+                textDecoration: 'none',
+                color: 'primary.main',
               }}
             >
               Forgot Password?
@@ -137,7 +142,6 @@ const SignInPage = () => {
             Sign In
           </Button>
         </Box>
-
       </Box>
     </Box>
   );

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { signOut } from "next-auth/react"
+import React, { useState, useEffect } from 'react';
+import { signOut } from 'next-auth/react';
 import {
   Avatar,
   Box,
@@ -9,10 +9,10 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
-} from "@mui/material";
+} from '@mui/material';
 import Link from 'next/link';
 
-import { IconListCheck, IconMail, IconUser } from "@tabler/icons-react";
+import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
 
 const Profile = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -27,7 +27,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch("/api/profile/image");
+        const response = await fetch('/api/profile/image');
         const data = await response.json();
 
         if (response.ok) {
@@ -35,10 +35,10 @@ const Profile = () => {
             setPhotoPreview(`data:image/png;base64,${data.image}`);
           }
         } else {
-          setPhotoPreview('/images/profile/user-1.jpg')
+          setPhotoPreview('/images/profile/user-1.jpg');
         }
       } catch (error) {
-        console.error("Error fetching profile:", error);
+        console.error('Error fetching profile:', error);
       }
     };
 
@@ -54,8 +54,8 @@ const Profile = () => {
         aria-controls="msgs-menu"
         aria-haspopup="true"
         sx={{
-          ...(typeof anchorEl2 === "object" && {
-            color: "primary.main",
+          ...(typeof anchorEl2 === 'object' && {
+            color: 'primary.main',
           }),
         }}
         onClick={handleClick2}
@@ -78,11 +78,11 @@ const Profile = () => {
         keepMounted
         open={Boolean(anchorEl2)}
         onClose={handleClose2}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         sx={{
-          "& .MuiMenu-paper": {
-            width: "200px",
+          '& .MuiMenu-paper': {
+            width: '200px',
           },
         }}
       >
@@ -107,14 +107,14 @@ const Profile = () => {
           <ListItemText>My Tasks</ListItemText>
         </MenuItem>
         <Box mt={1} py={1} px={2}>
-        <Button
-          onClick={() => signOut()}  // Redirect to login after logout
-          variant="outlined"
-          color="primary"
-          fullWidth
-        >
-          Logout
-        </Button>
+          <Button
+            onClick={() => signOut()} // Redirect to login after logout
+            variant="outlined"
+            color="primary"
+            fullWidth
+          >
+            Logout
+          </Button>
         </Box>
       </Menu>
     </Box>

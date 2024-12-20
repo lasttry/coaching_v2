@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -47,16 +47,19 @@ const MesocycleForm = (props: { params: Params }) => {
 
         // Fetch all macrocycles for the dropdown
         const macrocyclesResponse = await fetch('/api/cycles/macrocycles');
-        const macrocyclesData: MacrocycleInterface[] = await macrocyclesResponse.json();
+        const macrocyclesData: MacrocycleInterface[] =
+          await macrocyclesResponse.json();
         setMacrocycles(macrocyclesData);
 
         if (isEditing) {
           // Fetch mesocycle data if editing
           const mesocycleResponse = await fetch(`/api/cycles/mesocycles/${id}`);
-          const mesocycleData: MesocycleInterface = await mesocycleResponse.json();
+          const mesocycleData: MesocycleInterface =
+            await mesocycleResponse.json();
           setForm(mesocycleData);
         }
       } catch (err) {
+        console.log(err);
         setError('Failed to fetch data.');
       } finally {
         setLoading(false);
@@ -66,7 +69,9 @@ const MesocycleForm = (props: { params: Params }) => {
     fetchData();
   }, [id, isEditing]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>,
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name!]: value }));
   };
@@ -77,7 +82,9 @@ const MesocycleForm = (props: { params: Params }) => {
 
     try {
       const method = isEditing ? 'PUT' : 'POST';
-      const url = isEditing ? `/api/cycles/mesocycles/${id}` : '/api/cycles/mesocycles';
+      const url = isEditing
+        ? `/api/cycles/mesocycles/${id}`
+        : '/api/cycles/mesocycles';
 
       const response = await fetch(url, {
         method,
@@ -92,7 +99,9 @@ const MesocycleForm = (props: { params: Params }) => {
         throw new Error('Failed to save Mesocycle.');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+      setError(
+        err instanceof Error ? err.message : 'An unknown error occurred.',
+      );
     } finally {
       setLoading(false);
     }
@@ -100,18 +109,26 @@ const MesocycleForm = (props: { params: Params }) => {
 
   if (loading) return <CircularProgress />;
 
-  const selectedMacrocycle = macrocycles.find((macro) => macro.id === form.macrocycleId);
+  const selectedMacrocycle = macrocycles.find(
+    (macro) => macro.id === form.macrocycleId,
+  );
 
   return (
     <PageContainer title={isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}>
       <h1>{isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}</h1>
       {error && (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
+        <Typography
+          variant="body1"
+          sx={{ color: (theme) => theme.palette.error.main }}
+        >
           {error}
         </Typography>
       )}
       {success && (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
+        <Typography
+          variant="body1"
+          sx={{ color: (theme) => theme.palette.success.main }}
+        >
           {success}
         </Typography>
       )}
@@ -161,16 +178,25 @@ const MesocycleForm = (props: { params: Params }) => {
             label="Start Date"
             type="date"
             value={dayjs(form.startDate).format('YYYY-MM-DD')}
-            onChange={(e) => setForm((prev) => ({ ...prev, startDate: new Date(dayjs(e.target.value).toISOString()) }))}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                startDate: new Date(dayjs(e.target.value).toISOString()),
+              }))
+            }
             inputRef={(input) => {
               if (input) {
                 input.setAttribute(
-                  "min",
-                  selectedMacrocycle ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD') : undefined,
+                  'min',
+                  selectedMacrocycle
+                    ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD')
+                    : undefined,
                 );
                 input.setAttribute(
-                  "max",
-                  selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined,
+                  'max',
+                  selectedMacrocycle
+                    ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD')
+                    : undefined,
                 );
               }
             }}
@@ -181,16 +207,25 @@ const MesocycleForm = (props: { params: Params }) => {
             label="End Date"
             type="date"
             value={dayjs(form.endDate).format('YYYY-MM-DD')}
-            onChange={(e) => setForm((prev) => ({ ...prev, endDate: new Date(dayjs(e.target.value).toISOString()) }))}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                endDate: new Date(dayjs(e.target.value).toISOString()),
+              }))
+            }
             inputRef={(input) => {
               if (input) {
                 input.setAttribute(
-                  "min",
-                  form.startDate ? dayjs(form.startDate).format('YYYY-MM-DD') : undefined,
+                  'min',
+                  form.startDate
+                    ? dayjs(form.startDate).format('YYYY-MM-DD')
+                    : undefined,
                 );
                 input.setAttribute(
-                  "max",
-                  selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined,
+                  'max',
+                  selectedMacrocycle
+                    ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD')
+                    : undefined,
                 );
               }
             }}
@@ -212,7 +247,11 @@ const MesocycleForm = (props: { params: Params }) => {
             <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
-            <Button variant="outlined" color="secondary" onClick={() => router.push('/utilities/cycles/mesocycles')}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push('/utilities/cycles/mesocycles')}
+            >
               Cancel
             </Button>
           </Box>

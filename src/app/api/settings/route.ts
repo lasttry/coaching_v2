@@ -27,7 +27,9 @@ const validateColor = (color: string): boolean => {
 // Validate incoming settings data
 const validateSettings = (data: SettingsData) => {
   if (!data.teamName || data.teamName.length > 50) {
-    throw new Error('Team name is required and must be less than 50 characters.');
+    throw new Error(
+      'Team name is required and must be less than 50 characters.',
+    );
   }
 
   if (data.shortName && data.shortName.length > 6) {
@@ -62,7 +64,7 @@ export async function POST(request: Request) {
 
     let settings = await prisma.settings.findUnique({
       where: { id: 1 },
-    });    
+    });
 
     // If no settings are found, create new ones
     if (!settings) {
@@ -77,13 +79,13 @@ export async function POST(request: Request) {
       });
     }
 
-
-
     return NextResponse.json(settings, { status: 201 }); // Respond with the created/updated settings
-
   } catch (error) {
     console.error('Error saving settings:', error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 400 });
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 400 },
+    );
   }
 }
 
@@ -95,13 +97,19 @@ export async function GET() {
     });
 
     if (!settings) {
-      return NextResponse.json({ error: 'Settings not found' }, { status: 404 });
+      return NextResponse.json(
+        { error: 'Settings not found' },
+        { status: 404 },
+      );
     }
 
     return NextResponse.json(settings, { status: 200 }); // Respond with the fetched settings
   } catch (error) {
     console.error('Error fetching settings:', error);
-    return NextResponse.json({ error: 'Error fetching settings' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error fetching settings' },
+      { status: 500 },
+    );
   }
 }
 

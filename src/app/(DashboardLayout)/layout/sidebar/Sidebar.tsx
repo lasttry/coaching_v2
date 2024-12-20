@@ -1,6 +1,7 @@
-import { useMediaQuery, Box, Drawer } from "@mui/material";
-import Logo from "../shared/logo/Logo";
-import SidebarItems from "./SidebarItems";
+import React from 'react';
+import { useMediaQuery, Box, Drawer } from '@mui/material';
+import Logo from '../shared/logo/Logo';
+import SidebarItems from './SidebarItems';
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
@@ -13,9 +14,9 @@ const Sidebar = ({
   onSidebarClose,
   isSidebarOpen,
 }: ItemType) => {
-  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up("lg"));
+  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
 
-  const sidebarWidth = "270px";
+  const sidebarWidth = '270px';
 
   if (lgUp) {
     return (
@@ -23,7 +24,7 @@ const Sidebar = ({
         sx={{
           width: sidebarWidth,
           flexShrink: 0,
-          borderRadius: "13px",
+          borderRadius: '13px',
         }}
       >
         {/* ------------------------------------------- */}
@@ -35,15 +36,15 @@ const Sidebar = ({
           variant="permanent"
           PaperProps={{
             sx: {
-              boxShadow:  "0 9px 17.5px rgb(0,0,0,0.05)",
+              boxShadow: '0 9px 17.5px rgb(0,0,0,0.05)',
               width: sidebarWidth,
-              boxSizing: "border-box",
+              boxSizing: 'border-box',
               borderRight: 0,
               top: 20,
               left: 20,
               bottom: 20,
-              borderRadius: "13px",
-              height: "calc(100% - 40px)",
+              borderRadius: '13px',
+              height: 'calc(100% - 40px)',
             },
           }}
         >
@@ -52,7 +53,7 @@ const Sidebar = ({
           {/* ------------------------------------------- */}
           <Box
             sx={{
-              height: "100%",
+              height: '100%',
             }}
           >
             {/* ------------------------------------------- */}

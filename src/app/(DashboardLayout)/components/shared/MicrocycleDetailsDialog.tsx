@@ -1,19 +1,13 @@
 import React from 'react';
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  Typography,
-} from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import 'dayjs/locale/pt';
 import SessionGoalsTables from './SessionGoalsTables';
-import { MicrocycleInterface, MesocycleInterface, MacrocycleInterface, SessionGoalInterface } from '@/types/cycles/types';
+import {
+  MesocycleInterface,
+  MacrocycleInterface,
+  SessionGoalInterface,
+} from '@/types/cycles/types';
 
 // Set the locale to Portuguese
 dayjs.locale('pt');
@@ -55,7 +49,6 @@ const MicrocycleDetailsDialog: React.FC<MicrocycleDetailsDialogProps> = ({
           </Typography>
         )}
         <SessionGoalsTables data={data} />
-
       </DialogContent>
     </Dialog>
   );

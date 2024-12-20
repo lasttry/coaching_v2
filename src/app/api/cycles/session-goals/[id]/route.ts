@@ -1,17 +1,17 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve a specific session goal
-export async function GET(
-  request: Request,
-  { params }: { params: Params }
-) {
+export async function GET(request: Request, { params }: { params: Params }) {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid session goal ID" }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Invalid session goal ID' },
+      { status: 400 },
+    );
   }
 
   try {
@@ -22,27 +22,30 @@ export async function GET(
 
     if (!sessionGoal) {
       return NextResponse.json(
-        { error: "Session goal not found" },
-        { status: 404 }
+        { error: 'Session goal not found' },
+        { status: 404 },
       );
     }
 
     return NextResponse.json(sessionGoal);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to fetch session goal" }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch session goal' },
+      { status: 500 },
+    );
   }
 }
 
 // PUT: Update a specific session goal
-export async function PUT(
-  request: Request,
-  { params }: { params: Params }
-) {
+export async function PUT(request: Request, { params }: { params: Params }) {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid session goal ID" }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Invalid session goal ID' },
+      { status: 400 },
+    );
   }
 
   try {
@@ -62,19 +65,22 @@ export async function PUT(
     return NextResponse.json(updatedSessionGoal);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to update session goal" }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to update session goal' },
+      { status: 500 },
+    );
   }
 }
 
 // DELETE: Delete a specific session goal
-export async function DELETE(
-  request: Request,
-  { params }: { params: Params }
-) {
+export async function DELETE(request: Request, { params }: { params: Params }) {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid session goal ID" }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Invalid session goal ID' },
+      { status: 400 },
+    );
   }
 
   try {
@@ -82,9 +88,12 @@ export async function DELETE(
       where: { id: Number(id) },
     });
 
-    return NextResponse.json({ message: "Session goal deleted successfully" });
+    return NextResponse.json({ message: 'Session goal deleted successfully' });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to delete session goal" }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to delete session goal' },
+      { status: 500 },
+    );
   }
 }

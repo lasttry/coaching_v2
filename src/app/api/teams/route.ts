@@ -11,7 +11,7 @@ export async function POST(request: Request) {
         name: data.name,
         shortName: data.shortName,
         location: data.location,
-        image: data.image,  // Optional image field
+        image: data.image, // Optional image field
         createdAt: new Date(),
         updatedAt: new Date(),
       },
@@ -31,6 +31,9 @@ export async function GET() {
     return NextResponse.json(teams);
   } catch (error) {
     console.error('Error fetching teams:', error);
-    return NextResponse.json({ error: 'Error fetching teams' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error fetching teams' },
+      { status: 500 },
+    );
   }
 }

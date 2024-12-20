@@ -1,10 +1,24 @@
-"use client";
-
+'use client';
+import React from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import { Button, Box, Stack, Typography, TextField, Select, MenuItem } from '@mui/material';
-import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import {
+  Button,
+  Box,
+  Stack,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+} from '@mui/material';
+import {
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from '@mui/material';
 import dayjs from 'dayjs';
 import { SelectChangeEvent } from '@mui/material/Select'; // Add this line
 
@@ -53,13 +67,15 @@ const EditGame = () => {
   useEffect(() => {
     async function fetchData() {
       if (!id) return;
-  
+
       try {
         // Fetch game details
         const gameResponse = await fetch(`/api/games/${id}`);
 
         if (!gameResponse.ok) {
-          throw new Error(`Failed to fetch game details. Status: ${gameResponse.status}`);
+          throw new Error(
+            `Failed to fetch game details. Status: ${gameResponse.status}`,
+          );
         }
 
         const gameData = await gameResponse.json();
@@ -70,34 +86,46 @@ const EditGame = () => {
           away: gameData.game.away,
           competition: gameData.game.competition,
           subcomp: gameData.game.subcomp,
-          oponentId: gameData.game.oponentId || '', 
+          oponentId: gameData.game.oponentId || '',
           notes: gameData.game.notes,
-          athleteIds: gameData.game.gameAthletes.map((athlete: { athleteId: number }) => athlete.athleteId) 
+          athleteIds: gameData.game.gameAthletes.map(
+            (athlete: { athleteId: number }) => athlete.athleteId,
+          ),
         });
-  
+
         // Fetch available teams
         const teamsResponse = await fetch('/api/teams');
         if (!teamsResponse.ok) {
-          throw new Error(`Failed to fetch teams. Status: ${teamsResponse.status}`);
+          throw new Error(
+            `Failed to fetch teams. Status: ${teamsResponse.status}`,
+          );
         }
         const teamsData: Team[] = await teamsResponse.json();
         setTeams(teamsData);
-  
+
         // Fetch athletes
         const athletesResponse = await fetch('/api/athletes');
         if (!athletesResponse.ok) {
-          throw new Error(`Failed to fetch athletes. Status: ${athletesResponse.status}`);
+          throw new Error(
+            `Failed to fetch athletes. Status: ${athletesResponse.status}`,
+          );
         }
         const athletesData: Athlete[] = await athletesResponse.json();
-  
+
         const selected = athletesData.filter((athlete: Athlete) =>
-          gameData.game.gameAthletes?.some((selectedAthlete: { athleteId: number }) => selectedAthlete.athleteId === athlete.id)
+          gameData.game.gameAthletes?.some(
+            (selectedAthlete: { athleteId: number }) =>
+              selectedAthlete.athleteId === athlete.id,
+          ),
         );
-  
+
         const available = athletesData.filter(
-          (athlete: Athlete) => !selected.some((selectedAthlete: Athlete) => selectedAthlete.id === athlete.id)
+          (athlete: Athlete) =>
+            !selected.some(
+              (selectedAthlete: Athlete) => selectedAthlete.id === athlete.id,
+            ),
         );
-  
+
         setAvailableAthletes(sortAthletes(available));
         setSelectedAthletes(sortAthletes(selected));
       } catch (err) {
@@ -106,10 +134,10 @@ const EditGame = () => {
         setDetailedError(err instanceof Error ? err.message : String(err));
       }
     }
-  
+
     fetchData();
   }, [id]);
-  
+
   // Sort athletes by number, year of birth, and name
   const sortAthletes = (athletes: Athlete[]) => {
     return athletes.sort((a, b) => {
@@ -141,11 +169,16 @@ const EditGame = () => {
   // Add athlete to selected list
   const handleAddAthlete = (athlete: Athlete) => {
     const updatedSelected = [...selectedAthletes, athlete];
-    const updatedAvailable = availableAthletes.filter((a) => a.id !== athlete.id);
+    const updatedAvailable = availableAthletes.filter(
+      (a) => a.id !== athlete.id,
+    );
 
     setSelectedAthletes(sortAthletes(updatedSelected));
     setAvailableAthletes(sortAthletes(updatedAvailable));
-    setForm((prev) => ({ ...prev, athleteIds: [...prev.athleteIds, athlete.id] }));
+    setForm((prev) => ({
+      ...prev,
+      athleteIds: [...prev.athleteIds, athlete.id],
+    }));
   };
 
   // Remove athlete from selected list
@@ -166,13 +199,14 @@ const EditGame = () => {
     e.preventDefault();
 
     try {
-
       // Ensure that the number is converted to an integer (or left as undefined if empty)
       const updatedForm = {
         ...form,
-        number: form.number ? parseInt(form.number as unknown as string, 10) : undefined,
+        number: form.number
+          ? parseInt(form.number as unknown as string, 10)
+          : undefined,
       };
-      console.log(updatedForm)
+      console.log(updatedForm);
       const response = await fetch(`/api/games/${id}`, {
         method: 'PUT',
         headers: {
@@ -205,22 +239,37 @@ const EditGame = () => {
       <h1>Edit Game</h1>
 
       {error ? (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
+        <Typography
+          variant="body1"
+          sx={{ color: (theme) => theme.palette.error.main }}
+        >
           {error}
         </Typography>
-      ) : <></>}
+      ) : (
+        <></>
+      )}
 
       {detailedError ? (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main, whiteSpace: 'pre-wrap' }}>
+        <Typography
+          variant="body1"
+          sx={{
+            color: (theme) => theme.palette.error.main,
+            whiteSpace: 'pre-wrap',
+          }}
+        >
           {detailedError}
         </Typography>
-      ) : <></>}
+      ) : (
+        <></>
+      )}
 
       {success ? (
         <Typography variant="body1" sx={{ color: 'green' }}>
           {success}
         </Typography>
-      ) : <></>}
+      ) : (
+        <></>
+      )}
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
@@ -230,7 +279,9 @@ const EditGame = () => {
             type="number"
             name="number"
             value={form.number || ''}
-            onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} 
+            onChange={(e) =>
+              handleChange(e as React.ChangeEvent<HTMLInputElement>)
+            }
             required
           />
           {/* Date Field */}
@@ -239,7 +290,9 @@ const EditGame = () => {
             type="datetime-local"
             name="date"
             value={form.date}
-            onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)} 
+            onChange={(e) =>
+              handleChange(e as React.ChangeEvent<HTMLInputElement>)
+            }
             required
           />
 
@@ -247,8 +300,10 @@ const EditGame = () => {
           <Box>
             <Select
               name="away"
-              value={form.away ? "true" : "false"}
-              onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
+              value={form.away ? 'true' : 'false'}
+              onChange={(e) =>
+                handleChange(e as React.ChangeEvent<HTMLInputElement>)
+              }
             >
               <MenuItem value="false">Home</MenuItem>
               <MenuItem value="true">Away</MenuItem>
@@ -277,7 +332,9 @@ const EditGame = () => {
             label="Competition"
             name="competition"
             value={form.competition || ''}
-            onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
+            onChange={(e) =>
+              handleChange(e as React.ChangeEvent<HTMLInputElement>)
+            }
           />
 
           {/* Subcompetition Field */}
@@ -285,7 +342,9 @@ const EditGame = () => {
             label="Subcompetition"
             name="subcomp"
             value={form.subcomp || ''}
-            onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
+            onChange={(e) =>
+              handleChange(e as React.ChangeEvent<HTMLInputElement>)
+            }
           />
 
           {/* Notes Field */}
@@ -295,7 +354,9 @@ const EditGame = () => {
             value={form.notes || ''}
             multiline
             rows={4}
-            onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
+            onChange={(e) =>
+              handleChange(e as React.ChangeEvent<HTMLInputElement>)
+            }
           />
 
           {/* Athlete Table */}
@@ -360,7 +421,12 @@ const EditGame = () => {
             <Button type="submit" variant="contained" color="primary">
               Save Changes
             </Button>
-            <Button type="button" variant="outlined" color="secondary" onClick={() => router.push('/utilities/games')}>
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push('/utilities/games')}
+            >
               Cancel
             </Button>
           </Box>

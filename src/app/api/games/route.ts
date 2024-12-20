@@ -12,9 +12,12 @@ export async function POST(request: Request) {
 
     const validationErrors = validateGameData(data);
     if (validationErrors.length > 0) {
-      return NextResponse.json({ error: validationErrors.join(' ') }, { status: 400 });
+      return NextResponse.json(
+        { error: validationErrors.join(' ') },
+        { status: 400 },
+      );
     }
-    console.log(data)
+    console.log(data);
     const newGame = await prisma.games.create({
       data: {
         number: Number(data.number),
@@ -38,7 +41,10 @@ export async function POST(request: Request) {
     return NextResponse.json(newGame, { status: 201 });
   } catch (error) {
     console.error('Error creating game:', error);
-    return NextResponse.json({ error: `Error creating game:` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Error creating game:` },
+      { status: 500 },
+    );
   }
 }
 
@@ -54,6 +60,9 @@ export async function GET() {
     return NextResponse.json(games);
   } catch (error) {
     console.error('Error fetching games:', error);
-    return NextResponse.json({ error: 'Error fetching games' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error fetching games' },
+      { status: 500 },
+    );
   }
 }

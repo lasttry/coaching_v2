@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   const gameId = Number(params.id);
 
   if (isNaN(gameId)) {
-    return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
   }
 
   try {
@@ -19,7 +19,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 
     if (!statistics || statistics.length === 0) {
       return NextResponse.json(
-        { error: "Statistics not found" },
+        { error: 'Statistics not found' },
         { status: 404 },
       );
     }
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   } catch (error) {
     console.error(error);
     return NextResponse.json(
-      { error: "An error occurred while fetching statistics" },
+      { error: 'An error occurred while fetching statistics' },
       { status: 500 },
     );
   }
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
   const gameId = Number(params.id);
 
   if (isNaN(gameId)) {
-    return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
   }
 
   try {
@@ -64,13 +64,13 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
     await Promise.all(createPromises);
 
     return NextResponse.json(
-      { message: "Time entries added successfully" },
+      { message: 'Time entries added successfully' },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error adding time entries:", error);
+    console.error('Error adding time entries:', error);
     return NextResponse.json(
-      { error: "Failed to add time entries" },
+      { error: 'Failed to add time entries' },
       { status: 500 },
     );
   }
@@ -82,7 +82,7 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
   const gameId = params.id;
 
   if (isNaN(gameId)) {
-    return NextResponse.json({ error: "Invalid game ID" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
   }
 
   try {
@@ -116,13 +116,13 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
     await Promise.all(updatePromises);
 
     return NextResponse.json(
-      { message: "Time entries updated successfully" },
+      { message: 'Time entries updated successfully' },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error updating time entries:", error);
+    console.error('Error updating time entries:', error);
     return NextResponse.json(
-      { error: "Failed to update time entries" },
+      { error: 'Failed to update time entries' },
       { status: 500 },
     );
   }

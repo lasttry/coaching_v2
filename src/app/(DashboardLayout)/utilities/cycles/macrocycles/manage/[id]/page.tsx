@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -31,7 +31,7 @@ const MacrocycleForm = (props: { params: Params }) => {
     startDate: new Date(dayjs().toISOString()),
     endDate: new Date(dayjs().add(1, 'month').toISOString()),
     notes: '',
-    mesocycles: []
+    mesocycles: [],
   });
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -63,7 +63,9 @@ const MacrocycleForm = (props: { params: Params }) => {
 
     try {
       const method = isEditing ? 'PUT' : 'POST';
-      const url = isEditing ? `/api/cycles/macrocycles/${id}` : '/api/cycles/macrocycles';
+      const url = isEditing
+        ? `/api/cycles/macrocycles/${id}`
+        : '/api/cycles/macrocycles';
 
       const response = await fetch(url, {
         method,
@@ -78,7 +80,9 @@ const MacrocycleForm = (props: { params: Params }) => {
         throw new Error('Failed to save Macrocycle.');
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+      setError(
+        err instanceof Error ? err.message : 'An unknown error occurred.',
+      );
     } finally {
       setLoading(false);
     }
@@ -91,13 +95,19 @@ const MacrocycleForm = (props: { params: Params }) => {
       <h1>{isEditing ? 'Edit Macrocycle' : 'Create Macrocycle'}</h1>
 
       {error && (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
+        <Typography
+          variant="body1"
+          sx={{ color: (theme) => theme.palette.error.main }}
+        >
           {error}
         </Typography>
       )}
 
       {success && (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
+        <Typography
+          variant="body1"
+          sx={{ color: (theme) => theme.palette.success.main }}
+        >
           {success}
         </Typography>
       )}
@@ -167,7 +177,11 @@ const MacrocycleForm = (props: { params: Params }) => {
             <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
-            <Button variant="outlined" color="secondary" onClick={() => router.push('/utilities/cycles/macrocycles')}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push('/utilities/cycles/macrocycles')}
+            >
               Cancel
             </Button>
           </Box>

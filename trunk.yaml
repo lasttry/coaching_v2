@@ -1,0 +1,34 @@
+version: '0.1'
+
+# Define the linters and formatters to use
+linters:
+  - name: eslint
+    enabled: true
+    config: .eslintrc.json
+  - name: prettier
+    enabled: true
+    config: .prettierrc
+
+# Define the files to include/exclude
+include:
+  - '**/*.ts'
+  - '**/*.tsx'
+  - '**/*.js'
+  - '**/*.jsx'
+  - '**/*.json'
+  - src/**/*.ts
+  - src/**/*.tsx
+  - src/**/*.js
+  - src/**/*.jsx
+  - src/**/*.json
+exclude:
+  - node_modules/**
+  - dist/**
+  - build/**
+
+# Define custom commands
+commands:
+  - name: lint
+    run: trunk check
+  - name: format
+    run: trunk fmt

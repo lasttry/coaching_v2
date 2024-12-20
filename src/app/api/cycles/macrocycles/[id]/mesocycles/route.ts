@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
@@ -9,7 +9,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   const id = Number(params.id);
 
   if (isNaN(id)) {
-    return NextResponse.json({ error: "Invalid Macrocycle ID" }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Invalid Macrocycle ID' },
+      { status: 400 },
+    );
   }
 
   try {
@@ -24,7 +27,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 
     return NextResponse.json(mesocycles, { status: 200 });
   } catch (error) {
-    console.error("Error fetching mesocycles:", error);
-    return NextResponse.json({ error: "Failed to fetch mesocycles." }, { status: 500 });
+    console.error('Error fetching mesocycles:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch mesocycles.' },
+      { status: 500 },
+    );
   }
 }

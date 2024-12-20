@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 // GET: List all mesocycles
@@ -7,14 +7,17 @@ export async function GET() {
     const mesocycles = await prisma.mesocycle.findMany({
       include: {
         microcycles: true, // Include related microcycles
-        macrocycle: true,  // Include parent macrocycle
+        macrocycle: true, // Include parent macrocycle
       },
     });
 
     return NextResponse.json(mesocycles);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to fetch mesocycles" }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch mesocycles' },
+      { status: 500 },
+    );
   }
 }
 
@@ -27,8 +30,8 @@ export async function POST(request: Request) {
     const { name, number, startDate, endDate, notes, macrocycleId } = data;
     if (!startDate || !endDate || !macrocycleId) {
       return NextResponse.json(
-        { error: "Start date, end date, and macrocycle ID are required" },
-        { status: 400 }
+        { error: 'Start date, end date, and macrocycle ID are required' },
+        { status: 400 },
       );
     }
 
@@ -46,6 +49,9 @@ export async function POST(request: Request) {
     return NextResponse.json(newMesocycle, { status: 201 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to create mesocycle" }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create mesocycle' },
+      { status: 500 },
+    );
   }
 }

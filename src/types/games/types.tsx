@@ -12,7 +12,7 @@ export interface GameInterface {
   notes?: string;
   teams?: TeamInterface;
   gameAthletes: GameAthleteInterface[];
-  objectives?: ObjectiveInterface[], // Add default
+  objectives?: ObjectiveInterface[]; // Add default
 }
 
 export interface ObjectiveInterface {
@@ -28,10 +28,10 @@ export interface ObjectiveInterface {
 
 /* eslint-disable no-unused-vars */
 export enum ObjectiveType {
-  OFFENSIVE = "OFFENSIVE",
-  DEFENSIVE = "DEFENSIVE",
-  TEAM = "TEAM",
-  INDIVIDUAL = "INDIVIDUAL",
+  OFFENSIVE = 'OFFENSIVE',
+  DEFENSIVE = 'DEFENSIVE',
+  TEAM = 'TEAM',
+  INDIVIDUAL = 'INDIVIDUAL',
 }
 /* eslint-enable no-unused-vars */
 
@@ -51,8 +51,8 @@ export interface GameAthleteInterface {
   number: string;
   period1: boolean;
   period2: boolean;
-  period3 : boolean;
-  period4: boolean
+  period3: boolean;
+  period4: boolean;
 }
 
 export interface AthleteInterface {
@@ -63,7 +63,7 @@ export interface AthleteInterface {
   fpbNumber: number;
   idNumber: number;
   idType: string;
-  active: boolean
+  active: boolean;
 }
 
 export interface jsPDFWithAutoTable extends jsPDF {

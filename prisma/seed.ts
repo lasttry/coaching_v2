@@ -1,5 +1,5 @@
-import { PrismaClient } from "@prisma/client";
-import { TextEncoder } from "util";
+import { PrismaClient } from '@prisma/client';
+import { TextEncoder } from 'util';
 
 // Initialize Prisma Client
 const prisma = new PrismaClient();
@@ -12,18 +12,18 @@ function encode(text: string): Uint8Array {
 // Helper to hash a password with salt using Web Crypto API
 async function hashPassword(password: string, salt: string): Promise<string> {
   const passwordData = encode(password + salt);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", passwordData);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
   return Array.from(new Uint8Array(hashBuffer))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
 }
 
 function generateSalt(length: number = 16): string {
   const array = new Uint8Array(length);
   crypto.getRandomValues(array);
   return Array.from(array)
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
 }
 
 async function main() {
@@ -31,23 +31,23 @@ async function main() {
   const salt = generateSalt(); // Replace with a securely generated salt in production
 
   // Hash the password
-  const password = "admin123"; // Replace with desired password
+  const password = 'admin123'; // Replace with desired password
   const hashedPassword = await hashPassword(password, salt);
 
-    // Remove any existing user with the same email
+  // Remove any existing user with the same email
   await prisma.user.deleteMany({
     //where: { email: "ricardo@diasantos.com" },
   });
   // Store the user in the database
   await prisma.user.create({
     data: {
-      name: "Ricardo Santos", // Replace with desired name
-      email: "ricardo@diasantos.com", // Replace with desired email
+      name: 'Ricardo Santos', // Replace with desired name
+      email: 'ricardo@diasantos.com', // Replace with desired email
       password: `${salt}:${hashedPassword}`, // Store salt and hash in the format `salt:hash`
     },
   });
 
-  console.log("Admin user created:");
+  console.log('Admin user created:');
 }
 
 main()

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Box,
   Typography,
@@ -8,9 +8,9 @@ import {
   Stack,
   Checkbox,
   Link,
-} from "@mui/material";
-import CustomTextField from "@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField";
-import { ReactNode } from "react";
+} from '@mui/material';
+import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
+import { ReactNode } from 'react';
 
 interface loginType {
   title?: string;
@@ -21,7 +21,7 @@ interface loginType {
 
 const handleLogin = (event: React.FormEvent) => {
   event.preventDefault();
-  console.log("Login form submitted");
+  console.log('Login form submitted');
   // Add login logic here (e.g., API call to authenticate the user)
 };
 
@@ -78,8 +78,8 @@ const AuthLogin = ({ title, subtitle, subtext, onSubmit }: loginType) => (
           href="/"
           fontWeight="500"
           sx={{
-            textDecoration: "none",
-            color: "primary.main",
+            textDecoration: 'none',
+            color: 'primary.main',
           }}
         >
           Forgot Password ?

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
   Button,
   TextField,
@@ -16,7 +16,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import dayjs from 'dayjs';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import SessionGoalsTables from '@/app/(DashboardLayout)/components/shared/SessionGoalsTables';
-import { MicrocycleInterface, MacrocycleInterface, MesocycleInterface, SessionGoalInterface } from '@/types/cycles/types';
+import {
+  MicrocycleInterface,
+  MacrocycleInterface,
+  MesocycleInterface,
+  SessionGoalInterface,
+} from '@/types/cycles/types';
+import React from 'react';
 
 type Params = Promise<{ id: string }>;
 
@@ -24,12 +30,14 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
   const router = useRouter();
   const params = use(props.params);
   const microcycleId = params?.id;
-  console.log(microcycleId)
+  console.log(microcycleId);
 
   const isEditing = microcycleId !== 'new';
   const [macrocycles, setMacrocycles] = useState<MacrocycleInterface[]>([]);
   const [mesocycles, setMesocycles] = useState<MesocycleInterface[]>([]);
-  const [selectedMacrocycle, setSelectedMacrocycle] = useState<number | null>(null);
+  const [selectedMacrocycle, setSelectedMacrocycle] = useState<number | null>(
+    null,
+  );
   const [microcycle, setMicrocycle] = useState<Partial<MicrocycleInterface>>({
     number: undefined,
     name: '',
@@ -52,7 +60,9 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
         setMacrocycles(macroData);
 
         if (isEditing) {
-          const response = await fetch(`/api/cycles/microcycles/${microcycleId}`);
+          const response = await fetch(
+            `/api/cycles/microcycles/${microcycleId}`,
+          );
           const data: MicrocycleInterface = await response.json();
           console.log(data);
           setMicrocycle(data);
@@ -72,7 +82,9 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
     async function fetchMesocycles() {
       if (!selectedMacrocycle) return;
       try {
-        const response = await fetch(`/api/cycles/macrocycles/${selectedMacrocycle}/mesocycles`);
+        const response = await fetch(
+          `/api/cycles/macrocycles/${selectedMacrocycle}/mesocycles`,
+        );
         const data: MesocycleInterface[] = await response.json();
         setMesocycles(data);
       } catch (err) {
@@ -114,11 +126,24 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
   const handleAddSessionGoal = () => {
     setMicrocycle((prev) => ({
       ...prev,
-      sessionGoals: [...(prev.sessionGoals || []), { date: new Date(dayjs(microcycle.startDate).format("YYYY-MM-DD")), order: 0, duration: 0, note: '', coach: '' }],
+      sessionGoals: [
+        ...(prev.sessionGoals || []),
+        {
+          date: new Date(dayjs(microcycle.startDate).format('YYYY-MM-DD')),
+          order: 0,
+          duration: 0,
+          note: '',
+          coach: '',
+        },
+      ],
     }));
   };
 
-  const handleSessionGoalChange = (index: number, key: keyof SessionGoalInterface, value: string | Date | number) => {
+  const handleSessionGoalChange = (
+    index: number,
+    key: keyof SessionGoalInterface,
+    value: string | Date | number,
+  ) => {
     const updatedGoals = [...(microcycle.sessionGoals || [])];
     updatedGoals[index] = { ...updatedGoals[index], [key]: value };
     setMicrocycle((prev) => ({ ...prev, sessionGoals: updatedGoals }));
@@ -133,7 +158,9 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
   return (
     <PageContainer
       title={isEditing ? 'Edit Microcycle' : 'Add Microcycle'}
-      description={isEditing ? 'Edit the selected microcycle' : 'Add a new microcycle'}
+      description={
+        isEditing ? 'Edit the selected microcycle' : 'Add a new microcycle'
+      }
     >
       <h1>{isEditing ? 'Edit Microcycle' : 'Add Microcycle'}</h1>
 
@@ -164,9 +191,14 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
 
           {/* Select Mesocycle */}
           <Select
-            value={ microcycle.mesocycle?.id || ''}
+            value={microcycle.mesocycle?.id || ''}
             onChange={(e) =>
-              setMicrocycle((prev) => ({ ...prev, mesocycle: mesocycles.find((mesocycle) => mesocycle.id === Number(e.target.value))}))
+              setMicrocycle((prev) => ({
+                ...prev,
+                mesocycle: mesocycles.find(
+                  (mesocycle) => mesocycle.id === Number(e.target.value),
+                ),
+              }))
             }
             displayEmpty
             required
@@ -187,33 +219,53 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
             type="number"
             value={microcycle.number || ''}
             onChange={(e) =>
-              setMicrocycle((prev) => ({ ...prev, number: Number(e.target.value) }))
+              setMicrocycle((prev) => ({
+                ...prev,
+                number: Number(e.target.value),
+              }))
             }
             required
           />
           <TextField
             label="Microcycle Name"
             value={microcycle.name || ''}
-            onChange={(e) => setMicrocycle((prev) => ({ ...prev, name: e.target.value }))}
+            onChange={(e) =>
+              setMicrocycle((prev) => ({ ...prev, name: e.target.value }))
+            }
           />
           <TextField
             label="Start Date"
             type="date"
-            value={dayjs(microcycle.startDate).format("YYYY-MM-DD") || ''}
-            onChange={(e) => setMicrocycle((prev) => ({ ...prev, startDate: new Date(e.target.value) }))}
+            value={dayjs(microcycle.startDate).format('YYYY-MM-DD') || ''}
+            onChange={(e) =>
+              setMicrocycle((prev) => ({
+                ...prev,
+                startDate: new Date(e.target.value),
+              }))
+            }
             inputRef={(input) => {
               if (input) {
                 input.setAttribute(
-                  "min",
-                  mesocycles.find((m) => m.id === microcycle.mesocycle?.id)?.startDate
-                    ? dayjs(mesocycles.find((m) => m.id === microcycle.mesocycle?.id)?.startDate).format("YYYY-MM-DD")
-                    : ""
+                  'min',
+                  mesocycles.find((m) => m.id === microcycle.mesocycle?.id)
+                    ?.startDate
+                    ? dayjs(
+                        mesocycles.find(
+                          (m) => m.id === microcycle.mesocycle?.id,
+                        )?.startDate,
+                      ).format('YYYY-MM-DD')
+                    : '',
                 );
                 input.setAttribute(
-                  "max",
-                  mesocycles.find((m) => m.id === microcycle.mesocycle?.id)?.endDate
-                    ? dayjs(mesocycles.find((m) => m.id === microcycle.mesocycle?.id)?.endDate).format("YYYY-MM-DD")
-                    : ""
+                  'max',
+                  mesocycles.find((m) => m.id === microcycle.mesocycle?.id)
+                    ?.endDate
+                    ? dayjs(
+                        mesocycles.find(
+                          (m) => m.id === microcycle.mesocycle?.id,
+                        )?.endDate,
+                      ).format('YYYY-MM-DD')
+                    : '',
                 );
               }
             }}
@@ -222,21 +274,36 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
           <TextField
             label="End Date"
             type="date"
-            value={dayjs(microcycle.endDate).format("YYYY-MM-DD") || ''}
-            onChange={(e) => setMicrocycle((prev) => ({ ...prev, endDate: new Date(e.target.value) }))}
+            value={dayjs(microcycle.endDate).format('YYYY-MM-DD') || ''}
+            onChange={(e) =>
+              setMicrocycle((prev) => ({
+                ...prev,
+                endDate: new Date(e.target.value),
+              }))
+            }
             inputRef={(input) => {
               if (input) {
                 input.setAttribute(
-                  "min",
-                  mesocycles.find((m) => m.id === microcycle.mesocycle?.id)?.startDate
-                    ? dayjs(mesocycles.find((m) => m.id === microcycle.mesocycle?.id)?.startDate).format("YYYY-MM-DD")
-                    : ""
+                  'min',
+                  mesocycles.find((m) => m.id === microcycle.mesocycle?.id)
+                    ?.startDate
+                    ? dayjs(
+                        mesocycles.find(
+                          (m) => m.id === microcycle.mesocycle?.id,
+                        )?.startDate,
+                      ).format('YYYY-MM-DD')
+                    : '',
                 );
                 input.setAttribute(
-                  "max",
-                  mesocycles.find((m) => m.id === microcycle.mesocycle?.id)?.endDate
-                    ? dayjs(mesocycles.find((m) => m.id === microcycle.mesocycle?.id)?.endDate).format("YYYY-MM-DD")
-                    : ""
+                  'max',
+                  mesocycles.find((m) => m.id === microcycle.mesocycle?.id)
+                    ?.endDate
+                    ? dayjs(
+                        mesocycles.find(
+                          (m) => m.id === microcycle.mesocycle?.id,
+                        )?.endDate,
+                      ).format('YYYY-MM-DD')
+                    : '',
                 );
               }
             }}
@@ -247,7 +314,9 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
             multiline
             rows={3}
             value={microcycle.notes || ''}
-            onChange={(e) => setMicrocycle((prev) => ({ ...prev, notes: e.target.value }))}
+            onChange={(e) =>
+              setMicrocycle((prev) => ({ ...prev, notes: e.target.value }))
+            }
           />
           <SessionGoalsTables data={microcycle.sessionGoals || []} />
           {/* Session Goals */}
@@ -256,21 +325,32 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
               Session Goals
             </Typography>
             {microcycle.sessionGoals?.map((goal, index) => (
-              <Stack key={index} spacing={2} direction="row" alignItems="center">
+              <Stack
+                key={index}
+                spacing={2}
+                direction="row"
+                alignItems="center"
+              >
                 <TextField
                   label="Date"
                   type="date"
-                  value={dayjs(goal.date).format("YYYY-MM-DD") || ''}
-                  onChange={(e) => handleSessionGoalChange(index, 'date', new Date(e.target.value))}
+                  value={dayjs(goal.date).format('YYYY-MM-DD') || ''}
+                  onChange={(e) =>
+                    handleSessionGoalChange(
+                      index,
+                      'date',
+                      new Date(e.target.value),
+                    )
+                  }
                   inputRef={(input) => {
                     if (input) {
                       input.setAttribute(
-                        "min",
-                        dayjs(microcycle.startDate).format("YYYY-MM-DD")
+                        'min',
+                        dayjs(microcycle.startDate).format('YYYY-MM-DD'),
                       );
                       input.setAttribute(
-                        "max",
-                        dayjs(microcycle.endDate).format("YYYY-MM-DD")
+                        'max',
+                        dayjs(microcycle.endDate).format('YYYY-MM-DD'),
                       );
                     }
                   }}
@@ -280,7 +360,11 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
                   label="Order"
                   value={goal.order || ''}
                   onChange={(e) =>
-                    handleSessionGoalChange(index, 'order', Number(e.target.value))
+                    handleSessionGoalChange(
+                      index,
+                      'order',
+                      Number(e.target.value),
+                    )
                   }
                   required
                   sx={{ width: '50px' }} // Adjust the width as needed
@@ -290,7 +374,11 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
                   label="Duration"
                   value={goal.duration || ''}
                   onChange={(e) =>
-                    handleSessionGoalChange(index, 'duration', Number(e.target.value))
+                    handleSessionGoalChange(
+                      index,
+                      'duration',
+                      Number(e.target.value),
+                    )
                   }
                   required
                   sx={{ width: '70px' }} // Adjust the width as needed
@@ -298,7 +386,9 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
                 <TextField
                   label="Note"
                   value={goal.note || ''}
-                  onChange={(e) => handleSessionGoalChange(index, 'note', e.target.value)}
+                  onChange={(e) =>
+                    handleSessionGoalChange(index, 'note', e.target.value)
+                  }
                   multiline
                   rows={3} // Adjust the number of rows as needed
                   sx={{ width: '450px' }} // Adjust the width as needed
@@ -306,7 +396,9 @@ const ManageMicrocyclePage = (props: { params: Params }) => {
                 <TextField
                   label="Coach"
                   value={goal.coach || ''}
-                  onChange={(e) => handleSessionGoalChange(index, 'coach', e.target.value)}
+                  onChange={(e) =>
+                    handleSessionGoalChange(index, 'coach', e.target.value)
+                  }
                 />
                 <IconButton
                   onClick={() => handleRemoveSessionGoal(index)}

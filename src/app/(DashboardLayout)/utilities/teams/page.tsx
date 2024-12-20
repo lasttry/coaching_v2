@@ -1,8 +1,18 @@
 'use client';
-
+import React from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Stack, Typography, Box } from '@mui/material';
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Stack,
+  Typography,
+  Box,
+} from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import Image from 'next/image'; // Import Next.js Image component
@@ -30,7 +40,7 @@ const TeamsList = () => {
         setTeams(data);
       } catch (err) {
         setError('Failed to fetch teams.');
-        console.log(err)
+        console.log(err);
       }
     }
     fetchTeams();
@@ -39,7 +49,9 @@ const TeamsList = () => {
   // Handle team deletion
   const handleDelete = async (id: number, name: string) => {
     // Show confirmation dialog
-    const confirmDelete = window.confirm(`Tem a certeza que quer apagar a equipa com o ID ${id} e nome ${name}?`);
+    const confirmDelete = window.confirm(
+      `Tem a certeza que quer apagar a equipa com o ID ${id} e nome ${name}?`,
+    );
 
     if (!confirmDelete) {
       return; // If user cancels, do nothing
@@ -51,7 +63,9 @@ const TeamsList = () => {
       });
 
       if (response.ok) {
-        setSuccess(`A equipa com o ID ${id} e nome ${name} foi apagada com sucesso.`);
+        setSuccess(
+          `A equipa com o ID ${id} e nome ${name} foi apagada com sucesso.`,
+        );
         setError(null);
         // Update the list by filtering out the deleted team
         setTeams((prev) => prev.filter((team) => team.id !== id));
@@ -87,15 +101,25 @@ const TeamsList = () => {
 
       {/* Success/Error Messages */}
       {success ? (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
+        <Typography
+          variant="body1"
+          sx={{ color: (theme) => theme.palette.success.main }}
+        >
           {success}
         </Typography>
-      ) : <></>}
+      ) : (
+        <></>
+      )}
       {error ? (
-        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
+        <Typography
+          variant="body1"
+          sx={{ color: (theme) => theme.palette.error.main }}
+        >
           {error}
         </Typography>
-      ) : <></>}
+      ) : (
+        <></>
+      )}
 
       {/* Teams Table */}
       <DashboardCard title="Equipas">
@@ -149,7 +173,13 @@ const TeamsList = () => {
                           style={{ borderRadius: '50%' }} // Optional: Make the image circular
                         />
                       ) : (
-                        <div style={{ width: 32, height: 32, backgroundColor: '#ccc' }} />
+                        <div
+                          style={{
+                            width: 32,
+                            height: 32,
+                            backgroundColor: '#ccc',
+                          }}
+                        />
                       )}
                     </TableCell>
                     <TableCell>
@@ -195,7 +225,10 @@ const TeamsList = () => {
                     <TableCell align="right">
                       <Stack direction="row" spacing={2}>
                         {/* Edit Team Link */}
-                        <Link href={`/utilities/teams/${team.id}/edit`} passHref>
+                        <Link
+                          href={`/utilities/teams/${team.id}/edit`}
+                          passHref
+                        >
                           <Button variant="contained" color="primary">
                             Edit
                           </Button>

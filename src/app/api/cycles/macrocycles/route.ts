@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 // GET: List all macrocycles
@@ -13,7 +13,10 @@ export async function GET() {
     return NextResponse.json(macrocycles);
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to fetch macrocycles" }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to fetch macrocycles' },
+      { status: 500 },
+    );
   }
 }
 
@@ -26,8 +29,8 @@ export async function POST(request: Request) {
     const { name, number, startDate, endDate, notes } = data;
     if (!startDate || !endDate) {
       return NextResponse.json(
-        { error: "Start date and end date are required" },
-        { status: 400 }
+        { error: 'Start date and end date are required' },
+        { status: 400 },
       );
     }
 
@@ -39,13 +42,16 @@ export async function POST(request: Request) {
         endDate: new Date(endDate),
         notes,
       },
-    }
-    console.log(payload)
+    };
+    console.log(payload);
     const newMacrocycle = await prisma.macrocycle.create(payload);
 
     return NextResponse.json(newMacrocycle, { status: 201 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Failed to create macrocycle" }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create macrocycle' },
+      { status: 500 },
+    );
   }
 }

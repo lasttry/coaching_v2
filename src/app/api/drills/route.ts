@@ -10,6 +10,10 @@ export async function POST(request: Request) {
     });
     return NextResponse.json(drill);
   } catch (err) {
-    return NextResponse.json({ error: 'Failed to save drill' }, { status: 500 });
+    console.log(err);
+    return NextResponse.json(
+      { error: 'Failed to save drill' },
+      { status: 500 },
+    );
   }
 }

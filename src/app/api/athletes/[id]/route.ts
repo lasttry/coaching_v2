@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: string }>;
@@ -20,16 +20,16 @@ export async function GET(request: Request, segmentData: { params: Params }) {
         return NextResponse.json(athlete); // Return athlete data
       } else {
         return NextResponse.json(
-          { error: "Athlete not found" },
+          { error: 'Athlete not found' },
           { status: 404 },
         ); // Return 404 if not found
       }
     } catch (error) {
-      console.error("Error fetching athlete:", error);
-      return NextResponse.json({ error: "Server error" }, { status: 500 });
+      console.error('Error fetching athlete:', error);
+      return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
   } else {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 }); // Invalid ID
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 }); // Invalid ID
   }
 }
 
@@ -55,14 +55,14 @@ export async function DELETE(
       // Return 204 No Content (no body)
       return new NextResponse(null, { status: 204 });
     } catch (error) {
-      console.error("Error deleting athlete:", error);
+      console.error('Error deleting athlete:', error);
       return NextResponse.json(
-        { error: "Error deleting athlete" },
+        { error: 'Error deleting athlete' },
         { status: 400 },
       );
     }
   } else {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
 }
 
@@ -73,7 +73,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
 
   // Ensure the ID is a valid number
   if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
   }
 
   try {
@@ -83,7 +83,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
     // Validate required fields
     if (!data.name || !data.number || !data.birthdate) {
       return NextResponse.json(
-        { error: "Name, number, and birthdate are required." },
+        { error: 'Name, number, and birthdate are required.' },
         { status: 400 },
       );
     }
@@ -92,7 +92,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
     const birthdate = new Date(data.birthdate);
     if (isNaN(birthdate.getTime())) {
       return NextResponse.json(
-        { error: "Invalid birthdate format. It should be yyyy-MM-dd." },
+        { error: 'Invalid birthdate format. It should be yyyy-MM-dd.' },
         { status: 400 },
       );
     }
@@ -115,9 +115,9 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
     // Return the updated athlete data
     return NextResponse.json(updatedAthlete, { status: 200 });
   } catch (error) {
-    console.error("Error updating athlete:", error);
+    console.error('Error updating athlete:', error);
     return NextResponse.json(
-      { error: "Error updating athlete" },
+      { error: 'Error updating athlete' },
       { status: 500 },
     );
   }
