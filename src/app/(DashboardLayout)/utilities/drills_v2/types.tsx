@@ -7,6 +7,10 @@ export enum DrawingType {
   LinePassing = 'linePassing',
   None = 'none',
 }
+export enum PlayerType {
+  Offensive = 'offensive',
+  Defensive = 'Defensive'
+}
 
 export interface DrawingInterface {
   showCircle: boolean;
@@ -26,6 +30,8 @@ export interface PlayerInterface {
   number: string;
   x: number;
   y: number;
+  rotation: number;
   foreColor?: string;
   backgroundColor?: string;
+  type: PlayerType;
 }

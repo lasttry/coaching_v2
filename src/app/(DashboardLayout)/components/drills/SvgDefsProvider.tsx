@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface SvgDefsContextProps {
   addDef: (id: string, def: ReactNode) => void;
   removeDef: (id: string) => void;
+  hasDef: (id: string) => boolean;
   defs: { [key: string]: ReactNode };
 }
 
@@ -27,8 +28,12 @@ export const SvgDefsProvider: React.FC<{ children: ReactNode }> = ({
     });
   };
 
+  const hasDef = (id: string) => {
+    return Object.prototype.hasOwnProperty.call(defs, id);
+  };
+
   return (
-    <SvgDefsContext.Provider value={{ addDef, removeDef, defs }}>
+    <SvgDefsContext.Provider value={{ addDef, removeDef, hasDef, defs }}>
       {children}
     </SvgDefsContext.Provider>
   );

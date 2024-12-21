@@ -119,6 +119,7 @@ export const PlayerButton: React.FC<PlayerIconProps> = React.memo(
           x={15}
           y={16}
           draggable={false}
+          id="bttPlayerIcon"
           type={type}
         />
 

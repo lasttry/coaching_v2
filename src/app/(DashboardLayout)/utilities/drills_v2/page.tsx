@@ -10,25 +10,29 @@ import {
   LineMovement,
   FollowMouseCircle,
 } from '@/app/(DashboardLayout)/components/drills/Icons';
-import PlayerIcon from '../../components/drills/PlayerIcon';
+import PlayerIcon from '@/app/(DashboardLayout)/components/drills/PlayerIcon';
 import BasketballCourtSVG from '@/app/(DashboardLayout)/components/drills/BasketballCourtSVG';
 import {
   DrawingType,
   DrawingInterface,
   LineInterface,
   PlayerInterface,
+  PlayerType,
 } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import {
   SvgDefsProvider,
   useSvgDefs,
 } from '@/app/(DashboardLayout)/components/drills/SvgDefsProvider';
+import { SelectionProvider } from '@/app/(DashboardLayout)/components/drills/SelectionContext';
 
 const Drills_v2: React.FC = () => {
   const { settings } = useSettings();
 
   // State variables
   const [designFullCourt, setDesignFullCourt] = useState(true);
+  const [offensiveNumber, setOffensiveNumber] = useState<number>(1);
+  const [defensiveNumber, setDefensiveNumber] = useState<number>(1);
   const [drawing, setDrawing] = useState<DrawingInterface>({
     showCircle: false,
     isDrawing: false,
@@ -39,13 +43,9 @@ const Drills_v2: React.FC = () => {
     x: number;
     y: number;
   }>({ x: 0, y: 0 });
-  const [offensivePlayers, setOffensivePlayers] = useState<PlayerInterface[]>(
+  const [players, setPlayers] = useState<PlayerInterface[]>(
     [],
   );
-  const [defensivePlayers, setDefensivePlayers] = useState<PlayerInterface[]>(
-    [],
-  );
-
   const [currentLine, setCurrentLine] = useState<LineInterface | undefined>(); // Line currently being drawn
   const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(
     null,
@@ -76,72 +76,51 @@ const Drills_v2: React.FC = () => {
       drawing.showCircle
     ) {
       console.log(drawing.value);
-      if (drawing.type == DrawingType.Offensive) {
-        setOffensivePlayers((prevPlayers) => [
+      if (drawing.type === DrawingType.Offensive || drawing.type === DrawingType.Defensive) {
+        setPlayers((prevPlayers) => [
           ...prevPlayers,
           {
             id: uuidv4(),
             number: drawing.value ?? '1',
             x,
             y,
-          },
-        ]);
-      } else if (drawing.type == DrawingType.Defensive) {
-        setDefensivePlayers((prevPlayers) => [
-          ...prevPlayers,
-          {
-            id: uuidv4(),
-            number: drawing.value ?? '1',
-            x,
-            y,
+            rotation: 0,
+            type: drawing.type === DrawingType.Offensive ? PlayerType.Offensive : PlayerType.Defensive,
           },
         ]);
       }
-      drawing.value = String(((Number(drawing.value) + 1 - 1) % 9) + 1);
+      const newNumber = ((Number(drawing.value) + 1 - 1) % 9) + 1;
+      if(drawing.type === DrawingType.Offensive)
+        setOffensiveNumber(newNumber)
+      else if(drawing.type === DrawingType.Defensive)
+        setDefensiveNumber(newNumber)
+      drawing.value = String(newNumber);
     }
   };
 
   const handleMove = (
-    x: number,
-    y: number,
-    additionalProps?: { id: string },
+    x: number, y: number, rotation: number, additionalProps?: { id: string }
   ) => {
-    console.log(additionalProps?.id);
+    console.log("handle move")
+    console.log({x, y, rotation, additionalProps})
     if (additionalProps?.id) {
       const id = additionalProps.id;
 
       // Check if the id exists in offensivePlayers
-      const offensivePlayerExists = offensivePlayers.some(
+      const playerExists = players.some(
         (player) => player.id === id,
       );
-      if (offensivePlayerExists) {
-        setOffensivePlayers((prevPlayers) =>
+      if (playerExists) {
+        setPlayers((prevPlayers) =>
           prevPlayers.map((player) =>
-            player.id === id ? { ...player, x, y } : player,
+            player.id === id ? { ...player, x, y, rotation } : player,
           ),
         );
         console.log(
-          `Moved offensive player ${id} to the position x:${x} and y:${y}`,
+          `Moved offensive player ${id} to the position x:${x} and y:${y} in rotation:${rotation}`,
         );
         return;
       }
-
-      // Check if the id exists in defensivePlayers
-      const defensivePlayerExists = defensivePlayers.some(
-        (player) => player.id === id,
-      );
-      if (defensivePlayerExists) {
-        setDefensivePlayers((prevPlayers) =>
-          prevPlayers.map((player) =>
-            player.id === id ? { ...player, x, y } : player,
-          ),
-        );
-        console.log(
-          `Moved defensive player ${id} to the position x:${x} and y:${y}`,
-        );
-        return;
-      }
-
       console.log(`Player with id ${id} not found`);
     }
   };
@@ -149,7 +128,8 @@ const Drills_v2: React.FC = () => {
   return (
     <Box>
       <SvgDefsProvider>
-        <Typography variant="h4" gutterBottom>
+      <SelectionProvider>
+      <Typography variant="h4" gutterBottom>
           Basketball Drill Editor
         </Typography>
 
@@ -165,32 +145,46 @@ const Drills_v2: React.FC = () => {
           />
           <CourtIcon onClick={() => setDesignFullCourt(!designFullCourt)} />
           <PlayerButton
-            value={Number(drawing.value)}
-            type="ofense"
+            value={offensiveNumber}
+            type="offense"
             onClick={() =>
               setDrawing((prev) => ({
                 ...prev,
                 type: DrawingType.Offensive,
                 showCircle: true,
+                value: String(offensiveNumber),
               }))
             }
-            onValueChange={(value) =>
-              setDrawing((prev) => ({ ...prev, value: String(value) }))
-            }
+            onValueChange={(value: number) => {
+              setOffensiveNumber(value);
+              if (drawing.type === DrawingType.Offensive) {
+                setDrawing((prev) => ({
+                  ...prev,
+                  value: value.toString(),
+                }));
+              }
+            }}
           />
           <PlayerButton
             type="defense"
-            value={Number(drawing.value)}
+            value={defensiveNumber}
             onClick={() =>
               setDrawing((prev) => ({
                 ...prev,
                 type: DrawingType.Defensive,
                 showCircle: true,
+                value: String(defensiveNumber)
               }))
             }
-            onValueChange={(value) =>
-              setDrawing((prev) => ({ ...prev, value: String(value) }))
-            }
+            onValueChange={(value: number) => {
+              setDefensiveNumber(value);
+              if (drawing.type === DrawingType.Defensive) {
+                setDrawing((prev) => ({
+                  ...prev,
+                  value: value.toString(),
+                }));
+              }
+            }}
           />
           <LineMovement
             onClick={() =>
@@ -198,7 +192,6 @@ const Drills_v2: React.FC = () => {
             }
           />
         </Stack>
-
         <svg
           width={stageWidth}
           height={designFullCourt ? stageHeight / 2 + 25 : stageHeight}
@@ -219,30 +212,22 @@ const Drills_v2: React.FC = () => {
           />
 
           <g className="groupPlayer">
-            {offensivePlayers.map((player, index) => (
+            {players.map((player, index) => (
               <PlayerIcon
                 key={index}
-                type="offense"
+                type={player.type === PlayerType.Offensive ? "offense" : "defense"}
                 value={Number(player.number)}
                 x={player.x}
                 y={player.y}
                 id={player.id}
-                onMove={handleMove}
-              />
-            ))}
-            {defensivePlayers.map((player, index) => (
-              <PlayerIcon
-                key={index}
-                type="defense"
-                value={Number(player.number)}
-                x={player.x}
-                y={player.y}
-                id={player.id}
+                rotatable={player.type === PlayerType.Defensive ? true : false}
+                rotation={player.rotation}
                 onMove={handleMove}
               />
             ))}
           </g>
         </svg>
+        </SelectionProvider>
       </SvgDefsProvider>
     </Box>
   );

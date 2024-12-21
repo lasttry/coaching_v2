@@ -38,6 +38,7 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
 }) => {
   const { settings } = useSettings();
   const { addDef, removeDef } = useSvgDefs();
+  const [updateSvgDefs, setUpdateSvgDefs] = useState<boolean>(false);
   const [playground, setPlayground] = useState<HTMLImageElement | undefined>(
     undefined,
   );
@@ -245,12 +246,13 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
           </clipPath>,
         );
       }
+      setUpdateSvgDefs(true);
     };
 
+    addDefs();
     loadCircleImage();
     loadPlayground();
-    addDefs();
-  }, [settings, scale]);
+  }, [settings, scale, updateSvgDefs]);
 
   useEffect(() => {
     if (fullCourt) {
@@ -263,7 +265,7 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
     } else {
       removeDef('fullCourt');
     }
-  }, [fullCourt, addDef, removeDef]);
+  }, [fullCourt]);
 
   if (!playground || (settings?.image && !circleImage)) {
     return <div>Loading...</div>; // Show a loading state until images are ready
