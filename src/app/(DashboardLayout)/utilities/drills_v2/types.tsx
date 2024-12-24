@@ -11,6 +11,11 @@ export enum PlayerType {
   Offensive = 'offensive',
   Defensive = 'Defensive'
 }
+export enum LineType {
+  Movement = 'movement',
+  Pass = 'pass',
+  Screen = 'screen'
+}
 
 export interface DrawingInterface {
   showCircle: boolean;
@@ -19,10 +24,12 @@ export interface DrawingInterface {
   value?: string;
 }
 export interface LineInterface {
-  tool: string;
+  id: string;
+  type: LineType;
   points: number[];
-  startX?: number;
-  startY?: number;
+  path?: string;
+  x: number;
+  y: number;
 }
 
 export interface PlayerInterface {

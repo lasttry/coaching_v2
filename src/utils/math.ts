@@ -77,3 +77,61 @@ export const getCircleYCoordinates = (
     y2: centerY - yOffset, // Lower part of the circle
   };
 };
+
+/**
+ * Simplifies a path using the Ramer-Douglas-Peucker algorithm.
+ *
+ * @param points - Array of [x, y] coordinates representing the path.
+ * @param tolerance - Maximum allowed perpendicular distance to keep a point (default: 1).
+ * @returns A simplified array of points.
+ */
+export const simplifyPath = (points: [number, number][], tolerance: number = 1): [number, number][] => {
+  if (points.length <= 2) return points; // No simplification needed
+
+  const [firstPoint, lastPoint] = [points[0], points[points.length - 1]];
+  let maxDistance = 0;
+  let index = 0;
+
+  // Find the point farthest from the line between the first and last points
+  for (let i = 1; i < points.length - 1; i++) {
+    const distance = perpendicularDistance(points[i], firstPoint, lastPoint);
+    if (distance > maxDistance) {
+      maxDistance = distance;
+      index = i;
+    }
+  }
+
+  // If the max distance is greater than the tolerance, recursively simplify
+  if (maxDistance > tolerance) {
+    const left = simplifyPath(points.slice(0, index + 1), tolerance);
+    const right = simplifyPath(points.slice(index), tolerance);
+
+    return [...left.slice(0, -1), ...right];
+  }
+
+  // Otherwise, keep only the endpoints
+  return [firstPoint, lastPoint];
+};
+
+/**
+ * Calculates the perpendicular distance of a point from a line defined by two points.
+ *
+ * @param point - The point [x, y] to measure the distance for.
+ * @param lineStart - The start point [x, y] of the line.
+ * @param lineEnd - The end point [x, y] of the line.
+ * @returns The perpendicular distance.
+ */
+export const perpendicularDistance = (
+  point: [number, number],
+  lineStart: [number, number],
+  lineEnd: [number, number]
+): number => {
+  const [x, y] = point;
+  const [x1, y1] = lineStart;
+  const [x2, y2] = lineEnd;
+
+  const numerator = Math.abs((y2 - y1) * x - (x2 - x1) * y + x2 * y1 - y2 * x1);
+  const denominator = Math.sqrt((y2 - y1) ** 2 + (x2 - x1) ** 2);
+
+  return numerator / denominator;
+};

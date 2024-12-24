@@ -111,6 +111,7 @@ const withDraggable = <P extends object>(
         onMove(x, y, rotation || 0, { id });
       }
       if (draggable) {
+        console.log(id)
         select(id); // Select the component when mouse down
       }
     };
@@ -136,7 +137,7 @@ const withDraggable = <P extends object>(
         fill={fill}
       >
         <g onMouseDown={handleMouseDown}>
-          <WrappedComponent {...(props as P)} />
+          <WrappedComponent {...(props as P)} id={id} />
         </g>
 
         {rotatable && selectedId === id && (

@@ -44,7 +44,7 @@ export const PointerIcon: React.FC<PointerIconProps> = React.memo(
 );
 PointerIcon.displayName = 'PointerIcon';
 
-export const LineMovement: React.FC<IconProps> = React.memo(({ onClick }) => {
+export const LineMovementIcon: React.FC<IconProps> = React.memo(({ onClick }) => {
   return (
     <svg
       onClick={onClick}
@@ -75,7 +75,7 @@ export const LineMovement: React.FC<IconProps> = React.memo(({ onClick }) => {
     </svg>
   );
 });
-LineMovement.displayName = 'LineMovement';
+LineMovementIcon.displayName = 'LineMovement';
 
 // OffensivePlayerIcon Component
 interface PlayerIconProps extends IconProps {
