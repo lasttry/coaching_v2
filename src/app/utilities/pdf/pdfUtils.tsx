@@ -3,7 +3,7 @@ import autoTable, { RowInput } from 'jspdf-autotable';
 import dayjs from 'dayjs';
 
 import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types';
-import { Settings } from '@/types/settings/types';
+import { Settings } from '@/types/club/types';
 import { generateHeader, generateGameDetailsHeader } from './utils';
 
 const lineWidthNormal = 0.1;

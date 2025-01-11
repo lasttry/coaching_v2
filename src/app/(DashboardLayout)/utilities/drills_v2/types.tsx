@@ -9,12 +9,12 @@ export enum DrawingType {
 }
 export enum PlayerType {
   Offensive = 'offensive',
-  Defensive = 'Defensive'
+  Defensive = 'Defensive',
 }
 export enum LineType {
   Movement = 'movement',
   Pass = 'pass',
-  Screen = 'screen'
+  Screen = 'screen',
 }
 
 export interface DrawingInterface {

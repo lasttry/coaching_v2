@@ -48,29 +48,18 @@ model games {
   away                Boolean
   competition         String?         @db.VarChar(30)
   subcomp             String?         @db.VarChar(30)
-  oponentId           Int
   notes               String?         @db.VarChar(1000)
   teamLostDefRebounds Int             @default(0)
   athleteReports      athleteReport[]
   gameAthletes        gameAthletes[]
-  oponent             teams           @relation(fields: [oponentId], references: [id])
+  opponentId          Int
+  opponent            Opponent        @relation(fields: [opponentId], references: [id])
   objectives          objectives[]    @relation("objectives")
   statistics          statistic[]
   timeEntry           timeEntry[]
 }
 
-model settings {
-  id              Int     @id
-  teamName        String  @db.VarChar(50)
-  shortName       String? @db.VarChar(6)
-  season          String? @db.VarChar(10)
-  homeLocation    String? @db.VarChar(30)
-  image           String?
-  backgroundColor String? @db.VarChar(7)
-  foregroundColor String? @db.VarChar(7)
-}
-
-model teams {
+model Opponent {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime
@@ -81,14 +70,17 @@ model teams {
   games     games[]
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  name      String?  @db.VarChar(100)
-  email     String   @unique @db.VarChar(100)
-  password  String
-  image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Account {
+  id            Int           @id @default(autoincrement())
+  name          String?       @db.VarChar(100)
+  email         String        @unique @db.VarChar(100)
+  password      String
+  image         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  clubs         AccountClub[] @relation("AccountToClubs") // Relation to AccountClub
+  defaultClubId Int           @default(0)
+  role          PlatformRole  @default(USER)
 }
 
 model statistic {
@@ -217,7 +209,51 @@ enum objectiveType {
   INDIVIDUAL
 }
 
-enum TeamType {
-  A
-  B
+enum Role {
+  ADMIN
+  DIRECTOR
+  COACH
+  PLAYER
+  PARENT
+  TEAM_MANAGER
+}
+
+enum PlatformRole {
+  ADMIN
+  USER
+  VIEWER
+}
+
+model Club {
+  id              Int           @id @default(autoincrement())
+  name            String        @unique @db.VarChar(50)
+  shortName       String?       @db.VarChar(6)
+  location        String?       @db.VarChar(50)
+  image           String?
+  backgroundColor String?       @db.VarChar(7)
+  foregroundColor String?       @db.VarChar(7)
+  season          String?       @db.VarChar(10)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  accounts        AccountClub[] @relation("ClubToAccounts") // Relation to AccountClub
+}
+
+model AccountClub {
+  id        Int               @id @default(autoincrement())
+  accountId Int
+  clubId    Int
+  createdAt DateTime          @default(now())
+  account   Account           @relation("AccountToClubs", fields: [accountId], references: [id], onDelete: Cascade)
+  club      Club              @relation("ClubToAccounts", fields: [clubId], references: [id], onDelete: Cascade)
+  roles     AccountClubRole[]
+
+  @@unique([accountId, clubId])
+}
+
+model AccountClubRole {
+  id            Int  @id @default(autoincrement())
+  accountClubId Int
+  role          Role
+
+  accountClub AccountClub @relation(fields: [accountClubId], references: [id], onDelete: Cascade)
 }

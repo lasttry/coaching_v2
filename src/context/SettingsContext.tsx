@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Settings } from '@/types/settings/types';
+import { Settings } from '@/types/club/types';
 
 // Update the settings using the bellow line
 // const updateSettingsEvent = new Event('updateSettings');

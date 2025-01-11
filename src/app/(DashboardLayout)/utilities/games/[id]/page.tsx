@@ -18,7 +18,7 @@ import {
 } from '@/app/utilities/pdf/pdfUtils'; // Import PDF utility
 import { generateReportsPDF } from '@/app/utilities/pdf/reports';
 
-import { Settings } from '@/types/settings/types';
+import { Settings } from '@/types/club/types';
 
 type Params = Promise<{ id: string }>;
 

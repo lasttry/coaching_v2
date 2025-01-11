@@ -11,12 +11,16 @@ import {
   ListItemText,
 } from '@mui/material';
 import Link from 'next/link';
-
 import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
+import { useSession } from 'next-auth/react';
+import { AccountInterface } from '@/types/accounts/types';
 
 const Profile = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
+
+  const { data: session } = useSession();
+
   const handleClick2 = (event: any) => {
     setAnchorEl2(event.currentTarget);
   };
@@ -25,25 +29,29 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    console.log(session)
+    const fetchAccount = async () => {
       try {
-        const response = await fetch('/api/profile/image');
-        const data = await response.json();
+        if (!session?.user.selectedClubId)
+          return;
+        const response = await fetch(`/api/accounts/${session?.user.id}`);
 
         if (response.ok) {
-          if (data.image) {
-            setPhotoPreview(`data:image/png;base64,${data.image}`);
-          }
+          const data: AccountInterface = await response.json();
+          console.log(data)
+          if(data.image)
+            setPhotoPreview(`${data.image}`);
         } else {
-          setPhotoPreview('/images/profile/user-1.jpg');
+          const data = await response.json();
+          console.log(data.error)
         }
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        console.error('Error fetching settings:', error);
       }
     };
 
-    fetchProfile();
-  }, []);
+    fetchAccount();
+  }, [session]);
 
   return (
     <Box>
@@ -86,7 +94,15 @@ const Profile = () => {
           },
         }}
       >
-        <Link href="/utilities/profile" passHref legacyBehavior>
+        <MenuItem>
+          <ListItemText>
+            {session ? `${session.user.name} (${session.user.role})` : 'Loading...'}
+          </ListItemText>
+        </MenuItem>
+        <MenuItem>
+          <ListItemText>{`Selected Club Id: ${session?.user?.selectedClubId}`}</ListItemText>
+        </MenuItem>
+          <Link href="/utilities/profile" passHref legacyBehavior>
           <MenuItem>
             <ListItemIcon>
               <IconUser width={20} />

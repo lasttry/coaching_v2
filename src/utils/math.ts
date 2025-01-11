@@ -85,7 +85,10 @@ export const getCircleYCoordinates = (
  * @param tolerance - Maximum allowed perpendicular distance to keep a point (default: 1).
  * @returns A simplified array of points.
  */
-export const simplifyPath = (points: [number, number][], tolerance: number = 1): [number, number][] => {
+export const simplifyPath = (
+  points: [number, number][],
+  tolerance: number = 1,
+): [number, number][] => {
   if (points.length <= 2) return points; // No simplification needed
 
   const [firstPoint, lastPoint] = [points[0], points[points.length - 1]];
@@ -124,7 +127,7 @@ export const simplifyPath = (points: [number, number][], tolerance: number = 1):
 export const perpendicularDistance = (
   point: [number, number],
   lineStart: [number, number],
-  lineEnd: [number, number]
+  lineEnd: [number, number],
 ): number => {
   const [x, y] = point;
   const [x1, y1] = lineStart;

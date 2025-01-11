@@ -44,37 +44,39 @@ export const PointerIcon: React.FC<PointerIconProps> = React.memo(
 );
 PointerIcon.displayName = 'PointerIcon';
 
-export const LineMovementIcon: React.FC<IconProps> = React.memo(({ onClick }) => {
-  return (
-    <svg
-      onClick={onClick}
-      version="1.1"
-      width="30"
-      height="30"
-      viewBox="0 0 30 30"
-      className={
-        onClick ? 'line-movement-icon clickable' : 'line-movement-icon'
-      }
-      style={{ overflow: 'hidden' }}
-    >
-      <desc>Created with Snap</desc>
-      <defs></defs>
-      <line
-        x1="5"
-        x2="25"
-        y1="17"
-        y2="17"
-        stroke="#000000"
-        style={{ strokeWidth: 2 }}
-      />
-      <path
-        d="m 26,17 -5,-5 0,10 z"
-        fill="#000000"
-        style={{ strokeWidth: 0 }}
-      />
-    </svg>
-  );
-});
+export const LineMovementIcon: React.FC<IconProps> = React.memo(
+  ({ onClick }) => {
+    return (
+      <svg
+        onClick={onClick}
+        version="1.1"
+        width="30"
+        height="30"
+        viewBox="0 0 30 30"
+        className={
+          onClick ? 'line-movement-icon clickable' : 'line-movement-icon'
+        }
+        style={{ overflow: 'hidden' }}
+      >
+        <desc>Created with Snap</desc>
+        <defs></defs>
+        <line
+          x1="5"
+          x2="25"
+          y1="17"
+          y2="17"
+          stroke="#000000"
+          style={{ strokeWidth: 2 }}
+        />
+        <path
+          d="m 26,17 -5,-5 0,10 z"
+          fill="#000000"
+          style={{ strokeWidth: 0 }}
+        />
+      </svg>
+    );
+  },
+);
 LineMovementIcon.displayName = 'LineMovement';
 
 // OffensivePlayerIcon Component

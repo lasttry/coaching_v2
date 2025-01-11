@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import dayjs from 'dayjs';
-import { Settings } from '@/types/settings/types';
+import { Settings } from '@/types/club/types';
 import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types';
 
 export const generateHeader = (

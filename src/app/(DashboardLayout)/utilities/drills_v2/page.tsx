@@ -19,19 +19,22 @@ import {
   LineInterface,
   PlayerInterface,
   PlayerType,
-  LineType
+  LineType,
 } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import {
   SvgDefsProvider,
   useSvgDefs,
 } from '@/app/(DashboardLayout)/components/drills/SvgDefsProvider';
-import { SelectionProvider, useSelection } from '@/app/(DashboardLayout)/components/drills/SelectionContext';
+import {
+  SelectionProvider,
+  useSelection,
+} from '@/app/(DashboardLayout)/components/drills/SelectionContext';
 import { simplifyPath } from '@/utils/math';
 
 const Drills_v2: React.FC = () => {
   const { settings } = useSettings();
-   const { deselect, selectedId } = useSelection();
+  const { deselect, selectedId } = useSelection();
 
   // State variables
   const [designFullCourt, setDesignFullCourt] = useState(true);
@@ -47,9 +50,7 @@ const Drills_v2: React.FC = () => {
     x: number;
     y: number;
   }>({ x: 0, y: 0 });
-  const [players, setPlayers] = useState<PlayerInterface[]>(
-    [],
-  );
+  const [players, setPlayers] = useState<PlayerInterface[]>([]);
   const [currentLine, setCurrentLine] = useState<LineInterface | undefined>(); // Line currently being drawn
   const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(
     null,
@@ -82,7 +83,10 @@ const Drills_v2: React.FC = () => {
       drawing.showCircle
     ) {
       console.log(drawing.value);
-      if (drawing.type === DrawingType.Offensive || drawing.type === DrawingType.Defensive) {
+      if (
+        drawing.type === DrawingType.Offensive ||
+        drawing.type === DrawingType.Defensive
+      ) {
         setPlayers((prevPlayers) => [
           ...prevPlayers,
           {
@@ -91,31 +95,34 @@ const Drills_v2: React.FC = () => {
             x,
             y,
             rotation: 0,
-            type: drawing.type === DrawingType.Offensive ? PlayerType.Offensive : PlayerType.Defensive,
+            type:
+              drawing.type === DrawingType.Offensive
+                ? PlayerType.Offensive
+                : PlayerType.Defensive,
           },
         ]);
       }
       const newNumber = ((Number(drawing.value) + 1 - 1) % 9) + 1;
-      if(drawing.type === DrawingType.Offensive)
-        setOffensiveNumber(newNumber)
-      else if(drawing.type === DrawingType.Defensive)
-        setDefensiveNumber(newNumber)
+      if (drawing.type === DrawingType.Offensive) setOffensiveNumber(newNumber);
+      else if (drawing.type === DrawingType.Defensive)
+        setDefensiveNumber(newNumber);
       drawing.value = String(newNumber);
     }
   };
 
   const handleMove = (
-    x: number, y: number, rotation: number, additionalProps?: { id: string }
+    x: number,
+    y: number,
+    rotation: number,
+    additionalProps?: { id: string },
   ) => {
-    console.log("handle move")
-    console.log({x, y, rotation, additionalProps})
+    console.log('handle move');
+    console.log({ x, y, rotation, additionalProps });
     if (additionalProps?.id) {
       const id = additionalProps.id;
 
       // Check if the id exists in offensivePlayers
-      const playerExists = players.some(
-        (player) => player.id === id,
-      );
+      const playerExists = players.some((player) => player.id === id);
       if (playerExists) {
         setPlayers((prevPlayers) =>
           prevPlayers.map((player) =>
@@ -131,10 +138,11 @@ const Drills_v2: React.FC = () => {
     }
   };
 
-  const handleMouseDown = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const handleMouseDown = (
+    event: React.MouseEvent<SVGSVGElement, MouseEvent>,
+  ) => {
     if (drawing.type === DrawingType.LineMovement) {
-      if(selectedId && selectedId?.length > 0)
-        return;
+      if (selectedId && selectedId?.length > 0) return;
       const svg = svgRef.current;
       if (svg) {
         const rect = svg.getBoundingClientRect();
@@ -153,7 +161,9 @@ const Drills_v2: React.FC = () => {
     }
   };
 
-  const handleMouseMove = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const handleMouseMove = (
+    event: React.MouseEvent<SVGSVGElement, MouseEvent>,
+  ) => {
     if (drawing.isDrawing && currentLine) {
       const svg = svgRef.current;
       if (svg) {
@@ -168,12 +178,19 @@ const Drills_v2: React.FC = () => {
           const lastY = prevLine.points[prevLine.points.length - 1];
           if (Math.hypot(x - lastX, y - lastY) > 5) {
             // Convert flat points array to [number, number] tuples
-            const formattedPoints: [number, number][] = prevLine.points.reduce((acc, _, i, arr) => {
-              if (i % 2 === 0) acc.push([arr[i], arr[i + 1]] as [number, number]);
-              return acc;
-            }, [] as [number, number][]);
+            const formattedPoints: [number, number][] = prevLine.points.reduce(
+              (acc, _, i, arr) => {
+                if (i % 2 === 0)
+                  acc.push([arr[i], arr[i + 1]] as [number, number]);
+                return acc;
+              },
+              [] as [number, number][],
+            );
             // Add the new point
-            const newFormattedPoints: [number, number][] = [...formattedPoints, [x, y]];
+            const newFormattedPoints: [number, number][] = [
+              ...formattedPoints,
+              [x, y],
+            ];
             // Simplify the path
             const simplifiedPoints = simplifyPath(newFormattedPoints, 1);
             // Flatten the simplified points back to a flat array
@@ -189,135 +206,150 @@ const Drills_v2: React.FC = () => {
   const handleMouseUp = () => {
     if (drawing.isDrawing && currentLine) {
       setLinesMovement((prev) => [...prev, currentLine]);
-      console.log(linesMovement)
+      console.log(linesMovement);
       setCurrentLine(undefined);
       setDrawing((prev) => ({ ...prev, isDrawing: false }));
     }
   };
 
-
-
   return (
     <Box>
       <SvgDefsProvider>
-      <SelectionProvider>
-      <Typography variant="h4" gutterBottom>
-          Basketball Drill Editor
-        </Typography>
+        <SelectionProvider>
+          <Typography variant="h4" gutterBottom>
+            Basketball Drill Editor
+          </Typography>
 
-        <Stack direction="row" spacing={2} marginBottom={2}>
-          <PointerIcon
-            onClick={() =>
-              setDrawing({
-                ...drawing,
-                type: DrawingType.None,
-                showCircle: false,
-              })
-            }
-          />
-          <CourtIcon onClick={() => setDesignFullCourt(!designFullCourt)} />
-          <PlayerButton
-            value={offensiveNumber}
-            type="offense"
-            onClick={() => {
-              deselect();
-              setDrawing((prev) => ({
-                ...prev,
-                type: DrawingType.Offensive,
-                showCircle: true,
-                value: String(offensiveNumber),
-              }))
-            }}
-            onValueChange={(value: number) => {
-              deselect()
-              setOffensiveNumber(value);
-              if (drawing.type === DrawingType.Offensive) {
+          <Stack direction="row" spacing={2} marginBottom={2}>
+            <PointerIcon
+              onClick={() =>
+                setDrawing({
+                  ...drawing,
+                  type: DrawingType.None,
+                  showCircle: false,
+                })
+              }
+            />
+            <CourtIcon onClick={() => setDesignFullCourt(!designFullCourt)} />
+            <PlayerButton
+              value={offensiveNumber}
+              type="offense"
+              onClick={() => {
+                deselect();
                 setDrawing((prev) => ({
                   ...prev,
-                  value: value.toString(),
+                  type: DrawingType.Offensive,
+                  showCircle: true,
+                  value: String(offensiveNumber),
                 }));
-              }
-            }}
-          />
-          <PlayerButton
-            type="defense"
-            value={defensiveNumber}
-            onClick={() => {
-              deselect();
-              setDrawing((prev) => ({
-                ...prev,
-                type: DrawingType.Defensive,
-                showCircle: true,
-                value: String(defensiveNumber)
-              }))
-            }}
-            onValueChange={(value: number) => {
-              deselect();
-              setDefensiveNumber(value);
-              if (drawing.type === DrawingType.Defensive) {
+              }}
+              onValueChange={(value: number) => {
+                deselect();
+                setOffensiveNumber(value);
+                if (drawing.type === DrawingType.Offensive) {
+                  setDrawing((prev) => ({
+                    ...prev,
+                    value: value.toString(),
+                  }));
+                }
+              }}
+            />
+            <PlayerButton
+              type="defense"
+              value={defensiveNumber}
+              onClick={() => {
+                deselect();
                 setDrawing((prev) => ({
                   ...prev,
-                  value: value.toString(),
+                  type: DrawingType.Defensive,
+                  showCircle: true,
+                  value: String(defensiveNumber),
                 }));
-              }
-            }}
-          />
-          <LineMovementIcon
-            onClick={() => {
-              console.log("drawing line");
-              deselect();
-              setDrawing({ ...drawing, type: DrawingType.LineMovement });
-            }}
-          />
+              }}
+              onValueChange={(value: number) => {
+                deselect();
+                setDefensiveNumber(value);
+                if (drawing.type === DrawingType.Defensive) {
+                  setDrawing((prev) => ({
+                    ...prev,
+                    value: value.toString(),
+                  }));
+                }
+              }}
+            />
+            <LineMovementIcon
+              onClick={() => {
+                console.log('drawing line');
+                deselect();
+                setDrawing({ ...drawing, type: DrawingType.LineMovement });
+              }}
+            />
+          </Stack>
+          <svg
+            ref={svgRef}
+            width={stageWidth}
+            height={designFullCourt ? stageHeight / 2 + 25 : stageHeight}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+          >
+            <SvgDefs />
+            <BasketballCourtSVG
+              scale={scale}
+              stageWidth={stageWidth}
+              stageHeight={stageHeight}
+              courtHeight={courtHeight}
+              courtWidth={courtWidth}
+              strokeColor={settings?.foregroundColor}
+              fullCourt={designFullCourt}
+            />
+            <FollowMouseCircle
+              visible={drawing.showCircle}
+              onClick={handleCircleClick}
+            />
 
-        </Stack>
-        <svg
-          ref={svgRef}
-          width={stageWidth}
-          height={designFullCourt ? stageHeight / 2 + 25 : stageHeight}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-        >
-          <SvgDefs />
-          <BasketballCourtSVG
-            scale={scale}
-            stageWidth={stageWidth}
-            stageHeight={stageHeight}
-            courtHeight={courtHeight}
-            courtWidth={courtWidth}
-            strokeColor={settings?.foregroundColor}
-            fullCourt={designFullCourt}
-          />
-          <FollowMouseCircle
-            visible={drawing.showCircle}
-            onClick={handleCircleClick}
-          />
-
-          <g className='groupLinesMovement'>
+            <g className="groupLinesMovement">
               {currentLine && (
-                <LineMovement id={currentLine.id} points={currentLine.points} draggable={false} x={currentLine.x} y={currentLine.y} />
+                <LineMovement
+                  id={currentLine.id}
+                  points={currentLine.points}
+                  draggable={false}
+                  x={currentLine.x}
+                  y={currentLine.y}
+                />
               )}
               {linesMovement.map((line, index) => (
-                <LineMovement id={line.id} key={index} points={line.points} draggable={true} rotatable={false} x={line.x} y={line.y} />
+                <LineMovement
+                  id={line.id}
+                  key={index}
+                  points={line.points}
+                  draggable={true}
+                  rotatable={false}
+                  x={line.x}
+                  y={line.y}
+                />
               ))}
-          </g>
-          <g className="groupPlayer">
-            {players.map((player, index) => (
-              <PlayerIcon
-                key={index}
-                type={player.type === PlayerType.Offensive ? "offense" : "defense"}
-                value={Number(player.number)}
-                x={player.x}
-                y={player.y}
-                id={player.id}
-                rotatable={player.type === PlayerType.Defensive ? true : false}
-                rotation={player.rotation}
-                onMove={handleMove}
-              />
-            ))}
-          </g>
-        </svg>
+            </g>
+            <g className="groupPlayer">
+              {players.map((player, index) => (
+                <PlayerIcon
+                  key={index}
+                  type={
+                    player.type === PlayerType.Offensive ? 'offense' : 'defense'
+                  }
+                  value={Number(player.number)}
+                  x={player.x}
+                  y={player.y}
+                  id={player.id}
+                  rotatable={
+                    player.type === PlayerType.Defensive ? true : false
+                  }
+                  rotation={player.rotation}
+                  onMove={handleMove}
+                />
+              ))}
+            </g>
+          </svg>
         </SelectionProvider>
       </SvgDefsProvider>
     </Box>

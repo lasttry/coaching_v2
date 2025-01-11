@@ -19,7 +19,7 @@ runtimes:
 lint:
   enabled:
     - yamllint@1.35.1
-    - checkov@3.2.343
+    - checkov@3.2.350
     - eslint@8.57.0
     - git-diff-check
     - markdownlint@0.43.0
@@ -29,7 +29,7 @@ lint:
     - shfmt@3.6.0
     - svgo@3.3.2
     - taplo@0.9.3
-    - trufflehog@3.87.2
+    - trufflehog@3.88.1
 actions:
   disabled:
     - trunk-announce

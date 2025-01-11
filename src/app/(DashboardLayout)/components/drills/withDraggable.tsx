@@ -8,7 +8,12 @@ interface DraggableProps {
   y: number;
   rotation?: number;
   id: string;
-  onMove?: (x: number, y: number, rotation: number, additionalProps?: { id: string }) => void;
+  onMove?: (
+    x: number,
+    y: number,
+    rotation: number,
+    additionalProps?: { id: string },
+  ) => void;
   draggable?: boolean;
   rotatable?: boolean;
   selectable?: boolean;
@@ -111,7 +116,7 @@ const withDraggable = <P extends object>(
         onMove(x, y, rotation || 0, { id });
       }
       if (draggable) {
-        console.log(id)
+        console.log(id);
         select(id); // Select the component when mouse down
       }
     };

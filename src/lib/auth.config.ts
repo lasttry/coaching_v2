@@ -1,20 +1,8 @@
 import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma'; // Ensure this path matches your project structure
-
-// Helper to encode a string as Uint8Array
-function encode(text: string): Uint8Array {
-  return new TextEncoder().encode(text);
-}
-
-// Helper to hash a password with salt using Web Crypto API
-async function hashPassword(password: string, salt: string): Promise<string> {
-  const passwordData = encode(password + salt);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
-}
+import { PlatformRole } from '@prisma/client';
+import { validatePassword } from './password';
 
 export default {
   providers: [
@@ -36,8 +24,16 @@ export default {
           const password = String(credentials.password);
 
           // Find the user in the database
-          const user = await prisma.user.findUnique({
+          const user = await prisma.account.findUnique({
             where: { email },
+            include: {
+              clubs: {
+                include: {
+                  roles: true,
+                  club: true, // Fetch club details
+                },
+              },
+            },
           });
 
           if (!user) {
@@ -45,28 +41,27 @@ export default {
             return null;
           }
 
-          // Split the stored hash into salt and hashed password
-          const [salt, storedHash] = user.password.split(':');
-          if (!salt || !storedHash) {
-            console.error('Stored password format is invalid');
-            return null;
-          }
-
-          // Hash the provided password using the same salt
-          const hashedPassword = await hashPassword(password, salt);
-
-          // Verify the hashed password matches the stored hash
-          if (hashedPassword !== storedHash) {
+          const isPasswordValid = await validatePassword(password, user.password);
+          if (!isPasswordValid) {
             console.error('Invalid password');
             return null;
           }
 
           // Return user object
-          return {
+          const userobj = {
             id: user.id.toString(),
             name: user.name,
             email: user.email,
+            selectedClubId: user.defaultClubId,
+            role: user.role,
+            clubs: user.clubs.map((accountClub) => ({
+              clubId: accountClub.clubId,
+              clubName: accountClub.club.name,
+              roles: accountClub.roles.map((role) => role.role),
+            })),
           };
+          console.log(userobj);
+          return userobj;
         } catch (error) {
           console.error('Error during user authorization:', error);
           return null;
@@ -79,21 +74,32 @@ export default {
     error: '/auth/error',
   },
   callbacks: {
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, session, trigger }) => {
       if (user) {
-        token.id = user.id; // Add `id` to the token
+        token.id = user.id;
+        token.role = user.role;
+        token.selectedClubId = user.selectedClubId;
+        token.clubs = user.clubs; // Add role to JWT
+      }
+      if(trigger == 'update' && session) {
+        token.selectedClubId = session.selectedClubId;
       }
       return token;
     },
     session: async ({ session, token }) => {
-      console.log(`session->token: ${token}`);
-      console.log(`session->session: ${session}`);
       if (token) {
         session.user = {
-          id: token.id as string, // Explicitly cast `id` to string
-          name: session.user?.name || null,
-          email: session.user?.email || '',
+          id: token.id as string,
+          name: token.name || null,
+          email: token.email || '',
           emailVerified: new Date(),
+          selectedClubId: token.selectedClubId as number,
+          role: token.role as PlatformRole,
+          clubs: token.clubs as {
+            clubId: number;
+            clubName: string;
+            roles: string[];
+          }[], // Include role in session
         };
       }
       return session;

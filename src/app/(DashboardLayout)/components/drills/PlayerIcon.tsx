@@ -12,7 +12,12 @@ interface PlayerIconProps {
   draggable?: boolean;
   rotatable?: boolean;
   rotation?: number;
-  onMove?: (x: number, y: number, rotation: number, additionalProps: { id: string }) => void;
+  onMove?: (
+    x: number,
+    y: number,
+    rotation: number,
+    additionalProps: { id: string },
+  ) => void;
 }
 
 const PlayerIcon: React.FC<PlayerIconProps> = React.memo(
@@ -55,7 +60,7 @@ const PlayerIcon: React.FC<PlayerIconProps> = React.memo(
           </g>,
         );
       }
-      setUpdateSvgDefs(true)
+      setUpdateSvgDefs(true);
     }, [updateSvgDefs]);
 
     return (

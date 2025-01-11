@@ -2,6 +2,7 @@ import {
   IconBallBasketball,
   IconTypography,
   IconUser,
+  IconUserHexagon,
   IconUsersGroup,
 } from '@tabler/icons-react';
 
@@ -63,9 +64,16 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
-    title: 'Definições',
+    title: 'Clube',
     icon: IconTypography,
-    href: '/utilities/settings',
+    href: '/utilities/club',
+  },
+  { navlabel: true, subheader: 'Configurações' },
+  {
+    id: uniqueId(),
+    title: 'Contas',
+    icon: IconUserHexagon,
+    href: '/utilities/accounts',
   },
 ];
 

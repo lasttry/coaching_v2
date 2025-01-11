@@ -10,26 +10,37 @@ import {
   Box,
   Avatar,
 } from '@mui/material';
+import { AccountInterface } from '@/types/accounts/types';
 
 const ProfilePage = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
-  const [userDetails, setUserDetails] = useState({
+  const [userDetails, setUserDetails] = useState<AccountInterface>({
     name: session?.user?.name || '',
     email: session?.user?.email || '',
     password: '',
     confirmPassword: '',
     image: '',
+    defaultClubId: 0,
   });
 
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [userClubs, setUserClubs] = useState<{ id: number; name: string }[]>(
+    [],
+  );
+  const [defaultClubId, setDefaultClubId] = useState<number>(0);
 
   useEffect(() => {
+    if (!session) {
+      return;
+    }
+    console.log(status);
+    console.log(session);
     const fetchProfile = async () => {
       try {
-        const response = await fetch('/api/profile/image');
+        const response = await fetch(`/api/accounts/${session?.user?.id}`);
         const data = await response.json();
 
         if (response.ok) {
@@ -39,6 +50,15 @@ const ProfilePage = () => {
           }));
           if (data.image) {
             setPhotoPreview(`data:image/png;base64,${data.image}`);
+          }
+
+          // Fetch user clubs
+          if (data.clubs) {
+            setUserClubs(data.clubs);
+            if (data.clubs.length === 1) {
+              setDefaultClubId(data.clubs[0].id);
+              setUserDetails((prev) => prev);
+            }
           }
         } else {
           setError(data.error || 'Failed to fetch profile.');
@@ -50,7 +70,7 @@ const ProfilePage = () => {
     };
 
     fetchProfile();
-  }, []);
+  }, [session]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -80,10 +100,13 @@ const ProfilePage = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch('/api/profile', {
-        method: 'POST',
+      const response = await fetch(`/api/accounts/${session?.user?.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userDetails),
+        body: JSON.stringify({
+          ...userDetails,
+          defaultClubId: defaultClubId == 0 ? userClubs[0].id : defaultClubId,
+        }),
       });
 
       const data = await response.json();
@@ -177,6 +200,35 @@ const ProfilePage = () => {
             onChange={handleInputChange}
             fullWidth
           />
+          {userClubs.length > 1 && (
+            <TextField
+              select
+              label="Default Club"
+              value={defaultClubId}
+              onChange={(e) => {
+                const clubId = Number(e.target.value);
+                setDefaultClubId(clubId);
+                setUserDetails((prev) => ({
+                  ...prev,
+                  defaultClubId: clubId,
+                }));
+              }}
+              fullWidth
+              SelectProps={{
+                native: true, // Use native dropdown
+              }}
+            >
+              <option value={0} disabled>
+                Select a club
+              </option>
+              {userClubs.map((club) => (
+                <option key={club.id} value={club.id}>
+                  {club.name}
+                </option>
+              ))}
+            </TextField>
+          )}
+
           <Button variant="contained" color="primary" type="submit">
             Update Profile
           </Button>
