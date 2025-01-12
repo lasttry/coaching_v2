@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { ClubInterface } from '@/types/club/types';
 
-
 const Logo = () => {
   const { data: session } = useSession();
   const [club, setClub] = useState<ClubInterface | null>(null);
@@ -13,14 +12,15 @@ const Logo = () => {
   useEffect(() => {
     async function fetchClub() {
       try {
-        if (!session?.user.selectedClubId)
-          return;
-        const response = await fetch(`/api/clubs/${session?.user.selectedClubId}`);
+        if (!session?.user.selectedClubId) return;
+        const response = await fetch(
+          `/api/clubs/${session?.user.selectedClubId}`,
+        );
         const data = await response.json();
         if (response.ok) {
           setClub(data); // Set the settings data
         } else {
-          console.log(data.error)
+          console.log(data.error);
         }
       } catch (error) {
         console.error('Error fetching settings:', error);

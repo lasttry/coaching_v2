@@ -129,7 +129,7 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
       },
     });
 
-    console.log(roles)
+    console.log(roles);
     // Assign the roles to the account within the club
     const accountClubRoles = await prisma.$transaction(
       roles.map((role) =>
@@ -145,7 +145,7 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
       ...account,
       roles: accountClubRoles.map((role) => role.role),
     };
-    console.log(accountsWithRoles)
+    console.log(accountsWithRoles);
     return NextResponse.json(accountsWithRoles, { status: 201 });
   } catch (error) {
     console.error('Error linking account to club:', error);

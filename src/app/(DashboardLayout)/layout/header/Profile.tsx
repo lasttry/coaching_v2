@@ -29,21 +29,19 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    console.log(session)
+    console.log(session);
     const fetchAccount = async () => {
       try {
-        if (!session?.user.selectedClubId)
-          return;
+        if (!session?.user.selectedClubId) return;
         const response = await fetch(`/api/accounts/${session?.user.id}`);
 
         if (response.ok) {
           const data: AccountInterface = await response.json();
-          console.log(data)
-          if(data.image)
-            setPhotoPreview(`${data.image}`);
+          console.log(data);
+          if (data.image) setPhotoPreview(`${data.image}`);
         } else {
           const data = await response.json();
-          console.log(data.error)
+          console.log(data.error);
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
@@ -96,13 +94,15 @@ const Profile = () => {
       >
         <MenuItem>
           <ListItemText>
-            {session ? `${session.user.name} (${session.user.role})` : 'Loading...'}
+            {session
+              ? `${session.user.name} (${session.user.role})`
+              : 'Loading...'}
           </ListItemText>
         </MenuItem>
         <MenuItem>
           <ListItemText>{`Selected Club Id: ${session?.user?.selectedClubId}`}</ListItemText>
         </MenuItem>
-          <Link href="/utilities/profile" passHref legacyBehavior>
+        <Link href="/utilities/profile" passHref legacyBehavior>
           <MenuItem>
             <ListItemIcon>
               <IconUser width={20} />

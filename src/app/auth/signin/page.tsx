@@ -42,16 +42,20 @@ const SignInPage = () => {
       // If an error occurs, display it
       setError(response.error || 'Login failed');
     } else if (response?.ok) {
-    // Fetch user details using the `/api/account` endpoint and email address
-      const accountResponse = await fetch(`/api/accounts?email=${encodeURIComponent(username)}`);
+      // Fetch user details using the `/api/account` endpoint and email address
+      const accountResponse = await fetch(
+        `/api/accounts?email=${encodeURIComponent(username)}`,
+      );
       if (accountResponse.ok) {
         const accountData = await accountResponse.json();
-        console.log(accountData)
+        console.log(accountData);
         if (accountData.length > 1 && accountData[0].defaultClubId) {
           // Redirect to games if defaultClubId exists
           router.push('/utilities/games');
-        } else if (accountData[0].clubs.length == 1){
-          const updatedSession = await update({ selectedClubId: accountData[0].clubs[0].clubId }); // Call the `update()` method provided by NextAuth
+        } else if (accountData[0].clubs.length == 1) {
+          const updatedSession = await update({
+            selectedClubId: accountData[0].clubs[0].clubId,
+          }); // Call the `update()` method provided by NextAuth
           console.log('Updated session:', updatedSession);
           router.push('/utilities/games');
         } else {

@@ -41,7 +41,10 @@ export default {
             return null;
           }
 
-          const isPasswordValid = await validatePassword(password, user.password);
+          const isPasswordValid = await validatePassword(
+            password,
+            user.password,
+          );
           if (!isPasswordValid) {
             console.error('Invalid password');
             return null;
@@ -81,7 +84,7 @@ export default {
         token.selectedClubId = user.selectedClubId;
         token.clubs = user.clubs; // Add role to JWT
       }
-      if(trigger == 'update' && session) {
+      if (trigger == 'update' && session) {
         token.selectedClubId = session.selectedClubId;
       }
       return token;

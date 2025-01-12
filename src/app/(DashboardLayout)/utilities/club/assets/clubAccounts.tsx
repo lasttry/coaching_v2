@@ -38,7 +38,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
 
     // Fetch accounts for the club
     const fetchAccounts = async () => {
-      onError?.('')
+      onError?.('');
       try {
         const response = await fetch(`/api/clubs/${clubId}/accounts`);
         if (response.ok) {
@@ -60,7 +60,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
   const handleEmailChange = async (email: string) => {
     setEmailInput(email);
     if (email.length > 2) {
-      onError?.('')
+      onError?.('');
       try {
         const response = await fetch(`/api/accounts?email=${email}`);
         if (response.ok) {
@@ -82,7 +82,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
   const handleAddAccount = async () => {
     if (!emailInput || !clubId || !addAccount) return;
     try {
-      onError?.('')
+      onError?.('');
       const role = Role.ADMIN;
       const response = await fetch(`/api/clubs/${clubId}/accounts`, {
         method: 'POST',
@@ -93,7 +93,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
       });
       if (response.ok) {
         const newAccount = await response.json();
-        console.log(newAccount)
+        console.log(newAccount);
         setAccounts((prev) => [...prev, newAccount]);
         setEmailInput('');
         setFilteredAccounts([]);
@@ -119,7 +119,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
   ) => {
     if (!clubId) return;
     try {
-      onError?.('')
+      onError?.('');
       const response = await fetch(
         `/api/clubs/${clubId}/accounts/${accountId}`,
         {
@@ -156,7 +156,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
   const handleRemoveAccount = async (accountId: number) => {
     if (!clubId) return;
     try {
-      onError?.('')
+      onError?.('');
       const response = await fetch(
         `/api/clubs/${clubId}/accounts/${accountId}`,
         {
@@ -206,8 +206,8 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
                 key={account.id}
                 className="autocomplete-item"
                 onClick={() => {
-                  setAddAccount(account)
-                  setEmailInput(account.email)
+                  setAddAccount(account);
+                  setEmailInput(account.email);
                 }}
               >
                 {account.email}

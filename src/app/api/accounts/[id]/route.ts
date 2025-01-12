@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { parseHashedPassword, hashPassword, validatePassword } from '@/lib/password';
+import {
+  parseHashedPassword,
+  hashPassword,
+  validatePassword,
+} from '@/lib/password';
 
 type Params = Promise<{ id: number }>;
 
@@ -53,7 +57,8 @@ export async function PUT(req: Request, segmentData: { params: Params }) {
   const params = await segmentData.params;
   const accountId = Number(params.id);
   const accountObject = await req.json();
-  const { name, email, defaultClubId, image, password, oldPassword } = accountObject;
+  const { name, email, defaultClubId, image, password, oldPassword } =
+    accountObject;
 
   const updateData: { [key: string]: any } = {};
 
@@ -66,25 +71,27 @@ export async function PUT(req: Request, segmentData: { params: Params }) {
       return NextResponse.json({ error: 'Account not found' }, { status: 404 });
     }
     // Verify the old password
-    const isOldPasswordValid = await validatePassword(oldPassword, account.password);
+    const isOldPasswordValid = await validatePassword(
+      oldPassword,
+      account.password,
+    );
     if (!isOldPasswordValid) {
-      return NextResponse.json({ error: 'Old password is incorrect' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Old password is incorrect' },
+        { status: 400 },
+      );
     }
     // Check if the new password is provided and needs to be hashed
     if (password && !parseHashedPassword(password)) {
       updateData.password = await hashPassword(password);
     }
-
   }
-  if(name)
-    updateData.name = name;
-  if(email)
-    updateData.email = email;
+  if (name) updateData.name = name;
+  if (email) updateData.email = email;
   updateData.defaultClubId = defaultClubId;
-  if(image)
-    updateData.image = image;
+  if (image) updateData.image = image;
   // Update the account with the new data
-  console.log(updateData)
+  console.log(updateData);
   const updatedAccount = await prisma.account.update({
     where: { id: accountId },
     data: updateData,

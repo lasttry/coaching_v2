@@ -1,7 +1,25 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Alert, Box, Button, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import { useSession } from 'next-auth/react';
@@ -12,10 +30,18 @@ import ChangePasswordDialog from './assets/changePasswordDialog';
 interface AddAccountDialogProps {
   open: boolean;
   onClose: () => void;
-  onAddAccount: (account: { name: string; email: string; password: string }) => void;
+  onAddAccount: (account: {
+    name: string;
+    email: string;
+    password: string;
+  }) => void;
 }
 
-const AddAccountDialog: React.FC<AddAccountDialogProps> = ({ open, onClose, onAddAccount }) => {
+const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
+  open,
+  onClose,
+  onAddAccount,
+}) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -77,7 +103,8 @@ const AccountsPage = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [addAccountOpen, setAddAccountOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
-  const [selectedAccount, setSelectedAccount] = useState<AccountInterface | null>(null);
+  const [selectedAccount, setSelectedAccount] =
+    useState<AccountInterface | null>(null);
 
   useEffect(() => {
     const fetchAccounts = async () => {
@@ -113,7 +140,9 @@ const AccountsPage = () => {
         method: 'DELETE',
       });
       if (response.ok) {
-        setAccounts((prev) => prev.filter((account) => account.id !== accountId));
+        setAccounts((prev) =>
+          prev.filter((account) => account.id !== accountId),
+        );
         setSuccessMessage('Account deleted successfully');
       } else {
         const errorData = await response.json();
@@ -128,7 +157,15 @@ const AccountsPage = () => {
     }
   };
 
-  const handleAddAccount = async ({ name, email, password }: { name: string; email: string; password: string }) => {
+  const handleAddAccount = async ({
+    name,
+    email,
+    password,
+  }: {
+    name: string;
+    email: string;
+    password: string;
+  }) => {
     try {
       const response = await fetch('/api/accounts', {
         method: 'POST',
@@ -154,9 +191,24 @@ const AccountsPage = () => {
     }
   };
 
-  const handleUpdateAccount = async (accountId: number, name: string, email: string, defaultClubId?: number | null, image?: string | null, password?: string, oldPassword?: string) => {
+  const handleUpdateAccount = async (
+    accountId: number,
+    name: string,
+    email: string,
+    defaultClubId?: number | null,
+    image?: string | null,
+    password?: string,
+    oldPassword?: string,
+  ) => {
     try {
-      const data = JSON.stringify({ name, email, defaultClubId, image, oldPassword, password });
+      const data = JSON.stringify({
+        name,
+        email,
+        defaultClubId,
+        image,
+        oldPassword,
+        password,
+      });
       console.log(data);
       const response = await fetch(`/api/accounts/${accountId}`, {
         method: 'PUT',
@@ -167,7 +219,11 @@ const AccountsPage = () => {
       });
       if (response.ok) {
         const updatedAccount = await response.json();
-        setAccounts((prev) => prev.map((account) => (account.id === accountId ? updatedAccount : account)));
+        setAccounts((prev) =>
+          prev.map((account) =>
+            account.id === accountId ? updatedAccount : account,
+          ),
+        );
         setSuccessMessage('Account updated successfully');
       } else {
         const errorData = await response.json();
@@ -184,9 +240,21 @@ const AccountsPage = () => {
 
   return (
     <PageContainer>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+        }}
+      >
         <Typography variant="h4">Manage Accounts</Typography>
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => setAddAccountOpen(true)}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => setAddAccountOpen(true)}
+        >
           Add Account
         </Button>
       </Box>
@@ -203,11 +271,22 @@ const AccountsPage = () => {
           </TableHead>
           <TableBody>
             {accounts.map((account) => (
-              <TableRow key={account.id} onClick={() => { setSelectedAccount(account); setChangePasswordOpen(true); }}>
+              <TableRow
+                key={account.id}
+                onClick={() => {
+                  setSelectedAccount(account);
+                  setChangePasswordOpen(true);
+                }}
+              >
                 <TableCell>{account.name}</TableCell>
                 <TableCell>{account.email}</TableCell>
                 <TableCell>
-                  <IconButton onClick={(e) => { e.stopPropagation(); handleDeleteAccount(account.id); }}>
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteAccount(account.id);
+                    }}
+                  >
                     <CloseIcon />
                   </IconButton>
                 </TableCell>

@@ -67,7 +67,7 @@ export async function GET(request: Request) {
               email: true,
               name: true,
               defaultClubId: true,
-              clubs: true
+              clubs: true,
             },
           })
         : await prisma.account.findMany({
@@ -76,7 +76,7 @@ export async function GET(request: Request) {
               email: true,
               name: true,
               defaultClubId: true,
-              clubs: true
+              clubs: true,
             },
           });
 

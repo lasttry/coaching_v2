@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Generate a salt
-  const password = "admin123";
+  const password = 'admin123';
   const hashedPassword = await hashPassword(password);
 
   await prisma.accountClub.deleteMany({});

@@ -1,22 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, Typography, Alert, Box, Stack, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Typography,
+  Alert,
+  Box,
+  Stack,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+} from '@mui/material';
 import { AccountInterface } from '@/types/accounts/types';
 
 interface ChangePasswordDialogProps {
   open: boolean;
   onClose: () => void;
   account: AccountInterface | null;
-  onUpdateAccount: (accountId: number, name: string, email: string, defaultClubId?: number | null, image?: string | null, password?: string, oldPassword?: string) => void;
+  onUpdateAccount: (
+    accountId: number,
+    name: string,
+    email: string,
+    defaultClubId?: number | null,
+    image?: string | null,
+    password?: string,
+    oldPassword?: string,
+  ) => void;
 }
 
-const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClose, account, onUpdateAccount }) => {
+const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
+  open,
+  onClose,
+  account,
+  onUpdateAccount,
+}) => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState(account?.name || '');
   const [email, setEmail] = useState(account?.email || '');
   const [image, setImage] = useState<string | null>(account?.image || null);
-  const [defaultClubId, setDefaultClubId] = useState<number | null>(account?.defaultClubId || null);
+  const [defaultClubId, setDefaultClubId] = useState<number | null>(
+    account?.defaultClubId || null,
+  );
   const [clubs, setClubs] = useState<{ id: number; name: string }[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -59,7 +89,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
   };
 
   const handleUpdateAccount = () => {
-    if(newPassword || confirmPassword) {
+    if (newPassword || confirmPassword) {
       if (!newPassword || !confirmPassword) {
         setErrorMessage('Please fill in all password fields.');
         return;
@@ -74,7 +104,15 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
       }
     }
     if (account && account.id) {
-      onUpdateAccount(account.id, name, email, defaultClubId, image || null, newPassword, oldPassword);
+      onUpdateAccount(
+        account.id,
+        name,
+        email,
+        defaultClubId,
+        image || null,
+        newPassword,
+        oldPassword,
+      );
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -148,7 +186,11 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
           </FormControl>
           {image && (
             <Box sx={{ textAlign: 'center', marginY: 2 }}>
-              <img src={image} alt="Current" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+              <img
+                src={image}
+                alt="Current"
+                style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+              />
             </Box>
           )}
           <Button
@@ -157,7 +199,12 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
             sx={{ textAlign: 'center' }}
           >
             Upload Photo
-            <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={handleImageUpload}
+            />
           </Button>
         </Stack>
       </DialogContent>
@@ -165,7 +212,11 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
         <Button onClick={onClose} variant="outlined" color="secondary">
           Cancel
         </Button>
-        <Button onClick={handleUpdateAccount} variant="contained" color="success">
+        <Button
+          onClick={handleUpdateAccount}
+          variant="contained"
+          color="success"
+        >
           Update Account
         </Button>
       </DialogActions>

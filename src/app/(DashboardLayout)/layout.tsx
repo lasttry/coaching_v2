@@ -60,7 +60,7 @@ export default function RootLayout({
             {/* Page Route */}
             {/* ------------------------------------------- */}
             <Box sx={{ minHeight: 'calc(100vh - 170px)', py: 3 }}>
-                <SettingsProvider>{children}</SettingsProvider>
+              <SettingsProvider>{children}</SettingsProvider>
             </Box>
             {/* ------------------------------------------- */}
             {/* End Page */}

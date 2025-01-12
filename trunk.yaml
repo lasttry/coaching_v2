@@ -25,10 +25,22 @@ exclude:
   - node_modules/**
   - dist/**
   - build/**
-
+format:
+  include:
+    - '**/*.ts'
+    - '**/*.tsx'
+    - '**/*.css'
 # Define custom commands
 commands:
   - name: lint
     run: trunk check
   - name: format
     run: trunk fmt
+
+tools:
+  prettier:
+    enable: true
+    config:
+      printWidth: 120
+      singleQuote: true
+      trailingComma: all

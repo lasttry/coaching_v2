@@ -5,7 +5,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Alert
+  Alert,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Grid from '@mui/material/Grid2';
@@ -13,7 +13,7 @@ import { Box, Typography } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import { ClubInterface } from '@/types/club/types';
-import '@/styles/clubsAccordion.css'
+import '@/styles/clubsAccordion.css';
 import { useSession } from 'next-auth/react';
 import ClubDetails from './assets/clubDetails';
 import ClubAccounts from './assets/clubAccounts';
@@ -24,7 +24,9 @@ const ClubPage = () => {
   const [editing, setEditing] = useState(false);
   const { data: session } = useSession();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null | undefined>(null);
+  const [successMessage, setSuccessMessage] = useState<
+    string | null | undefined
+  >(null);
 
   useEffect(() => {
     async function fetchClubs() {
@@ -110,15 +112,17 @@ const ClubPage = () => {
                 body: JSON.stringify({
                   accountId: session?.user?.id,
                   clubId: savedClub.id,
-                  roles: [{role: 'ADMIN'}],
+                  roles: [{ role: 'ADMIN' }],
                 }),
               },
             );
             if (!addUserResponse.ok) {
               const errorData = await addUserResponse.json();
-              setErrorMessage(`Failed to add user to the club with admin role: ${errorData.error}`);
+              setErrorMessage(
+                `Failed to add user to the club with admin role: ${errorData.error}`,
+              );
             } else {
-              setSuccessMessage('Club created with sucess.')
+              setSuccessMessage('Club created with sucess.');
             }
             setSelectedClub(savedClub);
           } else {
@@ -126,7 +130,7 @@ const ClubPage = () => {
               prev.map((club) => (club.id === savedClub.id ? savedClub : club)),
             );
             setSelectedClub(savedClub);
-            setSuccessMessage('Club saved.')
+            setSuccessMessage('Club saved.');
           }
           setEditing(false);
         } else {
@@ -150,7 +154,7 @@ const ClubPage = () => {
       if (response.ok) {
         setClubs((prev) => prev.filter((club) => club.id !== selectedClub.id));
         setSelectedClub(null);
-        setSuccessMessage('Club was deleted with success')
+        setSuccessMessage('Club was deleted with success');
       } else {
         setErrorMessage('Failed to delete the club');
       }
@@ -169,9 +173,7 @@ const ClubPage = () => {
       title="Clubs Settings"
       description="You can configure your club"
     >
-
       <Box sx={{ padding: 3 }}>
-
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h6" fontWeight="bold">
@@ -228,11 +230,7 @@ const ClubPage = () => {
         ) : (
           <></>
         )}
-        {errorMessage ? (
-          <Alert severity="error">{errorMessage}</Alert>
-        ) : (
-          <></>
-        )}
+        {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : <></>}
         {editing && selectedClub && (
           <DashboardCard
             title={selectedClub.id === 0 ? 'Create New Club' : 'Edit Club'}
@@ -244,7 +242,10 @@ const ClubPage = () => {
               onDelete={handleDeleteClub}
               onEditChange={handleEditChange}
             />
-            <ClubAccounts clubId={selectedClub.id} onError={(error: string) => setErrorMessage(error) } />
+            <ClubAccounts
+              clubId={selectedClub.id}
+              onError={(error: string) => setErrorMessage(error)}
+            />
           </DashboardCard>
         )}
       </Box>

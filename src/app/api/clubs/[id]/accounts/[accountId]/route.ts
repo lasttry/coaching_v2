@@ -3,14 +3,14 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 
-type Params = Promise<{ id: number, accountId: number }>;
+type Params = Promise<{ id: number; accountId: number }>;
 
 // PUT: Add/Remove a role of an account from a club
 export async function PUT(req: NextRequest, segmentData: { params: Params }) {
   try {
     const params = await segmentData.params;
     const clubId = Number(params.id);
-    const accountId = Number(params.accountId)
+    const accountId = Number(params.accountId);
     const { role, checked } = await req.json();
 
     if (!role || typeof checked !== 'boolean') {
@@ -66,28 +66,28 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
 }
 
 // DELETE: Remove an account from a club
-export async function DELETE(req: NextRequest, segmentData: { params: Params }) {
+export async function DELETE(
+  req: NextRequest,
+  segmentData: { params: Params },
+) {
   try {
     const session = await auth();
 
-    console.log(session)
+    console.log(session);
     if (!session) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const currentUserId = session.user.id;
     const params = await segmentData.params;
     const clubId = Number(params.id);
-    const accountId = Number(params.accountId)
+    const accountId = Number(params.accountId);
 
     // Check if the user is trying to remove themselves
     if (Number(accountId) === Number(currentUserId)) {
       return NextResponse.json(
         { error: 'You cannot remove yourself from the club.' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -101,7 +101,7 @@ export async function DELETE(req: NextRequest, segmentData: { params: Params }) 
     if (accountCount <= 1) {
       return NextResponse.json(
         { error: 'You cannot remove the last account from the club.' },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -116,13 +116,13 @@ export async function DELETE(req: NextRequest, segmentData: { params: Params }) 
 
     return NextResponse.json(
       { message: 'Account removed from the club successfully' },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error('Error removing account from the club:', error);
     return NextResponse.json(
       { error: 'An error occurred while removing the account from the club.' },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

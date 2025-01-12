@@ -70,7 +70,7 @@ const ChooseClubPage = () => {
       setErrorMessage(`Error setting default club: ${error}`);
       return;
     }
-    router.push('/')
+    router.push('/');
   };
 
   return (
