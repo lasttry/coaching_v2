@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import PageContainer from '../../components/container/PageContainer';
+import { log } from '@/lib/logger';
 import '@/styles/clubsAccordion.css';
 
 const ChooseClubPage = () => {
@@ -29,14 +30,19 @@ const ChooseClubPage = () => {
     const fetchClubs = async () => {
       try {
         const response = await fetch('/api/clubs');
-        if (response.ok) {
-          const data = await response.json();
-          setClubs(data);
-        } else {
-          setErrorMessage('Failed to fetch clubs');
+        const data = await response.json();
+        if (!response.ok) {
+          const errorText = `Failed to fetch clubs, status: ${data}`;
+          log.error(errorText);
+          setErrorMessage(errorText);
+          return;
         }
+        log.info('Clubs data fetched successfully:', data);
+        setClubs(data);
       } catch (error) {
-        setErrorMessage(`Error fetching clubs: ${error}`);
+        const errorText = `Error fetching clubs: ${error}`;
+        log.error(errorText);
+        setErrorMessage(errorText);
       }
     };
 
@@ -44,32 +50,46 @@ const ChooseClubPage = () => {
   }, []);
 
   const handleSelectClub = async (club: { id: number }) => {
-    if (setAsDefault && session?.user?.id) {
+    if (!session?.user?.id) {
+      log.error('Session or user ID is missing.');
+      setErrorMessage('Unable to identify the user session. Please log in again.');
+      return;
+    }
+
+    if (setAsDefault) {
       try {
         const response = await fetch(`/api/accounts/${session.user.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ selectedClubId: club.id }),
+          body: JSON.stringify({ defaultClubId: club.id }),
         });
         if (!response.ok) {
-          setErrorMessage('Failed to set default club');
+          const errorText = 'Failed to set default club';
+          log.error(errorText);
+          setErrorMessage(errorText);
           return;
         }
+        log.info('Default club updated successfully.');
       } catch (error) {
-        setErrorMessage(`Error setting default club: ${error}`);
+        const errorText = `Error setting default club: ${error}`;
+        log.error(errorText);
+        setErrorMessage(errorText);
         return;
       }
     }
+
     try {
-      // Optionally refresh the session after updating the token
-      const updatedSession = await update({ selectedClubId: club.id }); // Call the `update()` method provided by NextAuth
-      console.log('Updated session:', updatedSession);
+      const updatedSession = await update({ selectedClubId: club.id });
+      log.info('Session updated successfully:', updatedSession);
     } catch (error) {
-      setErrorMessage(`Error setting default club: ${error}`);
+      const errorText = `Error updating session: ${error}`;
+      log.error(errorText);
+      setErrorMessage(errorText);
       return;
     }
+
     router.push('/');
   };
 
@@ -79,7 +99,11 @@ const ChooseClubPage = () => {
       description="You can configure your club"
     >
       <Box sx={{ padding: 3 }}>
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+        {errorMessage ? (
+          <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
+            {errorMessage}
+          </Typography>
+        ) : <></>}
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
           <Typography variant="h6" fontWeight="bold">
             Clubs
@@ -95,9 +119,7 @@ const ChooseClubPage = () => {
               control={
                 <Checkbox
                   checked={setAsDefault}
-                  onChange={(e) => {
-                    setSetAsDefault(e.target.checked);
-                  }}
+                  onChange={(e) => setSetAsDefault(e.target.checked)}
                   name="setAsDefault"
                   color="primary"
                 />

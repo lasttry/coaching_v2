@@ -1,0 +1,28 @@
+{
+  "echelonsManagement": "Echelons Management",
+  "name": "Name",
+  "minAge": "Minimum Age",
+  "maxAge": "Maximum Age",
+  "gender": "Gender",
+  "description": "Description",
+  "actions": "Actions",
+  "edit": "Edit",
+  "createEchelon": "Create Echelon",
+  "updateEchelon": "Update Echelon",
+  "failedFetchEchelons": "Failed to fetch echelons.",
+  "echelonSuccess": "Echelon {{status}} successfully.",
+  "echelonFailed": "Failed to {{status}} echelon.",
+  "COED": "Coed",
+  "FEMALE": "Female",
+  "MALE": "Male",
+
+  "cancel": "cancel",
+  "canceled": "canceled",
+  "update": "update",
+  "updated": "updated",
+  "create": "create",
+  "created": "updated",
+  "delete": "delete",
+  "Delete": "Delete",
+  "deleted": "deleted"
+}

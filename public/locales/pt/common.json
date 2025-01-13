@@ -1,0 +1,30 @@
+{
+  "echelonsManagement": "Gestão de Escalões",
+  "name": "Nome",
+  "minAge": "Idade Mínima",
+  "maxAge": "Idade Máxima",
+  "gender": "Genero",
+  "description": "Descrição",
+  "actions": "Ações",
+  "edit": "Editar",
+  "createEchelon": "Criar Escalão",
+  "updateEchelon": "Actualizar Escalão",
+  "failedFetchEchelons": "Erro ao carregar os escalões.",
+  "echelonSuccess": "Escalão {{status}} com sucesso.",
+  "echelonFailed": "Error ao {{status}} o escalão.",
+  "COED": "Misto",
+  "FEMALE": "Feminino",
+  "MALE": "Masculino",
+
+  "cancel": "cancelar",
+  "canceled": "cancelado",
+  "update": "actualizar",
+  "updated": "actualizado",
+  "create": "criar",
+  "created": "criado",
+  "delete": "apagar",
+  "Delete": "Apagar",
+  "deleted": "apagado"
+
+  
+}

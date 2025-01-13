@@ -1,6 +1,5 @@
 'use client';
-import React from 'react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
@@ -9,17 +8,19 @@ import {
   Button,
   Stack,
   Checkbox,
+  Alert,
 } from '@mui/material';
-import { signIn } from 'next-auth/react'; // Import signIn from NextAuth
+import { signIn } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField'; // Adjust the path based on your folder structure
+import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
+import { log } from '@/lib/logger';
 
 const SignInPage = () => {
   const { update } = useSession();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -27,69 +28,73 @@ const SignInPage = () => {
 
     // Basic validation
     if (!username || !password) {
-      setError('Please fill in all fields');
+      setErrorMessage('Please fill in all fields');
+      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10s
       return;
     }
 
-    // Call NextAuth's signIn function
-    const response = await signIn('credentials', {
-      redirect: false, // Prevent redirecting
-      email: username,
-      password: password,
-    });
+    try {
+      // Call NextAuth's signIn function
+      const response = await signIn('credentials', {
+        redirect: false,
+        email: username,
+        password,
+      });
 
-    if (response?.error) {
-      // If an error occurs, display it
-      setError(response.error || 'Login failed');
-    } else if (response?.ok) {
-      // Fetch user details using the `/api/account` endpoint and email address
-      const accountResponse = await fetch(
-        `/api/accounts?email=${encodeURIComponent(username)}`,
-      );
-      if (accountResponse.ok) {
-        const accountData = await accountResponse.json();
-        console.log(accountData);
-        if (accountData.length > 1 && accountData[0].defaultClubId) {
-          // Redirect to games if defaultClubId exists
-          router.push('/utilities/games');
-        } else if (accountData[0].clubs.length == 1) {
-          const updatedSession = await update({
-            selectedClubId: accountData[0].clubs[0].clubId,
-          }); // Call the `update()` method provided by NextAuth
-          console.log('Updated session:', updatedSession);
-          router.push('/utilities/games');
-        } else {
-          // Redirect to chooseClub if defaultClubId is missing
-          router.push('/utilities/chooseClub');
-        }
-      } else {
-        const errorData = await accountResponse.json();
-        if (errorData?.error) {
-          setError(`Failed to fetch user details: ${errorData.error}`);
-        } else {
-          setError('Failed to fetch user details');
-        }
+      // Check if there's an error
+      if (response?.error) {
+        log.error('Login failed:', response.error);
+        setErrorMessage('Invalid username or password');
+        setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10s
+        return;
       }
+
+      // Fetch user details using the `/api/accounts` endpoint
+      const accountResponse = await fetch(
+        `/api/accounts?email=${encodeURIComponent(username)}`
+      );
+      const data = await accountResponse.json();
+
+      if (!accountResponse.ok) {
+        const errorText = data?.error || 'Failed to fetch user details';
+        log.error(errorText);
+        setErrorMessage(errorText);
+        setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10s
+        return;
+      }
+
+      log.info('Account data fetched successfully:', data);
+
+      // Redirect logic based on account data
+      if (data.length >= 1 && data[0].defaultClubId != 0) {
+        log.info('Redirecting to games page');
+        router.push('/utilities/games');
+      } else if (data[0].clubs.length === 1) {
+        const updatedSession = await update({
+          selectedClubId: data[0].clubs[0].clubId,
+        });
+        log.info('Updated session:', updatedSession);
+        router.push('/utilities/games');
+      } else {
+        log.info('Redirecting to chooseClub page');
+        router.push('/utilities/chooseClub');
+      }
+    } catch (error) {
+      log.error('Unexpected error during login:', error);
+      setErrorMessage('An unexpected error occurred. Please try again.');
+      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10s
     }
   };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="100vh"
-    >
+    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
       <Box
         component="form"
-        onSubmit={handleSignIn} // Attach form submit handler
+        onSubmit={handleSignIn}
         sx={{ width: 400, padding: 4, boxShadow: 3, borderRadius: 2 }}
       >
-        {error && (
-          <Typography variant="body1" color="error" mb={2}>
-            {error}
-          </Typography>
-        )}
+        {/* Success/Error Messages */}
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
         <Typography fontWeight="700" variant="h2" mb={1}>
           Sign In
@@ -112,7 +117,7 @@ const SignInPage = () => {
               variant="outlined"
               fullWidth
               value={username}
-              onChange={(e) => setUsername(e.target.value)} // Set username
+              onChange={(e) => setUsername(e.target.value)}
             />
           </Box>
           <Box mt="25px">
@@ -130,7 +135,7 @@ const SignInPage = () => {
               variant="outlined"
               fullWidth
               value={password}
-              onChange={(e) => setPassword(e.target.value)} // Set password
+              onChange={(e) => setPassword(e.target.value)}
             />
           </Box>
           <Stack
@@ -145,17 +150,6 @@ const SignInPage = () => {
                 label="Remember this Device"
               />
             </FormGroup>
-            <Typography
-              component="a"
-              href="/"
-              fontWeight="500"
-              sx={{
-                textDecoration: 'none',
-                color: 'primary.main',
-              }}
-            >
-              Forgot Password?
-            </Typography>
           </Stack>
         </Stack>
 
@@ -165,7 +159,7 @@ const SignInPage = () => {
             variant="contained"
             size="large"
             fullWidth
-            type="submit" // Ensure this triggers form submission
+            type="submit"
           >
             Sign In
           </Button>

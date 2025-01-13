@@ -18,6 +18,8 @@ model athletes {
   idNumber        Int?
   idType          String?         @db.VarChar(50)
   active          Boolean?        @default(true)
+  clubId          Int
+  club            Club            @relation(fields: [clubId], references: [id], onDelete: Cascade)
   athleteReport   athleteReport[]
   reviewedAthlete athleteReport[] @relation("reviewedAthlete")
   gameAthletes    gameAthletes[]
@@ -50,6 +52,8 @@ model games {
   subcomp             String?         @db.VarChar(30)
   notes               String?         @db.VarChar(1000)
   teamLostDefRebounds Int             @default(0)
+  clubId              Int
+  club                Club            @relation(fields: [clubId], references: [id], onDelete: Cascade)
   athleteReports      athleteReport[]
   gameAthletes        gameAthletes[]
   opponentId          Int
@@ -146,6 +150,8 @@ model macrocycle {
   notes      String?     @db.VarChar(1000)
   number     Int?
   name       String?
+  clubId     Int
+  club       Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
   mesocycles mesocycle[]
 }
 
@@ -224,6 +230,23 @@ enum PlatformRole {
   VIEWER
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  COED
+}
+
+model Echelon {
+  id          Int      @id @default(autoincrement())
+  minAge      Int
+  maxAge      Int
+  name        String   @db.VarChar(50)
+  description String?  @db.VarChar(255)
+  gender      Gender
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model Club {
   id              Int           @id @default(autoincrement())
   name            String        @unique @db.VarChar(50)
@@ -236,6 +259,9 @@ model Club {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
   accounts        AccountClub[] @relation("ClubToAccounts") // Relation to AccountClub
+  athletes        athletes[]
+  games           games[]
+  macrocycle      macrocycle[]
 }
 
 model AccountClub {

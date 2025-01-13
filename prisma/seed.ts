@@ -1,4 +1,4 @@
-import { PlatformRole, PrismaClient } from '@prisma/client';
+import { PlatformRole, PrismaClient, Gender } from '@prisma/client';
 import { hashPassword } from '@/lib/password';
 
 // Initialize Prisma Client
@@ -59,6 +59,16 @@ async function main() {
     },
   });
   console.log('Linked account to the club');
+
+  await prisma.echelon.createMany({
+    data: [
+      { minAge: 6, maxAge: 7, name: "S8", description: "Sub8", gender: Gender.COED },
+      { minAge: 8, maxAge: 9, name: "S10", description: "Sub10", gender: Gender.COED },
+      { minAge: 12, maxAge: 13, name: "S14M", description: "Sub14 Masculino", gender: Gender.MALE },
+      { minAge: 14, maxAge: 15, name: "S16M", description: "Sub16 Masculino", gender: Gender.MALE },
+      { minAge: 16, maxAge: 17, name: "S18M", description: "Sub18 Masculino", gender: Gender.MALE }]
+  })
+  console.log('Created the echelons.')
 }
 
 main()

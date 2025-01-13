@@ -1,6 +1,7 @@
+import { log } from '@/lib/logger';
 import type { NextAuthConfig } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { prisma } from '@/lib/prisma'; // Ensure this path matches your project structure
+import { prisma } from '@/lib/prisma';
 import { PlatformRole } from '@prisma/client';
 import { validatePassword } from './password';
 
@@ -13,44 +14,49 @@ export default {
         password: { label: 'Password', type: 'password' },
       },
       authorize: async (credentials) => {
-        // Validate the presence of credentials
         if (!credentials?.email || !credentials.password) {
-          console.error('Missing credentials');
-          return null;
+          log.error('Missing credentials');
+          throw new Error('Credentials are required');
         }
-        console.log(`credentials: ${credentials}`);
+
+        log.info(`Attempting to authorize user with email: ${credentials.email}`);
+
         try {
           const email = String(credentials.email);
           const password = String(credentials.password);
 
-          // Find the user in the database
+          if (!email.includes('@')) {
+            log.warn(`Invalid email format: ${email}`);
+            throw new Error('Invalid email format');
+          }
+          if (password.length < 8) {
+            log.warn('Password is too short');
+            throw new Error('Password must be at least 8 characters long');
+          }
+
           const user = await prisma.account.findUnique({
             where: { email },
             include: {
               clubs: {
                 include: {
                   roles: true,
-                  club: true, // Fetch club details
+                  club: true,
                 },
               },
             },
           });
 
           if (!user) {
-            console.error('User not found');
-            return null;
+            log.error('User not found for email:', { email });
+            throw new Error('User not found');
           }
 
-          const isPasswordValid = await validatePassword(
-            password,
-            user.password,
-          );
+          const isPasswordValid = await validatePassword(password, user.password);
           if (!isPasswordValid) {
-            console.error('Invalid password');
-            return null;
+            log.error('Invalid password for email:', { email });
+            throw new Error('Invalid password');
           }
 
-          // Return user object
           const userobj = {
             id: user.id.toString(),
             name: user.name,
@@ -63,10 +69,11 @@ export default {
               roles: accountClub.roles.map((role) => role.role),
             })),
           };
-          console.log(userobj);
+
+          log.info(`User authorized successfully: ${user.email}`);
           return userobj;
         } catch (error) {
-          console.error('Error during user authorization:', error);
+          log.error('Error during user authorization:', { error });
           return null;
         }
       },
@@ -78,18 +85,24 @@ export default {
   },
   callbacks: {
     jwt: async ({ token, user, session, trigger }) => {
+      log.debug('JWT callback triggered', { token, trigger });
+
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.selectedClubId = user.selectedClubId;
-        token.clubs = user.clubs; // Add role to JWT
+        token.clubs = user.clubs;
       }
-      if (trigger == 'update' && session) {
+      if (trigger === 'update' && session) {
         token.selectedClubId = session.selectedClubId;
       }
+
+      log.debug('Updated JWT token:', token);
       return token;
     },
     session: async ({ session, token }) => {
+      log.debug('Session callback triggered', { session, token });
+
       if (token) {
         session.user = {
           id: token.id as string,
@@ -102,14 +115,17 @@ export default {
             clubId: number;
             clubName: string;
             roles: string[];
-          }[], // Include role in session
+          }[],
         };
       }
+
+      log.debug('Updated session:', { session });
       return session;
     },
     authorized: async ({ auth }) => {
-      // Logged in users are authenticated, otherwise redirect to login page
-      return !!auth;
+      const isAuthorized = !!auth;
+      log.info('Authorization callback triggered:', { isAuthorized });
+      return isAuthorized;
     },
   },
   secret: process.env.AUTH_SECRET,

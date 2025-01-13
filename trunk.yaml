@@ -5,42 +5,76 @@ linters:
   - name: eslint
     enabled: true
     config: .eslintrc.json
+    include:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.jsx'
+    exclude:
+      - node_modules/**
+      - dist/**
+      - build/**
   - name: prettier
     enabled: true
     config: .prettierrc
+    include:
+      - '**/*.ts'
+      - '**/*.tsx'
+      - '**/*.js'
+      - '**/*.jsx'
+      - '**/*.css'
+      - '**/*.json'
+    exclude:
+      - node_modules/**
+      - dist/**
+      - build/**
 
-# Define the files to include/exclude
+# Specify files to include and exclude globally
 include:
   - '**/*.ts'
   - '**/*.tsx'
   - '**/*.js'
   - '**/*.jsx'
+  - '**/*.css'
   - '**/*.json'
-  - src/**/*.ts
-  - src/**/*.tsx
-  - src/**/*.js
-  - src/**/*.jsx
-  - src/**/*.json
+  - src/**/*
+
 exclude:
   - node_modules/**
   - dist/**
   - build/**
+  - coverage/**
+  - '*.lock'
+
+# Format settings
 format:
   include:
     - '**/*.ts'
     - '**/*.tsx'
+    - '**/*.js'
+    - '**/*.jsx'
     - '**/*.css'
+    - '**/*.json'
+
 # Define custom commands
 commands:
   - name: lint
-    run: trunk check
+    run: trunk check --fix
+    description: Run linting and autofix issues in supported files
   - name: format
     run: trunk fmt
+    description: Run code formatting using Trunk
+  - name: analyze
+    run: trunk check --all
+    description: Run strict linting checks with no fixes
 
+# Configure Prettier for formatting consistency
 tools:
   prettier:
     enable: true
     config:
-      printWidth: 120
-      singleQuote: true
-      trailingComma: all
+      printWidth: 100 # Adjust line width for better readability
+      singleQuote: true # Use single quotes instead of double quotes
+      trailingComma: all # Add trailing commas wherever possible
+      semi: true # Ensure semicolons at the end of statements
+      arrowParens: always # Include parentheses for single-arg arrow functions

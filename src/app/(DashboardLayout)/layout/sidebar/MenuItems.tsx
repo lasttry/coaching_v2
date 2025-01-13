@@ -68,6 +68,12 @@ const Menuitems = [
     icon: IconTypography,
     href: '/utilities/club',
   },
+  {
+    id: uniqueId(),
+    title: 'Escalões',
+    icon: IconBallBasketball,
+    href: '/utilities/echelons',
+  },
   { navlabel: true, subheader: 'Configurações' },
   {
     id: uniqueId(),

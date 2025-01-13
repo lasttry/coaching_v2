@@ -1,0 +1,1672 @@
+[2025-01-12T14:48:23.122Z] [INFO]: Attempting to authorize user with email: ricardo@diasantos.com 
+[2025-01-12T14:48:23.151Z] [INFO]: User authorized successfully: ricardo@diasantos.com 
+[2025-01-12T14:48:23.151Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    picture: undefined,
+    sub: '14'
+  },
+  trigger: 'signIn',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        picture: undefined,
+        sub: '14'
+      },
+      trigger: 'signIn'
+    }
+  ]
+}
+[2025-01-12T14:48:23.153Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  picture: undefined,
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      picture: undefined,
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    }
+  ]
+}
+[2025-01-12T14:48:23.179Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693303,
+    exp: 1739285303,
+    jti: '90a51bb1-2c9e-40a0-8851-aa9d9aa33d30'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693303,
+        exp: 1739285303,
+        jti: '90a51bb1-2c9e-40a0-8851-aa9d9aa33d30'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:48:23.179Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693303,
+  exp: 1739285303,
+  jti: '90a51bb1-2c9e-40a0-8851-aa9d9aa33d30',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693303,
+      exp: 1739285303,
+      jti: '90a51bb1-2c9e-40a0-8851-aa9d9aa33d30'
+    }
+  ]
+}
+[2025-01-12T14:48:23.179Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:48:23.179Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693303,
+    exp: 1739285303,
+    jti: '90a51bb1-2c9e-40a0-8851-aa9d9aa33d30'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:48:23.179Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693303,
+        exp: 1739285303,
+        jti: '90a51bb1-2c9e-40a0-8851-aa9d9aa33d30'
+      }
+    }
+  ]
+}
+[2025-01-12T14:48:23.179Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:48:23.179Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:48:23.179Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:48:23.179Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:48:23.179Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:48:24.725Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693303,
+    exp: 1739285303,
+    jti: 'ffd6accb-ae5b-4a09-a0b7-14fa46fd0099'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693303,
+        exp: 1739285303,
+        jti: 'ffd6accb-ae5b-4a09-a0b7-14fa46fd0099'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:48:24.726Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693303,
+  exp: 1739285303,
+  jti: 'ffd6accb-ae5b-4a09-a0b7-14fa46fd0099',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693303,
+      exp: 1739285303,
+      jti: 'ffd6accb-ae5b-4a09-a0b7-14fa46fd0099'
+    }
+  ]
+}
+[2025-01-12T14:48:24.726Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:48:24.726Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693303,
+    exp: 1739285303,
+    jti: 'ffd6accb-ae5b-4a09-a0b7-14fa46fd0099'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:48:24.726Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693303,
+        exp: 1739285303,
+        jti: 'ffd6accb-ae5b-4a09-a0b7-14fa46fd0099'
+      }
+    }
+  ]
+}
+[2025-01-12T14:48:24.726Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:48:24.726Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:48:24.726Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:48:24.726Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:48:24.726Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:48:24.843Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693304,
+    exp: 1739285304,
+    jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693304,
+        exp: 1739285304,
+        jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:48:24.843Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693304,
+  exp: 1739285304,
+  jti: 'e11629e4-5c21-4867-8578-76585809bb9f',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693304,
+      exp: 1739285304,
+      jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+    }
+  ]
+}
+[2025-01-12T14:48:24.844Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:48:24.844Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693304,
+    exp: 1739285304,
+    jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:48:24.844Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693304,
+        exp: 1739285304,
+        jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+      }
+    }
+  ]
+}
+[2025-01-12T14:48:24.844Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:48:24.844Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:48:24.844Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:48:24.844Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:48:24.844Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:48:24.855Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693304,
+    exp: 1739285304,
+    jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693304,
+        exp: 1739285304,
+        jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:48:24.855Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693304,
+  exp: 1739285304,
+  jti: 'e11629e4-5c21-4867-8578-76585809bb9f',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693304,
+      exp: 1739285304,
+      jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+    }
+  ]
+}
+[2025-01-12T14:48:24.855Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:48:24.855Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693304,
+    exp: 1739285304,
+    jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:48:24.855Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693304,
+        exp: 1739285304,
+        jti: 'e11629e4-5c21-4867-8578-76585809bb9f'
+      }
+    }
+  ]
+}
+[2025-01-12T14:48:24.855Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:48:24.855Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:48:24.855Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:48:24.855Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:48:24.855Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.860Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693304,
+    exp: 1739285304,
+    jti: '2496e838-551f-4968-b8ec-361091d838a4'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693304,
+        exp: 1739285304,
+        jti: '2496e838-551f-4968-b8ec-361091d838a4'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:49:26.860Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693304,
+  exp: 1739285304,
+  jti: '2496e838-551f-4968-b8ec-361091d838a4',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693304,
+      exp: 1739285304,
+      jti: '2496e838-551f-4968-b8ec-361091d838a4'
+    }
+  ]
+}
+[2025-01-12T14:49:26.860Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:49:26.860Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693304,
+    exp: 1739285304,
+    jti: '2496e838-551f-4968-b8ec-361091d838a4'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:49:26.860Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693304,
+        exp: 1739285304,
+        jti: '2496e838-551f-4968-b8ec-361091d838a4'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.860Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:49:26.860Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:49:26.860Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:49:26.860Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:49:26.860Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.864Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693304,
+    exp: 1739285304,
+    jti: '2496e838-551f-4968-b8ec-361091d838a4'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693304,
+        exp: 1739285304,
+        jti: '2496e838-551f-4968-b8ec-361091d838a4'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:49:26.864Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693304,
+  exp: 1739285304,
+  jti: '2496e838-551f-4968-b8ec-361091d838a4',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693304,
+      exp: 1739285304,
+      jti: '2496e838-551f-4968-b8ec-361091d838a4'
+    }
+  ]
+}
+[2025-01-12T14:49:26.864Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:49:26.864Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693304,
+    exp: 1739285304,
+    jti: '2496e838-551f-4968-b8ec-361091d838a4'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:49:26.864Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693304,
+        exp: 1739285304,
+        jti: '2496e838-551f-4968-b8ec-361091d838a4'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.864Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:49:26.864Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:49:26.864Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:49:26.864Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:49:26.864Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.947Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693366,
+    exp: 1739285366,
+    jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693366,
+        exp: 1739285366,
+        jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:49:26.947Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693366,
+  exp: 1739285366,
+  jti: 'e99712fc-1435-4b90-b583-103f78e5851b',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693366,
+      exp: 1739285366,
+      jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+    }
+  ]
+}
+[2025-01-12T14:49:26.947Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:49:26.947Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693366,
+    exp: 1739285366,
+    jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:49:26.947Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693366,
+        exp: 1739285366,
+        jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.947Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:49:26.947Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:49:26.947Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:49:26.947Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:49:26.947Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.970Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693366,
+    exp: 1739285366,
+    jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693366,
+        exp: 1739285366,
+        jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:49:26.970Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693366,
+  exp: 1739285366,
+  jti: 'e99712fc-1435-4b90-b583-103f78e5851b',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693366,
+      exp: 1739285366,
+      jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+    }
+  ]
+}
+[2025-01-12T14:49:26.970Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:49:26.970Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693366,
+    exp: 1739285366,
+    jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:49:26.970Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693366,
+        exp: 1739285366,
+        jti: 'e99712fc-1435-4b90-b583-103f78e5851b'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.971Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:49:26.971Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:49:26.970Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:49:26.971Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:49:26.970Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.980Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693366,
+    exp: 1739285366,
+    jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693366,
+        exp: 1739285366,
+        jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:49:26.981Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693366,
+  exp: 1739285366,
+  jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693366,
+      exp: 1739285366,
+      jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+    }
+  ]
+}
+[2025-01-12T14:49:26.982Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:49:26.982Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693366,
+    exp: 1739285366,
+    jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:49:26.982Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693366,
+        exp: 1739285366,
+        jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.982Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:49:26.982Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:49:26.982Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:49:26.982Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:49:26.982Z'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.997Z] [DEBUG]: JWT callback triggered {
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693366,
+    exp: 1739285366,
+    jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+  },
+  trigger: undefined,
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693366,
+        exp: 1739285366,
+        jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+      },
+      trigger: undefined
+    }
+  ]
+}
+[2025-01-12T14:49:26.997Z] [DEBUG]: Updated JWT token: {
+  name: 'Ricardo Santos',
+  email: 'ricardo@diasantos.com',
+  sub: '14',
+  id: '14',
+  role: 'ADMIN',
+  selectedClubId: 20,
+  clubs: [
+    { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+    { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+  ],
+  iat: 1736693366,
+  exp: 1739285366,
+  jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f',
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      sub: '14',
+      id: '14',
+      role: 'ADMIN',
+      selectedClubId: 20,
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ],
+      iat: 1736693366,
+      exp: 1739285366,
+      jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+    }
+  ]
+}
+[2025-01-12T14:49:26.997Z] [DEBUG]: Session callback triggered {
+  session: {
+    user: {
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      image: undefined
+    },
+    expires: '2025-02-11T14:49:26.997Z'
+  },
+  token: {
+    name: 'Ricardo Santos',
+    email: 'ricardo@diasantos.com',
+    sub: '14',
+    id: '14',
+    role: 'ADMIN',
+    selectedClubId: 20,
+    clubs: [
+      { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+      { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+    ],
+    iat: 1736693366,
+    exp: 1739285366,
+    jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          image: undefined
+        },
+        expires: '2025-02-11T14:49:26.997Z'
+      },
+      token: {
+        name: 'Ricardo Santos',
+        email: 'ricardo@diasantos.com',
+        sub: '14',
+        id: '14',
+        role: 'ADMIN',
+        selectedClubId: 20,
+        clubs: [
+          { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+          { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+        ],
+        iat: 1736693366,
+        exp: 1739285366,
+        jti: 'abff709a-48ef-4be1-983f-0287fbc9f58f'
+      }
+    }
+  ]
+}
+[2025-01-12T14:49:26.998Z] [DEBUG]: Updated session: {
+  session: {
+    user: {
+      id: '14',
+      name: 'Ricardo Santos',
+      email: 'ricardo@diasantos.com',
+      emailVerified: 2025-01-12T14:49:26.998Z,
+      selectedClubId: 20,
+      role: 'ADMIN',
+      clubs: [
+        { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+        { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+      ]
+    },
+    expires: '2025-02-11T14:49:26.997Z'
+  },
+  [Symbol(level)]: 'debug',
+  [Symbol(splat)]: [
+    {
+      session: {
+        user: {
+          id: '14',
+          name: 'Ricardo Santos',
+          email: 'ricardo@diasantos.com',
+          emailVerified: 2025-01-12T14:49:26.998Z,
+          selectedClubId: 20,
+          role: 'ADMIN',
+          clubs: [
+            { clubId: 31, clubName: 'Vitoria SC', roles: [ 'ADMIN' ] },
+            { clubId: 35, clubName: 'club5', roles: [ 'ADMIN' ] }
+          ]
+        },
+        expires: '2025-02-11T14:49:26.997Z'
+      }
+    }
+  ]
+}
