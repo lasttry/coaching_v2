@@ -1,17 +1,9 @@
-import {
-  IconBallBasketball,
-  IconTypography,
-  IconUser,
-  IconUserHexagon,
-  IconUsersGroup,
-} from '@tabler/icons-react';
-
+import { IconBallBasketball, IconTypography, IconUser, IconUserHexagon, IconUsersGroup, IconTrophy } from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
-const openDrillsPage = () => {
+const openDrillsPage = (): void => {
   const url = '/utilities/drills_v2'; // Update with the correct path to the Drills_v2 page
-  const windowFeatures =
-    'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,resizable=no,scrollbars=no';
+  const windowFeatures = 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,resizable=no,scrollbars=no';
   window.open(url, 'Drills_v2', windowFeatures);
 };
 
@@ -58,6 +50,12 @@ const Menuitems = [
   },
   {
     id: uniqueId(),
+    title: 'Oponentes',
+    icon: IconUsersGroup,
+    href: '/utilities/opponents',
+  },
+  {
+    id: uniqueId(),
     title: 'Equipas',
     icon: IconUsersGroup,
     href: '/utilities/teams',
@@ -73,6 +71,12 @@ const Menuitems = [
     title: 'Escalões',
     icon: IconBallBasketball,
     href: '/utilities/echelons',
+  },
+  {
+    id: uniqueId(),
+    title: 'Competições',
+    icon: IconTrophy,
+    href: '/utilities/competitions',
   },
   { navlabel: true, subheader: 'Configurações' },
   {

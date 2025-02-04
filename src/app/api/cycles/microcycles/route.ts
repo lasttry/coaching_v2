@@ -18,10 +18,7 @@ export async function GET() {
     return NextResponse.json(microcycles);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to fetch microcycles' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch microcycles' }, { status: 500 });
   }
 }
 
@@ -42,13 +39,11 @@ export async function POST(request: Request) {
           connect: { id: body.mesocycle.id }, // Provide the ID of the related mesocycle
         },
         sessionGoals: {
-          create: body.sessionGoals.map(
-            (goal: { duration: string; note: string; coach: string }) => ({
-              duration: goal.duration,
-              note: goal.note,
-              coach: goal.coach,
-            }),
-          ),
+          create: body.sessionGoals.map((goal: { duration: string; note: string; coach: string }) => ({
+            duration: goal.duration,
+            note: goal.note,
+            coach: goal.coach,
+          })),
         },
       },
       include: {
@@ -61,9 +56,6 @@ export async function POST(request: Request) {
     return NextResponse.json(newMicrocycle);
   } catch (error) {
     console.error('Error creating microcycle:', error);
-    return NextResponse.json(
-      { error: 'Failed to create microcycle' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to create microcycle' }, { status: 500 });
   }
 }

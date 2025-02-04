@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { signOut } from 'next-auth/react';
-import {
-  Avatar,
-  Box,
-  Menu,
-  Button,
-  IconButton,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
+import { Avatar, Box, Menu, Button, IconButton, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import Link from 'next/link';
 import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
@@ -93,11 +84,7 @@ const Profile = () => {
         }}
       >
         <MenuItem>
-          <ListItemText>
-            {session
-              ? `${session.user.name} (${session.user.role})`
-              : 'Loading...'}
-          </ListItemText>
+          <ListItemText>{session ? `${session.user.name} (${session.user.role})` : 'Loading...'}</ListItemText>
         </MenuItem>
         <MenuItem>
           <ListItemText>{`Selected Club Id: ${session?.user?.selectedClubId}`}</ListItemText>

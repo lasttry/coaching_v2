@@ -1,12 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Alert,
-} from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Alert } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Grid from '@mui/material/Grid2';
 import { Box, Typography } from '@mui/material';
@@ -24,9 +19,7 @@ const ClubPage = () => {
   const [editing, setEditing] = useState(false);
   const { data: session } = useSession();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<
-    string | null | undefined
-  >(null);
+  const [successMessage, setSuccessMessage] = useState<string | null | undefined>(null);
 
   useEffect(() => {
     async function fetchClubs() {
@@ -62,10 +55,7 @@ const ClubPage = () => {
     setErrorMessage('');
   };
 
-  const handleEditChange = (
-    field: keyof ClubInterface,
-    value: string | File | null,
-  ) => {
+  const handleEditChange = (field: keyof ClubInterface, value: string | File | null) => {
     if (selectedClub) {
       setSelectedClub({ ...selectedClub, [field]: value });
     }
@@ -87,10 +77,7 @@ const ClubPage = () => {
     if (selectedClub) {
       try {
         const method = selectedClub.id === 0 ? 'POST' : 'PUT';
-        const url =
-          selectedClub.id === 0
-            ? '/api/clubs'
-            : `/api/clubs/${selectedClub.id}`;
+        const url = selectedClub.id === 0 ? '/api/clubs' : `/api/clubs/${selectedClub.id}`;
         const response = await fetch(url, {
           method,
           headers: {
@@ -102,33 +89,26 @@ const ClubPage = () => {
           const savedClub = await response.json();
           if (selectedClub.id === 0) {
             setClubs((prev) => [...prev, savedClub]);
-            const addUserResponse = await fetch(
-              `/api/clubs/${savedClub.id}/accounts`,
-              {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  accountId: session?.user?.id,
-                  clubId: savedClub.id,
-                  roles: [{ role: 'ADMIN' }],
-                }),
+            const addUserResponse = await fetch(`/api/clubs/${savedClub.id}/accounts`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
               },
-            );
+              body: JSON.stringify({
+                accountId: session?.user?.id,
+                clubId: savedClub.id,
+                roles: [{ role: 'ADMIN' }],
+              }),
+            });
             if (!addUserResponse.ok) {
               const errorData = await addUserResponse.json();
-              setErrorMessage(
-                `Failed to add user to the club with admin role: ${errorData.error}`,
-              );
+              setErrorMessage(`Failed to add user to the club with admin role: ${errorData.error}`);
             } else {
               setSuccessMessage('Club created with sucess.');
             }
             setSelectedClub(savedClub);
           } else {
-            setClubs((prev) =>
-              prev.map((club) => (club.id === savedClub.id ? savedClub : club)),
-            );
+            setClubs((prev) => prev.map((club) => (club.id === savedClub.id ? savedClub : club)));
             setSelectedClub(savedClub);
             setSuccessMessage('Club saved.');
           }
@@ -163,16 +143,10 @@ const ClubPage = () => {
     }
   };
 
-  const sortedClubs = useMemo(
-    () => clubs.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)),
-    [clubs],
-  );
+  const sortedClubs = useMemo(() => clubs.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)), [clubs]);
 
   return (
-    <PageContainer
-      title="Clubs Settings"
-      description="You can configure your club"
-    >
+    <PageContainer title="Clubs Settings" description="You can configure your club">
       <Box sx={{ padding: 3 }}>
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
@@ -181,18 +155,9 @@ const ClubPage = () => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Grid
-              container
-              spacing={3}
-              justifyContent="flex-start"
-              className="grid-container"
-            >
+            <Grid container spacing={3} justifyContent="flex-start" className="grid-container">
               {sortedClubs.map((club) => (
-                <Grid
-                  key={club.id}
-                  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
-                  sx={{ display: 'flex', justifyContent: 'center' }}
-                >
+                <Grid key={club.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }} sx={{ display: 'flex', justifyContent: 'center' }}>
                   <Box
                     className="club-item"
                     style={{
@@ -201,20 +166,14 @@ const ClubPage = () => {
                     onClick={() => handleSelectClub(club)}
                   >
                     <Box className="club-item-overlay">
-                      <Typography
-                        variant="body1"
-                        className="club-item-overlay-text"
-                      >
+                      <Typography variant="body1" className="club-item-overlay-text">
                         {club.name}
                       </Typography>
                     </Box>
                   </Box>
                 </Grid>
               ))}
-              <Grid
-                size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
-                sx={{ display: 'flex', justifyContent: 'center' }}
-              >
+              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} sx={{ display: 'flex', justifyContent: 'center' }}>
                 <Box className="add-new-item" onClick={handleNewClub}>
                   <Typography variant="h6" className="add-new-item-text">
                     New
@@ -225,27 +184,12 @@ const ClubPage = () => {
           </AccordionDetails>
         </Accordion>
         {/* Success/Error Messages */}
-        {successMessage ? (
-          <Alert severity="success">{successMessage}</Alert>
-        ) : (
-          <></>
-        )}
+        {successMessage ? <Alert severity="success">{successMessage}</Alert> : <></>}
         {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : <></>}
         {editing && selectedClub && (
-          <DashboardCard
-            title={selectedClub.id === 0 ? 'Create New Club' : 'Edit Club'}
-          >
-            <ClubDetails
-              selectedClub={selectedClub}
-              onSave={handleSave}
-              onCancel={handleCancel}
-              onDelete={handleDeleteClub}
-              onEditChange={handleEditChange}
-            />
-            <ClubAccounts
-              clubId={selectedClub.id}
-              onError={(error: string) => setErrorMessage(error)}
-            />
+          <DashboardCard title={selectedClub.id === 0 ? 'Create New Club' : 'Edit Club'}>
+            <ClubDetails selectedClub={selectedClub} onSave={handleSave} onCancel={handleCancel} onDelete={handleDeleteClub} onEditChange={handleEditChange} />
+            <ClubAccounts clubId={selectedClub.id} onError={(error: string) => setErrorMessage(error)} />
           </DashboardCard>
         )}
       </Box>

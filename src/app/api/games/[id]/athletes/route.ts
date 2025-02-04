@@ -22,18 +22,12 @@ export async function GET(req: Request, segmentData: { params: Params }) {
     });
 
     if (!athletes) {
-      return NextResponse.json(
-        { error: 'No athletes found for this game' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'No athletes found for this game' }, { status: 404 });
     }
 
     return NextResponse.json(athletes, { status: 200 });
   } catch (error) {
     console.error('Error fetching athletes:', error);
-    return NextResponse.json(
-      { error: 'An error occurred while fetching athletes' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'An error occurred while fetching athletes' }, { status: 500 });
   }
 }

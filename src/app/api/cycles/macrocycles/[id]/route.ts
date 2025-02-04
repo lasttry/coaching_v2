@@ -8,10 +8,7 @@ export async function GET(request: Request, { params }: { params: Params }) {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
-    return NextResponse.json(
-      { error: 'Invalid macrocycle ID' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid macrocycle ID' }, { status: 400 });
   }
 
   try {
@@ -21,19 +18,13 @@ export async function GET(request: Request, { params }: { params: Params }) {
     });
 
     if (!macrocycle) {
-      return NextResponse.json(
-        { error: 'Macrocycle not found' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'Macrocycle not found' }, { status: 404 });
     }
 
     return NextResponse.json(macrocycle);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to fetch macrocycle' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch macrocycle' }, { status: 500 });
   }
 }
 
@@ -42,10 +33,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
-    return NextResponse.json(
-      { error: 'Invalid macrocycle ID' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid macrocycle ID' }, { status: 400 });
   }
 
   try {
@@ -66,10 +54,7 @@ export async function PUT(request: Request, { params }: { params: Params }) {
     return NextResponse.json(updatedMacrocycle);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to update macrocycle' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to update macrocycle' }, { status: 500 });
   }
 }
 
@@ -78,10 +63,7 @@ export async function DELETE(request: Request, { params }: { params: Params }) {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
-    return NextResponse.json(
-      { error: 'Invalid macrocycle ID' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid macrocycle ID' }, { status: 400 });
   }
 
   try {
@@ -92,9 +74,6 @@ export async function DELETE(request: Request, { params }: { params: Params }) {
     return NextResponse.json({ message: 'Macrocycle deleted successfully' });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to delete macrocycle' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to delete macrocycle' }, { status: 500 });
   }
 }

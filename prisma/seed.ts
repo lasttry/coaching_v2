@@ -41,9 +41,7 @@ async function main() {
       defaultClubId: createdClub.id,
     },
   });
-  console.log(
-    `Created account ${createdAccount.id} with name ${createdAccount.name} and password ${createdAccount.password}`,
-  );
+  console.log(`Created account ${createdAccount.id} with name ${createdAccount.name} and password ${createdAccount.password}`);
   // Link the account to the club
   await prisma.accountClub.create({
     data: {
@@ -62,13 +60,14 @@ async function main() {
 
   await prisma.echelon.createMany({
     data: [
-      { minAge: 6, maxAge: 7, name: "S8", description: "Sub8", gender: Gender.COED },
-      { minAge: 8, maxAge: 9, name: "S10", description: "Sub10", gender: Gender.COED },
-      { minAge: 12, maxAge: 13, name: "S14M", description: "Sub14 Masculino", gender: Gender.MALE },
-      { minAge: 14, maxAge: 15, name: "S16M", description: "Sub16 Masculino", gender: Gender.MALE },
-      { minAge: 16, maxAge: 17, name: "S18M", description: "Sub18 Masculino", gender: Gender.MALE }]
-  })
-  console.log('Created the echelons.')
+      { minAge: 6, maxAge: 7, name: 'S8', description: 'Sub8', gender: Gender.COED },
+      { minAge: 8, maxAge: 9, name: 'S10', description: 'Sub10', gender: Gender.COED },
+      { minAge: 12, maxAge: 13, name: 'S14M', description: 'Sub14 Masculino', gender: Gender.MALE },
+      { minAge: 14, maxAge: 15, name: 'S16M', description: 'Sub16 Masculino', gender: Gender.MALE },
+      { minAge: 16, maxAge: 17, name: 'S18M', description: 'Sub18 Masculino', gender: Gender.MALE },
+    ],
+  });
+  console.log('Created the echelons.');
 }
 
 main()

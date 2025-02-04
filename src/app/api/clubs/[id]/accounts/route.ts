@@ -11,10 +11,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 
     // Validate the club ID
     if (isNaN(clubId)) {
-      return NextResponse.json(
-        { error: 'Invalid club ID provided' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid club ID provided' }, { status: 400 });
     }
 
     // Fetch accounts linked to the given club
@@ -47,19 +44,14 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     // Map accounts to include roles
     const accountsWithRoles = accounts.map((account) => ({
       ...account,
-      roles: account.clubs.flatMap((club) =>
-        club.roles.map((role) => role.role),
-      ),
+      roles: account.clubs.flatMap((club) => club.roles.map((role) => role.role)),
     }));
 
     // Return the linked accounts with roles
     return NextResponse.json(accountsWithRoles, { status: 200 });
   } catch (error) {
     console.error('Error fetching accounts for club:', error);
-    return NextResponse.json(
-      { error: 'An error occurred while fetching accounts.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'An error occurred while fetching accounts.' }, { status: 500 });
   }
 }
 
@@ -71,17 +63,8 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
     const { accountId, roles } = await req.json();
 
     // Validate input
-    if (
-      !accountId ||
-      !clubId ||
-      !roles ||
-      !Array.isArray(roles) ||
-      roles.length === 0
-    ) {
-      return NextResponse.json(
-        { error: 'Account ID and roles are required' },
-        { status: 400 },
-      );
+    if (!accountId || !clubId || !roles || !Array.isArray(roles) || roles.length === 0) {
+      return NextResponse.json({ error: 'Account ID and roles are required' }, { status: 400 });
     }
 
     // Convert accountId and clubId to numbers
@@ -90,10 +73,7 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
 
     // Validate the converted numbers
     if (isNaN(accountIdNumber) || isNaN(clubIdNumber)) {
-      return NextResponse.json(
-        { error: 'Account ID and club ID must be valid numbers' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Account ID and club ID must be valid numbers' }, { status: 400 });
     }
 
     // Check if the account exists
@@ -138,8 +118,8 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
             accountClubId: accountClub.id,
             role: role.role,
           },
-        }),
-      ),
+        })
+      )
     );
     const accountsWithRoles = {
       ...account,
@@ -149,10 +129,7 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json(accountsWithRoles, { status: 201 });
   } catch (error) {
     console.error('Error linking account to club:', error);
-    return NextResponse.json(
-      { error: 'Failed to link account to club' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to link account to club' }, { status: 500 });
   }
 }
 
@@ -162,10 +139,7 @@ export async function DELETE(request: Request) {
   const accountId = parseInt(searchParams.get('accountId') || '', 10);
 
   if (isNaN(clubId) || isNaN(accountId)) {
-    return NextResponse.json(
-      { error: 'Valid clubId and accountId are required' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Valid clubId and accountId are required' }, { status: 400 });
   }
 
   try {
@@ -177,15 +151,9 @@ export async function DELETE(request: Request) {
       },
     });
 
-    return NextResponse.json(
-      { message: 'Account removed from club' },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: 'Account removed from club' }, { status: 200 });
   } catch (error) {
     console.error('Error removing account from club:', error);
-    return NextResponse.json(
-      { error: 'Failed to remove account from club' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to remove account from club' }, { status: 500 });
   }
 }

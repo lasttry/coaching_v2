@@ -1,10 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  useCallback,
-} from 'react';
+import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 type DefsMap = { [key: string]: ReactNode };
 
@@ -15,13 +9,9 @@ interface SvgDefsContextProps {
   defs: DefsMap;
 }
 
-const SvgDefsContext = createContext<SvgDefsContextProps | undefined>(
-  undefined,
-);
+const SvgDefsContext = createContext<SvgDefsContextProps | undefined>(undefined);
 
-export const SvgDefsProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const SvgDefsProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [defs, setDefs] = useState<DefsMap>({});
 
   const addDef = useCallback((id: string, def: ReactNode) => {
@@ -39,16 +29,9 @@ export const SvgDefsProvider: React.FC<{ children: ReactNode }> = ({
     });
   }, []);
 
-  const hasDef = useCallback(
-    (id: string) => Object.prototype.hasOwnProperty.call(defs, id),
-    [defs],
-  );
+  const hasDef = useCallback((id: string) => Object.prototype.hasOwnProperty.call(defs, id), [defs]);
 
-  return (
-    <SvgDefsContext.Provider value={{ addDef, removeDef, hasDef, defs }}>
-      {children}
-    </SvgDefsContext.Provider>
-  );
+  return <SvgDefsContext.Provider value={{ addDef, removeDef, hasDef, defs }}>{children}</SvgDefsContext.Provider>;
 };
 
 export const SvgDefs: React.FC = React.memo(() => {

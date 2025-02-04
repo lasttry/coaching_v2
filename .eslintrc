@@ -1,0 +1,84 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended",
+    "prettier" // Para evitar conflitos de formatação entre ESLint e Prettier
+  ],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": [
+    "react",
+    "react-hooks",
+    "@typescript-eslint"
+  ],
+  "rules": {
+    // Regras relacionadas ao uso do TypeScript
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_", // Ignorar variáveis iniciadas por "_"
+        "varsIgnorePattern": "^_" // Ignorar variáveis iniciadas por "_"
+      }
+    ],
+    "@typescript-eslint/no-explicit-any": "warn", // Avisar ao invés de desativar completamente
+    "@typescript-eslint/no-unused-expressions": [
+      "error",
+      {
+        "allowShortCircuit": true,
+        "allowTernary": true,
+        "allowTaggedTemplates": true
+      }
+    ],
+    "@typescript-eslint/explicit-function-return-type": [
+      "warn",
+      {
+        "allowExpressions": true,
+        "allowHigherOrderFunctions": true
+      }
+    ],
+    "@typescript-eslint/no-empty-function": [
+      "warn",
+      {
+        "allow": ["arrowFunctions", "functions", "methods"]
+      }
+    ],
+    "@typescript-eslint/no-inferrable-types": "off", // Desativar restrições desnecessárias para tipos inferíveis
+
+    // Regras relacionadas ao React
+    "react/prop-types": "off", // Não é necessário ao usar TypeScript
+    "react/react-in-jsx-scope": "off", // Desnecessário no React 17+
+    "react/jsx-uses-react": "off", // Desnecessário no React 17+
+    "react/jsx-uses-vars": "error", // Certificar-se de que as variáveis JSX são usadas corretamente
+
+    // Regras relacionadas ao React Hooks
+    "react-hooks/rules-of-hooks": "error", // Garantir o uso correto de hooks
+    "react-hooks/exhaustive-deps": "warn", // Avisar sobre dependências faltantes nos hooks
+
+    // Regras gerais de estilo
+    "no-unused-vars": "off", // Gerenciado pelo @typescript-eslint
+    "no-console": ["warn", { "allow": ["warn", "error"] }], // Permitir apenas warn e error no console
+    "no-debugger": "error", // Desativar debugger em produção
+    "eqeqeq": ["error", "always"], // Requerer comparações estritas
+    "curly": ["error", "multi-line"], // Exigir chaves para blocos multi-linha
+    "prefer-const": "error", // Preferir const para variáveis não reatribuídas
+    "no-var": "error" // Proibir o uso de var
+  },
+  "settings": {
+    "react": {
+      "version": "detect" // Detectar automaticamente a versão do React
+    }
+  }
+}

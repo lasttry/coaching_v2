@@ -2,14 +2,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
-import {
-  TextField,
-  Button,
-  Typography,
-  Stack,
-  Box,
-  Avatar,
-} from '@mui/material';
+import { TextField, Button, Typography, Stack, Box, Avatar } from '@mui/material';
 import { AccountInterface } from '@/types/accounts/types';
 
 const ProfilePage = () => {
@@ -27,9 +20,7 @@ const ProfilePage = () => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [userClubs, setUserClubs] = useState<{ id: number; name: string }[]>(
-    [],
-  );
+  const [userClubs, setUserClubs] = useState<{ id: number; name: string }[]>([]);
   const [defaultClubId, setDefaultClubId] = useState<number>(0);
 
   useEffect(() => {
@@ -133,18 +124,12 @@ const ProfilePage = () => {
 
       {/* Success/Error Messages */}
       {success ? (
-        <Typography
-          variant="body1"
-          sx={{ color: (theme) => theme.palette.success.main }}
-        >
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
           {success}
         </Typography>
       ) : null}
       {error ? (
-        <Typography
-          variant="body1"
-          sx={{ color: (theme) => theme.palette.error.main }}
-        >
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
           {error}
         </Typography>
       ) : null}
@@ -153,29 +138,14 @@ const ProfilePage = () => {
         <Stack spacing={2}>
           {/* Profile Photo Section */}
           <Box display="flex" alignItems="center" gap={2}>
-            <Avatar
-              src={photoPreview || undefined}
-              alt="Profile Photo"
-              sx={{ width: 64, height: 64 }}
-            />
+            <Avatar src={photoPreview || undefined} alt="Profile Photo" sx={{ width: 64, height: 64 }} />
             <Button variant="outlined" component="label">
               Upload Photo
-              <input
-                type="file"
-                hidden
-                accept="image/*"
-                onChange={handlePhotoChange}
-              />
+              <input type="file" hidden accept="image/*" onChange={handlePhotoChange} />
             </Button>
           </Box>
 
-          <TextField
-            label="Name"
-            name="name"
-            value={userDetails.name}
-            onChange={handleInputChange}
-            fullWidth
-          />
+          <TextField label="Name" name="name" value={userDetails.name} onChange={handleInputChange} fullWidth />
           <TextField
             label="Email"
             name="email"
@@ -184,14 +154,7 @@ const ProfilePage = () => {
             fullWidth
             disabled // Optional: Disallow editing email
           />
-          <TextField
-            label="New Password"
-            name="password"
-            type="password"
-            value={userDetails.password}
-            onChange={handleInputChange}
-            fullWidth
-          />
+          <TextField label="New Password" name="password" type="password" value={userDetails.password} onChange={handleInputChange} fullWidth />
           <TextField
             label="Confirm Password"
             name="confirmPassword"

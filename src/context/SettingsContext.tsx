@@ -10,13 +10,9 @@ interface SettingsContextProps {
   loading: boolean;
 }
 
-const SettingsContext = createContext<SettingsContextProps | undefined>(
-  undefined,
-);
+const SettingsContext = createContext<SettingsContextProps | undefined>(undefined);
 
-export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -53,11 +49,7 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({
     return <div>Loading settings...</div>; // Block rendering until settings are ready
   }
 
-  return (
-    <SettingsContext.Provider value={{ settings, loading: false }}>
-      {children}
-    </SettingsContext.Provider>
-  );
+  return <SettingsContext.Provider value={{ settings, loading: false }}>{children}</SettingsContext.Provider>;
 };
 
 export const useSettings = () => {

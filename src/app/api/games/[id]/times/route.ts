@@ -33,10 +33,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json(timeEntries, { status: 200 });
   } catch (error) {
     console.error('Error fetching time entries:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch time entries' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch time entries' }, { status: 500 });
   }
 }
 
@@ -69,16 +66,10 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
 
     await Promise.all(createPromises);
 
-    return NextResponse.json(
-      { message: 'Time entries added successfully' },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: 'Time entries added successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error adding time entries:', error);
-    return NextResponse.json(
-      { error: 'Failed to add time entries' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to add time entries' }, { status: 500 });
   }
 }
 
@@ -96,10 +87,7 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
     const timeEntries = JSON.parse(reqBody);
 
     // Filter out invalid entries (those that don't have 'athleteId' or other required fields)
-    const validEntries = timeEntries.filter(
-      (entry: TimeEntry) =>
-        entry.athleteId && entry.period && entry.entryMinute !== undefined,
-    );
+    const validEntries = timeEntries.filter((entry: TimeEntry) => entry.athleteId && entry.period && entry.entryMinute !== undefined);
 
     const promises = validEntries.map((entry: TimeEntry) => {
       return prisma.timeEntry.upsert({
@@ -127,24 +115,15 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
 
     await Promise.all(promises);
 
-    return NextResponse.json(
-      { message: 'Time entries processed successfully' },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: 'Time entries processed successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error processing time entries:', error);
-    return NextResponse.json(
-      { error: 'Failed to process time entries' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to process time entries' }, { status: 500 });
   }
 }
 
 // DELETE: Delete a specific time entry by ID
-export async function DELETE(
-  req: NextRequest,
-  segmentData: { params: Params },
-) {
+export async function DELETE(req: NextRequest, segmentData: { params: Params }) {
   const params = await segmentData.params;
   const entryId = params.id;
 
@@ -159,15 +138,9 @@ export async function DELETE(
       },
     });
 
-    return NextResponse.json(
-      { message: 'Time entry deleted successfully' },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: 'Time entry deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error deleting time entry:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete time entry' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to delete time entry' }, { status: 500 });
   }
 }

@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import {
-  parseHashedPassword,
-  hashPassword,
-  validatePassword,
-} from '@/lib/password';
+import { parseHashedPassword, hashPassword, validatePassword } from '@/lib/password';
 
 type Params = Promise<{ id: number }>;
 
@@ -16,10 +12,7 @@ export async function DELETE(req: Request, segmentData: { params: Params }) {
 
     // Validate account ID
     if (isNaN(accountId)) {
-      return NextResponse.json(
-        { error: 'A valid account ID is required.' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'A valid account ID is required.' }, { status: 400 });
     }
 
     // Check if account exists
@@ -28,10 +21,7 @@ export async function DELETE(req: Request, segmentData: { params: Params }) {
     });
 
     if (!account) {
-      return NextResponse.json(
-        { error: 'Account not found.' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'Account not found.' }, { status: 404 });
     }
 
     // Delete the account
@@ -40,16 +30,10 @@ export async function DELETE(req: Request, segmentData: { params: Params }) {
     });
 
     // Return success response
-    return NextResponse.json(
-      { message: 'Account deleted successfully.' },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: 'Account deleted successfully.' }, { status: 200 });
   } catch (error) {
     console.error('Error deleting account:', error);
-    return NextResponse.json(
-      { error: 'An error occurred while deleting the account.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'An error occurred while deleting the account.' }, { status: 500 });
   }
 }
 
@@ -57,8 +41,7 @@ export async function PUT(req: Request, segmentData: { params: Params }) {
   const params = await segmentData.params;
   const accountId = Number(params.id);
   const accountObject = await req.json();
-  const { name, email, defaultClubId, image, password, oldPassword } =
-    accountObject;
+  const { name, email, defaultClubId, image, password, oldPassword } = accountObject;
 
   const updateData: { [key: string]: any } = {};
 
@@ -71,15 +54,9 @@ export async function PUT(req: Request, segmentData: { params: Params }) {
       return NextResponse.json({ error: 'Account not found' }, { status: 404 });
     }
     // Verify the old password
-    const isOldPasswordValid = await validatePassword(
-      oldPassword,
-      account.password,
-    );
+    const isOldPasswordValid = await validatePassword(oldPassword, account.password);
     if (!isOldPasswordValid) {
-      return NextResponse.json(
-        { error: 'Old password is incorrect' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Old password is incorrect' }, { status: 400 });
     }
     // Check if the new password is provided and needs to be hashed
     if (password && !parseHashedPassword(password)) {
@@ -106,10 +83,7 @@ export async function GET(request: Request, segmentData: { params: Params }) {
     const accountId = Number(params.id);
 
     if (isNaN(accountId)) {
-      return NextResponse.json(
-        { error: 'Invalid account ID' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid account ID' }, { status: 400 });
     }
 
     // Fetch the account by ID with related clubs and roles
@@ -148,9 +122,6 @@ export async function GET(request: Request, segmentData: { params: Params }) {
     return NextResponse.json(account, { status: 200 });
   } catch (error) {
     console.error('Error fetching account:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch account' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch account' }, { status: 500 });
   }
 }

@@ -12,10 +12,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     const clubId = Number(params.id);
 
     if (isNaN(clubId)) {
-      return NextResponse.json(
-        { error: 'Invalid club ID provided' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid club ID provided' }, { status: 400 });
     }
 
     const club = await prisma.club.findUnique({
@@ -29,18 +26,12 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json(club, { status: 200 });
   } catch (error) {
     console.error('Error fetching club settings:', error);
-    return NextResponse.json(
-      { error: 'Error fetching club settings.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Error fetching club settings.' }, { status: 500 });
   }
 }
 
 // DELETE: Delete a club by ID
-export async function DELETE(
-  req: NextRequest,
-  segmentData: { params: Params },
-) {
+export async function DELETE(req: NextRequest, segmentData: { params: Params }) {
   try {
     const params = await segmentData.params;
     const clubId = Number(params.id);
@@ -54,16 +45,10 @@ export async function DELETE(
       where: { id: clubId },
     });
 
-    return NextResponse.json(
-      { message: 'Club deleted successfully' },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: 'Club deleted successfully' }, { status: 200 });
   } catch (error) {
     console.error('Error deleting club:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete club' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to delete club' }, { status: 500 });
   }
 }
 
@@ -74,10 +59,7 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
     const clubId = Number(params.id);
 
     if (isNaN(clubId)) {
-      return NextResponse.json(
-        { error: 'Invalid club ID provided' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Invalid club ID provided' }, { status: 400 });
     }
 
     const data: ClubInterface = await req.json();
@@ -94,10 +76,7 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
     });
 
     if (existingClub) {
-      return NextResponse.json(
-        { error: 'A club with this name already exists.' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'A club with this name already exists.' }, { status: 400 });
     }
 
     // Update the club
@@ -119,12 +98,9 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
     console.error('Error updating club settings:', error);
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : 'Error updating club settings.',
+        error: error instanceof Error ? error.message : 'Error updating club settings.',
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

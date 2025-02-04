@@ -9,10 +9,7 @@ import { generateHeader, generateGameDetailsHeader } from './utils';
 const lineWidthNormal = 0.1;
 const lineWidthBold = 0.5;
 
-const generateCells = (
-  contentOrArray: string | string[],
-  numberOfCells: number,
-) => {
+const generateCells = (contentOrArray: string | string[], numberOfCells: number) => {
   const isArray = Array.isArray(contentOrArray);
   return Array.from({ length: numberOfCells }, (v, i) => ({
     content: isArray ? contentOrArray[i] || '' : contentOrArray, // Use content from array or default to uniform content
@@ -75,9 +72,7 @@ const timedPeriod = () => {
   ];
 };
 
-const athletesTableBody = (
-  game: GameInterface,
-): (string | number)[][] | undefined => {
+const athletesTableBody = (game: GameInterface): (string | number)[][] | undefined => {
   return game.gameAthletes
     ?.sort((a, b) => {
       // First, sort by number, with -1 always last
@@ -306,13 +301,7 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
   autoTable(doc, {
     startY: afterPlayersTableY + 15, // Position the table below the title
     margin: { left: 10 },
-    head: [
-      [
-        '',
-        `${game.away ? game.oponent?.shortName : settings?.shortName}`,
-        `${game.away ? settings?.shortName : game.oponent?.shortName}`,
-      ],
-    ],
+    head: [['', `${game.away ? game.oponent?.shortName : settings?.shortName}`, `${game.away ? settings?.shortName : game.oponent?.shortName}`]],
     body: [
       ['1º Periodo', '', ''],
       ['2º Periodo', '', ''],
@@ -344,10 +333,7 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
   doc.text('Notas', 80, afterPlayersTableY + 10); // Title for second column
   doc.setFontSize(10);
 
-  const loremText = doc.splitTextToSize(
-    `${game.notes === null ? '' : game.notes}`,
-    120,
-  );
+  const loremText = doc.splitTextToSize(`${game.notes === null ? '' : game.notes}`, 120);
   doc.text(loremText, 80, afterPlayersTableY + 15); // Text under the "Notas" header
 
   doc.setFontSize(18);
@@ -399,7 +385,7 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
             content: objective.description || '',
             styles: { fontStyle: 'normal', fillColor: [255, 255, 255] },
           },
-        ], // Description row
+        ] // Description row
       );
     });
     console.log(groupedObjectives);
@@ -433,10 +419,7 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
 };
 
 // Helper function for statistics PDF
-export const generateStatisticsPDF = (
-  game: GameInterface,
-  settings: Settings,
-) => {
+export const generateStatisticsPDF = (game: GameInterface, settings: Settings) => {
   const doc = new jsPDF({
     orientation: 'landscape',
   }) as jsPDFWithAutoTable;
@@ -445,16 +428,7 @@ export const generateStatisticsPDF = (
     startY: 2,
     margin: { left: 10 },
     head: [], // Table headers
-    body: [
-      [
-        'Jogo',
-        `${game.number}`,
-        'Data/Hora',
-        `${dayjs(game.date).format('YYYY-MM-DD HH:mm')}`,
-        'Adversário',
-        `${game.teams?.name}`,
-      ],
-    ],
+    body: [['Jogo', `${game.number}`, 'Data/Hora', `${dayjs(game.date).format('YYYY-MM-DD HH:mm')}`, 'Adversário', `${game.teams?.name}`]],
     theme: 'grid', // Use grid to draw borders
   });
   let afterTableY = doc.lastAutoTable?.finalY ?? 0; // Get Y position after the table
@@ -591,10 +565,7 @@ export const generateStatisticsPDF = (
     },
     didParseCell: function (data) {
       // Apply the background color only to the body rows (ignoring the header)
-      if (
-        data.row.section === 'body' &&
-        (data.row.index % 4 === 0 || data.row.index % 4 === 1)
-      ) {
+      if (data.row.section === 'body' && (data.row.index % 4 === 0 || data.row.index % 4 === 1)) {
         data.cell.styles.fillColor = [240, 240, 240]; // Light gray color
       }
     },

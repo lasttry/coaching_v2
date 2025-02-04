@@ -1,258 +1,275 @@
 'use client';
-import React from 'react';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+
+import React, { useState, useEffect, ReactElement } from 'react';
 import {
+  Box,
   Button,
+  TextField,
+  Typography,
+  Alert,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  Stack,
-  Typography,
-  Box,
 } from '@mui/material';
-import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-import Image from 'next/image'; // Import Next.js Image component
+import Grid from '@mui/material/Grid2';
+import { useSession } from 'next-auth/react';
+import dayjs from 'dayjs';
+import { log } from '@/lib/logger';
+import { AthleteInterface } from '@/types/games/types';
+import { TeamInterface } from '@/types/teams/types';
+import { EchelonInterface } from '@/types/echelons/types';
 
-// Define the Team type based on the schema
-interface Team {
-  id: number;
-  name: string;
-  shortName: string;
-  location: string;
-  image?: string; // Image field is optional
-}
+const TeamsPage = (): ReactElement => {
+  const { data: session } = useSession();
 
-const TeamsList = () => {
-  const [teams, setTeams] = useState<Team[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
+  const [teams, setTeams] = useState<TeamInterface[]>([]);
+  const [athletes, setAthletes] = useState<AthleteInterface[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<TeamInterface | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [form, setForm] = useState({
+    name: '',
+    type: '',
+    echelonId: '', // Default to an empty string
+    clubId: '', // Will be updated with session data
+  });
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
-  // Fetch teams when the component mounts
   useEffect(() => {
-    async function fetchTeams() {
-      try {
-        const response = await fetch('/api/teams'); // Fetch from your API
-        const data: Team[] = await response.json(); // Ensure the data is typed as Team[]
-        setTeams(data);
-      } catch (err) {
-        setError('Failed to fetch teams.');
-        console.log(err);
-      }
-    }
     fetchTeams();
+    fetchAthletes();
+    fetchEchelons();
   }, []);
 
-  // Handle team deletion
-  const handleDelete = async (id: number, name: string) => {
-    // Show confirmation dialog
-    const confirmDelete = window.confirm(
-      `Tem a certeza que quer apagar a equipa com o ID ${id} e nome ${name}?`,
-    );
+  const fetchEchelons = async (): Promise<void> => {
+    try {
+      const response = await fetch('/api/echelons');
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to fetch echelons');
+      }
+      setEchelons(data);
+    } catch (error) {
+      log.error('Failed to fetch echelons:', error);
+      setErrorMessage('Failed to load echelons.');
+      setTimeout(() => setErrorMessage(''), 10000);
+    }
+  };
 
-    if (!confirmDelete) {
-      return; // If user cancels, do nothing
+  const fetchTeams = async (): Promise<void> => {
+    try {
+      const response = await fetch('/api/teams');
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      setTeams(data);
+    } catch (error) {
+      log.error('Failed to fetch teams:', error);
+      setErrorMessage('An error occurred while fetching teams');
+      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10 seconds
+    }
+  };
+
+  const fetchAthletes = async (): Promise<void> => {
+    try {
+      const response = await fetch('/api/athletes');
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      setAthletes(data);
+    } catch (error) {
+      log.error('Failed to fetch teams:', error);
+      setErrorMessage('An error occurred while fetching teams');
+      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10 seconds
+    }
+  };
+
+  const handleFormChange = (e): void => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleCreateTeam = async (): Promise<void> => {
+    try {
+      if (!session?.user?.selectedClubId) {
+        throw new Error('Club ID is missing from the session');
+      }
+      const teamData = { ...form, clubId: session.user.selectedClubId };
+
+      const response = await fetch('/api/teams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(teamData),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      setSuccessMessage('Team created successfully');
+      fetchTeams();
+      setTimeout(() => setSuccessMessage(''), 5000);
+    } catch (error) {
+      log.error('Failed to fetch teams:', error);
+      setErrorMessage('An error occurred while fetching teams');
+      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10 seconds
+    }
+  };
+
+  const handleAddAthlete = async (athleteId: number | null): Promise<void> => {
+    if (!selectedTeam) return;
+    const athlete = athletes.find((a) => a.id === athleteId);
+    if (!athlete) {
+      return;
+    }
+    const age = dayjs().diff(dayjs(athlete.birthdate), 'year');
+
+    const teamEchelon = selectedTeam.echelon;
+    if (teamEchelon.maxAge && age > teamEchelon.maxAge) {
+      setErrorMessage(`Athlete age exceeds maximum age (${teamEchelon.maxAge})`);
+      setTimeout(() => setErrorMessage(''), 10000);
+      return;
     }
 
     try {
-      const response = await fetch(`/api/teams/${id}`, {
-        method: 'DELETE',
+      const response = await fetch(`/api/teams/${selectedTeam.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ athleteIds: [athleteId], action: 'add' }),
       });
-
-      if (response.ok) {
-        setSuccess(
-          `A equipa com o ID ${id} e nome ${name} foi apagada com sucesso.`,
-        );
-        setError(null);
-        // Update the list by filtering out the deleted team
-        setTeams((prev) => prev.filter((team) => team.id !== id));
-
-        // Hide success message after 5 seconds
-        setTimeout(() => {
-          setSuccess(null);
-        }, 5000);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Erro ao apagar a equipa.');
-        setTimeout(() => {
-          setError(null);
-        }, 5000);
-      }
-    } catch (err) {
-      console.error('Error deleting team:', err);
-      setError('Ocorreu um erro desconhecido.');
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      setSuccessMessage('Athlete added successfully');
+      fetchTeams();
+      setTimeout(() => setSuccessMessage(''), 5000);
+    } catch (error) {
+      log.error('Failed to fetch teams:', error);
+      setErrorMessage('An error occurred while fetching teams');
+      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10 seconds
     }
   };
 
   return (
-    <PageContainer title="Teams" description="List of all teams">
-      <h1>Teams</h1>
-      <Link href="/utilities/teams/new">
-        <Button variant="contained" color="primary">
-          Add New Team
-        </Button>
-      </Link>
+    <Box>
+      <Typography variant="h4" mb={3}>
+        Manage Teams
+      </Typography>
 
       {/* Success/Error Messages */}
-      {success ? (
-        <Typography
-          variant="body1"
-          sx={{ color: (theme) => theme.palette.success.main }}
-        >
-          {success}
-        </Typography>
-      ) : (
-        <></>
-      )}
-      {error ? (
-        <Typography
-          variant="body1"
-          sx={{ color: (theme) => theme.palette.error.main }}
-        >
-          {error}
-        </Typography>
-      ) : (
-        <></>
-      )}
+      {successMessage ? <Alert severity="success">{successMessage}</Alert> : <></>}
+      {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : <></>}
 
-      {/* Teams Table */}
-      <DashboardCard title="Equipas">
-        <Box sx={{ overflow: 'auto', mt: 2 }}>
-          <Box sx={{ width: '100%', display: 'table', tableLayout: 'fixed' }}>
-            <Table sx={{ whiteSpace: 'nowrap' }}>
-              <TableHead>
-                <TableRow>
+      {/* Teams List */}
+      <Grid container spacing={2}>
+        {teams.map((team) => (
+          <Grid key={team.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+            <Box
+              p={2}
+              border={1}
+              borderRadius={2}
+              onClick={() => setSelectedTeam(team)}
+              sx={{
+                cursor: 'pointer',
+                borderColor: selectedTeam?.id === team.id ? 'primary.main' : 'grey.300',
+              }}
+            >
+              <Typography variant="h6">{team.name}</Typography>
+              <Typography variant="body2">Type: {team.type}</Typography>
+              <Typography variant="body2">Echelon: {team.echelon?.name}</Typography>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* Add Team Dialog */}
+      <Button variant="contained" onClick={() => setDialogOpen(true)} sx={{ mt: 3 }}>
+        Add Team
+      </Button>
+      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+        <DialogTitle>Add New Team</DialogTitle>
+        <DialogContent>
+          {/* Team Name */}
+          <TextField fullWidth margin="dense" label="Team Name" name="name" value={form.name} onChange={handleFormChange} />
+
+          {/* Team Type */}
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Type</InputLabel>
+            <Select name="type" value={form.type} onChange={handleFormChange} displayEmpty>
+              <MenuItem value="A">Team A</MenuItem>
+              <MenuItem value="B">Team B</MenuItem>
+              <MenuItem value="OTHER">Other</MenuItem>
+            </Select>
+          </FormControl>
+
+          {/* Echelon Dropdown */}
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Echelon</InputLabel>
+            <Select
+              name="echelonId"
+              value={form.echelonId || ''} // Ensure value is a string or number, not null
+              onChange={handleFormChange}
+              displayEmpty
+            >
+              <MenuItem value="">
+                <em>None</em> {/* Placeholder for unselected state */}
+              </MenuItem>
+              {echelons.map((echelon) => (
+                <MenuItem key={echelon.id} value={echelon.id}>
+                  {echelon.name} (Max Age: {echelon.maxAge})
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={handleCreateTeam}>
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Athletes List for Adding */}
+      {selectedTeam && (
+        <>
+          <Typography variant="h5" mt={4}>
+            Add Athletes to {selectedTeam.name}
+          </Typography>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Birthdate</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {athletes.map((athlete) => (
+                <TableRow key={athlete.id}>
+                  <TableCell>{athlete.name}</TableCell>
+                  <TableCell>{dayjs(athlete.birthdate).format('YYYY-MM-DD')}</TableCell>
                   <TableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Image
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      ID
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Name
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Short Name
-                    </Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Location
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="right">
-                    <Typography variant="subtitle2" fontWeight={600}>
-                      Actions
-                    </Typography>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleAddAthlete(athlete.id)}
+                      disabled={selectedTeam.athletes.some((a) => a.athleteId === athlete.id)}
+                    >
+                      Add
+                    </Button>
                   </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {teams.map((team) => (
-                  <TableRow key={team.id}>
-                    <TableCell>
-                      {team.image ? (
-                        <Image
-                          src={team.image}
-                          alt={team.name}
-                          width={32}
-                          height={32}
-                          style={{ borderRadius: '50%' }} // Optional: Make the image circular
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: 32,
-                            height: 32,
-                            backgroundColor: '#ccc',
-                          }}
-                        />
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        sx={{
-                          fontSize: '15px',
-                          fontWeight: '500',
-                        }}
-                      >
-                        {team.id}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        sx={{
-                          fontSize: '15px',
-                          fontWeight: '500',
-                        }}
-                      >
-                        {team.name}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        sx={{
-                          fontSize: '14px',
-                          color: 'textSecondary',
-                        }}
-                      >
-                        {team.shortName}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography
-                        sx={{
-                          fontSize: '14px',
-                          color: 'textSecondary',
-                        }}
-                      >
-                        {team.location}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Stack direction="row" spacing={2}>
-                        {/* Edit Team Link */}
-                        <Link
-                          href={`/utilities/teams/${team.id}/edit`}
-                          passHref
-                        >
-                          <Button variant="contained" color="primary">
-                            Edit
-                          </Button>
-                        </Link>
-
-                        {/* Delete Team Button */}
-                        <Button
-                          variant="contained"
-                          color="secondary"
-                          onClick={() => handleDelete(team.id, team.name)}
-                        >
-                          Delete
-                        </Button>
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Box>
-        </Box>
-      </DashboardCard>
-    </PageContainer>
+              ))}
+            </TableBody>
+          </Table>
+        </>
+      )}
+    </Box>
   );
 };
 
-export default TeamsList;
+export default TeamsPage;

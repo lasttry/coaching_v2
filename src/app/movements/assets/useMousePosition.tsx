@@ -36,7 +36,7 @@ export const useMousePosition = (visible: boolean) => {
         setMousePosition({ x: clampedX, y: clampedY });
       }
     },
-    [details],
+    [details]
   );
 
   useEffect(() => {

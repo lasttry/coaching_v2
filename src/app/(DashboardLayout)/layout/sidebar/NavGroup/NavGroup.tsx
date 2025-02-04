@@ -13,9 +13,7 @@ interface ItemType {
 }
 
 const NavGroup = ({ item }: ItemType) => {
-  const ListSubheaderStyle = styled((props: Theme | any) => (
-    <ListSubheader disableSticky {...props} />
-  ))(({ theme }) => ({
+  const ListSubheaderStyle = styled((props: Theme | any) => <ListSubheader disableSticky {...props} />)(({ theme }) => ({
     ...theme.typography.overline,
     fontWeight: '700',
     marginTop: theme.spacing(3),

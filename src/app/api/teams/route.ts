@@ -1,39 +1,57 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
+import { auth } from '@/lib/auth';
+import i18next from '@/lib/i18next';
 
-// POST handler to create a new team
-export async function POST(request: Request) {
+// GET: Retrieve all teams
+export async function GET(req: NextRequest): Promise<NextResponse> {
+  const lng = req.headers.get('accept-language')?.split(',')[0] || 'pt';
+  await i18next.changeLanguage(lng);
+
   try {
-    const data = await request.json();
-
-    const newTeam = await prisma.teams.create({
-      data: {
-        name: data.name,
-        shortName: data.shortName,
-        location: data.location,
-        image: data.image, // Optional image field
-        createdAt: new Date(),
-        updatedAt: new Date(),
+    const teams = await prisma.team.findMany({
+      include: {
+        club: true,
+        echelon: true,
+        athletes: { include: { athlete: true } },
       },
     });
-
-    return NextResponse.json(newTeam, { status: 201 });
+    log.info('Teams fetched successfully:', teams);
+    return NextResponse.json(teams);
   } catch (error) {
-    console.error('Error creating team:', error);
-    return NextResponse.json({ error: 'Error creating team' }, { status: 500 });
+    log.error('Failed to fetch teams:', error);
+    return NextResponse.json({ error: i18next.t('failedFetchTeams') }, { status: 500 });
   }
 }
 
-// GET handler to fetch all teams
-export async function GET() {
+// POST: Create a new team
+export async function POST(req: NextRequest): Promise<NextResponse> {
+  const lng = req.headers.get('accept-language')?.split(',')[0] || 'pt';
+  await i18next.changeLanguage(lng);
+  const session = await auth();
+
+  if (!session?.user) return NextResponse.json({ status: 401 });
+
   try {
-    const teams = await prisma.teams.findMany();
-    return NextResponse.json(teams);
+    if (!session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
+      throw new Error(i18next.t('invalidClubId'));
+    }
+    const { name, type, echelonId } = await req.json();
+
+    if (!name || !type || !echelonId) {
+      log.error('Missing required fields');
+      return NextResponse.json({ error: i18next.t('missingFields') }, { status: 400 });
+    }
+
+    const team = await prisma.team.create({
+      data: { name, type, clubId: session.user.selectedClubId, echelonId },
+    });
+
+    log.info('Team created successfully:', team);
+    return NextResponse.json(team, { status: 201 });
   } catch (error) {
-    console.error('Error fetching teams:', error);
-    return NextResponse.json(
-      { error: 'Error fetching teams' },
-      { status: 500 },
-    );
+    log.error('Failed to create team:', error);
+    return NextResponse.json({ error: i18next.t('teamCreateFailed') }, { status: 500 });
   }
 }

@@ -29,10 +29,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json(reports, { status: 200 });
   } catch (error) {
     console.error('Error fetching reports:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch reports' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch reports' }, { status: 500 });
   }
 }
 
@@ -84,15 +81,9 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
 
     await Promise.all(updatePromises);
 
-    return NextResponse.json(
-      { message: 'Reports saved successfully' },
-      { status: 200 },
-    );
+    return NextResponse.json({ message: 'Reports saved successfully' }, { status: 200 });
   } catch (error) {
     console.log(error);
-    return NextResponse.json(
-      { error: 'Failed to save reports' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to save reports' }, { status: 500 });
   }
 }

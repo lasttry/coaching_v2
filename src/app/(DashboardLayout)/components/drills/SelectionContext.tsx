@@ -6,13 +6,9 @@ interface SelectionContextProps {
   deselect: () => void;
 }
 
-const SelectionContext = createContext<SelectionContextProps | undefined>(
-  undefined,
-);
+const SelectionContext = createContext<SelectionContextProps | undefined>(undefined);
 
-export const SelectionProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
+export const SelectionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const select = (id: string) => {
@@ -23,11 +19,7 @@ export const SelectionProvider: React.FC<{ children: ReactNode }> = ({
     setSelectedId(null);
   };
 
-  return (
-    <SelectionContext.Provider value={{ selectedId, select, deselect }}>
-      {children}
-    </SelectionContext.Provider>
-  );
+  return <SelectionContext.Provider value={{ selectedId, select, deselect }}>{children}</SelectionContext.Provider>;
 };
 
 export const useSelection = (): SelectionContextProps => {

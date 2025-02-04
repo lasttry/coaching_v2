@@ -20,14 +20,7 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
             // {/********If Sub Menu**********/}
             /* eslint no-else-return: "off" */
           } else {
-            return (
-              <NavItem
-                item={item}
-                key={item.id}
-                pathDirect={pathDirect ?? ''}
-                onClick={toggleMobileSidebar}
-              />
-            );
+            return <NavItem item={item} key={item.id} pathDirect={pathDirect ?? ''} onClick={toggleMobileSidebar} />;
           }
         })}
       </List>

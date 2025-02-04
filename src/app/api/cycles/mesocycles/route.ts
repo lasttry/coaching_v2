@@ -14,10 +14,7 @@ export async function GET() {
     return NextResponse.json(mesocycles);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to fetch mesocycles' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch mesocycles' }, { status: 500 });
   }
 }
 
@@ -29,10 +26,7 @@ export async function POST(request: Request) {
     // Validate required fields
     const { name, number, startDate, endDate, notes, macrocycleId } = data;
     if (!startDate || !endDate || !macrocycleId) {
-      return NextResponse.json(
-        { error: 'Start date, end date, and macrocycle ID are required' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Start date, end date, and macrocycle ID are required' }, { status: 400 });
     }
 
     const newMesocycle = await prisma.mesocycle.create({
@@ -49,9 +43,6 @@ export async function POST(request: Request) {
     return NextResponse.json(newMesocycle, { status: 201 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to create mesocycle' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to create mesocycle' }, { status: 500 });
   }
 }

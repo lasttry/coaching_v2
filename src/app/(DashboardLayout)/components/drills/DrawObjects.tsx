@@ -18,23 +18,15 @@ interface DrawObjectsProps {
   handleDragMove: (index: number, position: { x: number; y: number }) => void;
 }
 
-export const DrawObjects: React.FC<DrawObjectsProps> = ({
-  elements,
-  onUpdate,
-}) => {
+export const DrawObjects: React.FC<DrawObjectsProps> = ({ elements, onUpdate }) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
   const handleSelect = (id: number) => {
     setSelectedId(id);
   };
 
-  const handleDragMove = (
-    index: number,
-    position: { x: number; y: number },
-  ) => {
-    const updatedElements = elements.map((el, idx) =>
-      idx === index ? { ...el, x: position.x, y: position.y } : el,
-    );
+  const handleDragMove = (index: number, position: { x: number; y: number }) => {
+    const updatedElements = elements.map((el, idx) => (idx === index ? { ...el, x: position.x, y: position.y } : el));
     onUpdate(updatedElements);
   };
 
@@ -55,9 +47,7 @@ export const DrawObjects: React.FC<DrawObjectsProps> = ({
             y={0}
             radius={element.radius}
             fill={element.fill || '#FFFFFF'}
-            stroke={
-              selectedId === index ? '#00FF00' : element.stroke || '#003366'
-            }
+            stroke={selectedId === index ? '#00FF00' : element.stroke || '#003366'}
             strokeWidth={2}
             style={{ cursor: 'pointer' }}
           />

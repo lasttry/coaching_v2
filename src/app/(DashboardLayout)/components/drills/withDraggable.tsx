@@ -8,20 +8,13 @@ interface DraggableProps {
   y: number;
   rotation?: number;
   id: string;
-  onMove?: (
-    x: number,
-    y: number,
-    rotation: number,
-    additionalProps?: { id: string },
-  ) => void;
+  onMove?: (x: number, y: number, rotation: number, additionalProps?: { id: string }) => void;
   draggable?: boolean;
   rotatable?: boolean;
   selectable?: boolean;
 }
 
-const withDraggable = <P extends object>(
-  WrappedComponent: React.ComponentType<P>,
-) => {
+const withDraggable = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
   const DraggableComponent: React.FC<P & DraggableProps> = ({
     x,
     y,
@@ -56,9 +49,7 @@ const withDraggable = <P extends object>(
       latestPosition.current = { x, y, rotation: rotation || 0 };
     }, [x, y, rotation]);
 
-    const handleMouseDown = (
-      event: React.MouseEvent<SVGGElement, MouseEvent>,
-    ) => {
+    const handleMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
       if (draggable && !rotatingRef.current) {
         event.preventDefault();
         // Add global event listeners for mousemove and mouseup
@@ -121,9 +112,7 @@ const withDraggable = <P extends object>(
       }
     };
 
-    const handleRotateStart = (
-      event: React.MouseEvent<SVGGElement, MouseEvent>,
-    ) => {
+    const handleRotateStart = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
       if (rotatable) {
         event.preventDefault();
         rotatingRef.current = true;

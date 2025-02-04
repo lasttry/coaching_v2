@@ -35,13 +35,7 @@ interface ItemType {
   pathDirect: string;
 }
 
-export default function NavItem({
-  item,
-  level,
-  pathDirect,
-  hideMenu,
-  onClick,
-}: ItemType) {
+export default function NavItem({ item, level, pathDirect, hideMenu, onClick }: ItemType) {
   const Icon = item.icon;
   const theme = useTheme();
   const itemIcon = <Icon stroke={1.5} size="1.3rem" />;
@@ -52,19 +46,9 @@ export default function NavItem({
     padding: '5px 10px 5px 0',
     borderRadius: `30px`,
     backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
-    color:
-      level > 1 && pathDirect === item?.href
-        ? `${theme.palette.primary.main}!important`
-        : theme.palette.text.secondary,
-    fontWeight:
-      level > 1 && pathDirect === item?.href ? '600 !important' : '400',
-    paddingLeft: hideMenu
-      ? '0'
-      : level > 2
-        ? `${level * 15}px`
-        : level > 1
-          ? '10px'
-          : '0',
+    color: level > 1 && pathDirect === item?.href ? `${theme.palette.primary.main}!important` : theme.palette.text.secondary,
+    fontWeight: level > 1 && pathDirect === item?.href ? '600 !important' : '400',
+    paddingLeft: hideMenu ? '0' : level > 2 ? `${level * 15}px` : level > 1 ? '10px' : '0',
     '&:before': {
       content: '""',
       position: 'absolute',
@@ -149,10 +133,7 @@ export default function NavItem({
             //   backgroundColor: item.bgcolor + ".light",
             // },
             '&.Mui-selected': {
-              color:
-                level > 1
-                  ? `${theme.palette.text.secondary} !important`
-                  : 'primary.main',
+              color: level > 1 ? `${theme.palette.text.secondary} !important` : 'primary.main',
               '& .MuiTypography-root': {
                 fontWeight: '600 !important',
               },
@@ -175,10 +156,7 @@ export default function NavItem({
             sx={{
               minWidth: '36px',
               p: '3px 0',
-              color:
-                level > 1 && pathDirect === item?.href
-                  ? `${theme.palette.primary.main}!important`
-                  : 'inherit',
+              color: level > 1 && pathDirect === item?.href ? `${theme.palette.primary.main}!important` : 'inherit',
             }}
           >
             {itemIcon}
@@ -186,23 +164,10 @@ export default function NavItem({
           <ListItemText>
             {hideMenu ? '' : <>{`${item?.title}`}</>}
             <br />
-            {item?.subtitle ? (
-              <Typography variant="caption">
-                {hideMenu ? '' : item?.subtitle}
-              </Typography>
-            ) : (
-              ''
-            )}
+            {item?.subtitle ? <Typography variant="caption">{hideMenu ? '' : item?.subtitle}</Typography> : ''}
           </ListItemText>
 
-          {!item?.chip || hideMenu ? null : (
-            <Chip
-              color={item?.chipColor}
-              variant={item?.variant ? item?.variant : 'filled'}
-              size="small"
-              label={item?.chip}
-            />
-          )}
+          {!item?.chip || hideMenu ? null : <Chip color={item?.chipColor} variant={item?.variant ? item?.variant : 'filled'} size="small" label={item?.chip} />}
         </ListItemStyled>
       </Link>
     </List>

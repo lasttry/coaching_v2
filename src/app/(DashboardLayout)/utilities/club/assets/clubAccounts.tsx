@@ -28,9 +28,7 @@ interface ClubAccountsProps {
 const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
   const [emailInput, setEmailInput] = useState<string>('');
   const [addAccount, setAddAccount] = useState<AccountInterface | null>(null);
-  const [filteredAccounts, setFilteredAccounts] = useState<AccountInterface[]>(
-    [],
-  );
+  const [filteredAccounts, setFilteredAccounts] = useState<AccountInterface[]>([]);
   const [accounts, setAccounts] = useState<AccountClubInterface[]>([]);
 
   useEffect(() => {
@@ -112,36 +110,27 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
     }
   };
 
-  const handleRoleChange = async (
-    accountId: number,
-    role: Role,
-    checked: boolean,
-  ) => {
+  const handleRoleChange = async (accountId: number, role: Role, checked: boolean) => {
     if (!clubId) return;
     try {
       onError?.('');
-      const response = await fetch(
-        `/api/clubs/${clubId}/accounts/${accountId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ role, checked }),
+      const response = await fetch(`/api/clubs/${clubId}/accounts/${accountId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({ role, checked }),
+      });
       if (response.ok) {
         setAccounts((prev) =>
           prev.map((account) =>
             account.id === accountId
               ? {
                   ...account,
-                  roles: checked
-                    ? [...account.roles, role]
-                    : account.roles.filter((r) => r !== role),
+                  roles: checked ? [...account.roles, role] : account.roles.filter((r) => r !== role),
                 }
-              : account,
-          ),
+              : account
+          )
         );
       } else {
         console.error('Failed to update role');
@@ -157,16 +146,11 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
     if (!clubId) return;
     try {
       onError?.('');
-      const response = await fetch(
-        `/api/clubs/${clubId}/accounts/${accountId}`,
-        {
-          method: 'DELETE',
-        },
-      );
+      const response = await fetch(`/api/clubs/${clubId}/accounts/${accountId}`, {
+        method: 'DELETE',
+      });
       if (response.ok) {
-        setAccounts((prev) =>
-          prev.filter((account) => account.id !== accountId),
-        );
+        setAccounts((prev) => prev.filter((account) => account.id !== accountId));
       } else {
         const errorData = await response.json();
         if (errorData?.error) {
@@ -193,12 +177,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
       </Typography>
       <Divider sx={{ marginY: 2 }} />
       <Box sx={{ marginBottom: 2 }}>
-        <TextField
-          label="Add Account by Email"
-          value={emailInput}
-          onChange={(e) => handleEmailChange(e.target.value)}
-          fullWidth
-        />
+        <TextField label="Add Account by Email" value={emailInput} onChange={(e) => handleEmailChange(e.target.value)} fullWidth />
         {filteredAccounts.length > 0 && (
           <Box className="autocomplete-dropdown">
             {filteredAccounts.map((account) => (
@@ -215,13 +194,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
             ))}
           </Box>
         )}
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ marginTop: 2 }}
-          onClick={handleAddAccount}
-          disabled={!emailInput}
-        >
+        <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={handleAddAccount} disabled={!emailInput}>
           Add Account
         </Button>
       </Box>
@@ -248,18 +221,11 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
                 <TableCell>{accountClub.email}</TableCell>
                 {Object.values(Role).map((role) => (
                   <TableCell key={role}>
-                    <Checkbox
-                      checked={accountClub.roles.includes(role)}
-                      onChange={(e) =>
-                        handleRoleChange(accountClub.id, role, e.target.checked)
-                      }
-                    />
+                    <Checkbox checked={accountClub.roles.includes(role)} onChange={(e) => handleRoleChange(accountClub.id, role, e.target.checked)} />
                   </TableCell>
                 ))}
                 <TableCell>
-                  <IconButton
-                    onClick={() => handleRemoveAccount(accountClub.id)}
-                  >
+                  <IconButton onClick={() => handleRemoveAccount(accountClub.id)}>
                     <CloseIcon />
                   </IconButton>
                 </TableCell>

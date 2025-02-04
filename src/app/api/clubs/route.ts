@@ -15,10 +15,7 @@ export async function GET() {
     return NextResponse.json(clubs, { status: 200 });
   } catch (error) {
     console.error('Error fetching clubs:', error);
-    return NextResponse.json(
-      { error: 'Error fetching clubs.' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Error fetching clubs.' }, { status: 500 });
   }
 }
 
@@ -43,7 +40,7 @@ export async function POST(request: Request) {
     if (existingClub) {
       return NextResponse.json(
         { error: 'Club with this name already exists' },
-        { status: 409 }, // Conflict
+        { status: 409 } // Conflict
       );
     }
 
@@ -55,9 +52,6 @@ export async function POST(request: Request) {
     return NextResponse.json(newClub, { status: 201 });
   } catch (error) {
     console.error('Error creating club:', error);
-    return NextResponse.json(
-      { error: 'Failed to create club' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to create club' }, { status: 500 });
   }
 }

@@ -4,17 +4,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import {
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Stack,
-  Typography,
-  Box,
-} from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableHead, TableRow, Stack, Typography, Box } from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
@@ -45,9 +35,7 @@ const MacroCyclesList = () => {
 
   // Handle macro cycle deletion
   const handleDelete = async (id: number) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete MacroCycle ID ${id}?`,
-    );
+    const confirmed = window.confirm(`Are you sure you want to delete MacroCycle ID ${id}?`);
     if (!confirmed) return;
 
     try {
@@ -57,9 +45,7 @@ const MacroCyclesList = () => {
 
       if (response.ok) {
         setSuccess(`MacroCycle ID ${id} deleted successfully.`);
-        setMacroCycles((prevCycles) =>
-          prevCycles.filter((cycle) => cycle.id !== id),
-        );
+        setMacroCycles((prevCycles) => prevCycles.filter((cycle) => cycle.id !== id));
         setTimeout(() => {
           setSuccess(null);
         }, 5000);
@@ -90,20 +76,14 @@ const MacroCyclesList = () => {
 
         {/* Success/Error Messages */}
         {success ? (
-          <Typography
-            variant="body1"
-            sx={{ color: (theme) => theme.palette.success.main }}
-          >
+          <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
             {success}
           </Typography>
         ) : (
           <></>
         )}
         {error ? (
-          <Typography
-            variant="body1"
-            sx={{ color: (theme) => theme.palette.error.main }}
-          >
+          <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
             {error}
           </Typography>
         ) : (
@@ -158,40 +138,20 @@ const MacroCyclesList = () => {
                     <TableRow
                       key={cycle.id}
                       hover
-                      onClick={() =>
-                        router.push(
-                          `/utilities/cycles/macrocycles/manage/${cycle.id}`,
-                        )
-                      } // Navigate to macro cycle details or edit page on row click
+                      onClick={() => router.push(`/utilities/cycles/macrocycles/manage/${cycle.id}`)} // Navigate to macro cycle details or edit page on row click
                       sx={{ cursor: 'pointer' }}
                     >
                       <TableCell>
-                        <Typography
-                          sx={{ fontSize: '15px', fontWeight: '500' }}
-                        >
-                          {cycle.number}
-                        </Typography>
+                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{cycle.number}</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography
-                          sx={{ fontSize: '15px', fontWeight: '500' }}
-                        >
-                          {cycle.name}
-                        </Typography>
+                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{cycle.name}</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography
-                          sx={{ fontSize: '15px', fontWeight: '500' }}
-                        >
-                          {dayjs(cycle.startDate).format('YYYY-MM-DD')}
-                        </Typography>
+                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{dayjs(cycle.startDate).format('YYYY-MM-DD')}</Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography
-                          sx={{ fontSize: '15px', fontWeight: '500' }}
-                        >
-                          {dayjs(cycle.endDate).format('YYYY-MM-DD')}
-                        </Typography>
+                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{dayjs(cycle.endDate).format('YYYY-MM-DD')}</Typography>
                       </TableCell>
                       <TableCell>
                         <Typography
@@ -207,15 +167,8 @@ const MacroCyclesList = () => {
                       <TableCell align="right">
                         <Stack direction="row" spacing={2}>
                           {/* Edit MacroCycle Link */}
-                          <Link
-                            href={`/utilities/cycles/macrocycles/manage/${cycle.id}`}
-                            passHref
-                          >
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={(e) => e.stopPropagation()}
-                            >
+                          <Link href={`/utilities/cycles/macrocycles/manage/${cycle.id}`} passHref>
+                            <Button variant="contained" color="primary" onClick={(e) => e.stopPropagation()}>
                               Edit
                             </Button>
                           </Link>

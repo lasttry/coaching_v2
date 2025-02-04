@@ -14,10 +14,7 @@ export async function GET() {
     return NextResponse.json(sessionGoals);
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to fetch session goals' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch session goals' }, { status: 500 });
   }
 }
 
@@ -29,10 +26,7 @@ export async function POST(request: Request) {
     // Validate required fields
     const { duration, note, coach, microcycleId } = data;
     if (!duration || !microcycleId || !coach) {
-      return NextResponse.json(
-        { error: 'Duration, coach, and microcycle ID are required' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Duration, coach, and microcycle ID are required' }, { status: 400 });
     }
 
     const newSessionGoal = await prisma.sessionGoal.create({
@@ -52,9 +46,6 @@ export async function POST(request: Request) {
     return NextResponse.json(newSessionGoal, { status: 201 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to create session goal' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to create session goal' }, { status: 500 });
   }
 }

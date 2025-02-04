@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
+import i18next from '@/lib/i18next';
 
 type Params = Promise<{ id: string }>;
 // GET handler for fetching a specific athlete by ID
-export async function GET(request: Request, segmentData: { params: Params }) {
+export async function GET(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
+  const lng = req.headers.get('accept-language')?.split(',')[0] || 'pt';
+  await i18next.changeLanguage(lng);
+
   const params = await segmentData.params;
   const id = params.id;
 
@@ -19,24 +24,21 @@ export async function GET(request: Request, segmentData: { params: Params }) {
       if (athlete) {
         return NextResponse.json(athlete); // Return athlete data
       } else {
-        return NextResponse.json(
-          { error: 'Athlete not found' },
-          { status: 404 },
-        ); // Return 404 if not found
+        return NextResponse.json({ error: i18next.t('athleteNotFound') }, { status: 404 }); // Return 404 if not found
       }
     } catch (error) {
-      console.error('Error fetching athlete:', error);
-      return NextResponse.json({ error: 'Server error' }, { status: 500 });
+      log.error('Error fetching athlete:', error);
+      return NextResponse.json({ error: i18next.t('failedFetchAthlete') }, { status: 500 });
     }
   } else {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 }); // Invalid ID
+    return NextResponse.json({ error: i18next.t('invalidAthleteId') }, { status: 400 }); // Invalid ID
   }
 }
 
-export async function DELETE(
-  request: Request,
-  segmentData: { params: Params },
-) {
+export async function DELETE(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
+  const lng = req.headers.get('accept-language')?.split(',')[0] || 'pt';
+  await i18next.changeLanguage(lng);
+
   const params = await segmentData.params;
   const id = params.id;
 
@@ -55,46 +57,41 @@ export async function DELETE(
       // Return 204 No Content (no body)
       return new NextResponse(null, { status: 204 });
     } catch (error) {
-      console.error('Error deleting athlete:', error);
-      return NextResponse.json(
-        { error: 'Error deleting athlete' },
-        { status: 400 },
-      );
+      log.error('Error deleting athlete:', error);
+      return NextResponse.json({ error: i18next.t('failedDeleteAthlete') }, { status: 400 });
     }
   } else {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    return NextResponse.json({ error: i18next.t('invalidAthleteId') }, { status: 400 });
   }
 }
 
 // PUT handler for updating an athlete by ID
-export async function PUT(request: Request, segmentData: { params: Params }) {
+export async function PUT(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
+  const lng = req.headers.get('accept-language')?.split(',')[0] || 'pt';
+  await i18next.changeLanguage(lng);
+
   const params = await segmentData.params;
   const id = params.id;
 
   // Ensure the ID is a valid number
+  log.debug('Checking if athlete id is valid');
   if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: 'Invalid ID' }, { status: 400 });
+    return NextResponse.json({ error: i18next.t('invalidAthleteId') }, { status: 400 });
   }
 
   try {
     // Parse the request body
-    const data = await request.json();
+    const data = await req.json();
 
     // Validate required fields
-    if (!data.name || !data.number || !data.birthdate) {
-      return NextResponse.json(
-        { error: 'Name, number, and birthdate are required.' },
-        { status: 400 },
-      );
+    if (!data.name || !data.birthdate) {
+      return NextResponse.json({ error: i18next.t('requiredNameNumberBirthdate') }, { status: 400 });
     }
 
     // Convert birthdate to Date object (ensure valid date format)
     const birthdate = new Date(data.birthdate);
     if (isNaN(birthdate.getTime())) {
-      return NextResponse.json(
-        { error: 'Invalid birthdate format. It should be yyyy-MM-dd.' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: i18next.t('invalidBirthdate') }, { status: 400 });
     }
 
     // Update the athlete in the database
@@ -115,10 +112,7 @@ export async function PUT(request: Request, segmentData: { params: Params }) {
     // Return the updated athlete data
     return NextResponse.json(updatedAthlete, { status: 200 });
   } catch (error) {
-    console.error('Error updating athlete:', error);
-    return NextResponse.json(
-      { error: 'Error updating athlete' },
-      { status: 500 },
-    );
+    log.error('Error updating athlete:', error);
+    return NextResponse.json({ error: i18next.t('athleteUpdateFailed') }, { status: 500 });
   }
 }

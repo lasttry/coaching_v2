@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
 
-const prisma = new PrismaClient();
-
 // GET: Retrieve a specific echelon
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
   const id = parseInt(params.id, 10);
 
   if (isNaN(id)) {
@@ -30,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // PUT: Update a specific echelon
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
   const id = parseInt(params.id, 10);
 
   if (isNaN(id)) {
@@ -56,7 +54,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE: Remove a specific echelon
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
   const id = parseInt(params.id, 10);
 
   if (isNaN(id)) {

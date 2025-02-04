@@ -10,10 +10,7 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   const id = Number(params.id);
 
   if (isNaN(id)) {
-    return NextResponse.json(
-      { error: 'Invalid microcycle ID' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid microcycle ID' }, { status: 400 });
   }
 
   try {
@@ -30,19 +27,13 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     });
 
     if (!microcycle) {
-      return NextResponse.json(
-        { error: 'Microcycle not found' },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: 'Microcycle not found' }, { status: 404 });
     }
 
     return NextResponse.json(microcycle);
   } catch (error) {
     console.error('Error fetching microcycle:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch microcycle' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch microcycle' }, { status: 500 });
   }
 }
 
@@ -52,10 +43,7 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
   const id = Number(params.id);
 
   if (isNaN(id)) {
-    return NextResponse.json(
-      { error: 'Invalid microcycle ID' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid microcycle ID' }, { status: 400 });
   }
 
   const body = await req.json();
@@ -96,26 +84,17 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
   } catch (error) {
     console.error('Error updating microcycle:');
     console.error(error);
-    return NextResponse.json(
-      { error: 'Failed to update microcycle' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to update microcycle' }, { status: 500 });
   }
 }
 
 // DELETE: Delete a specific microcycle
-export async function DELETE(
-  req: NextRequest,
-  segmentData: { params: Params },
-) {
+export async function DELETE(req: NextRequest, segmentData: { params: Params }) {
   const params = await segmentData.params;
   const id = Number(params.id);
 
   if (isNaN(id)) {
-    return NextResponse.json(
-      { error: 'Invalid microcycle ID' },
-      { status: 400 },
-    );
+    return NextResponse.json({ error: 'Invalid microcycle ID' }, { status: 400 });
   }
 
   try {
@@ -126,9 +105,6 @@ export async function DELETE(
     return NextResponse.json({ message: 'Microcycle deleted successfully' });
   } catch (error) {
     console.error('Error deleting microcycle:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete microcycle' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to delete microcycle' }, { status: 500 });
   }
 }

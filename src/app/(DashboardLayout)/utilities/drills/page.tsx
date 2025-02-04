@@ -3,10 +3,7 @@ import React, { useState, useRef } from 'react';
 import { Box, Typography, Stack, Button } from '@mui/material';
 import { Stage, Layer, Line, Circle, Group, Path } from 'react-konva';
 import { CourtIcon } from '@/app/(DashboardLayout)/components/drills/Icons';
-import {
-  PointerIcon,
-  LineMovement,
-} from '@/app/(DashboardLayout)/components/drills/Icons';
+import { PointerIcon, LineMovement } from '@/app/(DashboardLayout)/components/drills/Icons';
 
 import { DrawObjects } from '@/app/(DashboardLayout)/components/drills/DrawObjects';
 import BasketballCourt from '@/app/(DashboardLayout)/components/drills/BasketballCourt';
@@ -51,9 +48,7 @@ const BasketballDrillPage = () => {
   const [offensivePlayers, setOffensivePlayers] = useState<any[]>([]);
   // Lines
   const [currentLine, setCurrentLine] = useState<Line>(); // Line currently being drawn
-  const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(
-    null,
-  );
+  const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(null);
   // Line Movement
   const [linesMovement, setLinesMovement] = useState<Line[]>([]); // Stores all line movements
 
@@ -171,11 +166,7 @@ const BasketballDrillPage = () => {
   };
 
   const handleLineDrag = (index, pos) => {
-    setLinesMovement((prevLines) =>
-      prevLines.map((line, i) =>
-        i === index ? { ...line, position: pos } : line,
-      ),
-    );
+    setLinesMovement((prevLines) => prevLines.map((line, i) => (i === index ? { ...line, position: pos } : line)));
   };
   const handlePointDrag = (lineIndex, pointIndex, newX, newY) => {
     setLinesMovement((prevLines) =>
@@ -183,16 +174,10 @@ const BasketballDrillPage = () => {
         i === lineIndex
           ? {
               ...line,
-              points: line.points.map((coord, j) =>
-                j === pointIndex * 2
-                  ? newX
-                  : j === pointIndex * 2 + 1
-                    ? newY
-                    : coord,
-              ),
+              points: line.points.map((coord, j) => (j === pointIndex * 2 ? newX : j === pointIndex * 2 + 1 ? newY : coord)),
             }
-          : line,
-      ),
+          : line
+      )
     );
   };
 
@@ -207,15 +192,10 @@ const BasketballDrillPage = () => {
         i === lineIndex
           ? {
               ...line,
-              points: [
-                ...line.points.slice(0, -2),
-                x,
-                y,
-                ...line.points.slice(-2),
-              ],
+              points: [...line.points.slice(0, -2), x, y, ...line.points.slice(-2)],
             }
-          : line,
-      ),
+          : line
+      )
     );
   };
 
@@ -225,13 +205,10 @@ const BasketballDrillPage = () => {
         i === lineIndex
           ? {
               ...line,
-              points: line.points.filter(
-                (_, idx) =>
-                  idx !== pointIndex * 2 && idx !== pointIndex * 2 + 1,
-              ),
+              points: line.points.filter((_, idx) => idx !== pointIndex * 2 && idx !== pointIndex * 2 + 1),
             }
-          : line,
-      ),
+          : line
+      )
     );
   };
 
@@ -298,9 +275,7 @@ const BasketballDrillPage = () => {
         <PlayerIcon
           initialValue={Number(drawing.value)}
           onClick={handleAddPlayer}
-          onValueChange={(val) =>
-            setDrawing((prev) => ({ ...prev, value: String(val) }))
-          }
+          onValueChange={(val) => setDrawing((prev) => ({ ...prev, value: String(val) }))}
         />
         <LineMovement onClick={handleAddLineMovement} />
         <Button variant="outlined" onClick={() => {}}>
@@ -335,22 +310,11 @@ const BasketballDrillPage = () => {
 
         {drawing.showCircle && (
           <Layer>
-            <Circle
-              x={cursorPosition.x}
-              y={cursorPosition.y}
-              radius={5 * scale}
-              stroke="#77B5E1"
-              strokeWidth={2}
-            />
+            <Circle x={cursorPosition.x} y={cursorPosition.y} radius={5 * scale} stroke="#77B5E1" strokeWidth={2} />
           </Layer>
         )}
 
-        <Layer
-          x={0}
-          y={0}
-          width={stageWidth}
-          height={designFullCourt ? stageHeight / 2 + 25 : stageHeight}
-        >
+        <Layer x={0} y={0} width={stageWidth} height={designFullCourt ? stageHeight / 2 + 25 : stageHeight}>
           {linesMovement.map((line, lineIndex) => (
             <>
               <Group
@@ -358,21 +322,11 @@ const BasketballDrillPage = () => {
                 draggable
                 x={line?.startX}
                 y={line?.startY}
-                onDragEnd={(e) =>
-                  handleLineDrag(lineIndex, e.target.position())
-                }
+                onDragEnd={(e) => handleLineDrag(lineIndex, e.target.position())}
                 onClick={(e) => handleSelectLine(lineIndex)}
               >
                 {/* Render the arrowhead */}
-                <Path
-                  key={`lm_path_${lineIndex}`}
-                  data={pointsToPath(line)}
-                  fill="black"
-                  stroke="black"
-                  strokeWidth={3}
-                  lineCap="round"
-                  lineJoin="round"
-                />
+                <Path key={`lm_path_${lineIndex}`} data={pointsToPath(line)} fill="black" stroke="black" strokeWidth={3} lineCap="round" lineJoin="round" />
 
                 {/* Add a new point on double-click */}
                 {selectedLineIndex === lineIndex && (
@@ -402,17 +356,8 @@ const BasketballDrillPage = () => {
                           radius={5}
                           fill="red"
                           draggable
-                          onDblClick={() =>
-                            handleDeletePoint(lineIndex, idx / 2)
-                          }
-                          onDragMove={(e) =>
-                            handlePointDrag(
-                              lineIndex,
-                              idx / 2,
-                              e.target.x(),
-                              e.target.y(),
-                            )
-                          }
+                          onDblClick={() => handleDeletePoint(lineIndex, idx / 2)}
+                          onDragMove={(e) => handlePointDrag(lineIndex, idx / 2, e.target.x(), e.target.y())}
                         />
                       );
                     }
@@ -424,21 +369,10 @@ const BasketballDrillPage = () => {
 
           {/* Current Line */}
           {currentLine && (
-            <Path
-              key={`lm_path_current_line`}
-              data={pointsToPath(currentLine)}
-              fill="none"
-              stroke="black"
-              strokeWidth={3}
-              lineCap="round"
-              lineJoin="round"
-            />
+            <Path key={`lm_path_current_line`} data={pointsToPath(currentLine)} fill="none" stroke="black" strokeWidth={3} lineCap="round" lineJoin="round" />
           )}
         </Layer>
-        <DrawObjects
-          elements={offensivePlayers}
-          onUpdate={setOffensivePlayers}
-        />
+        <DrawObjects elements={offensivePlayers} onUpdate={setOffensivePlayers} />
       </Stage>
     </Box>
   );

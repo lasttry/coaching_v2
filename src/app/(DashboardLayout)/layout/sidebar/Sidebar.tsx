@@ -9,11 +9,7 @@ interface ItemType {
   isSidebarOpen: boolean;
 }
 
-const Sidebar = ({
-  isMobileSidebarOpen,
-  onSidebarClose,
-  isSidebarOpen,
-}: ItemType) => {
+const Sidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }: ItemType) => {
   const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
 
   const sidebarWidth = '270px';

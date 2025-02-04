@@ -15,9 +15,7 @@ export const validateColor = (color: string): boolean => {
 // Validate Club settings
 export const validateClubSettings = (data: ClubInterface) => {
   if (!data.name || data.name.length > 50) {
-    throw new Error(
-      'Club name is required and must be less than 50 characters.',
-    );
+    throw new Error('Club name is required and must be less than 50 characters.');
   }
 
   if (data.shortName && data.shortName.length > 6) {

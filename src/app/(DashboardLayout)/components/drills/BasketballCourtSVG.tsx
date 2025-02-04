@@ -39,12 +39,8 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
   const { settings } = useSettings();
   const { addDef, removeDef } = useSvgDefs();
   const [updateSvgDefs, setUpdateSvgDefs] = useState<boolean>(false);
-  const [playground, setPlayground] = useState<HTMLImageElement | undefined>(
-    undefined,
-  );
-  const [circleImage, setCircleImage] = useState<CircleImage | undefined>(
-    undefined,
-  );
+  const [playground, setPlayground] = useState<HTMLImageElement | undefined>(undefined);
+  const [circleImage, setCircleImage] = useState<CircleImage | undefined>(undefined);
   const middleX = stageWidth / 2;
   const middleY = stageHeight / 2;
 
@@ -63,25 +59,10 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
   {
     /* Calculate the start/end point of the three point line */
   }
-  const { y1: startThreePointArcY } = getCircleYCoordinates(
-    middleX,
-    basketY,
-    threePointRadius,
-    9 * scale + courtBorder,
-  );
-  const { y1: endThreePointArcY } = getCircleYCoordinates(
-    middleX,
-    basketY,
-    threePointRadius,
-    stageWidth - 9 * scale - courtBorder,
-  );
+  const { y1: startThreePointArcY } = getCircleYCoordinates(middleX, basketY, threePointRadius, 9 * scale + courtBorder);
+  const { y1: endThreePointArcY } = getCircleYCoordinates(middleX, basketY, threePointRadius, stageWidth - 9 * scale - courtBorder);
 
-  const generateArcPath = (
-    centerX: number,
-    centerY: number,
-    radius: number,
-    lineHeight: number,
-  ) => {
+  const generateArcPath = (centerX: number, centerY: number, radius: number, lineHeight: number) => {
     return `
     M ${centerX - radius},${centerY - lineHeight}
     l 0,${lineHeight}
@@ -96,21 +77,9 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
       imgPlayground.onload = () => setPlayground(imgPlayground);
       addDef(
         'playground',
-        <pattern
-          id="playgroundPattern"
-          patternUnits="userSpaceOnUse"
-          width={courtWidth}
-          height={courtHeight}
-        >
-          <image
-            href={imgPlayground.src}
-            x="0"
-            y="0"
-            width={courtWidth}
-            height={courtHeight}
-            preserveAspectRatio="none"
-          />
-        </pattern>,
+        <pattern id="playgroundPattern" patternUnits="userSpaceOnUse" width={courtWidth} height={courtHeight}>
+          <image href={imgPlayground.src} x="0" y="0" width={courtWidth} height={courtHeight} preserveAspectRatio="none" />
+        </pattern>
       );
     };
     const loadCircleImage = () => {
@@ -130,8 +99,7 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
             offset: { x: img.width / 2, y: img.height / 2 }, // Center the image
           });
         };
-        img.onerror = (error) =>
-          console.error('Error loading circle image:', error);
+        img.onerror = (error) => console.error('Error loading circle image:', error);
       }
     };
     const addDefs = () => {
@@ -149,13 +117,7 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
             y2={courtBorder + 17.5 * scale}
             strokeWidth={1 * scale}
           ></line>
-          <line
-            x1={keyStartX - 2 * scale}
-            x2={keyEndX + 2 * scale}
-            y1={courtBorder + 27 * scale}
-            y2={courtBorder + 27 * scale}
-            strokeWidth={4 * scale}
-          ></line>
+          <line x1={keyStartX - 2 * scale} x2={keyEndX + 2 * scale} y1={courtBorder + 27 * scale} y2={courtBorder + 27 * scale} strokeWidth={4 * scale}></line>
           <line
             x1={keyStartX - 2 * scale}
             x2={keyEndX + 2 * scale}
@@ -163,13 +125,7 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
             y2={courtBorder + 39.5 * scale}
             strokeWidth={1 * scale}
           ></line>
-          <line
-            x1={keyStartX - 2 * scale}
-            x2={keyEndX + 2 * scale}
-            y1={courtBorder + 49 * scale}
-            y2={courtBorder + 49 * scale}
-            strokeWidth={1 * scale}
-          ></line>
+          <line x1={keyStartX - 2 * scale} x2={keyEndX + 2 * scale} y1={courtBorder + 49 * scale} y2={courtBorder + 49 * scale} strokeWidth={1 * scale}></line>
           <rect
             x={keyStartX}
             y={courtBorder}
@@ -183,25 +139,11 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
           <circle cx={middleX} cy={basketY} r={2 * scale} stroke={strokeColor}>
             {' '}
           </circle>
-          <line
-            x1={middleX - 10 * scale}
-            x2={middleX + 10 * scale}
-            y1={backboardY}
-            y2={backboardY}
-            strokeWidth={3}
-          ></line>
-          <line
-            x1={middleX}
-            x2={middleX}
-            y1={backboardY}
-            y2={backboardY + 2 * scale}
-            strokeWidth={4}
-          ></line>
+          <line x1={middleX - 10 * scale} x2={middleX + 10 * scale} y1={backboardY} y2={backboardY} strokeWidth={3}></line>
+          <line x1={middleX} x2={middleX} y1={backboardY} y2={backboardY + 2 * scale} strokeWidth={4}></line>
           {/* No charge */}
           {/* no-charge arc */}
-          <path
-            d={generateArcPath(middleX, basketY, noChargeRadius, noChargeHeigh)}
-          ></path>
+          <path d={generateArcPath(middleX, basketY, noChargeRadius, noChargeHeigh)}></path>
           {/* 3 point */}
           <path
             d={`M ${courtBorder + 9 * scale},${courtBorder}
@@ -213,37 +155,21 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
             strokeWidth={1 * scale}
           ></path>
           {/* freethrow circle */}
-          <path
-            d={generateArcPath(middleX, keyTopY, freeThrowRadius, 0)}
-            stroke={strokeColor}
-            strokeWidth={1 * scale}
-          ></path>
-        </g>,
+          <path d={generateArcPath(middleX, keyTopY, freeThrowRadius, 0)} stroke={strokeColor} strokeWidth={1 * scale}></path>
+        </g>
       );
       addDef(
         'middleCircleCutout',
         <clipPath id="courtCenter">
-          <circle
-            cx={middleX}
-            cy={middleY}
-            r={(36 / 2) * scale}
-            fill="#FFFFFF"
-            stroke={strokeColor}
-            strokeWidth={1 * scale}
-          />
-        </clipPath>,
+          <circle cx={middleX} cy={middleY} r={(36 / 2) * scale} fill="#FFFFFF" stroke={strokeColor} strokeWidth={1 * scale} />
+        </clipPath>
       );
       if (fullCourt) {
         addDef(
           'fullCourt',
           <clipPath id="clipHalfCourt">
-            <rect
-              x="0"
-              y="0"
-              width={stageWidth}
-              height={stageHeight / 2}
-            ></rect>
-          </clipPath>,
+            <rect x="0" y="0" width={stageWidth} height={stageHeight / 2}></rect>
+          </clipPath>
         );
       }
       setUpdateSvgDefs(true);
@@ -260,7 +186,7 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
         'fullCourt',
         <clipPath id="clipHalfCourt">
           <rect x="0" y="0" width={stageWidth} height={stageHeight / 2}></rect>
-        </clipPath>,
+        </clipPath>
       );
     } else {
       removeDef('fullCourt');
@@ -295,24 +221,10 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
         />
 
         {/* Center Line */}
-        <line
-          x1={courtBorder}
-          y1={middleY}
-          x2={courtWidth + courtBorder}
-          y2={middleY}
-          stroke={strokeColor}
-          strokeWidth={1 * scale}
-        />
+        <line x1={courtBorder} y1={middleY} x2={courtWidth + courtBorder} y2={middleY} stroke={strokeColor} strokeWidth={1 * scale} />
 
         {/* Center Circle */}
-        <circle
-          cx={middleX}
-          cy={middleY}
-          r={(36 / 2) * scale}
-          fill={settings?.backgroundColor}
-          stroke={strokeColor}
-          strokeWidth={1 * scale}
-        />
+        <circle cx={middleX} cy={middleY} r={(36 / 2) * scale} fill={settings?.backgroundColor} stroke={strokeColor} strokeWidth={1 * scale} />
 
         {circleImage && (
           <image
@@ -326,10 +238,7 @@ const BasketballCourtSVG: React.FC<BasketballCourtSVGProps> = ({
         )}
       </g>
       <use href="#halfcourt"></use>
-      <use
-        href="#halfcourt"
-        transform={`matrix(1,0,0,-1,0,${stageHeight})`}
-      ></use>
+      <use href="#halfcourt" transform={`matrix(1,0,0,-1,0,${stageHeight})`}></use>
     </g>
   );
 };

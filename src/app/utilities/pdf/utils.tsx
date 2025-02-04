@@ -4,11 +4,7 @@ import dayjs from 'dayjs';
 import { Settings } from '@/types/club/types';
 import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types';
 
-export const generateHeader = (
-  doc: jsPDF,
-  settings: Settings | null,
-  top: number = 25,
-): number => {
+export const generateHeader = (doc: jsPDF, settings: Settings | null, top: number = 25): number => {
   // Set font size for H1 equivalent
   doc.setFontSize(24);
   // Add H1-like title on the top left (10 is the X and Y position)
@@ -26,7 +22,7 @@ export const generateHeader = (
     pageWidth - imgWidth - 10, // X position (10px margin from right)
     5, // Y position (top margin)
     imgWidth, // Image width
-    imgHeight, // Image height
+    imgHeight // Image height
   );
   // Draw a horizontal line (HR) below the title and image
   const lineY = 40; // Y position for the line
@@ -34,29 +30,14 @@ export const generateHeader = (
   return lineY + 5;
 };
 
-export const generateGameDetailsHeader = (
-  doc: jsPDFWithAutoTable,
-  top: number,
-  game: GameInterface,
-  settings: Settings | null,
-): number => {
+export const generateGameDetailsHeader = (doc: jsPDFWithAutoTable, top: number, game: GameInterface, settings: Settings | null): number => {
   autoTable(doc, {
     startY: top, // Start the table below the HR line
     head: [], // Table headers
     body: [
       ['Jogo', `${game.number}`, 'Competição', `${game.competition}`],
-      [
-        'Local',
-        `${game.away ? game.oponent?.location : settings?.homeLocation}`,
-        '',
-        `${game.subcomp}`,
-      ],
-      [
-        'Adversário',
-        `${game.oponent?.name}`,
-        'Data/Hora',
-        `${dayjs(game.date).format('YYYY-MM-DD HH:mm')}`,
-      ],
+      ['Local', `${game.away ? game.oponent?.location : settings?.homeLocation}`, '', `${game.subcomp}`],
+      ['Adversário', `${game.oponent?.name}`, 'Data/Hora', `${dayjs(game.date).format('YYYY-MM-DD HH:mm')}`],
     ],
     theme: 'grid', // Use grid to draw borders
   });

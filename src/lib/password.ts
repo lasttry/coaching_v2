@@ -15,10 +15,7 @@ function encode(text: string): Uint8Array {
  * @param {string} [salt] - The salt to use for hashing
  * @returns {Promise<string>} - The hashed password in the format `${salt}:${hashedPassword}`
  */
-export async function hashPassword(
-  password: string,
-  salt?: string,
-): Promise<string> {
+export async function hashPassword(password: string, salt?: string): Promise<string> {
   if (!salt) {
     salt = generateSalt();
   }
@@ -48,9 +45,7 @@ export function generateSalt(length: number = 16): string {
  * @param {string} password - The password to parse
  * @returns {{ salt: string; hashedPassword: string } | null} - The parsed salt and hashed password, or null if invalid
  */
-export function parseHashedPassword(
-  password: string,
-): { salt: string; hashedPassword: string } | null {
+export function parseHashedPassword(password: string): { salt: string; hashedPassword: string } | null {
   const parts = password.split(':');
   if (parts.length !== 2) {
     return null;
@@ -68,10 +63,7 @@ export function parseHashedPassword(
  * @param {string} storedPassword - The stored hashed password to validate against
  * @returns {Promise<boolean>} - True if the password is valid, false otherwise
  */
-export async function validatePassword(
-  clearPassword: string,
-  storedPassword: string,
-): Promise<boolean> {
+export async function validatePassword(clearPassword: string, storedPassword: string): Promise<boolean> {
   const parsedPassword = parseHashedPassword(storedPassword);
   if (!parsedPassword) {
     console.error('Stored password format is invalid');

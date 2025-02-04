@@ -43,23 +43,10 @@ export const generateReportsPDF = async (game: GameInterface) => {
     console.log(report);
     //console.log(report.reviewdAthlete)
     return [
-      [
-        'Atleta:',
-        `${athlete.number === '-1' ? '' : athlete.number + ' - '}${athlete.name}`,
-      ],
-      [
-        'Atleta Revisto:',
-        report
-          ? report.reviewdAthlete
-            ? report.reviewdAthlete.name
-            : 'Próprio'
-          : 'NÃO FEZ',
-      ],
+      ['Atleta:', `${athlete.number === '-1' ? '' : athlete.number + ' - '}${athlete.name}`],
+      ['Atleta Revisto:', report ? (report.reviewdAthlete ? report.reviewdAthlete.name : 'Próprio') : 'NÃO FEZ'],
       ['Observação Equipa:', report ? report.teamObservation : 'NÃO FEZ'],
-      [
-        'Observação Individual:',
-        report ? report.individualObservation : 'NÃO FEZ',
-      ],
+      ['Observação Individual:', report ? report.individualObservation : 'NÃO FEZ'],
       ['Tempo Jogado:', report ? report.timePlayedObservation : 'NÃO FEZ'],
       [],
     ];

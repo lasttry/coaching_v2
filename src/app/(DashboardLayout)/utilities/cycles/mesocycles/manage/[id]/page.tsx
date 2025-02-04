@@ -2,17 +2,7 @@
 import React from 'react';
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Button,
-  TextField,
-  Box,
-  Typography,
-  Stack,
-  CircularProgress,
-  Select,
-  SelectChangeEvent,
-  MenuItem,
-} from '@mui/material';
+import { Button, TextField, Box, Typography, Stack, CircularProgress, Select, SelectChangeEvent, MenuItem } from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
@@ -47,15 +37,13 @@ const MesocycleForm = (props: { params: Params }) => {
 
         // Fetch all macrocycles for the dropdown
         const macrocyclesResponse = await fetch('/api/cycles/macrocycles');
-        const macrocyclesData: MacrocycleInterface[] =
-          await macrocyclesResponse.json();
+        const macrocyclesData: MacrocycleInterface[] = await macrocyclesResponse.json();
         setMacrocycles(macrocyclesData);
 
         if (isEditing) {
           // Fetch mesocycle data if editing
           const mesocycleResponse = await fetch(`/api/cycles/mesocycles/${id}`);
-          const mesocycleData: MesocycleInterface =
-            await mesocycleResponse.json();
+          const mesocycleData: MesocycleInterface = await mesocycleResponse.json();
           setForm(mesocycleData);
         }
       } catch (err) {
@@ -69,9 +57,7 @@ const MesocycleForm = (props: { params: Params }) => {
     fetchData();
   }, [id, isEditing]);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>,
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name!]: value }));
   };
@@ -82,9 +68,7 @@ const MesocycleForm = (props: { params: Params }) => {
 
     try {
       const method = isEditing ? 'PUT' : 'POST';
-      const url = isEditing
-        ? `/api/cycles/mesocycles/${id}`
-        : '/api/cycles/mesocycles';
+      const url = isEditing ? `/api/cycles/mesocycles/${id}` : '/api/cycles/mesocycles';
 
       const response = await fetch(url, {
         method,
@@ -99,9 +83,7 @@ const MesocycleForm = (props: { params: Params }) => {
         throw new Error('Failed to save Mesocycle.');
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unknown error occurred.',
-      );
+      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
     } finally {
       setLoading(false);
     }
@@ -109,26 +91,18 @@ const MesocycleForm = (props: { params: Params }) => {
 
   if (loading) return <CircularProgress />;
 
-  const selectedMacrocycle = macrocycles.find(
-    (macro) => macro.id === form.macrocycleId,
-  );
+  const selectedMacrocycle = macrocycles.find((macro) => macro.id === form.macrocycleId);
 
   return (
     <PageContainer title={isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}>
       <h1>{isEditing ? 'Edit Mesocycle' : 'Create Mesocycle'}</h1>
       {error && (
-        <Typography
-          variant="body1"
-          sx={{ color: (theme) => theme.palette.error.main }}
-        >
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
           {error}
         </Typography>
       )}
       {success && (
-        <Typography
-          variant="body1"
-          sx={{ color: (theme) => theme.palette.success.main }}
-        >
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
           {success}
         </Typography>
       )}
@@ -156,23 +130,9 @@ const MesocycleForm = (props: { params: Params }) => {
             ))}
           </Select>
           {/* Mesocycle Number */}
-          <TextField
-            label="Number"
-            name="number"
-            type="number"
-            value={form.number || ''}
-            onChange={handleChange}
-            fullWidth
-          />
+          <TextField label="Number" name="number" type="number" value={form.number || ''} onChange={handleChange} fullWidth />
           {/* Mesocycle Name */}
-          <TextField
-            label="Name"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            fullWidth
-            required
-          />
+          <TextField label="Name" name="name" value={form.name} onChange={handleChange} fullWidth required />
           {/* Start Date */}
           <TextField
             label="Start Date"
@@ -186,18 +146,8 @@ const MesocycleForm = (props: { params: Params }) => {
             }
             inputRef={(input) => {
               if (input) {
-                input.setAttribute(
-                  'min',
-                  selectedMacrocycle
-                    ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD')
-                    : undefined,
-                );
-                input.setAttribute(
-                  'max',
-                  selectedMacrocycle
-                    ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD')
-                    : undefined,
-                );
+                input.setAttribute('min', selectedMacrocycle ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD') : undefined);
+                input.setAttribute('max', selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined);
               }
             }}
             required
@@ -215,43 +165,21 @@ const MesocycleForm = (props: { params: Params }) => {
             }
             inputRef={(input) => {
               if (input) {
-                input.setAttribute(
-                  'min',
-                  form.startDate
-                    ? dayjs(form.startDate).format('YYYY-MM-DD')
-                    : undefined,
-                );
-                input.setAttribute(
-                  'max',
-                  selectedMacrocycle
-                    ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD')
-                    : undefined,
-                );
+                input.setAttribute('min', form.startDate ? dayjs(form.startDate).format('YYYY-MM-DD') : undefined);
+                input.setAttribute('max', selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined);
               }
             }}
             required
           />
 
           {/* Notes */}
-          <TextField
-            label="Notes"
-            name="notes"
-            value={form.notes}
-            onChange={handleChange}
-            fullWidth
-            multiline
-            rows={4}
-          />
+          <TextField label="Notes" name="notes" value={form.notes} onChange={handleChange} fullWidth multiline rows={4} />
 
           <Box display="flex" justifyContent="space-between">
             <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => router.push('/utilities/cycles/mesocycles')}
-            >
+            <Button variant="outlined" color="secondary" onClick={() => router.push('/utilities/cycles/mesocycles')}>
               Cancel
             </Button>
           </Box>

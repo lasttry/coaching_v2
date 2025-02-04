@@ -1,15 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import {
-  Box,
-  Typography,
-  FormGroup,
-  FormControlLabel,
-  Button,
-  Stack,
-  Checkbox,
-  Alert,
-} from '@mui/material';
+import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Checkbox, Alert } from '@mui/material';
 import { signIn } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -50,9 +41,7 @@ const SignInPage = () => {
       }
 
       // Fetch user details using the `/api/accounts` endpoint
-      const accountResponse = await fetch(
-        `/api/accounts?email=${encodeURIComponent(username)}`
-      );
+      const accountResponse = await fetch(`/api/accounts?email=${encodeURIComponent(username)}`);
       const data = await accountResponse.json();
 
       if (!accountResponse.ok) {
@@ -88,11 +77,7 @@ const SignInPage = () => {
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-      <Box
-        component="form"
-        onSubmit={handleSignIn}
-        sx={{ width: 400, padding: 4, boxShadow: 3, borderRadius: 2 }}
-      >
+      <Box component="form" onSubmit={handleSignIn} sx={{ width: 400, padding: 4, boxShadow: 3, borderRadius: 2 }}>
         {/* Success/Error Messages */}
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
@@ -104,63 +89,26 @@ const SignInPage = () => {
 
         <Stack>
           <Box>
-            <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              component="label"
-              htmlFor="username"
-              mb="5px"
-            >
+            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="username" mb="5px">
               Username
             </Typography>
-            <CustomTextField
-              variant="outlined"
-              fullWidth
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+            <CustomTextField variant="outlined" fullWidth value={username} onChange={(e) => setUsername(e.target.value)} />
           </Box>
           <Box mt="25px">
-            <Typography
-              variant="subtitle1"
-              fontWeight={600}
-              component="label"
-              htmlFor="password"
-              mb="5px"
-            >
+            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
               Password
             </Typography>
-            <CustomTextField
-              type="password"
-              variant="outlined"
-              fullWidth
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+            <CustomTextField type="password" variant="outlined" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
           </Box>
-          <Stack
-            justifyContent="space-between"
-            direction="row"
-            alignItems="center"
-            my={2}
-          >
+          <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
             <FormGroup>
-              <FormControlLabel
-                control={<Checkbox defaultChecked />}
-                label="Remember this Device"
-              />
+              <FormControlLabel control={<Checkbox defaultChecked />} label="Remember this Device" />
             </FormGroup>
           </Stack>
         </Stack>
 
         <Box>
-          <Button
-            color="primary"
-            variant="contained"
-            size="large"
-            fullWidth
-            type="submit"
-          >
+          <Button color="primary" variant="contained" size="large" fullWidth type="submit">
             Sign In
           </Button>
         </Box>

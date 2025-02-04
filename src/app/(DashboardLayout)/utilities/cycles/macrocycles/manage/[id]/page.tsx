@@ -2,14 +2,7 @@
 import React from 'react';
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Button,
-  TextField,
-  Box,
-  Typography,
-  Stack,
-  CircularProgress,
-} from '@mui/material';
+import { Button, TextField, Box, Typography, Stack, CircularProgress } from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
@@ -63,9 +56,7 @@ const MacrocycleForm = (props: { params: Params }) => {
 
     try {
       const method = isEditing ? 'PUT' : 'POST';
-      const url = isEditing
-        ? `/api/cycles/macrocycles/${id}`
-        : '/api/cycles/macrocycles';
+      const url = isEditing ? `/api/cycles/macrocycles/${id}` : '/api/cycles/macrocycles';
 
       const response = await fetch(url, {
         method,
@@ -80,9 +71,7 @@ const MacrocycleForm = (props: { params: Params }) => {
         throw new Error('Failed to save Macrocycle.');
       }
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'An unknown error occurred.',
-      );
+      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
     } finally {
       setLoading(false);
     }
@@ -95,41 +84,21 @@ const MacrocycleForm = (props: { params: Params }) => {
       <h1>{isEditing ? 'Edit Macrocycle' : 'Create Macrocycle'}</h1>
 
       {error && (
-        <Typography
-          variant="body1"
-          sx={{ color: (theme) => theme.palette.error.main }}
-        >
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.error.main }}>
           {error}
         </Typography>
       )}
 
       {success && (
-        <Typography
-          variant="body1"
-          sx={{ color: (theme) => theme.palette.success.main }}
-        >
+        <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
           {success}
         </Typography>
       )}
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
-          <TextField
-            label="Name"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            fullWidth
-            required
-          />
-          <TextField
-            label="Number"
-            name="number"
-            type="number"
-            value={form.number || ''}
-            onChange={handleChange}
-            fullWidth
-          />
+          <TextField label="Name" name="name" value={form.name} onChange={handleChange} fullWidth required />
+          <TextField label="Number" name="number" type="number" value={form.number || ''} onChange={handleChange} fullWidth />
           <TextField
             label="Start Date"
             name="startDate"
@@ -164,24 +133,12 @@ const MacrocycleForm = (props: { params: Params }) => {
             fullWidth
             required
           />
-          <TextField
-            label="Notes"
-            name="notes"
-            value={form.notes}
-            onChange={handleChange}
-            fullWidth
-            multiline
-            rows={4}
-          />
+          <TextField label="Notes" name="notes" value={form.notes} onChange={handleChange} fullWidth multiline rows={4} />
           <Box display="flex" justifyContent="space-between">
             <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
-            <Button
-              variant="outlined"
-              color="secondary"
-              onClick={() => router.push('/utilities/cycles/macrocycles')}
-            >
+            <Button variant="outlined" color="secondary" onClick={() => router.push('/utilities/cycles/macrocycles')}>
               Cancel
             </Button>
           </Box>

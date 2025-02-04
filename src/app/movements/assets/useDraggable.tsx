@@ -10,7 +10,7 @@ export const useDraggable = (
   id: string,
   initialPosition: { x?: number; y?: number; rotation?: number } = {},
   options: DraggableOptions = {},
-  onMove?: (id: string, x?: number, y?: number, rotation?: number) => void,
+  onMove?: (id: string, x?: number, y?: number, rotation?: number) => void
 ) => {
   const { gRef, mousePosition } = useMousePosition(true);
   const [position, setPosition] = useState(initialPosition);
@@ -63,12 +63,7 @@ export const useDraggable = (
       onMove(id, latestPosition.current.x, latestPosition.current.y);
     }
     if (rotatingRef.current && onMove) {
-      onMove(
-        id,
-        latestPosition.current.x,
-        latestPosition.current.y,
-        latestPosition.current.rotation,
-      );
+      onMove(id, latestPosition.current.x, latestPosition.current.y, latestPosition.current.rotation);
     }
     draggingRef.current = false;
     rotatingRef.current = false;

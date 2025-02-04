@@ -1,23 +1,17 @@
 'use client';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import { TextField, Button, Box, Stack, Typography } from '@mui/material';
+import { AthleteInterface } from '@/types/games/types';
+import { useSession } from 'next-auth/react';
 
-// Athlete type definition for the form data
-interface Athlete {
-  number: string;
-  name: string;
-  birthdate: string;
-  fpbNumber?: number | null;
-  idNumber?: number | null;
-  idType?: string | null;
-  active?: boolean;
-}
+const NewAthlete = (): ReactElement => {
+  const { data: session } = useSession();
 
-const NewAthlete = () => {
-  const [form, setForm] = useState<Athlete>({
+  const [form, setForm] = useState<AthleteInterface>({
+    id: null,
     number: '',
     name: '',
     birthdate: '',
@@ -25,6 +19,7 @@ const NewAthlete = () => {
     idNumber: null,
     idType: '',
     active: true,
+    clubId: session?.user.selectedClubId,
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -33,16 +28,11 @@ const NewAthlete = () => {
   const router = useRouter();
 
   // Handle input change and reset field error on change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]:
-        name === 'fpbNumber' || name === 'idNumber'
-          ? value
-            ? Number(value)
-            : null
-          : value,
+      [name]: name === 'fpbNumber' || name === 'idNumber' ? (value ? Number(value) : null) : value,
     }));
     setFormErrors((prevErrors) => ({ ...prevErrors, [name]: '' })); // Reset error for this field
   };
@@ -84,7 +74,7 @@ const NewAthlete = () => {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     // Validate the form before submission
@@ -93,12 +83,16 @@ const NewAthlete = () => {
     }
 
     try {
+      if (!session?.user?.selectedClubId) {
+        throw new Error('Club ID is missing from the session');
+      }
+      const athleteData = { ...form, clubId: session.user.selectedClubId };
       const response = await fetch('/api/athletes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(athleteData),
       });
 
       if (response.ok) {
@@ -124,7 +118,7 @@ const NewAthlete = () => {
   };
 
   // Handle cancel action to return to the athletes list
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     router.push('/utilities/athletes'); // Redirect to athletes list
   };
 
@@ -145,15 +139,7 @@ const NewAthlete = () => {
           />
 
           {/* Name Field */}
-          <TextField
-            label="Name"
-            name="name"
-            value={form.name}
-            onChange={handleChange}
-            required
-            error={!!formErrors.name}
-            helperText={formErrors.name}
-          />
+          <TextField label="Name" name="name" value={form.name} onChange={handleChange} required error={!!formErrors.name} helperText={formErrors.name} />
 
           {/* Birthdate Field */}
           <TextField
@@ -188,12 +174,7 @@ const NewAthlete = () => {
           />
 
           {/* ID Type Field */}
-          <TextField
-            label="ID Type"
-            name="idType"
-            value={form.idType || ''}
-            onChange={handleChange}
-          />
+          <TextField label="ID Type" name="idType" value={form.idType || ''} onChange={handleChange} />
 
           <Box display="flex" justifyContent="space-between">
             <Button type="submit" variant="contained" color="primary">
@@ -201,20 +182,13 @@ const NewAthlete = () => {
             </Button>
 
             {/* Cancel Button */}
-            <Button
-              type="button"
-              variant="outlined"
-              color="secondary"
-              onClick={handleCancel}
-            >
+            <Button type="button" variant="outlined" color="secondary" onClick={handleCancel}>
               Cancel
             </Button>
           </Box>
 
           {/* Success/Error Messages */}
-          {success && (
-            <Typography sx={{ color: 'green' }}>{success}</Typography>
-          )}
+          {success && <Typography sx={{ color: 'green' }}>{success}</Typography>}
           {error && <Typography sx={{ color: 'red' }}>{error}</Typography>}
         </Stack>
       </form>

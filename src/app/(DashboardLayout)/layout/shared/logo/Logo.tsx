@@ -21,9 +21,7 @@ const Logo = () => {
         }
 
         log.info('Fetching account data for email:', session.user.email);
-        const response = await fetch(
-          `/api/accounts?email=${encodeURIComponent(session.user.email)}`,
-        );
+        const response = await fetch(`/api/accounts?email=${encodeURIComponent(session.user.email)}`);
         const data = await response.json();
 
         if (!response.ok) {
@@ -43,9 +41,7 @@ const Logo = () => {
 
         // Fetch the selected club data
         if (session.user.selectedClubId) {
-          const clubResponse = await fetch(
-            `/api/clubs/${session.user.selectedClubId}`,
-          );
+          const clubResponse = await fetch(`/api/clubs/${session.user.selectedClubId}`);
           const clubData = await clubResponse.json();
 
           if (clubResponse.ok) {
@@ -76,10 +72,7 @@ const Logo = () => {
 
   if (!club) {
     return (
-      <Typography
-        variant="body1"
-        sx={{ color: (theme) => theme.palette.text.secondary }}
-      >
+      <Typography variant="body1" sx={{ color: (theme) => theme.palette.text.secondary }}>
         Loading club information...
       </Typography>
     );
@@ -101,13 +94,7 @@ const Logo = () => {
       }}
       onClick={handleClick}
     >
-      <Image
-        src={club.image || '/images/logos/logo-dark.svg'}
-        alt={club.shortName || 'logo'}
-        height={50}
-        width={50}
-        priority
-      />
+      <Image src={club.image || '/images/logos/logo-dark.svg'} alt={club.shortName || 'logo'} height={50} width={50} priority />
       <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold' }}>
         {club.shortName || 'Club Name'}
       </Typography>

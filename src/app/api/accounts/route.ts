@@ -8,10 +8,7 @@ export async function POST(request: Request) {
 
     // Validate input
     if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
     }
 
     // Check if the email already exists
@@ -22,7 +19,7 @@ export async function POST(request: Request) {
     if (existingAccount) {
       return NextResponse.json(
         { error: 'Account with this email already exists' },
-        { status: 409 }, // Conflict
+        { status: 409 } // Conflict
       );
     }
 
@@ -41,10 +38,7 @@ export async function POST(request: Request) {
     return NextResponse.json(newAccount, { status: 201 });
   } catch (error) {
     console.error('Error creating account:', error);
-    return NextResponse.json(
-      { error: 'Failed to create account' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to create account' }, { status: 500 });
   }
 }
 
@@ -83,9 +77,6 @@ export async function GET(request: Request) {
     return NextResponse.json(accounts, { status: 200 });
   } catch (error) {
     console.error('Error fetching accounts:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch accounts' },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: 'Failed to fetch accounts' }, { status: 500 });
   }
 }

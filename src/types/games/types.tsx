@@ -1,16 +1,16 @@
 import { jsPDF } from 'jspdf'; // Import jsPDF for PDF generation
 
 export interface GameInterface {
+  clubId: number;
   id?: number;
   number: number;
-  date: string;
+  date: Date;
   away: boolean;
   competition?: string;
   subcomp?: string;
-  oponentId?: number;
-  oponent?: TeamInterface;
   notes?: string;
-  teams?: TeamInterface;
+  opponentId?: number;
+  opponent?: OpponentInterface;
   gameAthletes: GameAthleteInterface[];
   objectives?: ObjectiveInterface[]; // Add default
 }
@@ -35,9 +35,9 @@ export enum ObjectiveType {
 }
 /* eslint-enable no-unused-vars */
 
-export interface TeamInterface {
+export interface OpponentInterface {
   id: number;
-  name: number;
+  name: string;
   shortName: string;
   location: string;
   image: string;
@@ -56,14 +56,15 @@ export interface GameAthleteInterface {
 }
 
 export interface AthleteInterface {
-  id: number;
-  number: string;
+  id: number | null;
+  number?: string;
   name: string;
   birthdate: string;
-  fpbNumber: number;
-  idNumber: number;
-  idType: string;
+  fpbNumber?: number | null;
+  idNumber?: number | null;
+  idType?: string | null;
   active: boolean;
+  clubId?: number;
 }
 
 export interface jsPDFWithAutoTable extends jsPDF {

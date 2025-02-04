@@ -1,81 +1,106 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: number }>;
 
-// GET handler for fetching a team by ID
-export async function GET(request: Request, segmentData: { params: Params }) {
-  const params = await segmentData.params;
-  const id = Number(params.id);
-
-  if (isNaN(id)) {
-    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
-  } else console.log(`Getting information from team with id ${id}`);
-
+// GET: Retrieve a specific team
+export async function GET(req: NextRequest, segmentData: { params: Params }): Promise<NextResponse> {
+  const { id } = await segmentData.params;
   try {
-    const team = await prisma.teams.findUnique({
+    const team = await prisma.team.findUnique({
       where: { id },
-    });
-
-    if (!team) {
-      return NextResponse.json({ error: 'Team not found' }, { status: 404 });
-    }
-
-    return NextResponse.json(team);
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Error fetching team' }, { status: 500 });
-  }
-}
-
-export async function PUT(request: Request, segmentData: { params: Params }) {
-  const params = await segmentData.params;
-  const id = Number(params.id);
-
-  if (isNaN(id)) {
-    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
-  }
-
-  try {
-    const data = await request.json();
-
-    const updatedTeam = await prisma.teams.update({
-      where: { id },
-      data: {
-        name: data.name,
-        shortName: data.shortName,
-        location: data.location,
-        image: data.image || null, // Save the base64 image to the database, or null if removed
+      include: {
+        club: true,
+        echelon: true,
+        athletes: { include: { athlete: true } },
       },
     });
 
-    return NextResponse.json(updatedTeam, { status: 200 });
+    if (!team) {
+      log.error(`Team with id ${id} not found`);
+      return NextResponse.json({ error: 'Team not found' }, { status: 404 });
+    }
+
+    log.info('Team fetched successfully:', team);
+    return NextResponse.json(team);
   } catch (error) {
-    console.error('Error updating team:', error);
-    return NextResponse.json({ error: 'Error updating team' }, { status: 500 });
+    log.error('Failed to fetch team:', error);
+    return NextResponse.json({ error: 'Failed to fetch team' }, { status: 500 });
   }
 }
 
-// DELETE handler for deleting a team
-export async function DELETE(
-  request: Request,
-  segmentData: { params: Params },
-) {
-  const params = await segmentData.params;
-  const id = Number(params.id);
-
-  if (isNaN(id)) {
-    return NextResponse.json({ error: 'Invalid team ID' }, { status: 400 });
-  }
-
+// PUT: Update a specific team
+export async function PUT(req: NextRequest, segmentData: { params: Params }): Promise<NextResponse> {
+  const { id } = await segmentData.params;
   try {
-    await prisma.teams.delete({
+    const { name, type, clubId, echelonId } = await req.json();
+
+    const updatedTeam = await prisma.team.update({
       where: { id },
+      data: { name, type, clubId, echelonId },
     });
 
-    return NextResponse.json({}, { status: 204 });
+    log.info('Team updated successfully:', updatedTeam);
+    return NextResponse.json(updatedTeam);
   } catch (error) {
-    console.error('Error deleting team:', error);
-    return NextResponse.json({ error: 'Error deleting team' }, { status: 500 });
+    log.error('Failed to update team:', error);
+    return NextResponse.json({ error: 'Failed to update team' }, { status: 500 });
+  }
+}
+
+// DELETE: Remove a specific team
+export async function DELETE(req: NextRequest, segmentData: { params: Params }): Promise<NextResponse> {
+  const { id } = await segmentData.params;
+  try {
+    await prisma.team.delete({ where: { id } });
+    log.info(`Team with id ${id} deleted successfully`);
+    return NextResponse.json({ message: 'Team deleted successfully' });
+  } catch (error) {
+    log.error('Failed to delete team:', error);
+    return NextResponse.json({ error: 'Failed to delete team' }, { status: 500 });
+  }
+}
+
+// PATCH: Add or remove athletes
+export async function PATCH(req: NextRequest, segmentData: { params: Params }): Promise<NextResponse> {
+  const { id } = await segmentData.params;
+  const idNumber = Number(id);
+  try {
+    const { athleteIds, action } = await req.json();
+
+    if (!Array.isArray(athleteIds) || !action) {
+      log.error('Invalid data for adding/removing athletes');
+      return NextResponse.json({ error: 'Invalid data' }, { status: 400 });
+    }
+
+    if (action === 'add') {
+      await prisma.teamAthlete.createMany({
+        data: athleteIds.map((athleteId: number) => ({
+          teamId: idNumber,
+          athleteId,
+        })),
+        skipDuplicates: true,
+      });
+      log.info(`Athletes added to team ${id}:`, athleteIds);
+    } else if (action === 'remove') {
+      await prisma.teamAthlete.deleteMany({
+        where: { teamId: idNumber, athleteId: { in: athleteIds } },
+      });
+      log.info(`Athletes removed from team ${id}:`, athleteIds);
+    } else {
+      log.error('Invalid action');
+      return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+    }
+
+    const updatedTeam = await prisma.team.findUnique({
+      where: { id: idNumber },
+      include: { athletes: { include: { athlete: true } } },
+    });
+
+    return NextResponse.json(updatedTeam);
+  } catch (error) {
+    log.error('Failed to update athletes in team:', error);
+    return NextResponse.json({ error: 'Failed to update athletes' }, { status: 500 });
   }
 }

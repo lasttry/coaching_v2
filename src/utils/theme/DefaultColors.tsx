@@ -133,10 +133,9 @@ const baselightTheme = createTheme({
         '.MuiPaper-elevation9, .MuiPopover-root .MuiPaper-elevation': {
           boxShadow: '0 9px 17.5px rgb(0,0,0,0.05) !important',
         },
-        '.rounded-bars .apexcharts-bar-series.apexcharts-plot-series .apexcharts-series path':
-          {
-            clipPath: 'inset(0 0 5% 0 round 20px)',
-          },
+        '.rounded-bars .apexcharts-bar-series.apexcharts-plot-series .apexcharts-series path': {
+          clipPath: 'inset(0 0 5% 0 round 20px)',
+        },
       },
     },
     MuiCard: {

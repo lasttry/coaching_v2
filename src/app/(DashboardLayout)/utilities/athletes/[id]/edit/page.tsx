@@ -205,12 +205,7 @@ const EditAthlete = (props: { params: Params }) => {
           />
 
           {/* ID Type Field */}
-          <TextField
-            label="ID Type"
-            name="idType"
-            value={form?.idType || ''}
-            onChange={handleChange}
-          />
+          <TextField label="ID Type" name="idType" value={form?.idType || ''} onChange={handleChange} />
 
           <Box display="flex" justifyContent="space-between">
             <Button type="submit" variant="contained" color="primary">
@@ -218,20 +213,13 @@ const EditAthlete = (props: { params: Params }) => {
             </Button>
 
             {/* Cancel Button */}
-            <Button
-              type="button"
-              variant="outlined"
-              color="secondary"
-              onClick={handleCancel}
-            >
+            <Button type="button" variant="outlined" color="secondary" onClick={handleCancel}>
               Cancel
             </Button>
           </Box>
 
           {/* Success/Error Messages */}
-          {success && (
-            <Typography sx={{ color: 'green' }}>{success}</Typography>
-          )}
+          {success && <Typography sx={{ color: 'green' }}>{success}</Typography>}
           {error && <Typography sx={{ color: 'red' }}>{error}</Typography>}
         </Stack>
       </form>
