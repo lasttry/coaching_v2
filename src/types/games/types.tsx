@@ -1,18 +1,43 @@
 import { jsPDF } from 'jspdf'; // Import jsPDF for PDF generation
+import { ClubInterface, VenueInterface } from '../club/types';
+import { CompetitionInterface, CompetitionSerieInterface } from '../competition/types';
+import { TeamInterface } from '../teams/types';
+import { Venue } from '@prisma/client';
 
 export interface GameInterface {
   clubId: number;
-  id?: number;
-  number: number;
+  club?: ClubInterface | null;
+  id: number | null;
+  number?: number;
   date: Date;
   away: boolean;
-  competition?: string;
-  subcomp?: string;
-  notes?: string;
-  opponentId?: number;
+  notes?: string | null;
+
+  competitionId?: number;
+  competition?: CompetitionInterface;
+  competitionSerieId?: number;
+  competitionSerie?: CompetitionSerieInterface;
+  teamId?: number;
+  team?: TeamInterface;
+
+  opponentId?: number | null;
   opponent?: OpponentInterface;
+
+  venueId?: number | null;
+  venue?: Venue;
+
   gameAthletes: GameAthleteInterface[];
   objectives?: ObjectiveInterface[]; // Add default
+  athleteReports?: GameAthleteReport[];
+
+  refereeMain?: string;
+  referee1?: string;
+  scorer?: string;
+  timekeeper?: string;
+  shotClock?: string;
+
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface ObjectiveInterface {
@@ -21,9 +46,10 @@ export interface ObjectiveInterface {
   description?: string | null; // The description of the objective (optional)
   gameId?: number; // Foreign key linking to the game
   game?: GameInterface; // Relation to the `Game` object
+  type: ObjectiveType; // The type of objective (enum)
+
   createdAt?: Date; // Timestamp when the objective was created
   updatedAt?: Date; // Timestamp when the objective was last updated
-  type: ObjectiveType; // The type of objective (enum)
 }
 
 /* eslint-disable no-unused-vars */
@@ -36,18 +62,27 @@ export enum ObjectiveType {
 /* eslint-enable no-unused-vars */
 
 export interface OpponentInterface {
-  id: number;
+  id?: number;
   name: string;
   shortName: string;
-  location: string;
-  image: string;
-  games: GameInterface[];
+  image?: string;
+
+  games?: GameInterface[];
+
+  venues?: VenueInterface[];
+
+  createdAt?: Date; // Timestamp when the objective was created
+  updatedAt?: Date; // Timestamp when the objective was last updated
 }
 
 export interface GameAthleteInterface {
-  gameId?: number;
-  game?: GameInterface;
-  athlete: AthleteInterface;
+  athleteId: number | null;
+  athlete: AthleteInterface | null;
+  gameId: number | null;
+  game: GameInterface | null;
+
+  selected?: boolean | undefined | null;
+
   number: string;
   period1: boolean;
   period2: boolean;

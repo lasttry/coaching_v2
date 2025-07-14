@@ -1,10 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+interface TimeEntryInput {
+  id?: number;
+  athleteId: number;
+  period: number;
+  entryMinute: number;
+  entrySecond: number;
+  exitMinute: number;
+  exitSecond: number;
+}
+
 type Params = Promise<{ id: number }>;
 
 // Handle GET request
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = Number(params.id);
 
@@ -24,12 +37,18 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json(statistics, { status: 200 });
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: 'An error occurred while fetching statistics' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'An error occurred while fetching statistics' },
+      { status: 500 }
+    );
   }
 }
 
 // POST: Create new time entries for a game
-export async function POST(req: NextRequest, segmentData: { params: Params }) {
+export async function POST(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = Number(params.id);
 
@@ -39,9 +58,9 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
 
   try {
     const reqBody = await req.text(); // Read the raw body text
-    const timeEntries = JSON.parse(reqBody); // Parse the body to JSON
+    const timeEntries = JSON.parse(reqBody) as TimeEntryInput[]; // Parse the body to JSON
 
-    const createPromises = timeEntries.map((entry: any) => {
+    const createPromises = timeEntries.map((entry: TimeEntryInput) => {
       return prisma.timeEntry.create({
         data: {
           gameId,
@@ -65,7 +84,10 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
 }
 
 // PUT: Update existing time entries for a game
-export async function PUT(req: NextRequest, segmentData: { params: Params }) {
+export async function PUT(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = params.id;
 
@@ -75,9 +97,9 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
 
   try {
     const reqBody = await req.text(); // Read the raw body text
-    const timeEntries = JSON.parse(reqBody); // Parse the body to JSON
+    const timeEntries = JSON.parse(reqBody) as TimeEntryInput[];
 
-    const updatePromises = timeEntries.map((entry: any) => {
+    const updatePromises = timeEntries.map((entry: TimeEntryInput) => {
       return prisma.timeEntry.upsert({
         where: {
           id: entry.id, // Ensure each entry has an ID for upsert to work

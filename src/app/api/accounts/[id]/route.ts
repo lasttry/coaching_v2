@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
+
 import { parseHashedPassword, hashPassword, validatePassword } from '@/lib/password';
 
 type Params = Promise<{ id: number }>;
 
-export async function DELETE(req: Request, segmentData: { params: Params }) {
+export async function DELETE(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
   try {
     // Extract account ID from segment data
     const params = await segmentData.params;
@@ -33,17 +35,20 @@ export async function DELETE(req: Request, segmentData: { params: Params }) {
     return NextResponse.json({ message: 'Account deleted successfully.' }, { status: 200 });
   } catch (error) {
     console.error('Error deleting account:', error);
-    return NextResponse.json({ error: 'An error occurred while deleting the account.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'An error occurred while deleting the account.' },
+      { status: 500 }
+    );
   }
 }
 
-export async function PUT(req: Request, segmentData: { params: Params }) {
+export async function PUT(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
   const params = await segmentData.params;
   const accountId = Number(params.id);
   const accountObject = await req.json();
   const { name, email, defaultClubId, image, password, oldPassword } = accountObject;
 
-  const updateData: { [key: string]: any } = {};
+  const updateData: Partial<Prisma.AccountUpdateInput> = {};
 
   // Check if the old password is provided and needs to be verified
   if (oldPassword) {
@@ -68,7 +73,6 @@ export async function PUT(req: Request, segmentData: { params: Params }) {
   updateData.defaultClubId = defaultClubId;
   if (image) updateData.image = image;
   // Update the account with the new data
-  console.log(updateData);
   const updatedAccount = await prisma.account.update({
     where: { id: accountId },
     data: updateData,
@@ -77,7 +81,10 @@ export async function PUT(req: Request, segmentData: { params: Params }) {
   return NextResponse.json(updatedAccount, { status: 200 });
 }
 
-export async function GET(request: Request, segmentData: { params: Params }) {
+export async function GET(
+  request: Request,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   try {
     const params = await segmentData.params;
     const accountId = Number(params.id);

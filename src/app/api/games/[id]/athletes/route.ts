@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
 
-export async function GET(req: Request, segmentData: { params: Params }) {
+export async function GET(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
   const params = await segmentData.params;
   const id = params.id;
 
@@ -28,6 +28,9 @@ export async function GET(req: Request, segmentData: { params: Params }) {
     return NextResponse.json(athletes, { status: 200 });
   } catch (error) {
     console.error('Error fetching athletes:', error);
-    return NextResponse.json({ error: 'An error occurred while fetching athletes' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'An error occurred while fetching athletes' },
+      { status: 500 }
+    );
   }
 }

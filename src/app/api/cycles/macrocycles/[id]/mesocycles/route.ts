@@ -4,7 +4,10 @@ import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
 
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const id = Number(params.id);
 

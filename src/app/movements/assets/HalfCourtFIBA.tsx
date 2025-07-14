@@ -15,7 +15,16 @@ interface HalfcourtFIBAProps {
 }
 
 export const HalfcourtFIBA: React.FC<HalfcourtFIBAProps> = React.memo(
-  ({ scale, courtBorder, stageWidth, keyHeight, keyWidth, strokeColor, strokeWidth, backgroundColor }) => {
+  ({
+    scale,
+    courtBorder,
+    stageWidth,
+    keyHeight,
+    keyWidth,
+    strokeColor,
+    strokeWidth,
+    backgroundColor,
+  }) => {
     const keyTopY = keyHeight + courtBorder;
     const keyMiddleX = keyWidth / 2;
     const middleX = stageWidth / 2;
@@ -29,10 +38,25 @@ export const HalfcourtFIBA: React.FC<HalfcourtFIBAProps> = React.memo(
     const noChargeHeight = 3.75 * scale;
     const threePointRadius = 67.5 * scale;
 
-    const { y1: startThreePointArcY } = getCircleYCoordinates(middleX, basketY, threePointRadius, 9 * scale + courtBorder);
-    const { y1: endThreePointArcY } = getCircleYCoordinates(middleX, basketY, threePointRadius, stageWidth - 9 * scale - courtBorder);
+    const { y1: startThreePointArcY } = getCircleYCoordinates(
+      middleX,
+      basketY,
+      threePointRadius,
+      9 * scale + courtBorder
+    );
+    const { y1: endThreePointArcY } = getCircleYCoordinates(
+      middleX,
+      basketY,
+      threePointRadius,
+      stageWidth - 9 * scale - courtBorder
+    );
 
-    const generateArcPath = (centerX: number, centerY: number, radius: number, lineHeight: number): string =>
+    const generateArcPath = (
+      centerX: number,
+      centerY: number,
+      radius: number,
+      lineHeight: number
+    ): string =>
       `M ${centerX - radius},${centerY - lineHeight}
        l 0,${lineHeight}
        A ${radius},${radius} 0 0,0 ${centerX + radius},${centerY}
@@ -41,16 +65,60 @@ export const HalfcourtFIBA: React.FC<HalfcourtFIBAProps> = React.memo(
     return (
       <g stroke={strokeColor} fill="none" id="halfcourt" strokeWidth={strokeWidth}>
         {/* Key lines */}
-        <line x1={keyStartX - 2 * scale} x2={keyEndX + 2 * scale} y1={courtBorder + 17.5 * scale} y2={courtBorder + 17.5 * scale} strokeWidth={1 * scale} />
-        <line x1={keyStartX - 2 * scale} x2={keyEndX + 2 * scale} y1={courtBorder + 27 * scale} y2={courtBorder + 27 * scale} strokeWidth={4 * scale} />
-        <line x1={keyStartX - 2 * scale} x2={keyEndX + 2 * scale} y1={courtBorder + 39.5 * scale} y2={courtBorder + 39.5 * scale} strokeWidth={1 * scale} />
-        <line x1={keyStartX - 2 * scale} x2={keyEndX + 2 * scale} y1={courtBorder + 49 * scale} y2={courtBorder + 49 * scale} strokeWidth={1 * scale} />
-        <rect x={keyStartX} y={courtBorder} width={keyWidth} height={keyHeight} stroke={strokeColor} strokeWidth={1 * scale} fill={backgroundColor || 'none'} />
+        <line
+          x1={keyStartX - 2 * scale}
+          x2={keyEndX + 2 * scale}
+          y1={courtBorder + 17.5 * scale}
+          y2={courtBorder + 17.5 * scale}
+          strokeWidth={1 * scale}
+        />
+        <line
+          x1={keyStartX - 2 * scale}
+          x2={keyEndX + 2 * scale}
+          y1={courtBorder + 27 * scale}
+          y2={courtBorder + 27 * scale}
+          strokeWidth={4 * scale}
+        />
+        <line
+          x1={keyStartX - 2 * scale}
+          x2={keyEndX + 2 * scale}
+          y1={courtBorder + 39.5 * scale}
+          y2={courtBorder + 39.5 * scale}
+          strokeWidth={1 * scale}
+        />
+        <line
+          x1={keyStartX - 2 * scale}
+          x2={keyEndX + 2 * scale}
+          y1={courtBorder + 49 * scale}
+          y2={courtBorder + 49 * scale}
+          strokeWidth={1 * scale}
+        />
+        <rect
+          x={keyStartX}
+          y={courtBorder}
+          width={keyWidth}
+          height={keyHeight}
+          stroke={strokeColor}
+          strokeWidth={1 * scale}
+          fill={backgroundColor || 'none'}
+        />
 
         {/* Basket */}
         <circle cx={middleX} cy={basketY} r={2 * scale} stroke={strokeColor} />
-        <line x1={middleX - 10 * scale} x2={middleX + 10 * scale} y1={backboardY} y2={backboardY} strokeWidth={strokeWidth} />
-        <line x1={middleX} x2={middleX} y1={backboardY} y2={backboardY + 2 * scale} strokeWidth={strokeWidth} />
+        <line
+          x1={middleX - 10 * scale}
+          x2={middleX + 10 * scale}
+          y1={backboardY}
+          y2={backboardY}
+          strokeWidth={strokeWidth}
+        />
+        <line
+          x1={middleX}
+          x2={middleX}
+          y1={backboardY}
+          y2={backboardY + 2 * scale}
+          strokeWidth={strokeWidth}
+        />
 
         {/* No charge area */}
         <path d={generateArcPath(middleX, basketY, noChargeRadius, noChargeHeight)} />
@@ -66,7 +134,11 @@ export const HalfcourtFIBA: React.FC<HalfcourtFIBAProps> = React.memo(
         />
 
         {/* Freethrow circle */}
-        <path d={generateArcPath(middleX, keyTopY, freeThrowRadius, 0)} stroke={strokeColor} strokeWidth={strokeWidth} />
+        <path
+          d={generateArcPath(middleX, keyTopY, freeThrowRadius, 0)}
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+        />
       </g>
     );
   }

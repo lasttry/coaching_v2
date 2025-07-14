@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GameAthleteReport } from '@/types/games/types';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve all reports for a specific game
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
-  console.log('getting athleteReports - step1');
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = params.id;
 
@@ -15,7 +18,6 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
   }
 
   try {
-    console.log(`getting athleteReports ${gameId}`);
     const payload = {
       where: {
         gameId: Number(gameId),
@@ -34,7 +36,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 }
 
 // PUT: Update or create reports for a game
-export async function PUT(req: NextRequest, segmentData: { params: Params }) {
+export async function PUT(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = params.id;
 
@@ -45,8 +50,6 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
   try {
     const reqBody = await req.json();
     const reports = reqBody as Array<GameAthleteReport>;
-    console.log('received reports');
-    console.log(reports);
 
     const updatePromises = reports.map((report) => {
       const payload = {
@@ -72,9 +75,6 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
         },
       };
 
-      console.log('payload');
-      console.log(payload);
-
       // Return each upsert promise to be collected in updatePromises
       return prisma.athleteReport.upsert(payload);
     });
@@ -83,7 +83,7 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
 
     return NextResponse.json({ message: 'Reports saved successfully' }, { status: 200 });
   } catch (error) {
-    console.log(error);
+    log.error(error);
     return NextResponse.json({ error: 'Failed to save reports' }, { status: 500 });
   }
 }

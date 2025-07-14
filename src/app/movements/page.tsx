@@ -6,7 +6,10 @@ import CourtFIBA from './assets/CourtFIBA';
 
 import React, { useState, useEffect } from 'react';
 import { DrawingInterface, DrawingToolType, SvgIconsInterface } from './assets/types';
-import { SvgDefs, SvgDefsProvider } from '@/app/(DashboardLayout)/components/drills/SvgDefsProvider';
+import {
+  SvgDefs,
+  SvgDefsProvider,
+} from '@/app/(DashboardLayout)/components/drills/SvgDefsProvider';
 import { v4 as uuidv4 } from 'uuid';
 import PlayerIcon from './assets/PlayerIcon';
 import { useSession } from 'next-auth/react';
@@ -155,7 +158,13 @@ const DrillDesignNew: React.FC = () => {
         </SvgDefsProvider>
       </div>
       <div id="toolbar">
-        <div id="btnSelect" className="toolBtn" title="Pointer" data-mode="Select" style={{ height: '42px' }}>
+        <div
+          id="btnSelect"
+          className="toolBtn"
+          title="Pointer"
+          data-mode="Select"
+          style={{ height: '42px' }}
+        >
           <Icons.ArrowIcon onClick={handleArrowIconClick} />
         </div>
         <div
@@ -236,7 +245,10 @@ const DrillDesignNew: React.FC = () => {
           <hr />
         </div>
         <div id="btnToggleHalfCourt" className="toolBtn" style={{ height: '42px' }}>
-          <Icons.ToggleHalfCourtIcon onChange={setCurrentIsFullCourt} isFullCourt={currentIsFullCourt} />
+          <Icons.ToggleHalfCourtIcon
+            onChange={setCurrentIsFullCourt}
+            isFullCourt={currentIsFullCourt}
+          />
         </div>
       </div>
     </>

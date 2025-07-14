@@ -9,7 +9,12 @@ interface MouseDetails {
   height: number;
 }
 
-export const useMousePosition = (visible: boolean) => {
+export const useMousePosition = (
+  visible: boolean
+): {
+  gRef: React.RefObject<SVGGElement> | null;
+  mousePosition: { x: number; y: number };
+} => {
   const gRef = useRef<SVGGElement>(null);
   const [mousePosition, setMousePosition] = useState<{ x: number; y: number }>({
     x: 0,
@@ -56,7 +61,7 @@ export const useMousePosition = (visible: boolean) => {
         }
       }
 
-      const handleMouseMoveThrottled = (event: MouseEvent) => {
+      const handleMouseMoveThrottled = (event: MouseEvent): void => {
         requestAnimationFrame(() => handleMouseMove(event));
       };
 

@@ -35,9 +35,12 @@ const EchelonsPage: React.FC = () => {
       return;
     }
     setEchelons(groupedAndSortedEchelons(data));
-  }, [setErrorMessage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const groupedAndSortedEchelons = (echelons: EchelonInterface[]): Record<string, EchelonInterface[]> => {
+  const groupedAndSortedEchelons = (
+    echelons: EchelonInterface[]
+  ): Record<string, EchelonInterface[]> => {
     const grouped = echelons.reduce((acc: Record<string, EchelonInterface[]>, echelon) => {
       const genderKey = echelon.gender || 'Unknown';
       if (!acc[genderKey]) acc[genderKey] = [];
@@ -79,6 +82,7 @@ const EchelonsPage: React.FC = () => {
         [categoryKey]: [...(prev[categoryKey] || []), addedEchelon],
       }));
       setNewEchelon({
+        id: null,
         name: '',
         description: '',
         minAge: null,
@@ -90,7 +94,49 @@ const EchelonsPage: React.FC = () => {
       setErrorMessage(t('addCompetitionError'));
     }
   };
+  const handleSaveEchelon = async (id: number | null): Promise<void> => {
+    if (!id) return;
 
+    const updatedData = editedEchelons[id];
+
+    try {
+      const response = await fetch(`/api/echelons/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || t('saveError'));
+      }
+
+      setEchelons((prev) => {
+        // Ensure prev is defined
+        if (!prev) return prev;
+        // Iterate over each gender category and update the echelon with the given ID
+        const updatedEchelons = Object.keys(prev).reduce(
+          (acc, gender) => {
+            acc[gender] = prev[gender].map((echelon) =>
+              echelon.id === id ? { ...echelon, ...updatedData } : echelon
+            );
+            return acc;
+          },
+          {} as Record<string, EchelonInterface[]>
+        );
+        return updatedEchelons;
+      });
+    } catch (err) {
+      log.error('Error saving echelons:', err);
+      setErrorMessage(t('saveError'));
+    } finally {
+      setSuccessMessage(t('saveSuccess'));
+    }
+  };
+
+  const handleDeleteEchelon = async (id: number | null): Promise<void> => {
+    if (!id) return;
+  };
   return (
     <Box sx={{ padding: 2 }}>
       <Typography variant="h4" gutterBottom>
@@ -105,11 +151,17 @@ const EchelonsPage: React.FC = () => {
         setSuccessMessage={setSuccessMessage}
         onAddEchelon={handleAddEchelon}
       />
-      <EchelonListComponent echelons={echelons} setErrorMessage={setErrorMessage} setSuccessMessage={setSuccessMessage} refreshEchelons={fetchEchelons} />
+      <EchelonListComponent
+        echelons={echelons}
+        editedEchelons={editedEchelons}
+        setEditedEchelons={setEditedEchelons}
+        setErrorMessage={setErrorMessage}
+        setSuccessMessage={setSuccessMessage}
+        onSaveEchelon={handleSaveEchelon}
+        onDeleteEchelon={handleDeleteEchelon}
+      />
     </Box>
   );
 };
 
 export default EchelonsPage;
-
-// Let's continue by building out EchelonAddComponent and EchelonListComponent!

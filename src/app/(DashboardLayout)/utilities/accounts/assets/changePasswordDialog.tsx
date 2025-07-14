@@ -32,7 +32,12 @@ interface ChangePasswordDialogProps {
   ) => void;
 }
 
-const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClose, account, onUpdateAccount }) => {
+const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
+  open,
+  onClose,
+  account,
+  onUpdateAccount,
+}) => {
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,7 +58,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
   }, [account]);
 
   useEffect(() => {
-    const fetchClubs = async () => {
+    const fetchClubs = async (): Promise<void> => {
       try {
         const response = await fetch('/api/clubs');
         if (response.ok) {
@@ -70,7 +75,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
     fetchClubs();
   }, []);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -81,7 +86,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
     }
   };
 
-  const handleUpdateAccount = () => {
+  const handleUpdateAccount = (): void => {
     if (newPassword || confirmPassword) {
       if (!newPassword || !confirmPassword) {
         setErrorMessage('Please fill in all password fields.');
@@ -97,7 +102,15 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
       }
     }
     if (account && account.id) {
-      onUpdateAccount(account.id, name, email, defaultClubId, image || null, newPassword, oldPassword);
+      onUpdateAccount(
+        account.id,
+        name,
+        email,
+        defaultClubId,
+        image || null,
+        newPassword,
+        oldPassword
+      );
       setOldPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -112,8 +125,22 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         <Typography variant="subtitle1">Name: {account?.name}</Typography>
         <Typography variant="subtitle1">Email: {account?.email}</Typography>
-        <TextField margin="dense" label="Old Password" type="password" fullWidth value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
-        <TextField margin="dense" label="New Password" type="password" fullWidth value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+        <TextField
+          margin="dense"
+          label="Old Password"
+          type="password"
+          fullWidth
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+        />
+        <TextField
+          margin="dense"
+          label="New Password"
+          type="password"
+          fullWidth
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
         <TextField
           margin="dense"
           label="Confirm Password"
@@ -126,11 +153,28 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
           <Typography variant="subtitle1" fontWeight={600}>
             Update Account
           </Typography>
-          <TextField label="Display Name" type="text" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
-          <TextField label="Email Address" type="email" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
+          <TextField
+            label="Display Name"
+            type="text"
+            fullWidth
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextField
+            label="Email Address"
+            type="email"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
           <FormControl fullWidth margin="dense">
             <InputLabel id="default-club-label">Default Club</InputLabel>
-            <Select labelId="default-club-label" value={defaultClubId || ''} onChange={(e) => setDefaultClubId(Number(e.target.value))} label="Default Club">
+            <Select
+              labelId="default-club-label"
+              value={defaultClubId || ''}
+              onChange={(e) => setDefaultClubId(Number(e.target.value))}
+              label="Default Club"
+            >
               {clubs.map((club) => (
                 <MenuItem key={club.id} value={club.id}>
                   {club.name}
@@ -140,7 +184,11 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({ open, onClo
           </FormControl>
           {image && (
             <Box sx={{ textAlign: 'center', marginY: 2 }}>
-              <img src={image} alt="Current" style={{ width: '100px', height: '100px', borderRadius: '50%' }} />
+              <img
+                src={image}
+                alt="Current"
+                style={{ width: '100px', height: '100px', borderRadius: '50%' }}
+              />
             </Box>
           )}
           <Button variant="outlined" component="label" sx={{ textAlign: 'center' }}>

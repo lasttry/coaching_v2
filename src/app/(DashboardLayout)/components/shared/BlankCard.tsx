@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Card } from '@mui/material';
 import { ReactNode } from 'react';
 
@@ -7,9 +7,14 @@ type Props = {
   children: ReactNode;
 };
 
-const BlankCard = ({ children, className }: Props) => {
+const BlankCard = ({ children, className }: Props): ReactElement => {
   return (
-    <Card sx={{ p: 0, position: 'relative' }} className={className} elevation={9} variant={undefined}>
+    <Card
+      sx={{ p: 0, position: 'relative' }}
+      className={className}
+      elevation={9}
+      variant={undefined}
+    >
       {children}
     </Card>
   );

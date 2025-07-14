@@ -1,13 +1,27 @@
-import { IconBallBasketball, IconTypography, IconUser, IconUserHexagon, IconUsersGroup, IconTrophy } from '@tabler/icons-react';
+import {
+  IconBallBasketball,
+  IconTypography,
+  IconUser,
+  IconUserHexagon,
+  IconUsersGroup,
+  IconTrophy,
+} from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
 const openDrillsPage = (): void => {
   const url = '/utilities/drills_v2'; // Update with the correct path to the Drills_v2 page
-  const windowFeatures = 'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,resizable=no,scrollbars=no';
+  const windowFeatures =
+    'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,resizable=no,scrollbars=no';
   window.open(url, 'Drills_v2', windowFeatures);
 };
 
 const Menuitems = [
+  {
+    id: uniqueId(),
+    title: 'testes',
+    icon: IconBallBasketball,
+    href: '/utilities/test',
+  },
   { navlabel: true, subheader: 'Jogos' },
   {
     id: uniqueId(),

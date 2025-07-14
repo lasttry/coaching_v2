@@ -3,7 +3,10 @@ import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
 
 // GET: Retrieve a specific echelon
-export async function GET(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   const id = parseInt(params.id, 10);
 
   if (isNaN(id)) {
@@ -19,7 +22,6 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
       return NextResponse.json({ error: 'Echelon not found' }, { status: 404 });
     }
 
-    log.info(`Echelon with ID ${id} fetched successfully:`, echelon);
     return NextResponse.json(echelon);
   } catch (error) {
     log.error(`Failed to fetch echelon with ID ${id}:`, error);
@@ -28,7 +30,10 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // PUT: Update a specific echelon
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   const id = parseInt(params.id, 10);
 
   if (isNaN(id)) {
@@ -45,7 +50,6 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
       data: { minAge, maxAge, name, description, gender },
     });
 
-    log.info(`Echelon with ID ${id} updated successfully:`, updatedEchelon);
     return NextResponse.json(updatedEchelon);
   } catch (error) {
     log.error(`Failed to update echelon with ID ${id}:`, error);
@@ -54,7 +58,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE: Remove a specific echelon
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }): Promise<NextResponse> {
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   const id = parseInt(params.id, 10);
 
   if (isNaN(id)) {
@@ -65,7 +72,6 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   try {
     await prisma.echelon.delete({ where: { id } });
 
-    log.info(`Echelon with ID ${id} deleted successfully`);
     return NextResponse.json({ message: 'Echelon deleted successfully' });
   } catch (error) {
     log.error(`Failed to delete echelon with ID ${id}:`, error);

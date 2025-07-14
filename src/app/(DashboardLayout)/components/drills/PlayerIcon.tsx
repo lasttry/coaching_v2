@@ -21,19 +21,41 @@ const PlayerIcon: React.FC<PlayerIconProps> = React.memo(({ value = 1, id = '', 
 
   useEffect(() => {
     if (!hasDef('offense')) {
-      addDef('offense', <circle id="offense" cx="0" cy="0" r="10" fill="#ffffff" strokeWidth={2} style={{ cursor: 'pointer' }}></circle>);
+      addDef(
+        'offense',
+        <circle
+          id="offense"
+          cx="0"
+          cy="0"
+          r="10"
+          fill="#ffffff"
+          strokeWidth={2}
+          style={{ cursor: 'pointer' }}
+        ></circle>
+      );
     }
     if (!hasDef('defense')) {
       addDef(
         'defense',
         <g id="defense">
-          <path d="m -20,10 c 10,-16 30,-16 40,0 -5,-24 -35,-24 -40,0" stroke="none" strokeWidth={0}></path>
-          <circle cx="0" cy="0" r="7" fill="#ffffff" strokeWidth={2} style={{ cursor: 'pointer' }}></circle>
+          <path
+            d="m -20,10 c 10,-16 30,-16 40,0 -5,-24 -35,-24 -40,0"
+            stroke="none"
+            strokeWidth={0}
+          ></path>
+          <circle
+            cx="0"
+            cy="0"
+            r="7"
+            fill="#ffffff"
+            strokeWidth={2}
+            style={{ cursor: 'pointer' }}
+          ></circle>
         </g>
       );
     }
     setUpdateSvgDefs(true);
-  }, [updateSvgDefs]);
+  }, [updateSvgDefs, addDef, hasDef]);
 
   return (
     <>

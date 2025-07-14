@@ -5,7 +5,10 @@ import { log } from '@/lib/logger';
 export async function GET(): Promise<NextResponse> {
   try {
     const competitions = await prisma.competition.findMany({
-      include: { echelon: true },
+      include: {
+        echelon: true,
+        competitionSeries: true,
+      },
     });
     return NextResponse.json(competitions, { status: 200 });
   } catch (error) {
@@ -28,7 +31,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     });
     return NextResponse.json(newCompetition, { status: 201 });
   } catch (error) {
-    log.debug(error);
+    log.error(error);
     return NextResponse.json({ error: 'Error creating competition' }, { status: 500 });
   }
 }

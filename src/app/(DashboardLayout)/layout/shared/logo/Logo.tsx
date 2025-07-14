@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ClubInterface } from '@/types/club/types';
 import { log } from '@/lib/logger';
+import { useTranslation } from 'react-i18next';
 
-const Logo = () => {
+const Logo = (): ReactElement => {
+  const { t } = useTranslation();
   const { data: session } = useSession();
   const router = useRouter();
   const [club, setClub] = useState<ClubInterface | null>(null);
   const [hasMultipleClubs, setHasMultipleClubs] = useState(false);
 
   useEffect(() => {
-    async function fetchAccountData() {
+    async function fetchAccountData(): Promise<void> {
       try {
         if (!session?.user?.email) {
-          log.warn('User email is missing in the session.');
+          log.warn(t('emailIsMissingSession'));
           return;
         }
 
-        log.info('Fetching account data for email:', session.user.email);
-        const response = await fetch(`/api/accounts?email=${encodeURIComponent(session.user.email)}`);
+        const response = await fetch(
+          `/api/accounts?email=${encodeURIComponent(session.user.email)}`
+        );
         const data = await response.json();
 
         if (!response.ok) {
@@ -30,13 +33,9 @@ const Logo = () => {
           return;
         }
 
-        log.info('Account data fetched successfully:', data);
 
         if (data[0]?.clubs?.length > 1) {
-          log.info('User has multiple clubs.');
           setHasMultipleClubs(true);
-        } else {
-          log.info('User has a single club.');
         }
 
         // Fetch the selected club data
@@ -45,7 +44,6 @@ const Logo = () => {
           const clubData = await clubResponse.json();
 
           if (clubResponse.ok) {
-            log.info('Club data fetched successfully:', clubData);
             setClub(clubData);
           } else {
             const clubErrorText = `Failed to fetch club data: ${clubData.error || 'Unknown error'}`;
@@ -78,7 +76,7 @@ const Logo = () => {
     );
   }
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     if (hasMultipleClubs) {
       router.push('/utilities/chooseClub');
     }
@@ -94,9 +92,17 @@ const Logo = () => {
       }}
       onClick={handleClick}
     >
-      <Image src={club.image || '/images/logos/logo-dark.svg'} alt={club.shortName || 'logo'} height={50} width={50} priority />
+      <Image
+        src={club.image || '/images/logos/logo-dark.svg'}
+        alt={club.shortName || 'logo'}
+        height={50}
+        width={50}
+        priority
+      />
       <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold' }}>
         {club.shortName || 'Club Name'}
+        <br />
+        {club.season || ''}
       </Typography>
     </Box>
   );

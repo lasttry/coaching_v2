@@ -1,7 +1,16 @@
 'use client';
 import React, { ReactElement } from 'react';
 import { useState, useEffect } from 'react';
-import { Box, Button, TextField, Stack, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Stack,
+  Typography,
+  CircularProgress,
+  Select,
+  MenuItem,
+} from '@mui/material';
 import { useParams } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 
@@ -34,7 +43,10 @@ const GameAthleteReportsPage = (): ReactElement => {
   useEffect(() => {
     async function fetchAthletesAndReports(): Promise<void> {
       try {
-        const [athletesRes, reportsRes] = await Promise.all([fetch(`/api/athletes`), fetch(`/api/games/${gameId}/reports`)]);
+        const [athletesRes, reportsRes] = await Promise.all([
+          fetch(`/api/athletes`),
+          fetch(`/api/games/${gameId}/reports`),
+        ]);
 
         if (!athletesRes.ok || !reportsRes.ok) {
           throw new Error('Failed to fetch data.');
@@ -63,7 +75,11 @@ const GameAthleteReportsPage = (): ReactElement => {
     fetchAthletesAndReports();
   }, [gameId]);
 
-  const handleInputChange = (athleteId: number, field: keyof AthleteReport, value: string | number): void => {
+  const handleInputChange = (
+    athleteId: number,
+    field: keyof AthleteReport,
+    value: string | number
+  ): void => {
     setReports((prevReports) => ({
       ...prevReports,
       [athleteId]: {
@@ -123,7 +139,9 @@ const GameAthleteReportsPage = (): ReactElement => {
             {/* Reviewd Athlete Dropdown */}
             <Select
               value={reports[athlete.id]?.reviewdAthleteId || athlete.id}
-              onChange={(e) => handleInputChange(athlete.id, 'reviewdAthleteId', Number(e.target.value))}
+              onChange={(e) =>
+                handleInputChange(athlete.id, 'reviewdAthleteId', Number(e.target.value))
+              }
               fullWidth
             >
               {athletes.map((otherAthlete) => (
@@ -150,7 +168,9 @@ const GameAthleteReportsPage = (): ReactElement => {
               minRows={3}
               fullWidth
               value={reports[athlete.id]?.individualObservation || ''}
-              onChange={(e) => handleInputChange(athlete.id, 'individualObservation', e.target.value)}
+              onChange={(e) =>
+                handleInputChange(athlete.id, 'individualObservation', e.target.value)
+              }
               margin="normal"
             />
             <TextField
@@ -160,7 +180,9 @@ const GameAthleteReportsPage = (): ReactElement => {
               minRows={3}
               fullWidth
               value={reports[athlete.id]?.timePlayedObservation || ''}
-              onChange={(e) => handleInputChange(athlete.id, 'timePlayedObservation', e.target.value)}
+              onChange={(e) =>
+                handleInputChange(athlete.id, 'timePlayedObservation', e.target.value)
+              }
               margin="normal"
             />
           </Box>

@@ -4,7 +4,10 @@ import { prisma } from '@/lib/prisma';
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve all objectives for a game
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = params.id;
 

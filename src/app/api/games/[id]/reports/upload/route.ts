@@ -3,7 +3,10 @@ import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
 
-export async function POST(req: NextRequest, segmentData: { params: Params }) {
+export async function POST(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = params.id;
 
@@ -17,7 +20,7 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
     // Fetch the game from the database
     const game = await prisma.games.findUnique({
       where: { id: gameId },
-      include: { oponent: true },
+      include: { opponent: true },
     });
 
     // Check if the game exists
@@ -37,21 +40,15 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
     // Process each row of the data
     for (const row of data) {
       // Ignore rows where the competition does not match
-      console.log(`competition: ${game.competition}/campeonato: ${row['Campeonato']}`);
-      console.log(`game.teams.name: ${game.oponent.name}/adversario: ${row['Adversário']}`);
       if (
         game.competition?.trim().toLowerCase() !== row['Campeonato'].trim().toLowerCase() ||
-        game.oponent.name.trim().toLowerCase() !== row['Adversário'].trim().toLowerCase()
+        game.opponent.name.trim().toLowerCase() !== row['Adversário'].trim().toLowerCase()
       ) {
         continue;
       }
-
-      console.log(row);
       const athleteName = row['Atleta'].trim();
       const athleteNameReview = row['Atleta a analizar'].trim();
       const isSelf = athleteNameReview.toLowerCase().includes('eu'); // If "Eu", it's self
-      console.log(`athleteName: ${athleteName}/isSelf: ${isSelf}/athleteNameReview: ${athleteNameReview}`);
-
       // Find the athlete who submitted the report
       const athleteSubmitted = await prisma.athletes.findFirst({
         where: {
@@ -62,7 +59,6 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
       if (!athleteSubmitted) {
         throw new Error(`Athlete not found for name: ${athleteName}`);
       }
-      console.log(`Sumitted athlete: ${athleteSubmitted.id} - ${athleteSubmitted.name}`);
 
       // Find the athlete being reviewed (self or another athlete)
       const reviewedAthlete = isSelf
@@ -76,8 +72,6 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
       if (!reviewedAthlete) {
         throw new Error(`Athlete to review not found for name: ${athleteNameReview}`);
       }
-      console.log(`reviewed Athlete: ${reviewedAthlete.id} - ${reviewedAthlete.name}`);
-
       // Extract the observations from the row
       const teamObservation = row['Relatório de jogo - Equipa'];
       const individualObservation = row['Relatório de jogo - Individual'];
@@ -112,10 +106,9 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
     }
 
     // Execute all the upsert operations and capture the results
-    const results = await Promise.all(reportPromises);
+    await Promise.all(reportPromises);
 
     // Log the results to see the outcome of each upsert operation
-    console.log('Upsert Results:', results);
 
     return NextResponse.json({ message: 'Reports processed successfully' }, { status: 200 });
   } catch (error) {

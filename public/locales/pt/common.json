@@ -28,6 +28,8 @@
   "deleted": "Apagado",
   "Save": "Guardar",
   "save": "guardar",
+  "New": "Novo",
+  "new": "novo",
 
   "image": "Imagem",
   "id": "Id",
@@ -119,5 +121,34 @@
   "errorUnknown": "Ocorreu um erro desconhecido.",
 
   "confirmDelete": "Tem a certeza que quer apagar?",
-  "deleteConfirmationMessage": "Tem a certeza que deseja apagar o objecto, esta ação é final."
+  "deleteConfirmationMessage": "Tem a certeza que deseja apagar o objecto, esta ação é final.",
+
+  "addNewEchelon": "Adicionar novo escalão",
+  "minAgeIsRequired": "Idade Minima é um campo obrigatório",
+  "minAgeMustBePositive": "A Idade minima precisa de ser positiva.",
+  "echelonRequired": "O escalão é obrigatório.",
+  "echelonIdPositive": "O ID do escalão precisa de ser positivo.",
+  "selectEchelon": "Escolha o escalão",
+
+  "emailIsMissingSession": "O email esta em falta na sessão.",
+
+  "add": "Adicionar",
+  "NameIsRequired": "O Nome é obrigatório",
+  "NameCannotExceed50Characters": "O Nome não pode exceder os 50 carateres.",
+  "DescriptionCannotExceed255Characters": "A descrição não pode exceder os 255 caracteres.",
+  "uploadImage": "Inserir Imagem",
+  "imageInvalid": "Imagem inválida.",
+  "deletionWarningGames": "Apagar este atleta pode affectar os jogos e as estatisticas.",
+  "NumberMustBePositive": "Game number must be a positive number.",
+  "DateIsRequired": "Game date is required.",
+  "DateIsInvalid": "Game date is not valid.",
+  "TimeIsRequired": "Game time is required.",
+  "AwayMustBeBoolean": "Away must be a true/false value.",
+  "SubCompetitionCannotExceed30Characters": "Sub-competition name is too long.",
+  "NotesCannotExceed1000Characters": "Notes cannot exceed 1000 characters.",
+  "ClubIdIsRequired": "Club is required.",
+  "CompetitionIdIsRequired": "Competition is required.",
+  "CompetitionSerieIdIsRequired": "Competition series is required.",
+  "TeamIdIsRequired": "Team is required.",
+  "OpponentIdIsRequired": "Opponent is required."
 }

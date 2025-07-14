@@ -4,7 +4,10 @@ import { prisma } from '@/lib/prisma';
 type Params = Promise<{ id: number }>;
 
 // GET: Fetch accounts linked to a club by ID
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   try {
     const params = await segmentData.params;
     const clubId = Number(params.id);
@@ -51,12 +54,18 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     return NextResponse.json(accountsWithRoles, { status: 200 });
   } catch (error) {
     console.error('Error fetching accounts for club:', error);
-    return NextResponse.json({ error: 'An error occurred while fetching accounts.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'An error occurred while fetching accounts.' },
+      { status: 500 }
+    );
   }
 }
 
 // POST: Link an account to a club with roles
-export async function POST(req: NextRequest, segmentData: { params: Params }) {
+export async function POST(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   try {
     const params = await segmentData.params;
     const clubId = Number(params.id);
@@ -73,7 +82,10 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
 
     // Validate the converted numbers
     if (isNaN(accountIdNumber) || isNaN(clubIdNumber)) {
-      return NextResponse.json({ error: 'Account ID and club ID must be valid numbers' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Account ID and club ID must be valid numbers' },
+        { status: 400 }
+      );
     }
 
     // Check if the account exists
@@ -109,7 +121,6 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
       },
     });
 
-    console.log(roles);
     // Assign the roles to the account within the club
     const accountClubRoles = await prisma.$transaction(
       roles.map((role) =>
@@ -125,7 +136,6 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
       ...account,
       roles: accountClubRoles.map((role) => role.role),
     };
-    console.log(accountsWithRoles);
     return NextResponse.json(accountsWithRoles, { status: 201 });
   } catch (error) {
     console.error('Error linking account to club:', error);
@@ -133,7 +143,7 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
   }
 }
 
-export async function DELETE(request: Request) {
+export async function DELETE(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const clubId = parseInt(searchParams.get('clubId') || '', 10);
   const accountId = parseInt(searchParams.get('accountId') || '', 10);

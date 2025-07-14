@@ -2,7 +2,20 @@
 import React, { ReactElement } from 'react';
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Paper } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  Paper,
+} from '@mui/material';
 import { log } from '@/lib/logger';
 
 // Define types
@@ -96,7 +109,6 @@ const GameStatistics = (): ReactElement => {
             initialStats[stat.athleteId] = stat;
           });
         } else {
-          log.debug('No existing statistics found, initializing with defaults');
         }
 
         setStatistics(initialStats); // Ensure statistics are properly set in state
@@ -109,7 +121,11 @@ const GameStatistics = (): ReactElement => {
     fetchAthletesAndStatistics();
   }, [gameId]);
 
-  const handleStatisticChange = (athleteId: number, field: keyof Statistic, value: string): void => {
+  const handleStatisticChange = (
+    athleteId: number,
+    field: keyof Statistic,
+    value: string
+  ): void => {
     setStatistics((prevStats) => ({
       ...prevStats,
       [athleteId]: {
@@ -179,7 +195,9 @@ const GameStatistics = (): ReactElement => {
                     <TableCell key={stat}>
                       <TextField
                         value={statistics[athlete.id]?.[stat as keyof Statistic] || 0}
-                        onChange={(e) => handleStatisticChange(athlete.id, stat as keyof Statistic, e.target.value)}
+                        onChange={(e) =>
+                          handleStatisticChange(athlete.id, stat as keyof Statistic, e.target.value)
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -201,7 +219,11 @@ const GameStatistics = (): ReactElement => {
         <Button variant="contained" color="primary" onClick={handleSaveStatistics}>
           Save Statistics
         </Button>
-        <Button variant="outlined" color="secondary" onClick={() => router.push(`/utilities/games/${gameId}`)}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => router.push(`/utilities/games/${gameId}`)}
+        >
           Back to Game
         </Button>
       </Stack>

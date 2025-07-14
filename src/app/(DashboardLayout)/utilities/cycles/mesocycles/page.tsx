@@ -1,21 +1,31 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import Link from 'next/link';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Stack, Typography, Box } from '@mui/material';
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Stack,
+  Typography,
+  Box,
+} from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
 import { MacrocycleInterface } from '@/types/cycles/types';
 
-const MesoCyclesList = () => {
+const MesoCyclesList = (): ReactElement => {
   const [macroCycles, setMacroCycles] = useState<MacrocycleInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
   // Fetch the list of macro cycles with meso cycles from the API
   useEffect(() => {
-    async function fetchMacroCycles() {
+    async function fetchMacroCycles(): Promise<void> {
       try {
         const response = await fetch('/api/cycles/macrocycles'); // Fetching macro cycles with meso cycles
         if (!response.ok) {
@@ -33,7 +43,7 @@ const MesoCyclesList = () => {
   }, []);
 
   // Handle mesocycle deletion
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number): Promise<void> => {
     const confirmed = window.confirm(`Are you sure you want to delete MesoCycle ID ${id}?`);
     if (!confirmed) return;
 
@@ -63,7 +73,10 @@ const MesoCyclesList = () => {
 
   return (
     <div suppressHydrationWarning={true}>
-      <PageContainer title="MesoCycles" description="List of all meso cycles grouped by macro cycle">
+      <PageContainer
+        title="MesoCycles"
+        description="List of all meso cycles grouped by macro cycle"
+      >
         <h1>MesoCycles</h1>
         <Link href="/utilities/cycles/mesocycles/manage/new">
           <Button variant="contained" color="primary">
@@ -89,7 +102,9 @@ const MesoCyclesList = () => {
             {macroCycles.map((macrocycle) => (
               <Box key={macrocycle.id} sx={{ mb: 3 }}>
                 <Typography variant="h6" sx={{ mb: 2 }}>
-                  MacroCycle: {macrocycle.name || `MacroCycle ${macrocycle.number || macrocycle.id}`} ({dayjs(macrocycle.startDate).format('YYYY-MM-DD')} to{' '}
+                  MacroCycle:{' '}
+                  {macrocycle.name || `MacroCycle ${macrocycle.number || macrocycle.id}`} (
+                  {dayjs(macrocycle.startDate).format('YYYY-MM-DD')} to{' '}
                   {dayjs(macrocycle.endDate).format('YYYY-MM-DD')})
                 </Typography>
                 <Table sx={{ whiteSpace: 'nowrap' }}>
@@ -147,8 +162,15 @@ const MesoCyclesList = () => {
                         </TableCell>
                         <TableCell align="right">
                           <Stack direction="row" spacing={2}>
-                            <Link href={`/utilities/cycles/mesocycles/manage/${mesocycle.id}`} passHref>
-                              <Button variant="contained" color="primary" onClick={(e) => e.stopPropagation()}>
+                            <Link
+                              href={`/utilities/cycles/mesocycles/manage/${mesocycle.id}`}
+                              passHref
+                            >
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={(e) => e.stopPropagation()}
+                              >
                                 Edit
                               </Button>
                             </Link>

@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { use } from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -19,7 +19,7 @@ interface Athlete {
 
 type Params = Promise<{ id: string }>;
 
-const EditAthlete = (props: { params: Params }) => {
+const EditAthlete = (props: { params: Params }): ReactElement => {
   const params = use(props.params);
   const [form, setForm] = useState<Athlete | null>(null); // Initialize form as null until data is fetched
   const [loading, setLoading] = useState<boolean>(true);
@@ -29,13 +29,13 @@ const EditAthlete = (props: { params: Params }) => {
   const router = useRouter();
 
   // Convert ISO date to "yyyy-MM-dd"
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString: string): string => {
     return dateString.split('T')[0]; // Convert "yyyy-MM-ddTHH:mm:ss.sssZ" to "yyyy-MM-dd"
   };
 
   // Fetch the athlete data when the component mounts
   useEffect(() => {
-    async function fetchAthlete() {
+    async function fetchAthlete(): Promise<void> {
       try {
         const response = await fetch(`/api/athletes/${params.id}`);
         const data: Athlete = await response.json();
@@ -53,7 +53,7 @@ const EditAthlete = (props: { params: Params }) => {
   }, [params.id]);
 
   // Handle input change and reset field error on change
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     if (form) {
       setForm((prev) => ({ ...prev!, [name]: value }));
@@ -98,7 +98,7 @@ const EditAthlete = (props: { params: Params }) => {
   };
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     // Validate the form before submission
@@ -138,7 +138,7 @@ const EditAthlete = (props: { params: Params }) => {
   };
 
   // Handle cancel action to return to the athletes list
-  const handleCancel = () => {
+  const handleCancel = (): void => {
     router.push('/utilities/athletes'); // Redirect to athletes list
   };
 
@@ -205,7 +205,12 @@ const EditAthlete = (props: { params: Params }) => {
           />
 
           {/* ID Type Field */}
-          <TextField label="ID Type" name="idType" value={form?.idType || ''} onChange={handleChange} />
+          <TextField
+            label="ID Type"
+            name="idType"
+            value={form?.idType || ''}
+            onChange={handleChange}
+          />
 
           <Box display="flex" justifyContent="space-between">
             <Button type="submit" variant="contained" color="primary">

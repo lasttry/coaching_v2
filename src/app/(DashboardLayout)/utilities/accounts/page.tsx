@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import {
   Alert,
   Box,
@@ -33,12 +33,16 @@ interface AddAccountDialogProps {
   onAddAccount: (account: { name: string; email: string; password: string }) => void;
 }
 
-const AddAccountDialog: React.FC<AddAccountDialogProps> = ({ open, onClose, onAddAccount }) => {
+const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
+  open,
+  onClose,
+  onAddAccount,
+}): ReactElement => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleAddAccount = () => {
+  const handleAddAccount = (): void => {
     onAddAccount({ name, email, password });
     setName('');
     setEmail('');
@@ -50,9 +54,31 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({ open, onClose, onAd
     <Dialog open={open} onClose={onClose}>
       <DialogTitle>Add Account</DialogTitle>
       <DialogContent>
-        <TextField autoFocus margin="dense" label="Name" type="text" fullWidth value={name} onChange={(e) => setName(e.target.value)} />
-        <TextField margin="dense" label="Email Address" type="email" fullWidth value={email} onChange={(e) => setEmail(e.target.value)} />
-        <TextField margin="dense" label="Password" type="password" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
+        <TextField
+          autoFocus
+          margin="dense"
+          label="Name"
+          type="text"
+          fullWidth
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <TextField
+          margin="dense"
+          label="Email Address"
+          type="email"
+          fullWidth
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <TextField
+          margin="dense"
+          label="Password"
+          type="password"
+          fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
@@ -66,7 +92,7 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({ open, onClose, onAd
   );
 };
 
-const AccountsPage = () => {
+const AccountsPage = (): ReactElement => {
   const { data: session } = useSession();
   const [accounts, setAccounts] = useState<AccountInterface[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -76,7 +102,7 @@ const AccountsPage = () => {
   const [selectedAccount, setSelectedAccount] = useState<AccountInterface | null>(null);
 
   useEffect(() => {
-    const fetchAccounts = async () => {
+    const fetchAccounts = async (): Promise<void> => {
       try {
         const response = await fetch('/api/accounts');
         if (response.ok) {
@@ -98,7 +124,7 @@ const AccountsPage = () => {
     fetchAccounts();
   }, []);
 
-  const handleDeleteAccount = async (accountId?: number) => {
+  const handleDeleteAccount = async (accountId?: number): Promise<void> => {
     if (session?.user.id === accountId) {
       setErrorMessage('You cannot delete your own account');
       return;
@@ -124,7 +150,15 @@ const AccountsPage = () => {
     }
   };
 
-  const handleAddAccount = async ({ name, email, password }: { name: string; email: string; password: string }) => {
+  const handleAddAccount = async ({
+    name,
+    email,
+    password,
+  }: {
+    name: string;
+    email: string;
+    password: string;
+  }): Promise<void> => {
     try {
       const response = await fetch('/api/accounts', {
         method: 'POST',
@@ -158,7 +192,7 @@ const AccountsPage = () => {
     image?: string | null,
     password?: string,
     oldPassword?: string
-  ) => {
+  ): Promise<void> => {
     try {
       const data = JSON.stringify({
         name,
@@ -168,7 +202,6 @@ const AccountsPage = () => {
         oldPassword,
         password,
       });
-      console.log(data);
       const response = await fetch(`/api/accounts/${accountId}`, {
         method: 'PUT',
         headers: {
@@ -178,7 +211,9 @@ const AccountsPage = () => {
       });
       if (response.ok) {
         const updatedAccount = await response.json();
-        setAccounts((prev) => prev.map((account) => (account.id === accountId ? updatedAccount : account)));
+        setAccounts((prev) =>
+          prev.map((account) => (account.id === accountId ? updatedAccount : account))
+        );
         setSuccessMessage('Account updated successfully');
       } else {
         const errorData = await response.json();
@@ -204,7 +239,12 @@ const AccountsPage = () => {
         }}
       >
         <Typography variant="h4">Manage Accounts</Typography>
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={() => setAddAccountOpen(true)}>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => setAddAccountOpen(true)}
+        >
           Add Account
         </Button>
       </Box>
@@ -245,7 +285,11 @@ const AccountsPage = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <AddAccountDialog open={addAccountOpen} onClose={() => setAddAccountOpen(false)} onAddAccount={handleAddAccount} />
+      <AddAccountDialog
+        open={addAccountOpen}
+        onClose={() => setAddAccountOpen(false)}
+        onAddAccount={handleAddAccount}
+      />
       <ChangePasswordDialog
         open={changePasswordOpen}
         onClose={() => setChangePasswordOpen(false)}

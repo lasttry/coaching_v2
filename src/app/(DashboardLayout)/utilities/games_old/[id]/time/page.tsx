@@ -2,7 +2,21 @@
 
 import React, { useState, useEffect, ReactElement } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Box, Button, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography, Paper, IconButton } from '@mui/material';
+import {
+  Box,
+  Button,
+  Stack,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+  Paper,
+  IconButton,
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { log, logger } from '@/lib/logger';
 
@@ -44,7 +58,9 @@ const GameTimes = (): ReactElement => {
           return;
         }
         const athleteData = await athleteRes.json();
-        const athletes = athleteData.map((entry: { athleteId: number; athletes: Athlete }) => entry.athletes);
+        const athletes = athleteData.map(
+          (entry: { athleteId: number; athletes: Athlete }) => entry.athletes
+        );
         setAthletes(athletes || []);
 
         // Fetch existing times
@@ -75,10 +91,17 @@ const GameTimes = (): ReactElement => {
     return <Typography>Loading...</Typography>;
   }
 
-  const handleTimeChange = (athleteId: number, index: number, field: keyof TimeEntry, value: string | number): void => {
+  const handleTimeChange = (
+    athleteId: number,
+    index: number,
+    field: keyof TimeEntry,
+    value: string | number
+  ): void => {
     setTimes((prevTimes) => ({
       ...prevTimes,
-      [athleteId]: prevTimes[athleteId].map((time, i) => (i === index ? { ...time, [field]: value } : time)),
+      [athleteId]: prevTimes[athleteId].map((time, i) =>
+        i === index ? { ...time, [field]: value } : time
+      ),
     }));
   };
 
@@ -173,7 +196,9 @@ const GameTimes = (): ReactElement => {
                     <TableCell>
                       <TextField
                         value={time.period}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'period', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(athlete.id, index, 'period', Number(e.target.value))
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -183,7 +208,9 @@ const GameTimes = (): ReactElement => {
                       <TextField
                         label="Entry Minute"
                         value={time.entryMinute}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'entryMinute', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(athlete.id, index, 'entryMinute', Number(e.target.value))
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -193,7 +220,9 @@ const GameTimes = (): ReactElement => {
                       <TextField
                         label="Entry Second"
                         value={time.entrySecond}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'entrySecond', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(athlete.id, index, 'entrySecond', Number(e.target.value))
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -203,7 +232,9 @@ const GameTimes = (): ReactElement => {
                       <TextField
                         label="Exit Minute"
                         value={time.exitMinute || ''}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'exitMinute', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(athlete.id, index, 'exitMinute', Number(e.target.value))
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -213,7 +244,9 @@ const GameTimes = (): ReactElement => {
                       <TextField
                         label="Exit Second"
                         value={time.exitSecond || ''}
-                        onChange={(e) => handleTimeChange(athlete.id, index, 'exitSecond', Number(e.target.value))}
+                        onChange={(e) =>
+                          handleTimeChange(athlete.id, index, 'exitSecond', Number(e.target.value))
+                        }
                         size="small"
                         type="number"
                         variant="outlined"
@@ -243,7 +276,11 @@ const GameTimes = (): ReactElement => {
         <Button variant="contained" color="primary" onClick={handleSaveTimes}>
           Save Times
         </Button>
-        <Button variant="outlined" color="secondary" onClick={() => router.push(`/utilities/games/${gameId}`)}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => router.push(`/utilities/games/${gameId}`)}
+        >
           Back to Game
         </Button>
       </Stack>

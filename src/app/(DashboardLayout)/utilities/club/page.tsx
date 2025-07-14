@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, ReactElement } from 'react';
 import { Accordion, AccordionSummary, AccordionDetails, Alert } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { Box, Typography } from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
@@ -12,8 +12,11 @@ import '@/styles/clubsAccordion.css';
 import { useSession } from 'next-auth/react';
 import ClubDetails from './assets/clubDetails';
 import ClubAccounts from './assets/clubAccounts';
+import { useTranslation } from 'react-i18next';
 
-const ClubPage = () => {
+const ClubPage = (): ReactElement => {
+  const { t } = useTranslation();
+
   const [clubs, setClubs] = useState<ClubInterface[]>([]);
   const [selectedClub, setSelectedClub] = useState<ClubInterface | null>(null);
   const [editing, setEditing] = useState(false);
@@ -22,7 +25,7 @@ const ClubPage = () => {
   const [successMessage, setSuccessMessage] = useState<string | null | undefined>(null);
 
   useEffect(() => {
-    async function fetchClubs() {
+    async function fetchClubs(): Promise<void> {
       const response = await fetch('/api/clubs');
       if (response.ok) {
         const data: ClubInterface[] = await response.json();
@@ -32,12 +35,11 @@ const ClubPage = () => {
     fetchClubs();
   }, []);
 
-  const handleNewClub = () => {
+  const handleNewClub = (): void => {
     setSelectedClub({
       id: 0,
       name: '',
       shortName: '',
-      location: '',
       season: '',
       backgroundColor: '#ffffff',
       foregroundColor: '#000000',
@@ -48,14 +50,14 @@ const ClubPage = () => {
     setErrorMessage('');
   };
 
-  const handleCancel = async () => {
+  const handleCancel = async (): Promise<void> => {
     setSelectedClub(null);
     setEditing(false);
     setSuccessMessage('');
     setErrorMessage('');
   };
 
-  const handleEditChange = (field: keyof ClubInterface, value: string | File | null) => {
+  const handleEditChange = (field: keyof ClubInterface, value: ClubInterface[keyof ClubInterface]): void => {
     if (selectedClub) {
       setSelectedClub({ ...selectedClub, [field]: value });
     }
@@ -63,14 +65,14 @@ const ClubPage = () => {
     setErrorMessage('');
   };
 
-  const handleSelectClub = async (club: ClubInterface) => {
+  const handleSelectClub = async (club: ClubInterface): Promise<void> => {
     setSelectedClub(club);
     setEditing(true);
     setSuccessMessage('');
     setErrorMessage('');
   };
 
-  const handleSave = async () => {
+  const handleSave = async (): Promise<void> => {
     setSuccessMessage('');
     setErrorMessage('');
 
@@ -122,7 +124,7 @@ const ClubPage = () => {
     }
   };
 
-  const handleDeleteClub = async () => {
+  const handleDeleteClub = async (): Promise<void> => {
     setSuccessMessage('');
     setErrorMessage('');
 
@@ -157,7 +159,11 @@ const ClubPage = () => {
           <AccordionDetails>
             <Grid container spacing={3} justifyContent="flex-start" className="grid-container">
               {sortedClubs.map((club) => (
-                <Grid key={club.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Grid
+                  key={club.id}
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                  sx={{ display: 'flex', justifyContent: 'center' }}
+                >
                   <Box
                     className="club-item"
                     style={{
@@ -168,15 +174,20 @@ const ClubPage = () => {
                     <Box className="club-item-overlay">
                       <Typography variant="body1" className="club-item-overlay-text">
                         {club.name}
+                        <br></br>
+                        {club.season}
                       </Typography>
                     </Box>
                   </Box>
                 </Grid>
               ))}
-              <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Grid
+                size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                sx={{ display: 'flex', justifyContent: 'center' }}
+              >
                 <Box className="add-new-item" onClick={handleNewClub}>
                   <Typography variant="h6" className="add-new-item-text">
-                    New
+                    {t('New')}
                   </Typography>
                 </Box>
               </Grid>
@@ -187,9 +198,18 @@ const ClubPage = () => {
         {successMessage ? <Alert severity="success">{successMessage}</Alert> : <></>}
         {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : <></>}
         {editing && selectedClub && (
-          <DashboardCard title={selectedClub.id === 0 ? 'Create New Club' : 'Edit Club'}>
-            <ClubDetails selectedClub={selectedClub} onSave={handleSave} onCancel={handleCancel} onDelete={handleDeleteClub} onEditChange={handleEditChange} />
-            <ClubAccounts clubId={selectedClub.id} onError={(error: string) => setErrorMessage(error)} />
+          <DashboardCard title={selectedClub.id === 0 ? t('createNewClub') : t('editClub')}>
+            <ClubDetails
+              selectedClub={selectedClub}
+              onSave={handleSave}
+              onCancel={handleCancel}
+              onDelete={handleDeleteClub}
+              onEditChange={handleEditChange}
+            />
+            <ClubAccounts
+              clubId={selectedClub.id}
+              onError={(error: string) => setErrorMessage(error)}
+            />
           </DashboardCard>
         )}
       </Box>

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 
-const Loading = () => {
+const Loading = (): ReactElement => {
   return <div>Loading</div>;
 };
 

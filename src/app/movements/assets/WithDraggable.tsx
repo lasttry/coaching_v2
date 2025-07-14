@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useDraggable } from './useDraggable';
 
 interface DraggableProps {
@@ -15,7 +15,9 @@ interface DraggableProps {
   onMove: (id: string, x?: number, y?: number) => void;
 }
 
-const WithDraggable = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+const WithDraggable = <P extends object>(
+  WrappedComponent: React.ComponentType<P>
+): ReactElement => {
   const DraggableComponent: React.FC<P & DraggableProps> = ({
     id,
     x,
@@ -29,14 +31,10 @@ const WithDraggable = <P extends object>(WrappedComponent: React.ComponentType<P
     onMove,
     ...props
   }) => {
-    const { gRef, position, handleMouseDownMove, handleMouseDownRotate, handleMouseUp } = useDraggable(
-      id,
-      { x, y, rotation },
-      { draggable, rotatable },
-      onMove
-    );
+    const { gRef, position, handleMouseDownMove, handleMouseDownRotate, handleMouseUp } =
+      useDraggable(id, { x, y, rotation }, { draggable, rotatable }, onMove);
 
-    const handleClick = () => {
+    const handleClick = (): void => {
       if (selectable) onSelect(id);
     };
 
@@ -57,7 +55,14 @@ const WithDraggable = <P extends object>(WrappedComponent: React.ComponentType<P
           </>
         )}
         {rotatable && selected && (
-          <path d="m 0,-23 l 3,6 -6,0 z" fill="#ffffff" stroke="#ff0000" strokeWidth={1} onMouseDown={handleMouseDownRotate} style={{ cursor: 'pointer' }} />
+          <path
+            d="m 0,-23 l 3,6 -6,0 z"
+            fill="#ffffff"
+            stroke="#ff0000"
+            strokeWidth={1}
+            onMouseDown={handleMouseDownRotate}
+            style={{ cursor: 'pointer' }}
+          />
         )}
       </g>
     );

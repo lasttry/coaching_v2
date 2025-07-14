@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve a specific macrocycle
-export async function GET(request: Request, { params }: { params: Params }) {
+export async function GET(request: Request, { params }: { params: Params }): Promise<NextResponse> {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
@@ -29,7 +29,7 @@ export async function GET(request: Request, { params }: { params: Params }) {
 }
 
 // PUT: Update a specific macrocycle
-export async function PUT(request: Request, { params }: { params: Params }) {
+export async function PUT(request: Request, { params }: { params: Params }): Promise<NextResponse> {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
@@ -59,7 +59,10 @@ export async function PUT(request: Request, { params }: { params: Params }) {
 }
 
 // DELETE: Delete a specific macrocycle
-export async function DELETE(request: Request, { params }: { params: Params }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Params }
+): Promise<NextResponse> {
   const { id } = await params;
 
   if (isNaN(Number(id))) {

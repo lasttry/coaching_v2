@@ -1,11 +1,11 @@
 'use client';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { baselightTheme } from '@/utils/theme/DefaultColors';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { SessionProvider } from 'next-auth/react';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }): ReactElement {
   return (
     <html lang="en">
       <body>

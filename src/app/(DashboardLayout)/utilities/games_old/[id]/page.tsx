@@ -18,7 +18,9 @@ const GameDetails = (props: { params: Params }): ReactElement => {
   const [game, setGame] = useState<GameInterface | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [playtime, setPlaytime] = useState<Record<number, { totalTimePlayed: number; periods: Record<number, number> }>>({});
+  const [playtime, setPlaytime] = useState<
+    Record<number, { totalTimePlayed: number; periods: Record<number, number> }>
+  >({});
 
   const router = useRouter();
 
@@ -133,7 +135,8 @@ const GameDetails = (props: { params: Params }): ReactElement => {
             <Box key={athletes.athlete.id} marginY={1}>
               {/* Display Athlete Info */}
               <Typography>
-                {athletes.number} - {athletes.athlete.name} ({dayjs(athletes.athlete.birthdate).format('YYYY')})
+                {athletes.number} - {athletes.athlete.name} (
+                {dayjs(athletes.athlete.birthdate).format('YYYY')})
               </Typography>
 
               {/* Display Time Played Per Period */}
@@ -158,21 +161,41 @@ const GameDetails = (props: { params: Params }): ReactElement => {
       </Box>
       {/* Button to generate PDF */}
       <Stack direction="row" spacing={2} marginTop={4}>
-        <Button variant="contained" color="primary" onClick={() => game && settings && generatePDF(game, settings)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => game && settings && generatePDF(game, settings)}
+        >
           Folha de Jogo
         </Button>
-        <Button variant="contained" color="primary" onClick={() => game && settings && generateStatisticsPDF(game, settings)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => game && settings && generateStatisticsPDF(game, settings)}
+        >
           Folha de Estatisticas
         </Button>
         {/* New button to add statistics */}
-        <Button variant="contained" color="primary" onClick={() => router.push(`/utilities/games/${id}/statistics`)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.push(`/utilities/games/${id}/statistics`)}
+        >
           Add Statistics
         </Button>
-        <Button variant="contained" color="primary" onClick={() => router.push(`/utilities/games/${id}/time`)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.push(`/utilities/games/${id}/time`)}
+        >
           Manage Play Times
         </Button>
         {/* New button to manage athlete reports */}
-        <Button variant="contained" color="primary" onClick={() => router.push(`/utilities/games/${id}/reports`)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.push(`/utilities/games/${id}/reports`)}
+        >
           Manage Reports
         </Button>
         <Button onClick={() => game && generateReportsPDF(game)}>Export Reports to PDF</Button>

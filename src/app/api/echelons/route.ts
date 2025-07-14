@@ -6,7 +6,6 @@ import { log } from '@/lib/logger';
 export async function GET(): Promise<NextResponse> {
   try {
     const echelons = await prisma.echelon.findMany();
-    log.info('Echelons data fetched successfully:', echelons);
     return NextResponse.json(echelons);
   } catch (error) {
     log.error('Failed to fetch echelons:', error);
@@ -22,7 +21,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     if (!minAge || !name || !gender) {
       log.error('Validation failed for creating echelon');
-      return NextResponse.json({ error: `Validation failed for creating echelon.` }, { status: 400 });
+      return NextResponse.json(
+        { error: `Validation failed for creating echelon.` },
+        { status: 400 }
+      );
     }
     const payload = {
       data: {
@@ -33,10 +35,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         gender,
       },
     };
-    log.debug(payload);
     const echelon = await prisma.echelon.create(payload);
 
-    log.info('Echelon created successfully:', echelon);
     return NextResponse.json(echelon, { status: 201 });
   } catch (error) {
     log.error('Failed to create echelon:', error);

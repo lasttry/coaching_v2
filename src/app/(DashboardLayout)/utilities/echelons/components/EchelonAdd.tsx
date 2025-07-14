@@ -15,7 +15,7 @@ import {
   InputLabel,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { EchelonInterface } from '@/types/echelons/types';
 import { Gender } from '@prisma/client';
@@ -29,7 +29,13 @@ interface EchelonAddProps {
   onAddEchelon: () => void;
 }
 
-const EchelonAddComponent: React.FC<EchelonAddProps> = ({ newEchelon, setNewEchelon, setErrorMessage, setSuccessMessage, onAddEchelon }) => {
+const EchelonAddComponent: React.FC<EchelonAddProps> = ({
+  newEchelon,
+  setNewEchelon,
+  setErrorMessage,
+  setSuccessMessage,
+  onAddEchelon,
+}) => {
   const { t } = useTranslation();
   const [isAccordionExpanded, setAccordionExpanded] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -43,15 +49,15 @@ const EchelonAddComponent: React.FC<EchelonAddProps> = ({ newEchelon, setNewEche
     switch (field) {
       case 'name':
         if (typeof value !== 'string' || !value) {
-          error = 'Name is required.';
+          error = t('NameIsRequired');
         } else if (value.length > 50) {
-          error = 'Name cannot exceed 50 characters.';
+          error = t('NameCannotExceed50Characters');
         }
         break;
 
       case 'description':
         if (typeof value === 'string' && value.length > 255) {
-          error = 'Description cannot exceed 255 characters.';
+          error = t('DescriptionCannotExceed255Characters');
         }
         break;
 
@@ -124,7 +130,10 @@ const EchelonAddComponent: React.FC<EchelonAddProps> = ({ newEchelon, setNewEche
   };
 
   return (
-    <Accordion expanded={isAccordionExpanded} onChange={() => setAccordionExpanded(!isAccordionExpanded)}>
+    <Accordion
+      expanded={isAccordionExpanded}
+      onChange={() => setAccordionExpanded(!isAccordionExpanded)}
+    >
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         <Typography>{t('addNewEchelon')}</Typography>
       </AccordionSummary>

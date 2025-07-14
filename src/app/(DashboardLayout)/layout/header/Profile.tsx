@@ -1,38 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ReactElement } from 'react';
 import { signOut } from 'next-auth/react';
-import { Avatar, Box, Menu, Button, IconButton, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Menu,
+  Button,
+  IconButton,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 import Link from 'next/link';
 import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { AccountInterface } from '@/types/accounts/types';
 
-const Profile = () => {
+const Profile = (): ReactElement => {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [anchorEl2, setAnchorEl2] = useState(null);
+  const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
 
   const { data: session } = useSession();
 
-  const handleClick2 = (event: any) => {
+  const handleClick2 = (event: React.MouseEvent<HTMLElement>): void => {
     setAnchorEl2(event.currentTarget);
   };
-  const handleClose2 = () => {
+  const handleClose2 = (): void => {
     setAnchorEl2(null);
   };
 
   useEffect(() => {
-    console.log(session);
-    const fetchAccount = async () => {
+    const fetchAccount = async (): Promise<void> => {
       try {
         if (!session?.user.selectedClubId) return;
         const response = await fetch(`/api/accounts/${session?.user.id}`);
 
         if (response.ok) {
           const data: AccountInterface = await response.json();
-          console.log(data);
           if (data.image) setPhotoPreview(`${data.image}`);
         } else {
-          const data = await response.json();
-          console.log(data.error);
+          await response.json();
         }
       } catch (error) {
         console.error('Error fetching settings:', error);
@@ -84,7 +90,9 @@ const Profile = () => {
         }}
       >
         <MenuItem>
-          <ListItemText>{session ? `${session.user.name} (${session.user.role})` : 'Loading...'}</ListItemText>
+          <ListItemText>
+            {session ? `${session.user.name} (${session.user.role})` : 'Loading...'}
+          </ListItemText>
         </MenuItem>
         <MenuItem>
           <ListItemText>{`Selected Club Id: ${session?.user?.selectedClubId}`}</ListItemText>

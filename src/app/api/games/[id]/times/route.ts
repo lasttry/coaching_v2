@@ -14,7 +14,10 @@ interface TimeEntry {
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve all time entries for a specific game
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = Number(params.id);
 
@@ -38,7 +41,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 }
 
 // POST: Create new time entries for a game
-export async function POST(req: NextRequest, segmentData: { params: Params }) {
+export async function POST(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = params.id;
 
@@ -74,7 +80,10 @@ export async function POST(req: NextRequest, segmentData: { params: Params }) {
 }
 
 // PUT: Create or update time entries for a game
-export async function PUT(req: NextRequest, segmentData: { params: Params }) {
+export async function PUT(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = params.id;
 
@@ -87,7 +96,9 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
     const timeEntries = JSON.parse(reqBody);
 
     // Filter out invalid entries (those that don't have 'athleteId' or other required fields)
-    const validEntries = timeEntries.filter((entry: TimeEntry) => entry.athleteId && entry.period && entry.entryMinute !== undefined);
+    const validEntries = timeEntries.filter(
+      (entry: TimeEntry) => entry.athleteId && entry.period && entry.entryMinute !== undefined
+    );
 
     const promises = validEntries.map((entry: TimeEntry) => {
       return prisma.timeEntry.upsert({
@@ -123,7 +134,10 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
 }
 
 // DELETE: Delete a specific time entry by ID
-export async function DELETE(req: NextRequest, segmentData: { params: Params }) {
+export async function DELETE(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const entryId = params.id;
 

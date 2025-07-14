@@ -72,7 +72,9 @@ const EditGame = (): ReactElement => {
           subcomp: gameData.game.subcomp,
           oponentId: gameData.game.oponentId || '',
           notes: gameData.game.notes,
-          athleteIds: gameData.game.gameAthletes.map((athlete: { athleteId: number }) => athlete.athleteId),
+          athleteIds: gameData.game.gameAthletes.map(
+            (athlete: { athleteId: number }) => athlete.athleteId
+          ),
         });
 
         // Fetch available teams
@@ -91,10 +93,15 @@ const EditGame = (): ReactElement => {
         const athletesData: Athlete[] = await athletesResponse.json();
 
         const selected = athletesData.filter((athlete: Athlete) =>
-          gameData.game.gameAthletes?.some((selectedAthlete: { athleteId: number }) => selectedAthlete.athleteId === athlete.id)
+          gameData.game.gameAthletes?.some(
+            (selectedAthlete: { athleteId: number }) => selectedAthlete.athleteId === athlete.id
+          )
         );
 
-        const available = athletesData.filter((athlete: Athlete) => !selected.some((selectedAthlete: Athlete) => selectedAthlete.id === athlete.id));
+        const available = athletesData.filter(
+          (athlete: Athlete) =>
+            !selected.some((selectedAthlete: Athlete) => selectedAthlete.id === athlete.id)
+        );
 
         setAvailableAthletes(sortAthletes(available));
         setSelectedAthletes(sortAthletes(selected));
@@ -256,14 +263,23 @@ const EditGame = (): ReactElement => {
 
           {/* Away Game Toggle */}
           <Box>
-            <Select name="away" value={form.away ? 'true' : 'false'} onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}>
+            <Select
+              name="away"
+              value={form.away ? 'true' : 'false'}
+              onChange={(e) => handleChange(e as React.ChangeEvent<HTMLInputElement>)}
+            >
               <MenuItem value="false">Home</MenuItem>
               <MenuItem value="true">Away</MenuItem>
             </Select>
           </Box>
 
           {/* Opponent Select */}
-          <Select name="oponentId" value={teams.length > 0 ? form.oponentId : ''} onChange={handleSelectChange} displayEmpty>
+          <Select
+            name="oponentId"
+            value={teams.length > 0 ? form.oponentId : ''}
+            onChange={handleSelectChange}
+            displayEmpty
+          >
             <MenuItem value="">
               <em>Select Opponent</em>
             </MenuItem>
@@ -324,7 +340,11 @@ const EditGame = (): ReactElement => {
                     <TableCell>{dayjs(athlete.birthdate).year()}</TableCell>
                     <TableCell>Selected</TableCell>
                     <TableCell align="right">
-                      <Button variant="contained" color="secondary" onClick={() => handleRemoveAthlete(athlete)}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleRemoveAthlete(athlete)}
+                      >
                         Remove
                       </Button>
                     </TableCell>
@@ -339,7 +359,11 @@ const EditGame = (): ReactElement => {
                     <TableCell>{dayjs(athlete.birthdate).year()}</TableCell>
                     <TableCell>Available</TableCell>
                     <TableCell align="right">
-                      <Button variant="contained" color="primary" onClick={() => handleAddAthlete(athlete)}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleAddAthlete(athlete)}
+                      >
                         Add
                       </Button>
                     </TableCell>
@@ -354,7 +378,12 @@ const EditGame = (): ReactElement => {
             <Button type="submit" variant="contained" color="primary">
               Save Changes
             </Button>
-            <Button type="button" variant="outlined" color="secondary" onClick={() => router.push('/utilities/games')}>
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push('/utilities/games')}
+            >
               Cancel
             </Button>
           </Box>

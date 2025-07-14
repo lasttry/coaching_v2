@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { validateGameData } from './utils/utils';
 import { GameAthleteInterface } from '@/types/games/types';
 import { log } from '@/lib/logger';
 import { auth } from '@/lib/auth';
@@ -8,7 +7,11 @@ import { auth } from '@/lib/auth';
 // POST handler for creating a new game
 export async function POST(req: Request): Promise<NextResponse> {
   const session = await auth();
-  if (!session?.user || !session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
+  if (
+    !session?.user ||
+    !session.user.selectedClubId ||
+    isNaN(Number(session.user.selectedClubId))
+  ) {
     log.error('games/route.ts>POST: session invalid or club not selected');
     return NextResponse.json({ status: 402 });
   }
@@ -16,27 +19,59 @@ export async function POST(req: Request): Promise<NextResponse> {
   try {
     const data = await req.json();
 
-    const validationErrors = validateGameData(data);
-    if (validationErrors.length > 0) {
-      return NextResponse.json({ error: validationErrors.join(' ') }, { status: 400 });
-    }
-    log.debug(data);
-    const newGame = await prisma.games.create({
+    const payload = {
       data: {
-        clubId: session.user.selectedClubId,
-        number: Number(data.number),
+        club: {
+          connect: { id: session.user.selectedClubId },
+        },
+        number: data.number ? Number(data.number) : null,
         date: new Date(data.date),
-        away: data.away !== null ? Boolean(data.away) : false,
-        competition: data.competition,
-        subcomp: data.subcomp,
-        notes: data.notes || null,
-        opponentId: data.oponentId,
+        away: Boolean(data.away),
+        notes: data.notes ?? null,
         gameAthletes: {
-          create: data.gameAthletes.map((athlete: GameAthleteInterface) => ({
-            athleteId: athlete.athlete.id,
+          create: (data.gameAthletes || [])
+          .filter((athlete: GameAthleteInterface) => athlete.athlete?.id !== null)
+          .map((athlete: GameAthleteInterface) => ({
+            athleteId: athlete.athlete!.id,
             number: athlete.number,
+            period1: athlete.period1,
+            period2: athlete.period2,
+            period3: athlete.period3,
+            period4: athlete.period4,
           })),
         },
+        ...(data.venueId
+          ? { venue: { connect: { id: data.venueId } } }
+          : { venue: { disconnect: true } }),
+        competition: {
+          connect: { id: data.competition.id },
+        },
+        ...(data.competitionSerieId && {
+          competitionSerie: {
+            connect: { id: data.competitionSerieId },
+          },
+        }),
+        ...(data.opponentId && {
+          opponent: {
+            connect: { id: data.opponentId },
+          },
+        }),
+        ...(data.teamId && {
+          team: {
+            connect: { id: data.teamId },
+          },
+        }),
+      },
+    };
+    const newGame = await prisma.games.create({
+      ...payload,
+      include: {
+        opponent: true,
+        team: { include: { echelon: true } },
+        competition: true,
+        competitionSerie: true,
+        gameAthletes: { include: { athlete: true } },
+        venue: true, // ✅ aqui está o que faltava
       },
     });
 
@@ -50,7 +85,11 @@ export async function POST(req: Request): Promise<NextResponse> {
 // GET handler for fetching all games
 export async function GET(): Promise<NextResponse> {
   const session = await auth();
-  if (!session?.user || !session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
+  if (
+    !session?.user ||
+    !session.user.selectedClubId ||
+    isNaN(Number(session.user.selectedClubId))
+  ) {
     log.error('games/route.ts>GET: session invalid or club not selected');
     return NextResponse.json({ status: 402 });
   }
@@ -62,11 +101,24 @@ export async function GET(): Promise<NextResponse> {
       },
       include: {
         opponent: true, // Include opponent team details in the response
+        team: {
+          include: {
+            echelon: true, // ✅ include the nested echelon inside team
+          },
+        },
+        competition: true,
+        competitionSerie: true,
+        gameAthletes: {
+          include: {
+            athlete: true,
+          }
+        },
+        venue: true,
       },
     };
 
     const games = await prisma.games.findMany(payload);
-    log.info('Games fetched successfully:', games);
+    log.debug(games)
     return NextResponse.json(games);
   } catch (error) {
     log.error('Error fetching games:', error);

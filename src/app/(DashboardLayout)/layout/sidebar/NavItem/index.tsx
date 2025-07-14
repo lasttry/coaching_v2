@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ElementType, ReactElement } from 'react';
 import Link from 'next/link';
 
 // mui imports
@@ -10,35 +10,42 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import { styled, useTheme } from '@mui/material/styles';
 
-type NavGroup = {
-  [x: string]: any;
+export type NavGroup = {
   id?: string;
+  disabled?: boolean;
   navlabel?: boolean;
   subheader?: string;
   title?: string;
-  icon?: any;
-  href?: any | undefined;
+  icon?: React.ElementType;
+  href?: string;
   children?: NavGroup[];
   chip?: string;
-  chipColor?: any;
-  variant?: string | any;
+  chipColor?: 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
+  variant?: 'filled' | 'outlined' | 'ghost';
   external?: boolean;
   level?: number;
-  onClick?: React.MouseEvent<HTMLButtonElement, MouseEvent>;
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  bgcolor?: string;
+  subtitle?: string;
 };
 
-interface ItemType {
+export interface ItemType {
   item: NavGroup;
   onClick: (event: React.MouseEvent<HTMLElement>) => void;
-  hideMenu?: any;
-  level?: number | any;
+  hideMenu?: boolean;
+  level?: number;
   pathDirect: string;
 }
 
-export default function NavItem({ item, level, pathDirect, hideMenu, onClick }: ItemType) {
-  const Icon = item.icon;
+export default function NavItem({
+  item,
+  level = 1,
+  pathDirect,
+  hideMenu = false,
+}: ItemType): ReactElement {
   const theme = useTheme();
-  const itemIcon = <Icon stroke={1.5} size="1.3rem" />;
+  const Icon = item.icon;
+  const itemIcon = Icon ? <Icon stroke={1.5} size="1.3rem" /> : null;
 
   const ListItemStyled = styled(ListItemButton)(() => ({
     whiteSpace: 'nowrap',
@@ -46,7 +53,10 @@ export default function NavItem({ item, level, pathDirect, hideMenu, onClick }: 
     padding: '5px 10px 5px 0',
     borderRadius: `30px`,
     backgroundColor: level > 1 ? 'transparent !important' : 'inherit',
-    color: level > 1 && pathDirect === item?.href ? `${theme.palette.primary.main}!important` : theme.palette.text.secondary,
+    color:
+      level > 1 && pathDirect === item?.href
+        ? `${theme.palette.primary.main}!important`
+        : theme.palette.text.secondary,
     fontWeight: level > 1 && pathDirect === item?.href ? '600 !important' : '400',
     paddingLeft: hideMenu ? '0' : level > 2 ? `${level * 15}px` : level > 1 ? '10px' : '0',
     '&:before': {
@@ -98,21 +108,21 @@ export default function NavItem({ item, level, pathDirect, hideMenu, onClick }: 
     },
   }));
 
-  const listItemProps: {
-    component: any;
+  const _listItemProps: {
+    component: ElementType;
     href?: string;
-    target?: any;
-    to?: any;
+    target?: '_blank' | '_self' | '_parent' | '_top' | string;
+    to?: string;
   } = {
     component: item?.external ? 'a' : Link,
     to: item?.href,
     href: item?.external ? item?.href : '',
-    target: item?.external ? '_blank' : '',
+    target: item?.external ? '_blank' : undefined,
   };
 
   return (
     <List component="li" disablePadding key={item?.id && item.title}>
-      <Link href={item.href} style={{ textDecoration: 'none' }}>
+      <Link href={item.href || '#'} style={{ textDecoration: 'none' }}>
         <ListItemStyled
           // {...listItemProps}
           disabled={item?.disabled}
@@ -156,7 +166,10 @@ export default function NavItem({ item, level, pathDirect, hideMenu, onClick }: 
             sx={{
               minWidth: '36px',
               p: '3px 0',
-              color: level > 1 && pathDirect === item?.href ? `${theme.palette.primary.main}!important` : 'inherit',
+              color:
+                level > 1 && pathDirect === item?.href
+                  ? `${theme.palette.primary.main}!important`
+                  : 'inherit',
             }}
           >
             {itemIcon}
@@ -164,10 +177,21 @@ export default function NavItem({ item, level, pathDirect, hideMenu, onClick }: 
           <ListItemText>
             {hideMenu ? '' : <>{`${item?.title}`}</>}
             <br />
-            {item?.subtitle ? <Typography variant="caption">{hideMenu ? '' : item?.subtitle}</Typography> : ''}
+            {item?.subtitle ? (
+              <Typography variant="caption">{hideMenu ? '' : item?.subtitle}</Typography>
+            ) : (
+              ''
+            )}
           </ListItemText>
 
-          {!item?.chip || hideMenu ? null : <Chip color={item?.chipColor} variant={item?.variant ? item?.variant : 'filled'} size="small" label={item?.chip} />}
+          {!item?.chip || hideMenu ? null : (
+            <Chip
+              color={item?.chipColor}
+              variant={item?.variant === 'outlined' ? 'outlined' : 'filled'}
+              size="small"
+              label={item?.chip}
+            />
+          )}
         </ListItemStyled>
       </Link>
     </List>

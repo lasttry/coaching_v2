@@ -1,36 +1,46 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// POST handler to create a new team
 export async function POST(request: Request): Promise<NextResponse> {
   try {
     const data = await request.json();
 
-    const newTeam = await prisma.opponent.create({
+    const newOpponent = await prisma.opponent.create({
       data: {
         name: data.name,
         shortName: data.shortName,
-        location: data.location,
-        image: data.image, // Optional image field
+        image: data.image ?? null,
         createdAt: new Date(),
         updatedAt: new Date(),
+        venues: {
+          create: (data.venues || []).map((venue: { name: string }) => ({
+            name: venue.name,
+          })),
+        },
+      },
+      include: {
+        venues: true,
       },
     });
 
-    return NextResponse.json(newTeam, { status: 201 });
+    return NextResponse.json(newOpponent, { status: 201 });
   } catch (error) {
-    console.error('Error creating team:', error);
-    return NextResponse.json({ error: 'Error creating team' }, { status: 500 });
+    console.error('Error creating opponent:', error);
+    return NextResponse.json({ error: 'Error creating opponent' }, { status: 500 });
   }
 }
 
-// GET handler to fetch all Opponents
 export async function GET(): Promise<NextResponse> {
   try {
-    const Opponents = await prisma.opponent.findMany();
-    return NextResponse.json(Opponents);
+    const opponents = await prisma.opponent.findMany({
+      include: {
+        venues: true,
+      },
+    });
+
+    return NextResponse.json(opponents);
   } catch (error) {
-    console.error('Error fetching Opponents:', error);
-    return NextResponse.json({ error: 'Error fetching Opponents' }, { status: 500 });
+    console.error('Error fetching opponents:', error);
+    return NextResponse.json({ error: 'Error fetching opponents' }, { status: 500 });
   }
 }

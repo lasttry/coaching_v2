@@ -1,9 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Typography, TextField, Button, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  SelectChangeEvent,
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { EchelonInterface } from '@/types/echelons/types';
 import { CompetitionInterface } from '@/types/competition/types';
@@ -31,7 +41,10 @@ const CompetitionAddComponent: React.FC<CompetitionAddProps> = ({
   const [isAccordionExpanded, setAccordionExpanded] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  const validateField = (field: string, value: string | number | null | EchelonInterface): string => {
+  const validateField = (
+    field: string,
+    value: string | number | null | EchelonInterface
+  ): string => {
     let error = '';
 
     setErrorMessage('');
@@ -40,29 +53,32 @@ const CompetitionAddComponent: React.FC<CompetitionAddProps> = ({
     switch (field) {
       case 'name':
         if (typeof value !== 'string' || !value) {
-          error = 'Name is required.';
+          error = t('NameIsRequired');
         } else if (value.length > 50) {
-          error = 'Name cannot exceed 50 characters.';
+          error = t('NameCannotExceed50Characters');
         }
         break;
 
       case 'description':
         if (typeof value === 'string' && value.length > 255) {
-          error = 'Description cannot exceed 255 characters.';
+          error = t('DescriptionCannotExceed255Characters');
         }
         break;
 
       case 'image':
-        if (typeof value === 'string' && !/^https?:\/\/\S+|data:image\/[a-zA-Z]+;base64,\S+/.test(value)) {
-          error = 'Image must be a valid URL or Base64 string.';
+        if (
+          typeof value === 'string' &&
+          !/^https?:\/\/\S+|data:image\/[a-zA-Z]+;base64,\S+/.test(value)
+        ) {
+          error = t('imageInvalid');
         }
         break;
 
       case 'echelonId':
         if (typeof value !== 'number' || !value) {
-          error = 'Echelon ID is required.';
+          error = t('echelonRequired');
         } else if (!Number.isInteger(value) || value <= 0) {
-          error = 'Echelon ID must be a positive integer.';
+          error = t('echelonIdPositive');
         }
         break;
 
@@ -145,7 +161,10 @@ const CompetitionAddComponent: React.FC<CompetitionAddProps> = ({
   return (
     <>
       {/* Add New Competition */}
-      <Accordion expanded={isAccordionExpanded} onChange={() => setAccordionExpanded(!isAccordionExpanded)}>
+      <Accordion
+        expanded={isAccordionExpanded}
+        onChange={() => setAccordionExpanded(!isAccordionExpanded)}
+      >
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>{t('addNewCompetition')}</Typography>
         </AccordionSummary>
@@ -172,7 +191,11 @@ const CompetitionAddComponent: React.FC<CompetitionAddProps> = ({
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 2 }} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Select value={newCompetition.echelonId ?? ''} onChange={handleSelectChange('echelonId')} fullWidth>
+              <Select
+                value={newCompetition.echelonId ?? ''}
+                onChange={handleSelectChange('echelonId')}
+                fullWidth
+              >
                 <MenuItem value="">
                   <em>{t('selectEchelon')}</em>
                 </MenuItem>

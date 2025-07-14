@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { log } from '@/lib/logger';
-import Grid from '@mui/material/Grid2';
+import { Grid } from '@mui/material';
 import { EchelonInterface } from '@/types/echelons/types';
 import { Gender } from '@prisma/client';
 import { useTranslation } from 'react-i18next';
@@ -45,7 +45,9 @@ const EchelonsPage = (): ReactElement => {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const getGroupedAndSortedEchelons = (echelons: EchelonInterface[]): Record<string, EchelonInterface[]> => {
+  const getGroupedAndSortedEchelons = (
+    echelons: EchelonInterface[]
+  ): Record<string, EchelonInterface[]> => {
     const grouped = echelons.reduce((acc: Record<string, EchelonInterface[]>, echelon) => {
       const genderKey = echelon.gender || 'Unknown'; // Use 'Unknown' for null genders
       if (!acc[genderKey]) {
@@ -78,7 +80,6 @@ const EchelonsPage = (): ReactElement => {
       if (!response.ok) {
         throw new Error(`Failed to fetch echelons: ${data.error}`);
       }
-      log.info('Echelons fetched successfully:', data);
       const groupedEchelons = getGroupedAndSortedEchelons(data);
       setEchelons(groupedEchelons);
     } catch (error) {
@@ -88,7 +89,13 @@ const EchelonsPage = (): ReactElement => {
   }, [t]); // Add dependencies (only those that can change)
 
   // Handle form input changes
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }> | SelectChangeEvent<string>): void => {
+  const handleChange = (
+    e:
+      | React.ChangeEvent<
+          HTMLInputElement | HTMLTextAreaElement | { name?: string; value: unknown }
+        >
+      | SelectChangeEvent<string>
+  ): void => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name as string]: value }));
   };
@@ -117,8 +124,6 @@ const EchelonsPage = (): ReactElement => {
         throw new Error(`Failed to ${form.id ? 'update' : 'create'} echelon: ${data.error}`);
       }
 
-      log.info(`${form.id ? 'Updated' : 'Created'} echelon successfully:`, data);
-
       const status = form.id ? t('updated') : t('created');
       setSuccessMessage(t('echelonSuccess', { status }));
       setForm({
@@ -146,7 +151,6 @@ const EchelonsPage = (): ReactElement => {
         throw new Error('Failed to delete echelon.');
       }
 
-      log.info(`Deleted echelon with ID ${id}`);
       const status = t('deleted');
       setSuccessMessage(t('echelonSuccess', { status }));
       fetchEchelons();
@@ -212,18 +216,46 @@ const EchelonsPage = (): ReactElement => {
       <form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <TextField fullWidth label={t('minAge')} name="minAge" value={form.minAge ?? ''} onChange={handleChange} type="number" required />
+            <TextField
+              fullWidth
+              label={t('minAge')}
+              name="minAge"
+              value={form.minAge ?? ''}
+              onChange={handleChange}
+              type="number"
+              required
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <TextField fullWidth label={t('maxAge')} name="maxAge" value={form.maxAge ?? ''} onChange={handleChange} type="number" required />
+            <TextField
+              fullWidth
+              label={t('maxAge')}
+              name="maxAge"
+              value={form.maxAge ?? ''}
+              onChange={handleChange}
+              type="number"
+              required
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <TextField fullWidth label={t('name')} name="name" value={form.name} onChange={handleChange} required />
+            <TextField
+              fullWidth
+              label={t('name')}
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth required>
               <InputLabel>{t('gender')}</InputLabel>
-              <Select name="gender" value={form.gender ?? ''} onChange={handleChange} label="Gender">
+              <Select
+                name="gender"
+                value={form.gender ?? ''}
+                onChange={handleChange}
+                label="Gender"
+              >
                 {Object.entries(Gender).map(([key, value]) => (
                   <MenuItem key={key} value={value}>
                     {t(key)} {/* Display the key (e.g., MALE, FEMALE, COED) */}
@@ -233,7 +265,13 @@ const EchelonsPage = (): ReactElement => {
             </FormControl>
           </Grid>
           <Grid size={{ xs: 12 }}>
-            <TextField fullWidth label={t('description')} name="description" value={form.description} onChange={handleChange} />
+            <TextField
+              fullWidth
+              label={t('description')}
+              name="description"
+              value={form.description}
+              onChange={handleChange}
+            />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Button type="submit" variant="contained" color="primary">
@@ -284,10 +322,19 @@ const EchelonsPage = (): ReactElement => {
                       <TableCell>{t(echelon.gender || '')}</TableCell>
                       <TableCell>{echelon.description}</TableCell>
                       <TableCell>
-                        <Button onClick={() => handleEdit(echelon)} variant="outlined" color="secondary">
+                        <Button
+                          onClick={() => handleEdit(echelon)}
+                          variant="outlined"
+                          color="secondary"
+                        >
                           {t('edit')}
                         </Button>
-                        <Button onClick={() => handleDelete(echelon.id)} variant="outlined" color="error" sx={{ marginLeft: 1 }}>
+                        <Button
+                          onClick={() => handleDelete(echelon.id)}
+                          variant="outlined"
+                          color="error"
+                          sx={{ marginLeft: 1 }}
+                        >
                           {t('Delete')}
                         </Button>
                       </TableCell>

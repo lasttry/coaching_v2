@@ -1,8 +1,8 @@
 'use client';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useSearchParams } from 'next/navigation';
 
-export default function ErrorPage() {
+export default function ErrorPage(): ReactElement {
   const searchParams = useSearchParams();
   const error = searchParams.get('error');
 

@@ -35,7 +35,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
     if (!clubId) return;
 
     // Fetch accounts for the club
-    const fetchAccounts = async () => {
+    const fetchAccounts = async (): Promise<void> => {
       onError?.('');
       try {
         const response = await fetch(`/api/clubs/${clubId}/accounts`);
@@ -53,9 +53,9 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
     };
 
     fetchAccounts();
-  }, [clubId]);
+  }, [clubId, onError]);
 
-  const handleEmailChange = async (email: string) => {
+  const handleEmailChange = async (email: string): Promise<void> => {
     setEmailInput(email);
     if (email.length > 2) {
       onError?.('');
@@ -77,7 +77,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
     }
   };
 
-  const handleAddAccount = async () => {
+  const handleAddAccount = async (): Promise<void> => {
     if (!emailInput || !clubId || !addAccount) return;
     try {
       onError?.('');
@@ -91,7 +91,6 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
       });
       if (response.ok) {
         const newAccount = await response.json();
-        console.log(newAccount);
         setAccounts((prev) => [...prev, newAccount]);
         setEmailInput('');
         setFilteredAccounts([]);
@@ -110,7 +109,11 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
     }
   };
 
-  const handleRoleChange = async (accountId: number, role: Role, checked: boolean) => {
+  const handleRoleChange = async (
+    accountId: number,
+    role: Role,
+    checked: boolean
+  ): Promise<void> => {
     if (!clubId) return;
     try {
       onError?.('');
@@ -127,7 +130,9 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
             account.id === accountId
               ? {
                   ...account,
-                  roles: checked ? [...account.roles, role] : account.roles.filter((r) => r !== role),
+                  roles: checked
+                    ? [...account.roles, role]
+                    : account.roles.filter((r) => r !== role),
                 }
               : account
           )
@@ -142,7 +147,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
     }
   };
 
-  const handleRemoveAccount = async (accountId: number) => {
+  const handleRemoveAccount = async (accountId: number): Promise<void> => {
     if (!clubId) return;
     try {
       onError?.('');
@@ -177,7 +182,12 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
       </Typography>
       <Divider sx={{ marginY: 2 }} />
       <Box sx={{ marginBottom: 2 }}>
-        <TextField label="Add Account by Email" value={emailInput} onChange={(e) => handleEmailChange(e.target.value)} fullWidth />
+        <TextField
+          label="Add Account by Email"
+          value={emailInput}
+          onChange={(e) => handleEmailChange(e.target.value)}
+          fullWidth
+        />
         {filteredAccounts.length > 0 && (
           <Box className="autocomplete-dropdown">
             {filteredAccounts.map((account) => (
@@ -194,7 +204,13 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
             ))}
           </Box>
         )}
-        <Button variant="contained" color="primary" sx={{ marginTop: 2 }} onClick={handleAddAccount} disabled={!emailInput}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ marginTop: 2 }}
+          onClick={handleAddAccount}
+          disabled={!emailInput}
+        >
           Add Account
         </Button>
       </Box>
@@ -221,7 +237,10 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
                 <TableCell>{accountClub.email}</TableCell>
                 {Object.values(Role).map((role) => (
                   <TableCell key={role}>
-                    <Checkbox checked={accountClub.roles.includes(role)} onChange={(e) => handleRoleChange(accountClub.id, role, e.target.checked)} />
+                    <Checkbox
+                      checked={accountClub.roles.includes(role)}
+                      onChange={(e) => handleRoleChange(accountClub.id, role, e.target.checked)}
+                    />
                   </TableCell>
                 ))}
                 <TableCell>

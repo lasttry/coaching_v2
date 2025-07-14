@@ -17,7 +17,6 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         athletes: { include: { athlete: true } },
       },
     });
-    log.info('Teams fetched successfully:', teams);
     return NextResponse.json(teams);
   } catch (error) {
     log.error('Failed to fetch teams:', error);
@@ -48,7 +47,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       data: { name, type, clubId: session.user.selectedClubId, echelonId },
     });
 
-    log.info('Team created successfully:', team);
     return NextResponse.json(team, { status: 201 });
   } catch (error) {
     log.error('Failed to create team:', error);

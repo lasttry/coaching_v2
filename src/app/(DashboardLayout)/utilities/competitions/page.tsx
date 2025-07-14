@@ -57,7 +57,8 @@ const CompetitionsPage: React.FC = () => {
     fetchCompetitions();
     fetchEchelons();
     setLoading(false);
-  }, [setErrorMessage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAddCompetition = async (): Promise<void> => {
     try {
@@ -101,11 +102,12 @@ const CompetitionsPage: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        log.debug(errorData);
         throw new Error(errorData.error || t('saveError'));
       }
 
-      setCompetitions((prev) => prev.map((comp) => (comp.id === id ? { ...comp, ...updatedData } : comp)));
+      setCompetitions((prev) =>
+        prev.map((comp) => (comp.id === id ? { ...comp, ...updatedData } : comp))
+      );
     } catch (err) {
       log.error('Error saving competition:', err);
       setErrorMessage(t('saveError'));

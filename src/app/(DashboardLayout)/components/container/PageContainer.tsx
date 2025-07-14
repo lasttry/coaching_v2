@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import Head from 'next/head';
 import { ReactNode } from 'react';
 
@@ -8,7 +8,7 @@ type Props = {
   title?: string;
 };
 
-const PageContainer = ({ title, description, children }: Props) => (
+const PageContainer = ({ title, description, children }: Props): ReactElement => (
   <div>
     <Head>
       <title>{title}</title>

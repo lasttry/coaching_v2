@@ -1,12 +1,12 @@
 'use client';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { TextField, Button, Typography, Stack, Box, Avatar } from '@mui/material';
 import { AccountInterface } from '@/types/accounts/types';
 
-const ProfilePage = () => {
-  const { data: session, status } = useSession();
+const ProfilePage = (): ReactElement => {
+  const { data: session } = useSession();
 
   const [userDetails, setUserDetails] = useState<AccountInterface>({
     name: session?.user?.name || '',
@@ -27,9 +27,7 @@ const ProfilePage = () => {
     if (!session) {
       return;
     }
-    console.log(status);
-    console.log(session);
-    const fetchProfile = async () => {
+    const fetchProfile = async (): Promise<void> => {
       try {
         const response = await fetch(`/api/accounts/${session?.user?.id}`);
         const data = await response.json();
@@ -63,7 +61,7 @@ const ProfilePage = () => {
     fetchProfile();
   }, [session]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setUserDetails((prev) => ({
       ...prev,
@@ -71,7 +69,7 @@ const ProfilePage = () => {
     }));
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
@@ -87,7 +85,7 @@ const ProfilePage = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     try {
@@ -96,7 +94,7 @@ const ProfilePage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...userDetails,
-          defaultClubId: defaultClubId == 0 ? userClubs[0].id : defaultClubId,
+          defaultClubId: defaultClubId === 0 ? userClubs[0].id : defaultClubId,
         }),
       });
 
@@ -138,14 +136,24 @@ const ProfilePage = () => {
         <Stack spacing={2}>
           {/* Profile Photo Section */}
           <Box display="flex" alignItems="center" gap={2}>
-            <Avatar src={photoPreview || undefined} alt="Profile Photo" sx={{ width: 64, height: 64 }} />
+            <Avatar
+              src={photoPreview || undefined}
+              alt="Profile Photo"
+              sx={{ width: 64, height: 64 }}
+            />
             <Button variant="outlined" component="label">
               Upload Photo
               <input type="file" hidden accept="image/*" onChange={handlePhotoChange} />
             </Button>
           </Box>
 
-          <TextField label="Name" name="name" value={userDetails.name} onChange={handleInputChange} fullWidth />
+          <TextField
+            label="Name"
+            name="name"
+            value={userDetails.name}
+            onChange={handleInputChange}
+            fullWidth
+          />
           <TextField
             label="Email"
             name="email"
@@ -154,7 +162,14 @@ const ProfilePage = () => {
             fullWidth
             disabled // Optional: Disallow editing email
           />
-          <TextField label="New Password" name="password" type="password" value={userDetails.password} onChange={handleInputChange} fullWidth />
+          <TextField
+            label="New Password"
+            name="password"
+            type="password"
+            value={userDetails.password}
+            onChange={handleInputChange}
+            fullWidth
+          />
           <TextField
             label="Confirm Password"
             name="confirmPassword"

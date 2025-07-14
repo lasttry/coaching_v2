@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 // GET: List all macrocycles
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     const macrocycles = await prisma.macrocycle.findMany({
       include: {
@@ -18,12 +18,12 @@ export async function GET() {
 }
 
 // POST: Create a new macrocycle
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   try {
     const data = await request.json();
 
     // Validate required fields
-    const { name, number, startDate, endDate, notes } = data;
+    const { name, number, startDate, endDate, notes, club } = data;
     if (!startDate || !endDate) {
       return NextResponse.json({ error: 'Start date and end date are required' }, { status: 400 });
     }
@@ -35,9 +35,9 @@ export async function POST(request: Request) {
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         notes,
+        club,
       },
     };
-    console.log(payload);
     const newMacrocycle = await prisma.macrocycle.create(payload);
 
     return NextResponse.json(newMacrocycle, { status: 201 });

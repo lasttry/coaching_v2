@@ -1,8 +1,18 @@
 'use client';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button, TextField, Box, Typography, Stack, CircularProgress, Select, SelectChangeEvent, MenuItem } from '@mui/material';
+import {
+  Button,
+  TextField,
+  Box,
+  Typography,
+  Stack,
+  CircularProgress,
+  Select,
+  SelectChangeEvent,
+  MenuItem,
+} from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import dayjs from 'dayjs';
@@ -10,7 +20,7 @@ import { MesocycleInterface, MacrocycleInterface } from '@/types/cycles/types';
 
 type Params = Promise<{ id: string }>;
 
-const MesocycleForm = (props: { params: Params }) => {
+const MesocycleForm = (props: { params: Params }): ReactElement => {
   const router = useRouter();
   const params = use(props.params);
   const id = params?.id; // Retrieve the ID from segmentData
@@ -31,7 +41,7 @@ const MesocycleForm = (props: { params: Params }) => {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData(): Promise<void> {
       try {
         setLoading(true);
 
@@ -46,8 +56,7 @@ const MesocycleForm = (props: { params: Params }) => {
           const mesocycleData: MesocycleInterface = await mesocycleResponse.json();
           setForm(mesocycleData);
         }
-      } catch (err) {
-        console.log(err);
+      } catch {
         setError('Failed to fetch data.');
       } finally {
         setLoading(false);
@@ -57,12 +66,14 @@ const MesocycleForm = (props: { params: Params }) => {
     fetchData();
   }, [id, isEditing]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | { name?: string; value: unknown }>
+  ): void => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name!]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
 
@@ -130,9 +141,23 @@ const MesocycleForm = (props: { params: Params }) => {
             ))}
           </Select>
           {/* Mesocycle Number */}
-          <TextField label="Number" name="number" type="number" value={form.number || ''} onChange={handleChange} fullWidth />
+          <TextField
+            label="Number"
+            name="number"
+            type="number"
+            value={form.number || ''}
+            onChange={handleChange}
+            fullWidth
+          />
           {/* Mesocycle Name */}
-          <TextField label="Name" name="name" value={form.name} onChange={handleChange} fullWidth required />
+          <TextField
+            label="Name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            fullWidth
+            required
+          />
           {/* Start Date */}
           <TextField
             label="Start Date"
@@ -146,8 +171,18 @@ const MesocycleForm = (props: { params: Params }) => {
             }
             inputRef={(input) => {
               if (input) {
-                input.setAttribute('min', selectedMacrocycle ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD') : undefined);
-                input.setAttribute('max', selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined);
+                input.setAttribute(
+                  'min',
+                  selectedMacrocycle
+                    ? dayjs(selectedMacrocycle.startDate).format('YYYY-MM-DD')
+                    : undefined
+                );
+                input.setAttribute(
+                  'max',
+                  selectedMacrocycle
+                    ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD')
+                    : undefined
+                );
               }
             }}
             required
@@ -165,21 +200,41 @@ const MesocycleForm = (props: { params: Params }) => {
             }
             inputRef={(input) => {
               if (input) {
-                input.setAttribute('min', form.startDate ? dayjs(form.startDate).format('YYYY-MM-DD') : undefined);
-                input.setAttribute('max', selectedMacrocycle ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD') : undefined);
+                input.setAttribute(
+                  'min',
+                  form.startDate ? dayjs(form.startDate).format('YYYY-MM-DD') : undefined
+                );
+                input.setAttribute(
+                  'max',
+                  selectedMacrocycle
+                    ? dayjs(selectedMacrocycle.endDate).format('YYYY-MM-DD')
+                    : undefined
+                );
               }
             }}
             required
           />
 
           {/* Notes */}
-          <TextField label="Notes" name="notes" value={form.notes} onChange={handleChange} fullWidth multiline rows={4} />
+          <TextField
+            label="Notes"
+            name="notes"
+            value={form.notes}
+            onChange={handleChange}
+            fullWidth
+            multiline
+            rows={4}
+          />
 
           <Box display="flex" justifyContent="space-between">
             <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
-            <Button variant="outlined" color="secondary" onClick={() => router.push('/utilities/cycles/mesocycles')}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push('/utilities/cycles/mesocycles')}
+            >
               Cancel
             </Button>
           </Box>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge } from '@mui/material';
 import PropTypes from 'prop-types';
 
@@ -10,7 +10,7 @@ interface ItemType {
   toggleMobileSidebar: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
-const Header = ({ toggleMobileSidebar }: ItemType) => {
+const Header = ({ toggleMobileSidebar }: ItemType): ReactElement => {
   // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
@@ -46,7 +46,13 @@ const Header = ({ toggleMobileSidebar }: ItemType) => {
           <IconMenu width="20" height="20" />
         </IconButton>
 
-        <IconButton size="large" aria-label="show 11 new notifications" color="inherit" aria-controls="msgs-menu" aria-haspopup="true">
+        <IconButton
+          size="large"
+          aria-label="show 11 new notifications"
+          color="inherit"
+          aria-controls="msgs-menu"
+          aria-haspopup="true"
+        >
           <Badge variant="dot" color="primary">
             <IconBellRinging size="21" stroke="1.5" />
           </Badge>

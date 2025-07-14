@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashPassword } from '@/lib/password';
 
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   try {
     const { name, email, password } = await request.json();
 
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const email = searchParams.get('email') || '';
 

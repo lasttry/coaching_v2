@@ -5,11 +5,14 @@ import { log } from '@/lib/logger';
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve a specific team
-export async function GET(req: NextRequest, segmentData: { params: Params }): Promise<NextResponse> {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const { id } = await segmentData.params;
   try {
     const team = await prisma.team.findUnique({
-      where: { id },
+      where: { id: Number(id) },
       include: {
         club: true,
         echelon: true,
@@ -22,7 +25,6 @@ export async function GET(req: NextRequest, segmentData: { params: Params }): Pr
       return NextResponse.json({ error: 'Team not found' }, { status: 404 });
     }
 
-    log.info('Team fetched successfully:', team);
     return NextResponse.json(team);
   } catch (error) {
     log.error('Failed to fetch team:', error);
@@ -31,7 +33,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }): Pr
 }
 
 // PUT: Update a specific team
-export async function PUT(req: NextRequest, segmentData: { params: Params }): Promise<NextResponse> {
+export async function PUT(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const { id } = await segmentData.params;
   try {
     const { name, type, clubId, echelonId } = await req.json();
@@ -41,7 +46,6 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }): Pr
       data: { name, type, clubId, echelonId },
     });
 
-    log.info('Team updated successfully:', updatedTeam);
     return NextResponse.json(updatedTeam);
   } catch (error) {
     log.error('Failed to update team:', error);
@@ -50,11 +54,13 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }): Pr
 }
 
 // DELETE: Remove a specific team
-export async function DELETE(req: NextRequest, segmentData: { params: Params }): Promise<NextResponse> {
+export async function DELETE(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const { id } = await segmentData.params;
   try {
     await prisma.team.delete({ where: { id } });
-    log.info(`Team with id ${id} deleted successfully`);
     return NextResponse.json({ message: 'Team deleted successfully' });
   } catch (error) {
     log.error('Failed to delete team:', error);
@@ -63,7 +69,10 @@ export async function DELETE(req: NextRequest, segmentData: { params: Params }):
 }
 
 // PATCH: Add or remove athletes
-export async function PATCH(req: NextRequest, segmentData: { params: Params }): Promise<NextResponse> {
+export async function PATCH(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const { id } = await segmentData.params;
   const idNumber = Number(id);
   try {
@@ -82,12 +91,10 @@ export async function PATCH(req: NextRequest, segmentData: { params: Params }): 
         })),
         skipDuplicates: true,
       });
-      log.info(`Athletes added to team ${id}:`, athleteIds);
     } else if (action === 'remove') {
       await prisma.teamAthlete.deleteMany({
         where: { teamId: idNumber, athleteId: { in: athleteIds } },
       });
-      log.info(`Athletes removed from team ${id}:`, athleteIds);
     } else {
       log.error('Invalid action');
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 });

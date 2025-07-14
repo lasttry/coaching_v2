@@ -1,4 +1,15 @@
-export const calculateControlPoints = (centerX: number, centerY: number, radius: number) => {
+export const calculateControlPoints = (
+  centerX: number,
+  centerY: number,
+  radius: number
+): {
+  startX: number;
+  startY: number;
+  controlPoint1: { x: number; y: number };
+  controlPoint2: { x: number; y: number };
+  endX: number;
+  endY: number;
+} => {
   // Control points are offset by 0.552 times the radius
   const controlOffset = radius * 0.552;
 
@@ -31,7 +42,12 @@ export const calculateControlPoints = (centerX: number, centerY: number, radius:
  * @param angleDegrees - Angle in degrees (0° is to the right, counterclockwise)
  * @returns { x: number, y: number } - Coordinates on the circle
  */
-export const getCirclePoint = (centerX: number, centerY: number, radius: number, angleDegrees: number) => {
+export const getCirclePoint = (
+  centerX: number,
+  centerY: number,
+  radius: number,
+  angleDegrees: number
+): { x: number; y: number } => {
   const angleRadians = (angleDegrees * Math.PI) / 180; // Convert angle to radians
 
   const x = centerX + radius * Math.cos(angleRadians);
@@ -48,7 +64,12 @@ export const getCirclePoint = (centerX: number, centerY: number, radius: number,
  * @param x - Given x-coordinate
  * @returns { y1: number, y2: number } - Upper and lower y-coordinates
  */
-export const getCircleYCoordinates = (centerX: number, centerY: number, radius: number, x: number) => {
+export const getCircleYCoordinates = (
+  centerX: number,
+  centerY: number,
+  radius: number,
+  x: number
+): { y1: number; y2: number } => {
   const dx = x - centerX; // Horizontal distance from center
   const distanceSquared = radius * radius - dx * dx;
 
@@ -71,7 +92,10 @@ export const getCircleYCoordinates = (centerX: number, centerY: number, radius: 
  * @param tolerance - Maximum allowed perpendicular distance to keep a point (default: 1).
  * @returns A simplified array of points.
  */
-export const simplifyPath = (points: [number, number][], tolerance: number = 1): [number, number][] => {
+export const simplifyPath = (
+  points: [number, number][],
+  tolerance: number = 1
+): [number, number][] => {
   if (points.length <= 2) return points; // No simplification needed
 
   const [firstPoint, lastPoint] = [points[0], points[points.length - 1]];
@@ -107,7 +131,11 @@ export const simplifyPath = (points: [number, number][], tolerance: number = 1):
  * @param lineEnd - The end point [x, y] of the line.
  * @returns The perpendicular distance.
  */
-export const perpendicularDistance = (point: [number, number], lineStart: [number, number], lineEnd: [number, number]): number => {
+export const perpendicularDistance = (
+  point: [number, number],
+  lineStart: [number, number],
+  lineEnd: [number, number]
+): number => {
   const [x, y] = point;
   const [x1, y1] = lineStart;
   const [x2, y2] = lineEnd;

@@ -11,15 +11,19 @@ const SelectionContext = createContext<SelectionContextProps | undefined>(undefi
 export const SelectionProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const select = (id: string) => {
+  const select = (id: string): void => {
     setSelectedId(id);
   };
 
-  const deselect = () => {
+  const deselect = (): void => {
     setSelectedId(null);
   };
 
-  return <SelectionContext.Provider value={{ selectedId, select, deselect }}>{children}</SelectionContext.Provider>;
+  return (
+    <SelectionContext.Provider value={{ selectedId, select, deselect }}>
+      {children}
+    </SelectionContext.Provider>
+  );
 };
 
 export const useSelection = (): SelectionContextProps => {

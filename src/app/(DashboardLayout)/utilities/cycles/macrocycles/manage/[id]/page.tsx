@@ -1,6 +1,5 @@
 'use client';
-import React from 'react';
-import { useState, useEffect, use } from 'react';
+import React, { useState, useEffect, use, ReactElement } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, TextField, Box, Typography, Stack, CircularProgress } from '@mui/material';
 
@@ -10,7 +9,7 @@ import { MacrocycleInterface } from '@/types/cycles/types';
 
 type Params = Promise<{ id: string }>;
 
-const MacrocycleForm = (props: { params: Params }) => {
+const MacrocycleForm = (props: { params: Params }): ReactElement => {
   const router = useRouter();
   const params = use(props.params);
   const id = params?.id; // Use segmentData to retrieve the ID
@@ -45,12 +44,12 @@ const MacrocycleForm = (props: { params: Params }) => {
     }
   }, [id, isEditing]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setLoading(true);
 
@@ -97,8 +96,22 @@ const MacrocycleForm = (props: { params: Params }) => {
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={3}>
-          <TextField label="Name" name="name" value={form.name} onChange={handleChange} fullWidth required />
-          <TextField label="Number" name="number" type="number" value={form.number || ''} onChange={handleChange} fullWidth />
+          <TextField
+            label="Name"
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            fullWidth
+            required
+          />
+          <TextField
+            label="Number"
+            name="number"
+            type="number"
+            value={form.number || ''}
+            onChange={handleChange}
+            fullWidth
+          />
           <TextField
             label="Start Date"
             name="startDate"
@@ -133,12 +146,24 @@ const MacrocycleForm = (props: { params: Params }) => {
             fullWidth
             required
           />
-          <TextField label="Notes" name="notes" value={form.notes} onChange={handleChange} fullWidth multiline rows={4} />
+          <TextField
+            label="Notes"
+            name="notes"
+            value={form.notes}
+            onChange={handleChange}
+            fullWidth
+            multiline
+            rows={4}
+          />
           <Box display="flex" justifyContent="space-between">
             <Button type="submit" variant="contained" color="primary">
               Save
             </Button>
-            <Button variant="outlined" color="secondary" onClick={() => router.push('/utilities/cycles/macrocycles')}>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push('/utilities/cycles/macrocycles')}
+            >
               Cancel
             </Button>
           </Box>

@@ -1,7 +1,19 @@
 'use client';
 
 import React, { useState, useEffect, use, ReactElement } from 'react';
-import { Box, Typography, Tabs, Tab, Paper, Container, Select, MenuItem, TextField, Button, Tooltip } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Tabs,
+  Tab,
+  Paper,
+  Container,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  Tooltip,
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { AthleteInterface, GameAthleteReport } from '@/types/games/types';
 import { log } from '@/lib/logger';
@@ -45,7 +57,10 @@ const AthletesReportPage = (props: { params: Params }): ReactElement => {
   useEffect(() => {
     async function fetchAthletesAndReports(): Promise<void> {
       try {
-        const [athletesRes, reportsRes] = await Promise.all([fetch(`/api/athletes`), fetch(`/api/games/${gameId}/reports`)]);
+        const [athletesRes, reportsRes] = await Promise.all([
+          fetch(`/api/athletes`),
+          fetch(`/api/games/${gameId}/reports`),
+        ]);
 
         if (!athletesRes.ok || !reportsRes.ok) {
           throw new Error('Failed to fetch data.');
@@ -65,12 +80,18 @@ const AthletesReportPage = (props: { params: Params }): ReactElement => {
     fetchAthletesAndReports();
   }, [gameId]);
 
-  const handleInputChange = (athleteId: number, field: keyof GameAthleteReport, value: string | number): void => {
+  const handleInputChange = (
+    athleteId: number,
+    field: keyof GameAthleteReport,
+    value: string | number
+  ): void => {
     setReports((prevReports) => {
       const reportIndex = prevReports.findIndex((report) => report.athleteId === athleteId);
 
       if (reportIndex >= 0) {
-        return prevReports.map((report, index) => (index === reportIndex ? { ...report, [field]: value } : report));
+        return prevReports.map((report, index) =>
+          index === reportIndex ? { ...report, [field]: value } : report
+        );
       } else {
         return [
           ...prevReports,
@@ -135,7 +156,13 @@ const AthletesReportPage = (props: { params: Params }): ReactElement => {
       {success && <Typography color="success">{success}</Typography>}
       {error && <Typography color="error">{error}</Typography>}
 
-      <StyledTabs value={activeTab} onChange={handleChange} variant="scrollable" scrollButtons="auto" allowScrollButtonsMobile>
+      <StyledTabs
+        value={activeTab}
+        onChange={handleChange}
+        variant="scrollable"
+        scrollButtons="auto"
+        allowScrollButtonsMobile
+      >
         {athletes.map((athlete) => {
           const hasReport = reports.some((report) => report.athleteId === athlete.id);
           return (
@@ -159,8 +186,13 @@ const AthletesReportPage = (props: { params: Params }): ReactElement => {
             {athletes[activeTab].name}
           </Typography>
           <Select
-            value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.reviewedAthleteId || athletes[activeTab].id}
-            onChange={(e) => handleInputChange(athletes[activeTab].id, 'reviewedAthleteId', Number(e.target.value))}
+            value={
+              reports.find((report) => report.athleteId === athletes[activeTab].id)
+                ?.reviewedAthleteId || athletes[activeTab].id
+            }
+            onChange={(e) =>
+              handleInputChange(athletes[activeTab].id, 'reviewedAthleteId', Number(e.target.value))
+            }
             fullWidth
           >
             {athletes.map((otherAthlete) => (
@@ -175,8 +207,13 @@ const AthletesReportPage = (props: { params: Params }): ReactElement => {
             multiline
             minRows={3}
             fullWidth
-            value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.teamObservation || ''}
-            onChange={(e) => handleInputChange(athletes[activeTab].id, 'teamObservation', e.target.value)}
+            value={
+              reports.find((report) => report.athleteId === athletes[activeTab].id)
+                ?.teamObservation || ''
+            }
+            onChange={(e) =>
+              handleInputChange(athletes[activeTab].id, 'teamObservation', e.target.value)
+            }
             margin="normal"
           />
           <TextField
@@ -185,8 +222,13 @@ const AthletesReportPage = (props: { params: Params }): ReactElement => {
             multiline
             minRows={3}
             fullWidth
-            value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.individualObservation || ''}
-            onChange={(e) => handleInputChange(athletes[activeTab].id, 'individualObservation', e.target.value)}
+            value={
+              reports.find((report) => report.athleteId === athletes[activeTab].id)
+                ?.individualObservation || ''
+            }
+            onChange={(e) =>
+              handleInputChange(athletes[activeTab].id, 'individualObservation', e.target.value)
+            }
             margin="normal"
           />
           <TextField
@@ -195,8 +237,13 @@ const AthletesReportPage = (props: { params: Params }): ReactElement => {
             multiline
             minRows={3}
             fullWidth
-            value={reports.find((report) => report.athleteId === athletes[activeTab].id)?.timePlayedObservation || ''}
-            onChange={(e) => handleInputChange(athletes[activeTab].id, 'timePlayedObservation', e.target.value)}
+            value={
+              reports.find((report) => report.athleteId === athletes[activeTab].id)
+                ?.timePlayedObservation || ''
+            }
+            onChange={(e) =>
+              handleInputChange(athletes[activeTab].id, 'timePlayedObservation', e.target.value)
+            }
             margin="normal"
           />
         </StyledTabPanel>

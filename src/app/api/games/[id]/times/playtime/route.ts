@@ -3,8 +3,27 @@ import { prisma } from '@/lib/prisma';
 
 type Params = Promise<{ id: number }>;
 
+interface TimeEntryWithAthlete {
+  athleteId: number;
+  period: number;
+  entryMinute: number;
+  entrySecond: number;
+  exitMinute: number | null;
+  exitSecond: number | null;
+}
+
+type PlaytimeSummary = {
+  [athleteId: number]: {
+    totalTimePlayed: number;
+    periods: Record<number, number>;
+  };
+};
+
 // GET: Retrieve all time entries for a specific game and calculate total time played
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const gameId = Number(params.id);
 
@@ -26,12 +45,15 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 
     // Determine the maximum number of periods in the game, ensuring a minimum of 4 periods
     const maxPeriod = Math.max(
-      timeEntries.reduce((max: number, entry: any) => Math.max(max, entry.period), 0),
+      timeEntries.reduce(
+        (max: number, entry: TimeEntryWithAthlete) => Math.max(max, entry.period),
+        0
+      ),
       4
     );
 
     // Group time entries by athlete and calculate total playtime
-    const playtimeResults = timeEntries.reduce((acc: any, entry: any) => {
+    const playtimeResults = timeEntries.reduce<PlaytimeSummary>((acc, entry) => {
       const athleteId = entry.athleteId;
 
       // Initialize athlete's data if not already present
@@ -46,18 +68,15 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 
       // Calculate the entry time in seconds
       const entryTimeInSeconds = entry.entryMinute * 60 + entry.entrySecond;
-      console.log(`EntryTimeInSeconds for period ${entry.period}: ${entryTimeInSeconds}`);
 
       let exitTimeInSeconds;
 
       // If exit time is defined, calculate it
       if (entry.exitMinute !== null && entry.exitSecond !== null) {
         exitTimeInSeconds = entry.exitMinute * 60 + entry.exitSecond;
-        console.log(`ExitTimeInSeconds for period ${entry.period}: ${exitTimeInSeconds}`);
       } else {
         // If exit time is not defined, default to the start of the next period (minute = 0, second = 0)
         exitTimeInSeconds = 0; // Beginning of the next period (0 minutes and 0 seconds)
-        console.log(`Default ExitTimeInSeconds for period ${entry.period}: ${exitTimeInSeconds}`);
       }
 
       // Calculate the time played for this entry and add it to the correct period
@@ -71,11 +90,9 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
     // Convert results to an array format for easier JSON serialization
     const resultArray = Object.keys(playtimeResults).map((athleteId) => ({
       athleteId: Number(athleteId),
-      totalTimePlayed: playtimeResults[athleteId].totalTimePlayed,
-      periods: playtimeResults[athleteId].periods,
+      totalTimePlayed: playtimeResults[Number(athleteId)].totalTimePlayed,
+      periods: playtimeResults[Number(athleteId)].periods,
     }));
-
-    console.log(resultArray);
 
     return NextResponse.json(resultArray, { status: 200 });
   } catch (error) {

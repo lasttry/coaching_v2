@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useMediaQuery, Box, Drawer } from '@mui/material';
 import Logo from '../shared/logo/Logo';
 import SidebarItems from './SidebarItems';
+import { Theme } from '@mui/material/styles';
 
 interface ItemType {
   isMobileSidebarOpen: boolean;
@@ -9,8 +10,12 @@ interface ItemType {
   isSidebarOpen: boolean;
 }
 
-const Sidebar = ({ isMobileSidebarOpen, onSidebarClose, isSidebarOpen }: ItemType) => {
-  const lgUp = useMediaQuery((theme: any) => theme.breakpoints.up('lg'));
+const Sidebar = ({
+  isMobileSidebarOpen,
+  onSidebarClose,
+  isSidebarOpen,
+}: ItemType): ReactElement => {
+  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'));
 
   const sidebarWidth = '270px';
 

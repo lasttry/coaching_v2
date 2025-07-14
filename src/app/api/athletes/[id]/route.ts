@@ -74,7 +74,6 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
   const id = params.id;
 
   // Ensure the ID is a valid number
-  log.debug('Checking if athlete id is valid');
   if (!id || isNaN(Number(id))) {
     return NextResponse.json({ error: i18next.t('invalidAthleteId') }, { status: 400 });
   }
@@ -85,7 +84,10 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
 
     // Validate required fields
     if (!data.name || !data.birthdate) {
-      return NextResponse.json({ error: i18next.t('requiredNameNumberBirthdate') }, { status: 400 });
+      return NextResponse.json(
+        { error: i18next.t('requiredNameNumberBirthdate') },
+        { status: 400 }
+      );
     }
 
     // Convert birthdate to Date object (ensure valid date format)

@@ -20,7 +20,7 @@ interface Report {
   timePlayedObservation?: string;
 }
 
-export const generateReportsPDF = async (game: GameInterface) => {
+export const generateReportsPDF = async (game: GameInterface): Promise<void> => {
   const doc = new jsPDF();
 
   const athletesResponse = await fetch('/api/athletes');
@@ -31,20 +31,20 @@ export const generateReportsPDF = async (game: GameInterface) => {
   const settings = await settingsResponse.json();
 
   // Add game details to the PDF
-  console.log(game);
   let top = generateHeader(doc, settings);
 
-  top = generateGameDetailsHeader(doc, top, game, settings);
+  top = generateGameDetailsHeader(doc, top, game);
 
   // Prepare table body
-  console.log(reports);
   const tableBody = athletes.flatMap((athlete: Athlete) => {
     const report = reports.find((r: Report) => r.athleteId === athlete.id);
-    console.log(report);
     //console.log(report.reviewdAthlete)
     return [
       ['Atleta:', `${athlete.number === '-1' ? '' : athlete.number + ' - '}${athlete.name}`],
-      ['Atleta Revisto:', report ? (report.reviewdAthlete ? report.reviewdAthlete.name : 'Próprio') : 'NÃO FEZ'],
+      [
+        'Atleta Revisto:',
+        report ? (report.reviewdAthlete ? report.reviewdAthlete.name : 'Próprio') : 'NÃO FEZ',
+      ],
       ['Observação Equipa:', report ? report.teamObservation : 'NÃO FEZ'],
       ['Observação Individual:', report ? report.individualObservation : 'NÃO FEZ'],
       ['Tempo Jogado:', report ? report.timePlayedObservation : 'NÃO FEZ'],

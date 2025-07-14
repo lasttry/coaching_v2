@@ -46,21 +46,32 @@ const CourtFIBA: React.FC<BasketballCourtSVGProps> = ({
   const strokeWidth = 1 * scale;
 
   useEffect(() => {
-    const updateViewBox = () => {
+    const updateViewBox = (): void => {
       if (gRef.current) {
         const parentSvg = gRef.current.closest('svg');
         if (parentSvg) {
           parentSvg.setAttribute('viewBox', `0 0 ${stageWidth} ${stageHeight}`);
-          console.info('Updated SVG viewBox:', parentSvg.getAttribute('viewBox'));
         }
       }
     };
 
-    const addSvgDefinitions = () => {
+    const addSvgDefinitions = (): void => {
       addDef(
         'playground',
-        <pattern id="playgroundPattern" patternUnits="userSpaceOnUse" width={courtWidth} height={courtHeight}>
-          <image href={playground} x="0" y="0" width={courtWidth} height={courtHeight} preserveAspectRatio="none" />
+        <pattern
+          id="playgroundPattern"
+          patternUnits="userSpaceOnUse"
+          width={courtWidth}
+          height={courtHeight}
+        >
+          <image
+            href={playground}
+            x="0"
+            y="0"
+            width={courtWidth}
+            height={courtHeight}
+            preserveAspectRatio="none"
+          />
         </pattern>
       );
 
@@ -81,7 +92,14 @@ const CourtFIBA: React.FC<BasketballCourtSVGProps> = ({
       addDef(
         'middleCircleCutout',
         <clipPath id="courtCenter">
-          <circle cx={middleX} cy={middleY} r={centerCircleRadius} fill="#FFFFFF" stroke={strokeColor} strokeWidth={strokeWidth} />
+          <circle
+            cx={middleX}
+            cy={middleY}
+            r={centerCircleRadius}
+            fill="#FFFFFF"
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+          />
         </clipPath>
       );
 
@@ -95,12 +113,11 @@ const CourtFIBA: React.FC<BasketballCourtSVGProps> = ({
       }
     };
 
-    const loadCircleImage = () => {
+    const loadCircleImage = (): void => {
       if (centerLogo) {
         const img = new Image();
         img.src = centerLogo;
         img.onload = () => {
-          console.info('Circle image loaded successfully.');
           const diameter = centerCircleRadius * 2;
           const scaleFactor = diameter / Math.max(img.width, img.height);
           setCircleImage({
@@ -123,7 +140,27 @@ const CourtFIBA: React.FC<BasketballCourtSVGProps> = ({
       removeDef('middleCircleCutout');
       removeDef('fullCourt');
     };
-  }, [scale, courtBorder, strokeColor, backgroundColor, isFullCourt, playground, centerLogo, stageWidth, stageHeight, addDef, removeDef]);
+  }, [
+    scale,
+    courtBorder,
+    strokeColor,
+    backgroundColor,
+    isFullCourt,
+    playground,
+    centerLogo,
+    stageWidth,
+    stageHeight,
+    addDef,
+    removeDef,
+    centerCircleRadius,
+    courtHeight,
+    courtWidth,
+    keyHeight,
+    keyWidth,
+    middleX,
+    middleY,
+    strokeWidth,
+  ]);
 
   return (
     <g ref={gRef} className="background">
@@ -145,8 +182,22 @@ const CourtFIBA: React.FC<BasketballCourtSVGProps> = ({
           stroke={strokeColor}
           strokeWidth={strokeWidth}
         />
-        <line x1={courtBorder} y1={middleY} x2={courtWidth + courtBorder} y2={middleY} stroke={strokeColor} strokeWidth={strokeWidth} />
-        <circle cx={middleX} cy={middleY} r={centerCircleRadius} fill={backgroundColor} stroke={strokeColor} strokeWidth={strokeWidth} />
+        <line
+          x1={courtBorder}
+          y1={middleY}
+          x2={courtWidth + courtBorder}
+          y2={middleY}
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+        />
+        <circle
+          cx={middleX}
+          cy={middleY}
+          r={centerCircleRadius}
+          fill={backgroundColor}
+          stroke={strokeColor}
+          strokeWidth={strokeWidth}
+        />
         {circleImage && (
           <image
             x={middleX - centerCircleRadius}

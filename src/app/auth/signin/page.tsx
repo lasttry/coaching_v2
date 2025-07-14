@@ -1,20 +1,29 @@
 'use client';
-import React, { useState } from 'react';
-import { Box, Typography, FormGroup, FormControlLabel, Button, Stack, Checkbox, Alert } from '@mui/material';
+import React, { ReactElement, useState } from 'react';
+import {
+  Box,
+  Typography,
+  FormGroup,
+  FormControlLabel,
+  Button,
+  Stack,
+  Checkbox,
+  Alert,
+} from '@mui/material';
 import { signIn } from 'next-auth/react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import { log } from '@/lib/logger';
 
-const SignInPage = () => {
+const SignInPage = (): ReactElement => {
   const { update } = useSession();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
 
-  const handleSignIn = async (e: React.FormEvent) => {
+  const handleSignIn = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
     // Basic validation
@@ -52,20 +61,16 @@ const SignInPage = () => {
         return;
       }
 
-      log.info('Account data fetched successfully:', data);
 
       // Redirect logic based on account data
-      if (data.length >= 1 && data[0].defaultClubId != 0) {
-        log.info('Redirecting to games page');
+      if (data.length >= 1 && data[0].defaultClubId !== 0) {
         router.push('/utilities/games');
       } else if (data[0].clubs.length === 1) {
         const updatedSession = await update({
           selectedClubId: data[0].clubs[0].clubId,
         });
-        log.info('Updated session:', updatedSession);
         router.push('/utilities/games');
       } else {
-        log.info('Redirecting to chooseClub page');
         router.push('/utilities/chooseClub');
       }
     } catch (error) {
@@ -77,7 +82,11 @@ const SignInPage = () => {
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-      <Box component="form" onSubmit={handleSignIn} sx={{ width: 400, padding: 4, boxShadow: 3, borderRadius: 2 }}>
+      <Box
+        component="form"
+        onSubmit={handleSignIn}
+        sx={{ width: 400, padding: 4, boxShadow: 3, borderRadius: 2 }}
+      >
         {/* Success/Error Messages */}
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
@@ -89,20 +98,46 @@ const SignInPage = () => {
 
         <Stack>
           <Box>
-            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="username" mb="5px">
+            <Typography
+              variant="subtitle1"
+              fontWeight={600}
+              component="label"
+              htmlFor="username"
+              mb="5px"
+            >
               Username
             </Typography>
-            <CustomTextField variant="outlined" fullWidth value={username} onChange={(e) => setUsername(e.target.value)} />
+            <CustomTextField
+              variant="outlined"
+              fullWidth
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
           </Box>
           <Box mt="25px">
-            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
+            <Typography
+              variant="subtitle1"
+              fontWeight={600}
+              component="label"
+              htmlFor="password"
+              mb="5px"
+            >
               Password
             </Typography>
-            <CustomTextField type="password" variant="outlined" fullWidth value={password} onChange={(e) => setPassword(e.target.value)} />
+            <CustomTextField
+              type="password"
+              variant="outlined"
+              fullWidth
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </Box>
           <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
             <FormGroup>
-              <FormControlLabel control={<Checkbox defaultChecked />} label="Remember this Device" />
+              <FormControlLabel
+                control={<Checkbox defaultChecked />}
+                label="Remember this Device"
+              />
             </FormGroup>
           </Stack>
         </Stack>

@@ -1,7 +1,20 @@
 'use client';
 
 import React, { useState, useEffect, ReactElement } from 'react';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Stack, Typography, Box, Alert, Modal, CircularProgress } from '@mui/material';
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Stack,
+  Typography,
+  Box,
+  Alert,
+  Modal,
+  CircularProgress,
+} from '@mui/material';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
@@ -103,10 +116,18 @@ const GamesList = (): ReactElement => {
                   <TableCell>{game.away ? t('yes') : t('no')}</TableCell>
                   <TableCell align="right">
                     <Stack direction="row" spacing={2}>
-                      <Button variant="contained" color="primary" onClick={() => handleOpenModal(game)}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleOpenModal(game)}
+                      >
                         {t('edit')}
                       </Button>
-                      <Button variant="contained" color="secondary" onClick={() => handleDelete(game.id)}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleDelete(game.id)}
+                      >
                         {t('delete')}
                       </Button>
                     </Stack>

@@ -3,14 +3,33 @@
 import React, { useState, useMemo, useRef } from 'react';
 import { Box, Typography, Stack } from '@mui/material';
 import { useSettings } from '@/context/SettingsContext';
-import { PointerIcon, CourtIcon, PlayerButton, LineMovementIcon, FollowMouseCircle } from '@/app/(DashboardLayout)/components/drills/Icons';
+import {
+  PointerIcon,
+  CourtIcon,
+  PlayerButton,
+  LineMovementIcon,
+  FollowMouseCircle,
+} from '@/app/(DashboardLayout)/components/drills/Icons';
 import PlayerIcon from '@/app/(DashboardLayout)/components/drills/PlayerIcon';
 import LineMovement from '@/app/(DashboardLayout)/components/drills/LineMovement';
 import BasketballCourtSVG from '@/app/(DashboardLayout)/components/drills/BasketballCourtSVG';
-import { DrawingType, DrawingInterface, LineInterface, PlayerInterface, PlayerType, LineType } from './types';
+import {
+  DrawingType,
+  DrawingInterface,
+  LineInterface,
+  PlayerInterface,
+  PlayerType,
+  LineType,
+} from './types';
 import { v4 as uuidv4 } from 'uuid';
-import { SvgDefsProvider, useSvgDefs } from '@/app/(DashboardLayout)/components/drills/SvgDefsProvider';
-import { SelectionProvider, useSelection } from '@/app/(DashboardLayout)/components/drills/SelectionContext';
+import {
+  SvgDefsProvider,
+  useSvgDefs,
+} from '@/app/(DashboardLayout)/components/drills/SvgDefsProvider';
+import {
+  SelectionProvider,
+  useSelection,
+} from '@/app/(DashboardLayout)/components/drills/SelectionContext';
 import { simplifyPath } from '@/utils/math';
 
 const Drills_v2: React.FC = () => {
@@ -27,13 +46,8 @@ const Drills_v2: React.FC = () => {
     type: DrawingType.None,
     value: '1',
   });
-  const [cursorPosition, setCursorPosition] = useState<{
-    x: number;
-    y: number;
-  }>({ x: 0, y: 0 });
   const [players, setPlayers] = useState<PlayerInterface[]>([]);
   const [currentLine, setCurrentLine] = useState<LineInterface | undefined>(); // Line currently being drawn
-  const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(null);
   const [linesMovement, setLinesMovement] = useState<LineInterface[]>([]); // Stores all line movements
 
   // Court dimensions
@@ -47,11 +61,12 @@ const Drills_v2: React.FC = () => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   // Handlers
-  const handleCircleClick = (x: number, y: number) => {
+  const handleCircleClick = (x: number, y: number): void => {
     if (!drawing.showCircle && !drawing.isDrawing) return;
-    console.log(`Circle clicked at position: (${x}, ${y})`);
-    if ((drawing.type == DrawingType.Offensive || drawing.type == DrawingType.Defensive) && drawing.showCircle) {
-      console.log(drawing.value);
+    if (
+      (drawing.type === DrawingType.Offensive || drawing.type === DrawingType.Defensive) &&
+      drawing.showCircle
+    ) {
       if (drawing.type === DrawingType.Offensive || drawing.type === DrawingType.Defensive) {
         setPlayers((prevPlayers) => [
           ...prevPlayers,
@@ -61,7 +76,8 @@ const Drills_v2: React.FC = () => {
             x,
             y,
             rotation: 0,
-            type: drawing.type === DrawingType.Offensive ? PlayerType.Offensive : PlayerType.Defensive,
+            type:
+              drawing.type === DrawingType.Offensive ? PlayerType.Offensive : PlayerType.Defensive,
           },
         ]);
       }
@@ -72,24 +88,27 @@ const Drills_v2: React.FC = () => {
     }
   };
 
-  const handleMove = (x: number, y: number, rotation: number, additionalProps?: { id: string }) => {
-    console.log('handle move');
-    console.log({ x, y, rotation, additionalProps });
+  const handleMove = (
+    x: number,
+    y: number,
+    rotation: number,
+    additionalProps?: { id: string }
+  ): void => {
     if (additionalProps?.id) {
       const id = additionalProps.id;
 
       // Check if the id exists in offensivePlayers
       const playerExists = players.some((player) => player.id === id);
       if (playerExists) {
-        setPlayers((prevPlayers) => prevPlayers.map((player) => (player.id === id ? { ...player, x, y, rotation } : player)));
-        console.log(`Moved offensive player ${id} to the position x:${x} and y:${y} in rotation:${rotation}`);
+        setPlayers((prevPlayers) =>
+          prevPlayers.map((player) => (player.id === id ? { ...player, x, y, rotation } : player))
+        );
         return;
       }
-      console.log(`Player with id ${id} not found`);
     }
   };
 
-  const handleMouseDown = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const handleMouseDown = (event: React.MouseEvent<SVGSVGElement, MouseEvent>): void => {
     if (drawing.type === DrawingType.LineMovement) {
       if (selectedId && selectedId?.length > 0) return;
       const svg = svgRef.current;
@@ -110,7 +129,7 @@ const Drills_v2: React.FC = () => {
     }
   };
 
-  const handleMouseMove = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+  const handleMouseMove = (event: React.MouseEvent<SVGSVGElement, MouseEvent>): void => {
     if (drawing.isDrawing && currentLine) {
       const svg = svgRef.current;
       if (svg) {
@@ -146,10 +165,9 @@ const Drills_v2: React.FC = () => {
     }
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (): void => {
     if (drawing.isDrawing && currentLine) {
       setLinesMovement((prev) => [...prev, currentLine]);
-      console.log(linesMovement);
       setCurrentLine(undefined);
       setDrawing((prev) => ({ ...prev, isDrawing: false }));
     }
@@ -222,7 +240,6 @@ const Drills_v2: React.FC = () => {
             />
             <LineMovementIcon
               onClick={() => {
-                console.log('drawing line');
                 deselect();
                 setDrawing({ ...drawing, type: DrawingType.LineMovement });
               }}
@@ -249,9 +266,25 @@ const Drills_v2: React.FC = () => {
             <FollowMouseCircle visible={drawing.showCircle} onClick={handleCircleClick} />
 
             <g className="groupLinesMovement">
-              {currentLine && <LineMovement id={currentLine.id} points={currentLine.points} draggable={false} x={currentLine.x} y={currentLine.y} />}
+              {currentLine && (
+                <LineMovement
+                  id={currentLine.id}
+                  points={currentLine.points}
+                  draggable={false}
+                  x={currentLine.x}
+                  y={currentLine.y}
+                />
+              )}
               {linesMovement.map((line, index) => (
-                <LineMovement id={line.id} key={index} points={line.points} draggable={true} rotatable={false} x={line.x} y={line.y} />
+                <LineMovement
+                  id={line.id}
+                  key={index}
+                  points={line.points}
+                  draggable={true}
+                  rotatable={false}
+                  x={line.x}
+                  y={line.y}
+                />
               ))}
             </g>
             <g className="groupPlayer">

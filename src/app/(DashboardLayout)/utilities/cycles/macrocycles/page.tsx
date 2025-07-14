@@ -1,17 +1,27 @@
 'use client';
 
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Stack, Typography, Box } from '@mui/material';
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Stack,
+  Typography,
+  Box,
+} from '@mui/material';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
 import { MacrocycleInterface } from '@/types/cycles/types';
 
-const MacroCyclesList = () => {
+const MacroCyclesList = (): ReactElement => {
   const [macroCycles, setMacroCycles] = useState<MacrocycleInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -19,7 +29,7 @@ const MacroCyclesList = () => {
 
   // Fetch the list of macro cycles from the API
   useEffect(() => {
-    async function fetchMacroCycles() {
+    async function fetchMacroCycles(): Promise<void> {
       try {
         const response = await fetch('/api/cycles/macrocycles'); // Fetching macro cycles from the API
         const data: MacrocycleInterface[] = await response.json();
@@ -34,7 +44,7 @@ const MacroCyclesList = () => {
   }, []);
 
   // Handle macro cycle deletion
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number): Promise<void> => {
     const confirmed = window.confirm(`Are you sure you want to delete MacroCycle ID ${id}?`);
     if (!confirmed) return;
 
@@ -138,20 +148,30 @@ const MacroCyclesList = () => {
                     <TableRow
                       key={cycle.id}
                       hover
-                      onClick={() => router.push(`/utilities/cycles/macrocycles/manage/${cycle.id}`)} // Navigate to macro cycle details or edit page on row click
+                      onClick={() =>
+                        router.push(`/utilities/cycles/macrocycles/manage/${cycle.id}`)
+                      } // Navigate to macro cycle details or edit page on row click
                       sx={{ cursor: 'pointer' }}
                     >
                       <TableCell>
-                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{cycle.number}</Typography>
+                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
+                          {cycle.number}
+                        </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{cycle.name}</Typography>
+                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
+                          {cycle.name}
+                        </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{dayjs(cycle.startDate).format('YYYY-MM-DD')}</Typography>
+                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
+                          {dayjs(cycle.startDate).format('YYYY-MM-DD')}
+                        </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{dayjs(cycle.endDate).format('YYYY-MM-DD')}</Typography>
+                        <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
+                          {dayjs(cycle.endDate).format('YYYY-MM-DD')}
+                        </Typography>
                       </TableCell>
                       <TableCell>
                         <Typography
@@ -168,7 +188,11 @@ const MacroCyclesList = () => {
                         <Stack direction="row" spacing={2}>
                           {/* Edit MacroCycle Link */}
                           <Link href={`/utilities/cycles/macrocycles/manage/${cycle.id}`} passHref>
-                            <Button variant="contained" color="primary" onClick={(e) => e.stopPropagation()}>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               Edit
                             </Button>
                           </Link>

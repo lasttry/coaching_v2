@@ -3,7 +3,7 @@ import { SessionGoalInterface } from '@/types/cycles/types';
 import { prisma } from '@/lib/prisma';
 
 // GET: List all session goals
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     const sessionGoals = await prisma.sessionGoal.findMany({
       include: {
@@ -19,14 +19,17 @@ export async function GET() {
 }
 
 // POST: Create a new session goal
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   try {
     const data: SessionGoalInterface = await request.json();
 
     // Validate required fields
     const { duration, note, coach, microcycleId } = data;
     if (!duration || !microcycleId || !coach) {
-      return NextResponse.json({ error: 'Duration, coach, and microcycle ID are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Duration, coach, and microcycle ID are required' },
+        { status: 400 }
+      );
     }
 
     const newSessionGoal = await prisma.sessionGoal.create({

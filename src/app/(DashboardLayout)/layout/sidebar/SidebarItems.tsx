@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import Menuitems from './MenuItems';
 import { usePathname } from 'next/navigation';
 import { Box, List } from '@mui/material';
 import NavItem from './NavItem';
 import NavGroup from './NavGroup/NavGroup';
 
-const SidebarItems = ({ toggleMobileSidebar }: any) => {
+type SidebarItemsProps = {
+  toggleMobileSidebar?: () => void;
+};
+
+const SidebarItems = ({ toggleMobileSidebar }: SidebarItemsProps): ReactElement => {
   const pathname = usePathname();
   const pathDirect = pathname;
 
@@ -20,7 +24,17 @@ const SidebarItems = ({ toggleMobileSidebar }: any) => {
             // {/********If Sub Menu**********/}
             /* eslint no-else-return: "off" */
           } else {
-            return <NavItem item={item} key={item.id} pathDirect={pathDirect ?? ''} onClick={toggleMobileSidebar} />;
+            return (
+              <NavItem
+                item={item}
+                key={item.id}
+                pathDirect={pathDirect ?? ''}
+                onClick={(e) => {
+                  e.preventDefault(); // optional: depends on your need
+                  toggleMobileSidebar?.();
+                }}
+              />
+            );
           }
         })}
       </List>

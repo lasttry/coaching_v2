@@ -13,7 +13,7 @@ export const validateColor = (color: string): boolean => {
 };
 
 // Validate Club settings
-export const validateClubSettings = (data: ClubInterface) => {
+export const validateClubSettings = (data: ClubInterface): void => {
   if (!data.name || data.name.length > 50) {
     throw new Error('Club name is required and must be less than 50 characters.');
   }
@@ -24,10 +24,6 @@ export const validateClubSettings = (data: ClubInterface) => {
 
   if (data.season && !validateSeason(data.season)) {
     throw new Error('Season format must be YYYY/YYYY.');
-  }
-
-  if (data.location && data.location.length > 30) {
-    throw new Error('Home location must be less than 30 characters.');
   }
 
   if (data.backgroundColor && !validateColor(data.backgroundColor)) {

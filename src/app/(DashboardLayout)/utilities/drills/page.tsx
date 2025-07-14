@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, ReactElement } from 'react';
 import { Box, Typography, Stack, Button } from '@mui/material';
 import { Stage, Layer, Line, Circle, Group, Path } from 'react-konva';
 import { CourtIcon } from '@/app/(DashboardLayout)/components/drills/Icons';
@@ -8,6 +8,7 @@ import { PointerIcon, LineMovement } from '@/app/(DashboardLayout)/components/dr
 import { DrawObjects } from '@/app/(DashboardLayout)/components/drills/DrawObjects';
 import BasketballCourt from '@/app/(DashboardLayout)/components/drills/BasketballCourt';
 import { useSettings } from '@/context/SettingsContext';
+import { KonvaEventObject } from 'konva/lib/Node';
 
 export enum DrawingType {
   Offensive = 'offensive',
@@ -32,7 +33,7 @@ export interface Line {
   startY?: number;
 }
 
-const BasketballDrillPage = () => {
+const BasketballDrillPage = (): ReactElement => {
   const { settings } = useSettings();
   const [designFullCourt, setDesignFullCourt] = useState(true);
   const [drawing, setDrawing] = useState<DrawingInterface>({
@@ -45,7 +46,7 @@ const BasketballDrillPage = () => {
     x: number;
     y: number;
   }>({ x: 0, y: 0 });
-  const [offensivePlayers, setOffensivePlayers] = useState<any[]>([]);
+  const [offensivePlayers, setOffensivePlayers] = useState<string[]>([]);
   // Lines
   const [currentLine, setCurrentLine] = useState<Line>(); // Line currently being drawn
   const [selectedLineIndex, setSelectedLineIndex] = useState<number | null>(null);
@@ -59,7 +60,7 @@ const BasketballDrillPage = () => {
   const stageWidth = courtWidth + courtBorder * 2;
   const stageHeight = courtHeight + courtBorder * 2;
 
-  const pointsToPath = (line: Line) => {
+  const pointsToPath = (line: Line): string => {
     if (line.points.length < 4) return ''; // Ensure at least two points exist
 
     // Start with 'M' for the first point
@@ -74,12 +75,10 @@ const BasketballDrillPage = () => {
     for (let i = 6; i < line.points.length; i += 2) {
       d += ` L ${line.points[i]},${line.points[i + 1]}`;
     }
-    console.log('Generated Path:', d);
     return d;
   };
 
-  const handleAddPlayer = (value: number) => {
-    console.log(value);
+  const _handleAddPlayer = (value: number): void => {
     setDrawing({
       showCircle: true,
       isDrawing: true,
@@ -87,24 +86,23 @@ const BasketballDrillPage = () => {
       value: String(value),
     });
   };
-  const handleAddLineMovement = () => {
+  const handleAddLineMovement = (): void => {
     setDrawing({
       showCircle: false,
       isDrawing: false,
       type: DrawingType.LineMovement,
     });
-    console.log(drawing);
   };
 
-  const handleMouseDown = (e: any) => {
-    console.log(drawing);
+  const handleMouseDown = (e: KonvaEventObject<MouseEvent>): void => {
     if (drawing.isDrawing) return; // already drawing something.
 
     const stage = e.target.getStage();
+    if (stage === null) {
+      return;
+    }
     const pos = stage.getPointerPosition();
-    console.log(pos);
     if (drawing.type === DrawingType.LineMovement) {
-      console.log(pos);
       setCurrentLine({
         tool: 'line',
         points: [pos.x, pos.y],
@@ -120,7 +118,7 @@ const BasketballDrillPage = () => {
     }
   };
 
-  const handleMouseMove = (e: any) => {
+  const handleMouseMove = (e: KonvaEventObject<MouseEvent>): void => {
     if (drawing.showCircle) {
       const stage = e.target.getStage();
       const pos = stage.getPointerPosition();
@@ -146,7 +144,7 @@ const BasketballDrillPage = () => {
       });
     }
   };
-  const handleMouseUp = (e: any) => {
+  const handleMouseUp = (e: KonvaEventObject<MouseEvent>): void => {
     if (!drawing.isDrawing) return;
     if (currentLine) {
       if (currentLine.points.length > 2) {
@@ -157,36 +155,43 @@ const BasketballDrillPage = () => {
           points: [...currentLine.points, pos.x, pos.y],
         });
         setLinesMovement((prev) => [...prev, currentLine]);
-        console.log(linesMovement);
-        console.log(currentLine);
       }
       setCurrentLine(undefined);
       setDrawing({ ...drawing, isDrawing: false });
     }
   };
 
-  const handleLineDrag = (index, pos) => {
-    setLinesMovement((prevLines) => prevLines.map((line, i) => (i === index ? { ...line, position: pos } : line)));
+  const handleLineDrag = (index: number, pos: number): void => {
+    setLinesMovement((prevLines) =>
+      prevLines.map((line, i) => (i === index ? { ...line, position: pos } : line))
+    );
   };
-  const handlePointDrag = (lineIndex, pointIndex, newX, newY) => {
+  const handlePointDrag = (
+    lineIndex: number,
+    pointIndex: number,
+    newX: number,
+    newY: number
+  ): void => {
     setLinesMovement((prevLines) =>
       prevLines.map((line, i) =>
         i === lineIndex
           ? {
               ...line,
-              points: line.points.map((coord, j) => (j === pointIndex * 2 ? newX : j === pointIndex * 2 + 1 ? newY : coord)),
+              points: line.points.map((coord, j) =>
+                j === pointIndex * 2 ? newX : j === pointIndex * 2 + 1 ? newY : coord
+              ),
             }
           : line
       )
     );
   };
 
-  const handleSelectLine = (lineIndex: number) => {
+  const handleSelectLine = (lineIndex: number): void => {
     setSelectedLineIndex(lineIndex);
     resetDrawing();
   };
 
-  const handleAddPoint = (lineIndex, x, y) => {
+  const handleAddPoint = (lineIndex: number, x: number, y: number): void => {
     setLinesMovement((prevLines) =>
       prevLines.map((line, i) =>
         i === lineIndex
@@ -199,21 +204,23 @@ const BasketballDrillPage = () => {
     );
   };
 
-  const handleDeletePoint = (lineIndex, pointIndex) => {
+  const handleDeletePoint = (lineIndex: number, pointIndex: number): void => {
     setLinesMovement((prevLines) =>
       prevLines.map((line, i) =>
         i === lineIndex
           ? {
               ...line,
-              points: line.points.filter((_, idx) => idx !== pointIndex * 2 && idx !== pointIndex * 2 + 1),
+              points: line.points.filter(
+                (_, idx) => idx !== pointIndex * 2 && idx !== pointIndex * 2 + 1
+              ),
             }
           : line
       )
     );
   };
 
-  const handleCanvasClick = (e: any) => {
-    if (drawing.isDrawing && drawing.type == DrawingType.Offensive) {
+  const handleCanvasClick = (e: KonvaEventObject<MouseEvent>): void => {
+    if (drawing.isDrawing && drawing.type === DrawingType.Offensive) {
       const stage = e.target.getStage();
       const pos = stage.getPointerPosition();
       setOffensivePlayers((prev) => [
@@ -235,9 +242,9 @@ const BasketballDrillPage = () => {
     }
   };
 
-  const stageRef = useRef<any>(null);
+  const stageRef = useRef<Stage | null>(null);
 
-  const saveDrill = async () => {
+  const saveDrill = async (): Promise<void> => {
     const stage = stageRef.current;
     const svgContent = stage?.toDataURL(); // Export as data URL
 
@@ -254,7 +261,7 @@ const BasketballDrillPage = () => {
     }
   };
 
-  const resetDrawing = () => {
+  const resetDrawing = (): void => {
     setDrawing({
       showCircle: false,
       isDrawing: false,
@@ -272,11 +279,7 @@ const BasketballDrillPage = () => {
       <Stack direction="row" spacing={2} marginBottom={2}>
         <PointerIcon onClick={resetDrawing} />
         <CourtIcon onClick={() => setDesignFullCourt(!designFullCourt)} />
-        <PlayerIcon
-          initialValue={Number(drawing.value)}
-          onClick={handleAddPlayer}
-          onValueChange={(val) => setDrawing((prev) => ({ ...prev, value: String(val) }))}
-        />
+
         <LineMovement onClick={handleAddLineMovement} />
         <Button variant="outlined" onClick={() => {}}>
           Draw Line
@@ -310,11 +313,22 @@ const BasketballDrillPage = () => {
 
         {drawing.showCircle && (
           <Layer>
-            <Circle x={cursorPosition.x} y={cursorPosition.y} radius={5 * scale} stroke="#77B5E1" strokeWidth={2} />
+            <Circle
+              x={cursorPosition.x}
+              y={cursorPosition.y}
+              radius={5 * scale}
+              stroke="#77B5E1"
+              strokeWidth={2}
+            />
           </Layer>
         )}
 
-        <Layer x={0} y={0} width={stageWidth} height={designFullCourt ? stageHeight / 2 + 25 : stageHeight}>
+        <Layer
+          x={0}
+          y={0}
+          width={stageWidth}
+          height={designFullCourt ? stageHeight / 2 + 25 : stageHeight}
+        >
           {linesMovement.map((line, lineIndex) => (
             <>
               <Group
@@ -323,10 +337,18 @@ const BasketballDrillPage = () => {
                 x={line?.startX}
                 y={line?.startY}
                 onDragEnd={(e) => handleLineDrag(lineIndex, e.target.position())}
-                onClick={(e) => handleSelectLine(lineIndex)}
+                onClick={(_e) => handleSelectLine(lineIndex)}
               >
                 {/* Render the arrowhead */}
-                <Path key={`lm_path_${lineIndex}`} data={pointsToPath(line)} fill="black" stroke="black" strokeWidth={3} lineCap="round" lineJoin="round" />
+                <Path
+                  key={`lm_path_${lineIndex}`}
+                  data={pointsToPath(line)}
+                  fill="black"
+                  stroke="black"
+                  strokeWidth={3}
+                  lineCap="round"
+                  lineJoin="round"
+                />
 
                 {/* Add a new point on double-click */}
                 {selectedLineIndex === lineIndex && (
@@ -357,7 +379,9 @@ const BasketballDrillPage = () => {
                           fill="red"
                           draggable
                           onDblClick={() => handleDeletePoint(lineIndex, idx / 2)}
-                          onDragMove={(e) => handlePointDrag(lineIndex, idx / 2, e.target.x(), e.target.y())}
+                          onDragMove={(e) =>
+                            handlePointDrag(lineIndex, idx / 2, e.target.x(), e.target.y())
+                          }
                         />
                       );
                     }
@@ -369,7 +393,15 @@ const BasketballDrillPage = () => {
 
           {/* Current Line */}
           {currentLine && (
-            <Path key={`lm_path_current_line`} data={pointsToPath(currentLine)} fill="none" stroke="black" strokeWidth={3} lineCap="round" lineJoin="round" />
+            <Path
+              key={`lm_path_current_line`}
+              data={pointsToPath(currentLine)}
+              fill="none"
+              stroke="black"
+              strokeWidth={3}
+              lineCap="round"
+              lineJoin="round"
+            />
           )}
         </Layer>
         <DrawObjects elements={offensivePlayers} onUpdate={setOffensivePlayers} />

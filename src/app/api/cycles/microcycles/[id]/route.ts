@@ -1,11 +1,23 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
+
+interface SessionGoalInput {
+  duration: number | string;
+  note?: string;
+  coach: string;
+  date: string;
+  order?: number;
+}
 
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve a specific microcycle
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const id = Number(params.id);
 
@@ -38,7 +50,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 }
 
 // PUT: Update a specific microcycle
-export async function PUT(req: NextRequest, segmentData: { params: Params }) {
+export async function PUT(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const id = Number(params.id);
 
@@ -49,16 +64,15 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
   const body = await req.json();
 
   try {
-    const sessionGoals = body.sessionGoals
-      ? body.sessionGoals.map((goal: any, index: number) => ({
-          duration: parseInt(goal.duration, 10),
+    const sessionGoals = Array.isArray(body.sessionGoals)
+      ? (body.sessionGoals as SessionGoalInput[]).map((goal, index) => ({
+          duration: parseInt(goal.duration.toString(), 10),
           note: goal.note || null,
           coach: goal.coach,
           date: new Date(goal.date),
-          order: goal.order ? goal.order : index + 1,
+          order: goal.order ?? index + 1,
         }))
       : [];
-
     const payload = {
       where: { id },
       data: {
@@ -76,20 +90,20 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
         },
       },
     };
-    console.log(payload);
-    console.log(sessionGoals);
     const updatedMicrocycle = await prisma.microcycle.update(payload);
 
     return NextResponse.json(updatedMicrocycle);
   } catch (error) {
-    console.error('Error updating microcycle:');
-    console.error(error);
+    log.error('Error updating microcycle:', error);
     return NextResponse.json({ error: 'Failed to update microcycle' }, { status: 500 });
   }
 }
 
 // DELETE: Delete a specific microcycle
-export async function DELETE(req: NextRequest, segmentData: { params: Params }) {
+export async function DELETE(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   const params = await segmentData.params;
   const id = Number(params.id);
 
@@ -104,7 +118,7 @@ export async function DELETE(req: NextRequest, segmentData: { params: Params }) 
 
     return NextResponse.json({ message: 'Microcycle deleted successfully' });
   } catch (error) {
-    console.error('Error deleting microcycle:', error);
+    log.error('Error deleting microcycle:', error);
     return NextResponse.json({ error: 'Failed to delete microcycle' }, { status: 500 });
   }
 }

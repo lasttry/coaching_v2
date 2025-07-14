@@ -22,7 +22,6 @@ i18next
     debug: process.env.NODE_ENV === 'development', // Enable debug mode in development
   })
   .then(() => {
-    log.debug('i18next initialized successfully');
   })
   .catch((error) => {
     log.error('Error initializing i18next:', error);

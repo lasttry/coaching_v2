@@ -6,7 +6,10 @@ import { validateClubSettings } from '../assets/validateClub';
 
 type Params = Promise<{ id: number }>;
 // GET: Fetch club by ID
-export async function GET(req: NextRequest, segmentData: { params: Params }) {
+export async function GET(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   try {
     const params = await segmentData.params;
     const clubId = Number(params.id);
@@ -17,6 +20,9 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 
     const club = await prisma.club.findUnique({
       where: { id: clubId },
+      include: {
+        venues: true,
+      }
     });
 
     if (!club) {
@@ -31,7 +37,10 @@ export async function GET(req: NextRequest, segmentData: { params: Params }) {
 }
 
 // DELETE: Delete a club by ID
-export async function DELETE(req: NextRequest, segmentData: { params: Params }) {
+export async function DELETE(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   try {
     const params = await segmentData.params;
     const clubId = Number(params.id);
@@ -53,7 +62,10 @@ export async function DELETE(req: NextRequest, segmentData: { params: Params }) 
 }
 
 // PUT: Update club by ID
-export async function PUT(req: NextRequest, segmentData: { params: Params }) {
+export async function PUT(
+  req: NextRequest,
+  segmentData: { params: Params }
+): Promise<NextResponse> {
   try {
     const params = await segmentData.params;
     const clubId = Number(params.id);
@@ -62,12 +74,12 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
       return NextResponse.json({ error: 'Invalid club ID provided' }, { status: 400 });
     }
 
-    const data: ClubInterface = await req.json();
+    const data: ClubInterface & { venues?: { name: string }[] } = await req.json();
 
     // Validate input data
     validateClubSettings(data);
 
-    // Check if a club with the same name already exists (excluding current club)
+    // Check for name conflict
     const existingClub = await prisma.club.findFirst({
       where: {
         name: data.name,
@@ -79,17 +91,28 @@ export async function PUT(req: NextRequest, segmentData: { params: Params }) {
       return NextResponse.json({ error: 'A club with this name already exists.' }, { status: 400 });
     }
 
-    // Update the club
+    // Extract venues
+    const { venues, ...clubData } = data;
+
+    // Update the club with optional venues
     const updatedClub = await prisma.club.update({
       where: { id: clubId },
       data: {
-        name: data.name,
+        ...clubData,
         shortName: data.shortName || null,
         season: data.season || null,
-        location: data.location || null,
         image: data.image || null,
         backgroundColor: data.backgroundColor || '#ffffff',
         foregroundColor: data.foregroundColor || '#000000',
+        ...(venues && {
+          venues: {
+            deleteMany: { clubId }, // clears previous
+            create: venues,
+          },
+        }),
+      },
+      include: {
+        venues: true,
       },
     });
 

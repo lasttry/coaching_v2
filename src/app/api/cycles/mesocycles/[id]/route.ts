@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: number }>;
 
 // GET: Retrieve a specific mesocycle
-export async function GET(request: Request, { params }: { params: Params }) {
+export async function GET(request: Request, { params }: { params: Params }): Promise<NextResponse> {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
@@ -32,7 +33,7 @@ export async function GET(request: Request, { params }: { params: Params }) {
 }
 
 // PUT: Update a specific mesocycle
-export async function PUT(request: Request, { params }: { params: Params }) {
+export async function PUT(request: Request, { params }: { params: Params }): Promise<NextResponse> {
   const { id } = await params;
 
   if (isNaN(Number(id))) {
@@ -54,18 +55,20 @@ export async function PUT(request: Request, { params }: { params: Params }) {
         macrocycleId,
       },
     };
-    console.log(payload);
     const updatedMesocycle = await prisma.mesocycle.update(payload);
 
     return NextResponse.json(updatedMesocycle);
   } catch (error) {
-    console.error(error);
+    log.error(error);
     return NextResponse.json({ error: 'Failed to update mesocycle' }, { status: 500 });
   }
 }
 
 // DELETE: Delete a specific mesocycle
-export async function DELETE(request: Request, { params }: { params: Params }) {
+export async function DELETE(
+  request: Request,
+  { params }: { params: Params }
+): Promise<NextResponse> {
   const { id } = await params;
 
   if (isNaN(Number(id))) {

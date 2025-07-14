@@ -11,28 +11,33 @@ interface PointerIconProps extends IconProps {
 }
 
 // PointerIcon Component
-export const PointerIcon: React.FC<PointerIconProps> = React.memo(({ fill = '#000000', onClick }) => {
-  return (
-    <svg
-      onClick={onClick}
-      width="30"
-      height="30"
-      viewBox="0 0 30 30"
-      xmlns="http://www.w3.org/2000/svg"
-      className={onClick ? 'pointer-icon clickable' : 'pointer-icon'}
-    >
-      <defs>
-        <path d="M11,10 L11,21.5 C11.6,20.5 12.2,19.5 13,19 L15,24.5 L17,24 L15,18.5 C16,18.5 17.5,18.5 19,19" id="arrow-path" />
-      </defs>
-      <g>
-        {/* Background Layer */}
-        <use href="#arrow-path" fill="#cccccc" transform="translate(1, 0.5)" />
-        {/* Foreground Layer */}
-        <use href="#arrow-path" fill={fill} />
-      </g>
-    </svg>
-  );
-});
+export const PointerIcon: React.FC<PointerIconProps> = React.memo(
+  ({ fill = '#000000', onClick }) => {
+    return (
+      <svg
+        onClick={onClick}
+        width="30"
+        height="30"
+        viewBox="0 0 30 30"
+        xmlns="http://www.w3.org/2000/svg"
+        className={onClick ? 'pointer-icon clickable' : 'pointer-icon'}
+      >
+        <defs>
+          <path
+            d="M11,10 L11,21.5 C11.6,20.5 12.2,19.5 13,19 L15,24.5 L17,24 L15,18.5 C16,18.5 17.5,18.5 19,19"
+            id="arrow-path"
+          />
+        </defs>
+        <g>
+          {/* Background Layer */}
+          <use href="#arrow-path" fill="#cccccc" transform="translate(1, 0.5)" />
+          {/* Foreground Layer */}
+          <use href="#arrow-path" fill={fill} />
+        </g>
+      </svg>
+    );
+  }
+);
 PointerIcon.displayName = 'PointerIcon';
 
 export const LineMovementIcon: React.FC<IconProps> = React.memo(({ onClick }) => {
@@ -64,67 +69,86 @@ interface PlayerIconProps extends IconProps {
   onValueChange?: (value: number) => void;
 }
 
-export const PlayerButton: React.FC<PlayerIconProps> = React.memo(({ value = 1, type = 'ofense', onClick, onValueChange }) => {
-  const [currentValue, setCurrentValue] = useState(value);
+export const PlayerButton: React.FC<PlayerIconProps> = React.memo(
+  ({ value = 1, type = 'ofense', onClick, onValueChange }) => {
+    const [currentValue, setCurrentValue] = useState(value);
 
-  useEffect(() => {
-    setCurrentValue(value);
-  }, [value]);
+    useEffect(() => {
+      setCurrentValue(value);
+    }, [value]);
 
-  const handleClick = () => {
-    if (onClick) onClick();
-    if (onValueChange) onValueChange(currentValue);
-  };
+    const handleClick = (): void => {
+      if (onClick) onClick();
+      if (onValueChange) onValueChange(currentValue);
+    };
 
-  const handleChange = (delta: number) => {
-    const newValue = ((currentValue - 1 + delta + 9) % 9) + 1;
-    setCurrentValue(newValue);
-    if (onValueChange) onValueChange(newValue);
-  };
+    const handleChange = (delta: number): void => {
+      const newValue = ((currentValue - 1 + delta + 9) % 9) + 1;
+      setCurrentValue(newValue);
+      if (onValueChange) onValueChange(newValue);
+    };
 
-  return (
-    <svg
-      onClick={handleClick}
-      width="30"
-      height="30"
-      viewBox="-2 0 32 42"
-      className="offensive-player-icon clickable"
-      style={{ overflow: 'hidden', userSelect: 'none' }}
-    >
-      <PlayerIcon value={currentValue} x={15} y={16} draggable={false} id="bttPlayerIcon" type={type} />
-
-      {/* Left Arrow */}
-      <g>
-        <rect
-          x="-3"
-          y="31"
-          width="17"
-          height="11"
-          fill="transparent"
-          stroke="#dfdfdf"
-          style={{ strokeWidth: 1, cursor: 'pointer' }}
-          onClick={() => handleChange(-1)}
+    return (
+      <svg
+        onClick={handleClick}
+        width="30"
+        height="30"
+        viewBox="-2 0 32 42"
+        className="offensive-player-icon clickable"
+        style={{ overflow: 'hidden', userSelect: 'none' }}
+      >
+        <PlayerIcon
+          value={currentValue}
+          x={15}
+          y={16}
+          draggable={false}
+          id="bttPlayerIcon"
+          type={type}
         />
-        <path d="m 8,34 -4,2 4,2" fill="transparent" stroke="#000000" style={{ strokeWidth: 1, cursor: 'pointer' }} />
-      </g>
 
-      {/* Right Arrow */}
-      <g>
-        <rect
-          x="14"
-          y="31"
-          width="17"
-          height="11"
-          fill="transparent"
-          stroke="#dfdfdf"
-          style={{ strokeWidth: 1, cursor: 'pointer' }}
-          onClick={() => handleChange(1)}
-        />
-        <path d="m 21,34 4,2 -4,2" fill="transparent" stroke="#000000" style={{ strokeWidth: 1, cursor: 'pointer' }} />
-      </g>
-    </svg>
-  );
-});
+        {/* Left Arrow */}
+        <g>
+          <rect
+            x="-3"
+            y="31"
+            width="17"
+            height="11"
+            fill="transparent"
+            stroke="#dfdfdf"
+            style={{ strokeWidth: 1, cursor: 'pointer' }}
+            onClick={() => handleChange(-1)}
+          />
+          <path
+            d="m 8,34 -4,2 4,2"
+            fill="transparent"
+            stroke="#000000"
+            style={{ strokeWidth: 1, cursor: 'pointer' }}
+          />
+        </g>
+
+        {/* Right Arrow */}
+        <g>
+          <rect
+            x="14"
+            y="31"
+            width="17"
+            height="11"
+            fill="transparent"
+            stroke="#dfdfdf"
+            style={{ strokeWidth: 1, cursor: 'pointer' }}
+            onClick={() => handleChange(1)}
+          />
+          <path
+            d="m 21,34 4,2 -4,2"
+            fill="transparent"
+            stroke="#000000"
+            style={{ strokeWidth: 1, cursor: 'pointer' }}
+          />
+        </g>
+      </svg>
+    );
+  }
+);
 PlayerButton.displayName = 'PlayerButton';
 
 interface FollowMouseCircleProps {
@@ -151,7 +175,7 @@ export const FollowMouseCircle: React.FC<FollowMouseCircleProps> = ({ visible, o
 
   useEffect(() => {
     if (visible) {
-      const handleMouseMoveThrottled = (event: MouseEvent) => {
+      const handleMouseMoveThrottled = (event: MouseEvent): void => {
         requestAnimationFrame(() => handleMouseMove(event));
       };
 
@@ -163,16 +187,23 @@ export const FollowMouseCircle: React.FC<FollowMouseCircleProps> = ({ visible, o
     }
   }, [handleMouseMove, visible]);
 
-  const handleClick = (event: React.MouseEvent<SVGCircleElement, MouseEvent>) => {
+  const handleClick = (event: React.MouseEvent<SVGCircleElement, MouseEvent>): void => {
     event.stopPropagation(); // Prevent the event from bubbling up to parent elements
-    console.log('icon->FollowMouseCircle->handleClick');
     onClick(mousePosition.x, mousePosition.y);
   };
 
   return (
     <g ref={gRef} className="overlayGroup">
       {visible && (
-        <circle cx={mousePosition.x} cy={mousePosition.y} r="10" stroke="#008000" fill="transparent" className="follow-mouse-circle" onClick={handleClick} />
+        <circle
+          cx={mousePosition.x}
+          cy={mousePosition.y}
+          r="10"
+          stroke="#008000"
+          fill="transparent"
+          className="follow-mouse-circle"
+          onClick={handleClick}
+        />
       )}
     </g>
   );
@@ -181,7 +212,14 @@ FollowMouseCircle.displayName = 'FollowMouseCircle';
 
 export const CourtIcon: React.FC<IconProps> = React.memo(({ onClick }) => {
   return (
-    <svg onClick={onClick} version="1.1" width="30" height="50" viewBox="0 0 30 50" style={{ overflow: 'hidden' }}>
+    <svg
+      onClick={onClick}
+      version="1.1"
+      width="30"
+      height="50"
+      viewBox="0 0 30 50"
+      style={{ overflow: 'hidden' }}
+    >
       {/* Top Blue Rectangle */}
       <rect x="0" y="0" width="30" height="25" fill="#0089cf" />
       {/* Bottom Grey Rectangle */}

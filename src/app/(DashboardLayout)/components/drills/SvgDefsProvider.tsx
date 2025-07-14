@@ -29,9 +29,16 @@ export const SvgDefsProvider: React.FC<{ children: ReactNode }> = ({ children })
     });
   }, []);
 
-  const hasDef = useCallback((id: string) => Object.prototype.hasOwnProperty.call(defs, id), [defs]);
+  const hasDef = useCallback(
+    (id: string) => Object.prototype.hasOwnProperty.call(defs, id),
+    [defs]
+  );
 
-  return <SvgDefsContext.Provider value={{ addDef, removeDef, hasDef, defs }}>{children}</SvgDefsContext.Provider>;
+  return (
+    <SvgDefsContext.Provider value={{ addDef, removeDef, hasDef, defs }}>
+      {children}
+    </SvgDefsContext.Provider>
+  );
 };
 
 export const SvgDefs: React.FC = React.memo(() => {

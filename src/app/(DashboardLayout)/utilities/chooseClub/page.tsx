@@ -1,23 +1,33 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, ReactElement } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Accordion, AccordionDetails, Typography, Box, Alert, FormControlLabel, Checkbox } from '@mui/material';
-import Grid from '@mui/material/Grid2';
+import {
+  Accordion,
+  AccordionDetails,
+  Typography,
+  Box,
+  Alert,
+  FormControlLabel,
+  Checkbox,
+} from '@mui/material';
+import { Grid } from '@mui/material';
 import PageContainer from '../../components/container/PageContainer';
 import { log } from '@/lib/logger';
 import '@/styles/clubsAccordion.css';
 
-const ChooseClubPage = () => {
+const ChooseClubPage = (): ReactElement => {
   const { data: session, update } = useSession();
   const router = useRouter();
-  const [clubs, setClubs] = useState<{ id: number; name: string; backgroundColor: string; image: string }[]>([]);
+  const [clubs, setClubs] = useState<
+    { id: number; name: string; backgroundColor: string; image: string }[]
+  >([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [setAsDefault, setSetAsDefault] = useState(false);
 
   useEffect(() => {
-    const fetchClubs = async () => {
+    const fetchClubs = async (): Promise<void> => {
       try {
         const response = await fetch('/api/clubs');
         const data = await response.json();
@@ -27,7 +37,6 @@ const ChooseClubPage = () => {
           setErrorMessage(errorText);
           return;
         }
-        log.info('Clubs data fetched successfully:', data);
         setClubs(data);
       } catch (error) {
         const errorText = `Error fetching clubs: ${error}`;
@@ -39,7 +48,7 @@ const ChooseClubPage = () => {
     fetchClubs();
   }, []);
 
-  const handleSelectClub = async (club: { id: number }) => {
+  const handleSelectClub = async (club: { id: number }): Promise<void> => {
     if (!session?.user?.id) {
       log.error('Session or user ID is missing.');
       setErrorMessage('Unable to identify the user session. Please log in again.');
@@ -61,7 +70,6 @@ const ChooseClubPage = () => {
           setErrorMessage(errorText);
           return;
         }
-        log.info('Default club updated successfully.');
       } catch (error) {
         const errorText = `Error setting default club: ${error}`;
         log.error(errorText);
@@ -72,7 +80,6 @@ const ChooseClubPage = () => {
 
     try {
       const updatedSession = await update({ selectedClubId: club.id });
-      log.info('Session updated successfully:', updatedSession);
     } catch (error) {
       const errorText = `Error updating session: ${error}`;
       log.error(errorText);
@@ -98,11 +105,20 @@ const ChooseClubPage = () => {
             Clubs
           </Typography>
           <Box sx={{ mt: 2 }}>
-            <Alert severity="warning">You don&apos;t have a default club, please select the club that you want to use.</Alert>
+            <Alert severity="warning">
+              You don&apos;t have a default club, please select the club that you want to use.
+            </Alert>
           </Box>
           <Box sx={{ mt: 2 }}>
             <FormControlLabel
-              control={<Checkbox checked={setAsDefault} onChange={(e) => setSetAsDefault(e.target.checked)} name="setAsDefault" color="primary" />}
+              control={
+                <Checkbox
+                  checked={setAsDefault}
+                  onChange={(e) => setSetAsDefault(e.target.checked)}
+                  name="setAsDefault"
+                  color="primary"
+                />
+              }
               label="Set as default..."
             />
           </Box>
@@ -111,7 +127,11 @@ const ChooseClubPage = () => {
           <AccordionDetails>
             <Grid container spacing={3} justifyContent="flex-start" className="grid-container">
               {clubs.map((club) => (
-                <Grid key={club.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Grid
+                  key={club.id}
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                  sx={{ display: 'flex', justifyContent: 'center' }}
+                >
                   <Box
                     className="club-item"
                     style={{

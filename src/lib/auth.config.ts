@@ -4,6 +4,9 @@ import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import { PlatformRole } from '@prisma/client';
 import { validatePassword } from './password';
+import { UserInterface } from '@/types/user';
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default {
   providers: [
@@ -18,14 +21,11 @@ export default {
           log.error('Missing credentials');
           throw new Error('Credentials are required');
         }
-
-        log.info(`Attempting to authorize user with email: ${credentials.email}`);
-
         try {
           const email = String(credentials.email);
           const password = String(credentials.password);
 
-          if (!email.includes('@')) {
+          if (!emailRegex.test(email)) {
             log.warn(`Invalid email format: ${email}`);
             throw new Error('Invalid email format');
           }
@@ -56,24 +56,22 @@ export default {
             log.error('Invalid password for email:', { email });
             throw new Error('Invalid password');
           }
-
-          const userobj = {
-            id: user.id.toString(),
+          const selectedClub = user.clubs.find((club) => club.clubId === user.defaultClubId);
+          const userobj: UserInterface = {
+            id: user.id,
             name: user.name,
             email: user.email,
             selectedClubId: user.defaultClubId,
-            role: user.role,
-            clubs: user.clubs.map((accountClub) => ({
-              clubId: accountClub.clubId,
-              clubName: accountClub.club.name,
-              roles: accountClub.roles.map((role) => role.role),
-            })),
+            selectedSeason: selectedClub?.club?.season || '',
+            role: user.role
           };
-
-          log.info(`User authorized successfully: ${user.email}`);
           return userobj;
-        } catch (error) {
-          log.error('Error during user authorization:', { error });
+        } catch (error: unknown) {
+          if (error instanceof Error) {
+            log.error(`Error during user authorization: ${error.message}`, { error });
+          } else {
+            log.error('Unknown error during user authorization', { error });
+          }
           return null;
         }
       },
@@ -85,24 +83,17 @@ export default {
   },
   callbacks: {
     jwt: async ({ token, user, session, trigger }) => {
-      log.debug('JWT callback triggered', { token, trigger });
-
       if (user) {
         token.id = user.id;
         token.role = user.role;
         token.selectedClubId = user.selectedClubId;
-        token.clubs = user.clubs;
       }
       if (trigger === 'update' && session) {
         token.selectedClubId = session.selectedClubId;
       }
-
-      log.debug('Updated JWT token:', token);
       return token;
     },
     session: async ({ session, token }) => {
-      log.debug('Session callback triggered', { session, token });
-
       if (token) {
         session.user = {
           id: token.id as string,
@@ -111,20 +102,12 @@ export default {
           emailVerified: new Date(),
           selectedClubId: token.selectedClubId as number,
           role: token.role as PlatformRole,
-          clubs: token.clubs as {
-            clubId: number;
-            clubName: string;
-            roles: string[];
-          }[],
         };
       }
-
-      log.debug('Updated session:', { session });
       return session;
     },
     authorized: async ({ auth }) => {
       const isAuthorized = !!auth;
-      log.info('Authorization callback triggered:', { isAuthorized });
       return isAuthorized;
     },
   },

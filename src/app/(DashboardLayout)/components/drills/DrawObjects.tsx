@@ -21,12 +21,14 @@ interface DrawObjectsProps {
 export const DrawObjects: React.FC<DrawObjectsProps> = ({ elements, onUpdate }) => {
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const handleSelect = (id: number) => {
+  const handleSelect = (id: number): void => {
     setSelectedId(id);
   };
 
-  const handleDragMove = (index: number, position: { x: number; y: number }) => {
-    const updatedElements = elements.map((el, idx) => (idx === index ? { ...el, x: position.x, y: position.y } : el));
+  const handleDragMove = (index: number, position: { x: number; y: number }): void => {
+    const updatedElements = elements.map((el, idx) =>
+      idx === index ? { ...el, x: position.x, y: position.y } : el
+    );
     onUpdate(updatedElements);
   };
 

@@ -1,16 +1,36 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { Box, Table, TableHead, TableRow, TableCell, TableBody, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 
-const SessionGoalsTables = ({ data }: { data: any[] }) => {
-  const [groupedData, setGroupedData] = useState<any[]>([]);
+interface SessionGoal {
+  id: string | number;
+  date: string;
+  duration: number;
+  note: string;
+  coach: string;
+  order: number;
+}
+
+interface GroupedDay {
+  day: string;
+  weekday: string;
+  goals: SessionGoal[];
+  totalDuration: number;
+}
+
+interface SessionGoalsTablesProps {
+  data: SessionGoal[];
+}
+
+const SessionGoalsTables = ({ data }: SessionGoalsTablesProps): ReactElement => {
+  const [groupedData, setGroupedData] = useState<GroupedDay[]>([]);
 
   // Group and sort data by date
   useEffect(() => {
     if (data.length > 0) {
-      const grouped = data.reduce((acc: any, item) => {
+      const grouped = data.reduce<Record<string, GroupedDay>>((acc, item) => {
         const day = dayjs(item.date).format('YYYY-MM-DD');
         const weekday = dayjs(item.date).format('dddd');
 
@@ -23,12 +43,12 @@ const SessionGoalsTables = ({ data }: { data: any[] }) => {
         return acc;
       }, {});
 
-      const sortedGroupedData = Object.values(grouped)
-        .map((group: any) => ({
+      const sortedGroupedData: GroupedDay[] = Object.values(grouped)
+        .map((group) => ({
           ...group,
-          goals: group.goals.sort((a: any, b: any) => a.order - b.order),
+          goals: group.goals.sort((a, b) => a.order - b.order),
         }))
-        .sort((a: any, b: any) => new Date(a.day).getTime() - new Date(b.day).getTime());
+        .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
 
       setGroupedData(sortedGroupedData);
     }
@@ -116,7 +136,7 @@ const SessionGoalsTables = ({ data }: { data: any[] }) => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {day.goals.map((goal: any) => (
+                    {day.goals.map((goal) => (
                       <TableRow key={goal.id}>
                         <TableCell
                           sx={{

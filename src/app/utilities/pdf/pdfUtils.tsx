@@ -3,45 +3,75 @@ import autoTable, { RowInput } from 'jspdf-autotable';
 import dayjs from 'dayjs';
 
 import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types';
-import { Settings } from '@/types/club/types';
 import { generateHeader, generateGameDetailsHeader } from './utils';
+import { ClubInterface } from '@/types/club/types';
+import { log } from '@/lib/logger';
 
 const lineWidthNormal = 0.1;
 const lineWidthBold = 0.5;
 
-const generateCells = (contentOrArray: string | string[], numberOfCells: number) => {
+const generateCells = (
+  contentOrArray: string | string[],
+  numberOfCells: number
+): {
+  content: string;
+  styles: {
+    lineWidth: {
+      bottom: number;
+      top: number;
+      left: number;
+      right: number;
+    };
+  };
+}[] => {
   const isArray = Array.isArray(contentOrArray);
   return Array.from({ length: numberOfCells }, (v, i) => ({
-    content: isArray ? contentOrArray[i] || '' : contentOrArray, // Use content from array or default to uniform content
+    content: isArray ? contentOrArray[i] || '' : contentOrArray,
     styles: {
       lineWidth: {
         bottom: lineWidthBold,
         top: lineWidthNormal,
-        left: i === 0 ? lineWidthBold : lineWidthNormal, // Left border for the first element
-        right: i === numberOfCells - 1 ? lineWidthBold : lineWidthNormal, // Right border for the last element
+        left: i === 0 ? lineWidthBold : lineWidthNormal,
+        right: i === numberOfCells - 1 ? lineWidthBold : lineWidthNormal,
       },
     },
   }));
 };
 
-const statisticsTimesHeaderStyle = (text: string, colSpan: number) => {
+const statisticsTimesHeaderStyle = (
+  text: string,
+  colSpan: number
+): {
+  content: string;
+  colSpan: number;
+  styles: {
+    fontSize: number;
+    cellPadding: number;
+    halign: 'center';
+  };
+} => {
   const cell = {
-    content: text, // Text content
-    colSpan: colSpan, // Set the colspan for the cell
+    content: text,
+    colSpan: colSpan,
     styles: {
-      fontSize: 8, // Set font size
-      cellPadding: 0, // Padding for all sides
-      halign: 'center' as const, // Horizontal alignment: 'left', 'center', 'right'
+      fontSize: 8,
+      cellPadding: 0,
+      halign: 'center' as const,
     },
   };
-  // Add colSpan only if it's greater than 0
   if (colSpan > 0) {
     cell.colSpan = colSpan;
   }
   return cell;
 };
 
-const timedPeriod = () => {
+const timedPeriod = (): (
+  | {
+      content: string;
+      styles: { lineWidth: { left: number; right: number; top: number; bottom: number } };
+    }
+  | string
+)[] => {
   return [
     {
       content: '',
@@ -53,7 +83,7 @@ const timedPeriod = () => {
           bottom: lineWidthBold,
         },
       },
-    }, // Period
+    },
     '', // Minute
     '', // Second
     '', // Period
@@ -68,11 +98,24 @@ const timedPeriod = () => {
           bottom: lineWidthBold,
         },
       },
-    }, // Period
+    },
   ];
 };
 
-const athletesTableBody = (game: GameInterface): (string | number)[][] | undefined => {
+const formatAthleteName = (fullName: string | undefined): string => {
+  if (fullName === undefined) {
+    return "";
+  }
+  const parts = fullName.trim().split(' ');
+  if (parts.length === 0) return '';
+
+  const firstInitial = parts[0].charAt(0).toUpperCase();
+  const lastName = parts[parts.length - 1];
+
+  return `${firstInitial}. ${lastName}`;
+};
+
+const athletesTableBody = (game: GameInterface): (string | number | null | undefined)[][] => {
   return game.gameAthletes
     ?.sort((a, b) => {
       // First, sort by number, with -1 always last
@@ -87,9 +130,7 @@ const athletesTableBody = (game: GameInterface): (string | number)[][] | undefin
       return a.athlete.name.localeCompare(b.athlete.name);
     })
     .map((entry) => [
-      entry.athlete.fpbNumber === 0 ? '' : entry.athlete.fpbNumber,
-      entry.athlete.idNumber === 0 ? '' : entry.athlete.idNumber,
-      entry.athlete.name,
+      formatAthleteName(entry.athlete?.name),
       entry.number === '-1' ? '' : entry.number,
       '',
       entry.period1 ? 'X' : '',
@@ -102,12 +143,29 @@ const athletesTableBody = (game: GameInterface): (string | number)[][] | undefin
     ]);
 };
 
-const timedAthletesTableBody = (game: GameInterface) => {
+const timedAthletesTableBody = (
+  game: GameInterface
+):
+  | (
+      | string
+      | {
+          content: string;
+          styles?: {
+            lineWidth?: {
+              left: number;
+              right: number;
+              top: number;
+              bottom: number;
+            };
+          };
+        }
+    )[][]
+  | undefined => {
   return athletesTableBody(game)?.flatMap((entry) => {
     return [
       [
         {
-          content: entry[2],
+          content: String(entry[2] ?? ''),
           styles: {
             lineWidth: {
               left: lineWidthBold,
@@ -116,8 +174,8 @@ const timedAthletesTableBody = (game: GameInterface) => {
               bottom: lineWidthBold,
             },
           },
-        }, // Athlete's name
-        { content: entry[3] }, // Athlete's number
+        },
+        { content: String(entry[3] ?? '') },
         ...timedPeriod(),
         ...timedPeriod(),
         ...timedPeriod(),
@@ -129,12 +187,30 @@ const timedAthletesTableBody = (game: GameInterface) => {
   });
 };
 
-const statisticsAthletesTableBody = (game: GameInterface) => {
+const statisticsAthletesTableBody = (
+  game: GameInterface
+):
+  | (
+      | string
+      | {
+          content: string;
+          rowSpan?: number;
+          styles?: {
+            lineWidth?: {
+              left: number;
+              right: number;
+              top: number;
+              bottom: number;
+            };
+          };
+        }
+    )[][]
+  | undefined => {
   return athletesTableBody(game)?.flatMap((entry) => {
     return [
       [
         {
-          content: entry[2],
+          content: String(entry[2] ?? ''),
           rowSpan: 2,
           styles: {
             lineWidth: {
@@ -144,9 +220,9 @@ const statisticsAthletesTableBody = (game: GameInterface) => {
               right: lineWidthNormal,
             },
           },
-        }, // Athlete's name, spans 2 rows
+        },
         {
-          content: entry[3],
+          content: String(entry[3] ?? ''),
           rowSpan: 2,
           styles: {
             lineWidth: {
@@ -238,14 +314,38 @@ const statisticsAthletesTableBody = (game: GameInterface) => {
 };
 
 // Helper function to create game details PDF
-export const generatePDF = (game: GameInterface, settings: Settings | null) => {
+export const generatePDF = async (game: GameInterface, clubId: number | undefined): void => {
+
+  if(clubId === undefined) {
+    log.error("ClubId is missing");
+    return;
+  }
+
+  const fetchClub = async (clubId: number): Promise<ClubInterface | null> => {
+    try {
+      const res = await fetch(`/api/clubs/${clubId}`);
+      if (!res.ok) throw new Error('Failed to fetch club');
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      log.error('Error fetching club:', err);
+      return null;
+    }
+  };
+
+  const club = await fetchClub(clubId);
+  if(club === null) {
+    log.debug("Failed to find the club");
+    return;
+  }
+
   const doc = new jsPDF() as jsPDFWithAutoTable;
   const pageWidth = doc.internal.pageSize.getWidth(); // Get the page width
 
   // Generate the page header.
-  let top = generateHeader(doc, settings);
+  let top = generateHeader(club, doc);
 
-  top = generateGameDetailsHeader(doc, top, game, settings);
+  top = generateGameDetailsHeader(club, doc, top, game);
 
   doc.setFontSize(18);
   // Add H3-like title below the table
@@ -255,36 +355,32 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
 
   // Define the custom column widths
   const columnWidths = [
-    20, // First column (for 6 characters)
-    20, // Second column (for 6 characters)
-    50, // Third column (for full name like "Gamaliel Luqueni")
+    25, // First column (for 6 characters)
+    10,
     ...Array(10).fill((pageWidth - 20 - 25 * 2 - 50) / 10), // Last 10 columns, equally wide for a big "X"
   ];
+  const columnStyles = columnWidths.reduce((acc, width, index) => {
+    acc[index] = {
+      cellWidth: width,
+      halign: index === 0 ? 'left' : 'center', // Nome is left, rest are centered
+    };
+    return acc;
+  }, {} as Record<number, any>);
+
   // Add a table with 13 columns
   autoTable(doc, {
     startY: afterPlayersText,
     margin: { left: 10 },
-    columnStyles: {
-      0: { cellWidth: columnWidths[0] }, // First column
-      1: { cellWidth: columnWidths[1] }, // Second column
-      2: { cellWidth: columnWidths[2] }, // Third column
-      3: { cellWidth: columnWidths[3], halign: 'center' }, // Fourth to 13th columns
-      4: { cellWidth: columnWidths[3] },
-      5: { cellWidth: columnWidths[3], halign: 'center' },
-      6: { cellWidth: columnWidths[3] },
-      7: { cellWidth: columnWidths[3], halign: 'center' },
-      8: { cellWidth: columnWidths[3] },
-      9: { cellWidth: columnWidths[3], halign: 'center' },
-      10: { cellWidth: columnWidths[3] },
-      11: { cellWidth: columnWidths[3], halign: 'center' },
-      12: { cellWidth: columnWidths[3] },
-    },
-    head: [['FPB', 'CC', 'Nome', '#', '', '1', '', '2', '', '3', '', '4', '']],
-    body: athletesTableBody(game),
+    columnStyles,
+    head: [['Nome', '#', '', '1', '', '2', '', '3', '', '4', '']],
+    body: athletesTableBody(game)?.map(
+      (row) => row.map((cell) => String(cell ?? '')) // Convert null/undefined to ''
+    ),
     headStyles: {
-      fillColor: `${settings?.backgroundColor}`, // Background color (RGB)
-      textColor: `${settings?.foregroundColor}`, // Foreground text color (white)
+      fillColor: club?.backgroundColor, // Background color (RGB)
+      textColor: club?.foregroundColor, // Foreground text color (white)
       fontStyle: 'bold', // Optional: make the header text bold
+      halign: 'center',
     },
     styles: {
       lineColor: [0, 0, 0], // Black borders
@@ -301,22 +397,28 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
   autoTable(doc, {
     startY: afterPlayersTableY + 15, // Position the table below the title
     margin: { left: 10 },
-    head: [['', `${game.away ? game.oponent?.shortName : settings?.shortName}`, `${game.away ? settings?.shortName : game.oponent?.shortName}`]],
+    head: [
+      [
+        '',
+        `${game.away ? game.opponent?.shortName : club.shortName}`,
+        `${game.away ? club.shortName : game.opponent?.shortName}`,
+      ],
+    ],
     body: [
       ['1º Periodo', '', ''],
       ['2º Periodo', '', ''],
       ['3º Periodo', '', ''],
       ['4º Periodo', '', ''],
     ],
-    tableWidth: 'auto',
+    //tableWidth: 'auto',
     columnStyles: {
-      0: { cellWidth: 30 }, // First column with automatic width
+      0: { cellWidth: 25 }, // First column with automatic width
       1: { cellWidth: 15 }, // Third column with 15 width
       2: { cellWidth: 15 }, // Fourth column with 15 width
     },
     headStyles: {
-      fillColor: `${settings?.backgroundColor}`, // Background color (RGB)
-      textColor: `${settings?.foregroundColor}`, // Foreground text color (white)
+      fillColor: club?.backgroundColor, // Background color (RGB)
+      textColor: club?.foregroundColor, // Foreground text color (white)
       fontStyle: 'bold', // Optional: make the header text bold
     },
     styles: {
@@ -356,7 +458,6 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
   if (game.objectives?.length || game.objectives?.length) {
     doc.addPage();
 
-    console.log(game.objectives);
     const groupedObjectives: Record<string, RowInput[]> = {
       TEAM: [],
       OFFENSIVE: [],
@@ -388,8 +489,6 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
         ] // Description row
       );
     });
-    console.log(groupedObjectives);
-
     // Draw the table
     let startY = 15;
     Object.entries(groupedObjectives).forEach(([type, rows]) => {
@@ -400,8 +499,8 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
         head: [[objectiveTypeHeaders[type] || type]], // Table header
         body: rows,
         headStyles: {
-          fillColor: `${settings?.backgroundColor}`, // Background color (RGB)
-          textColor: `${settings?.foregroundColor}`, // Foreground text color (white)
+          fillColor: `backgroundColor`, // Background color (RGB)
+          textColor: `foregroundColor`, // Foreground text color (white)
           fontStyle: 'bold', // Optional: make the header text bold
         },
         columnStyles: {
@@ -419,7 +518,7 @@ export const generatePDF = (game: GameInterface, settings: Settings | null) => {
 };
 
 // Helper function for statistics PDF
-export const generateStatisticsPDF = (game: GameInterface, settings: Settings) => {
+export const generateStatisticsPDF = (game: GameInterface): void => {
   const doc = new jsPDF({
     orientation: 'landscape',
   }) as jsPDFWithAutoTable;
@@ -428,7 +527,16 @@ export const generateStatisticsPDF = (game: GameInterface, settings: Settings) =
     startY: 2,
     margin: { left: 10 },
     head: [], // Table headers
-    body: [['Jogo', `${game.number}`, 'Data/Hora', `${dayjs(game.date).format('YYYY-MM-DD HH:mm')}`, 'Adversário', `${game.teams?.name}`]],
+    body: [
+      [
+        'Jogo',
+        `${game.number}`,
+        'Data/Hora',
+        `${dayjs(game.date).format('YYYY-MM-DD HH:mm')}`,
+        'Adversário',
+        `${game.opponent?.name}`,
+      ],
+    ],
     theme: 'grid', // Use grid to draw borders
   });
   let afterTableY = doc.lastAutoTable?.finalY ?? 0; // Get Y position after the table
@@ -454,8 +562,8 @@ export const generateStatisticsPDF = (game: GameInterface, settings: Settings) =
     body: statisticsAthletesTableBody(game),
     theme: 'grid',
     headStyles: {
-      fillColor: `${settings?.backgroundColor}`, // Background color (RGB)
-      textColor: `${settings?.foregroundColor}`, // Foreground text color (white)
+      fillColor: `backgroundColor`, // Background color (RGB)
+      textColor: `foregroundColor`, // Foreground text color (white)
       fontStyle: 'bold', // Optional: make the header text bold
     },
     bodyStyles: {
@@ -621,8 +729,8 @@ export const generateStatisticsPDF = (game: GameInterface, settings: Settings) =
     ],
     theme: 'grid',
     headStyles: {
-      fillColor: `${settings?.backgroundColor}`, // Background color (RGB)
-      textColor: `${settings?.foregroundColor}`, // Foreground text color (white)
+      fillColor: `backgroundColor`, // Background color (RGB)
+      textColor: `foregroundColor`, // Foreground text color (white)
       fontStyle: 'bold', // Optional: make the header text bold
     },
     bodyStyles: {
@@ -700,8 +808,8 @@ export const generateStatisticsPDF = (game: GameInterface, settings: Settings) =
     body: timedAthletesTableBody(game),
     theme: 'grid',
     headStyles: {
-      fillColor: `${settings?.backgroundColor}`, // Background color (RGB)
-      textColor: `${settings?.foregroundColor}`, // Foreground text color (white)
+      fillColor: `backgroundColor`, // Background color (RGB)
+      textColor: `foregroundColor`, // Foreground text color (white)
       fontStyle: 'bold', // Optional: make the header text bold
     },
     styles: {

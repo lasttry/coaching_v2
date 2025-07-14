@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
 // GET: List all microcycles
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     const microcycles = await prisma.microcycle.findMany({
       include: {
@@ -23,11 +23,10 @@ export async function GET() {
 }
 
 // POST: Create a new microcycle
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   const body = await request.json();
 
   try {
-    console.log(`Request Body:`, body);
     const payload = {
       data: {
         number: body.number,
@@ -39,18 +38,19 @@ export async function POST(request: Request) {
           connect: { id: body.mesocycle.id }, // Provide the ID of the related mesocycle
         },
         sessionGoals: {
-          create: body.sessionGoals.map((goal: { duration: string; note: string; coach: string }) => ({
-            duration: goal.duration,
-            note: goal.note,
-            coach: goal.coach,
-          })),
+          create: body.sessionGoals.map(
+            (goal: { duration: string; note: string; coach: string }) => ({
+              duration: goal.duration,
+              note: goal.note,
+              coach: goal.coach,
+            })
+          ),
         },
       },
       include: {
         sessionGoals: true,
       },
     };
-    console.log([payload]);
     const newMicrocycle = await prisma.microcycle.create(payload);
 
     return NextResponse.json(newMicrocycle);

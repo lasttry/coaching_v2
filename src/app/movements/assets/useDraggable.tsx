@@ -6,12 +6,24 @@ interface DraggableOptions {
   rotatable?: boolean;
 }
 
+interface UseDraggableResult {
+  gRef: ReturnType<typeof useMousePosition>['gRef'];
+  position: {
+    x?: number;
+    y?: number;
+    rotation?: number;
+  };
+  handleMouseDownMove: () => void;
+  handleMouseDownRotate: () => void;
+  handleMouseUp: () => void;
+}
+
 export const useDraggable = (
   id: string,
   initialPosition: { x?: number; y?: number; rotation?: number } = {},
   options: DraggableOptions = {},
   onMove?: (id: string, x?: number, y?: number, rotation?: number) => void
-) => {
+): UseDraggableResult => {
   const { gRef, mousePosition } = useMousePosition(true);
   const [position, setPosition] = useState(initialPosition);
   const draggingRef = useRef(false);
@@ -63,7 +75,12 @@ export const useDraggable = (
       onMove(id, latestPosition.current.x, latestPosition.current.y);
     }
     if (rotatingRef.current && onMove) {
-      onMove(id, latestPosition.current.x, latestPosition.current.y, latestPosition.current.rotation);
+      onMove(
+        id,
+        latestPosition.current.x,
+        latestPosition.current.y,
+        latestPosition.current.rotation
+      );
     }
     draggingRef.current = false;
     rotatingRef.current = false;
@@ -80,7 +97,7 @@ export const useDraggable = (
     if (draggingRef.current || rotatingRef.current) {
       startDraggingOrRotating();
     }
-  }, [draggingRef.current, rotatingRef.current, startDraggingOrRotating]);
+  }, [startDraggingOrRotating]);
 
   return {
     gRef,

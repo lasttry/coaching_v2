@@ -1,18 +1,35 @@
 'use client';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import MicrocycleDetailsDialog from '@/app/(DashboardLayout)/components/shared/MicrocycleDetailsDialog';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, Stack, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import {
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Stack,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
-import { MicrocycleInterface, MesocycleInterface, MacrocycleInterface, SessionGoalInterface } from '@/types/cycles/types';
+import {
+  MicrocycleInterface,
+  MesocycleInterface,
+  MacrocycleInterface,
+  SessionGoalInterface,
+} from '@/types/cycles/types';
 
-const MicrocyclesList = () => {
+const MicrocyclesList = (): ReactElement => {
   const [data, setData] = useState<
     {
       macrocycle: MacrocycleInterface;
@@ -30,10 +47,9 @@ const MicrocyclesList = () => {
   const [currentMacrocycle, setCurrentMacrocycle] = useState<MacrocycleInterface | null>(null);
   const [currentMesocycle, setCurrentMesocycle] = useState<MesocycleInterface | null>(null);
 
-  const openDetailsOverlay = async (microcycleId: number) => {
+  const openDetailsOverlay = async (microcycleId: number): Promise<void> => {
     try {
       const currentData = findMicrocycleById(microcycleId);
-      console.log(currentData);
       if (currentData && currentData.microcycle.sessionGoals) {
         setDetailsData(currentData.microcycle.sessionGoals);
         setCurrentMacrocycle(currentData.macrocycle);
@@ -47,14 +63,20 @@ const MicrocyclesList = () => {
     }
   };
 
-  const closeDetailsOverlay = () => {
+  const closeDetailsOverlay = (): void => {
     setDetailsOpen(false);
     setDetailsData(null);
     setCurrentMacrocycle(null);
     setCurrentMesocycle(null);
   };
 
-  const findMicrocycleById = (microcycleId: number) => {
+  const findMicrocycleById = (
+    microcycleId: number
+  ): {
+    macrocycle: MacrocycleInterface;
+    mesocycle: MesocycleInterface;
+    microcycle: MicrocycleInterface;
+  } | null => {
     for (const macroGroup of data) {
       for (const mesoGroup of macroGroup.mesocycles) {
         const foundMicrocycle = mesoGroup.microcycles.find((micro) => micro.id === microcycleId);
@@ -72,7 +94,7 @@ const MicrocyclesList = () => {
 
   // Fetch the list of microcycles grouped by Macrocycle and Mesocycle
   useEffect(() => {
-    async function fetchMicrocycles() {
+    async function fetchMicrocycles(): Promise<void> {
       try {
         const response = await fetch('/api/cycles/microcycles'); // Fetching microcycles from the API
         if (!response.ok) {
@@ -80,7 +102,6 @@ const MicrocyclesList = () => {
         }
 
         const microcycles: MicrocycleInterface[] = await response.json();
-        console.log('Fetched microcycles:', microcycles);
 
         // Group Microcycles by Macrocycle → Mesocycle with null safety checks
         const groupedData = microcycles.reduce<
@@ -134,7 +155,9 @@ const MicrocyclesList = () => {
           ...macroGroup,
           mesocycles: Object.values(macroGroup.mesocycles).map((mesoGroup) => ({
             ...mesoGroup,
-            microcycles: mesoGroup.microcycles.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()),
+            microcycles: mesoGroup.microcycles.sort(
+              (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+            ),
           })),
         }));
 
@@ -149,7 +172,7 @@ const MicrocyclesList = () => {
   }, []);
 
   // Handle microcycle deletion
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: number): Promise<void> => {
     const confirmed = window.confirm(`Are you sure you want to delete Microcycle ID ${id}?`);
     if (!confirmed) return;
 
@@ -196,7 +219,10 @@ const MicrocyclesList = () => {
         macrocycle={currentMacrocycle}
         mesocycle={currentMesocycle}
       />
-      <PageContainer title="Microcycles" description="List of all microcycles grouped by Macrocycle and Mesocycle">
+      <PageContainer
+        title="Microcycles"
+        description="List of all microcycles grouped by Macrocycle and Mesocycle"
+      >
         <h1>Microcycles</h1>
         <Link href="/utilities/cycles/microcycles/manage/new">
           <Button variant="contained" color="primary">
@@ -221,8 +247,10 @@ const MicrocyclesList = () => {
           <Accordion key={macro.macrocycle.id} defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h6">
-                Macrocycle: {macro.macrocycle.name || `Macrocycle ${macro.macrocycle.number || 'N/A'}`} (
-                {dayjs(macro.macrocycle.startDate).format('YYYY-MM-DD')} to {dayjs(macro.macrocycle.endDate).format('YYYY-MM-DD')})
+                Macrocycle:{' '}
+                {macro.macrocycle.name || `Macrocycle ${macro.macrocycle.number || 'N/A'}`} (
+                {dayjs(macro.macrocycle.startDate).format('YYYY-MM-DD')} to{' '}
+                {dayjs(macro.macrocycle.endDate).format('YYYY-MM-DD')})
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -230,8 +258,10 @@ const MicrocyclesList = () => {
                 <Accordion key={meso.mesocycle.id} defaultExpanded>
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                     <Typography variant="h6">
-                      Mesocycle: {meso.mesocycle.name || `Mesocycle ${meso.mesocycle.number || 'N/A'}`} ({dayjs(meso.mesocycle.startDate).format('YYYY-MM-DD')}{' '}
-                      to {dayjs(meso.mesocycle.endDate).format('YYYY-MM-DD')})
+                      Mesocycle:{' '}
+                      {meso.mesocycle.name || `Mesocycle ${meso.mesocycle.number || 'N/A'}`} (
+                      {dayjs(meso.mesocycle.startDate).format('YYYY-MM-DD')} to{' '}
+                      {dayjs(meso.mesocycle.endDate).format('YYYY-MM-DD')})
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -280,20 +310,30 @@ const MicrocyclesList = () => {
                             <TableRow
                               key={cycle.id}
                               hover
-                              onClick={() => router.push(`/utilities/cycles/microcycles/manage/${cycle.id}`)}
+                              onClick={() =>
+                                router.push(`/utilities/cycles/microcycles/manage/${cycle.id}`)
+                              }
                               sx={{ cursor: 'pointer' }}
                             >
                               <TableCell>
-                                <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{cycle.number}</Typography>
+                                <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
+                                  {cycle.number}
+                                </Typography>
                               </TableCell>
                               <TableCell>
-                                <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{cycle.name}</Typography>
+                                <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
+                                  {cycle.name}
+                                </Typography>
                               </TableCell>
                               <TableCell>
-                                <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{dayjs(cycle.startDate).format('YYYY-MM-DD')}</Typography>
+                                <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
+                                  {dayjs(cycle.startDate).format('YYYY-MM-DD')}
+                                </Typography>
                               </TableCell>
                               <TableCell>
-                                <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>{dayjs(cycle.endDate).format('YYYY-MM-DD')}</Typography>
+                                <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
+                                  {dayjs(cycle.endDate).format('YYYY-MM-DD')}
+                                </Typography>
                               </TableCell>
                               <TableCell>
                                 <Typography
@@ -308,8 +348,15 @@ const MicrocyclesList = () => {
                               </TableCell>
                               <TableCell align="right">
                                 <Stack direction="row" spacing={2}>
-                                  <Link href={`/utilities/cycles/microcycles/manage/${cycle.id}`} passHref>
-                                    <Button variant="contained" color="primary" onClick={(e) => e.stopPropagation()}>
+                                  <Link
+                                    href={`/utilities/cycles/microcycles/manage/${cycle.id}`}
+                                    passHref
+                                  >
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      onClick={(e) => e.stopPropagation()}
+                                    >
                                       Edit
                                     </Button>
                                   </Link>

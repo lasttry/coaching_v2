@@ -1,17 +1,13 @@
 'use client';
 
 import { styled, Container, Box } from '@mui/material';
-import React, { useState } from 'react';
+import React, { ReactElement, useState } from 'react';
 import Header from '@/app/(DashboardLayout)/layout/header/Header';
 import Sidebar from '@/app/(DashboardLayout)/layout/sidebar/Sidebar';
 import { SessionProvider } from 'next-auth/react';
-import { SettingsProvider } from '@/context/SettingsContext';
 import { log } from '@/lib/logger'; // Import the logger
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/i18n';
-
-// Log initialization
-log.info('RootLayout component initialized');
 
 // Styled Components
 const MainWrapper = styled('div')(() => ({
@@ -30,7 +26,7 @@ const PageWrapper = styled('div')(() => ({
   backgroundColor: 'transparent',
 }));
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }): ReactElement {
   const [isSidebarOpen] = useState(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -39,9 +35,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     log.error('RootLayout: children prop is missing');
     throw new Error('The "children" prop is required and cannot be null or undefined.');
   }
-
-  // Logging the state values
-  log.info(`Sidebar state: isSidebarOpen=${isSidebarOpen}, isMobileSidebarOpen=${isMobileSidebarOpen}`);
 
   return (
     <SessionProvider>
@@ -52,7 +45,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             isSidebarOpen={isSidebarOpen}
             isMobileSidebarOpen={isMobileSidebarOpen}
             onSidebarClose={() => {
-              log.info('Closing mobile sidebar');
               setMobileSidebarOpen(false);
             }}
           />
@@ -67,15 +59,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               {/* Header */}
               <Header
                 toggleMobileSidebar={() => {
-                  log.info('Opening mobile sidebar');
                   setMobileSidebarOpen(true);
                 }}
               />
 
               {/* Page Route */}
-              <Box sx={{ minHeight: 'calc(100vh - 170px)', py: 3 }}>
-                <SettingsProvider>{children}</SettingsProvider>
-              </Box>
+              <Box sx={{ minHeight: 'calc(100vh - 170px)', py: 3 }}>{children}</Box>
             </Container>
           </PageWrapper>
         </MainWrapper>

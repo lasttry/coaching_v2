@@ -12,20 +12,28 @@ interface LineMovementProps {
 const LineMovement: React.FC<LineMovementProps> = ({ id, points }) => {
   const { addDef, hasDef } = useSvgDefs();
   const [updateSvgDefs, setUpdateSvgDefs] = useState<boolean>(false);
-  const { selectedId, select } = useSelection();
-  const [currentPoints, setCurrentPoints] = useState<number[]>(points);
+  const { selectedId } = useSelection();
+  const [currentPoints] = useState<number[]>(points);
 
   useEffect(() => {
     if (!hasDef('markerArrow')) {
       addDef(
         'markerArrow',
-        <marker viewBox="0 0 8 6" markerWidth="8" markerHeight="6" orient="auto" refX="4" refY="3" id="markerArrow">
+        <marker
+          viewBox="0 0 8 6"
+          markerWidth="8"
+          markerHeight="6"
+          orient="auto"
+          refX="4"
+          refY="3"
+          id="markerArrow"
+        >
           <path d="m 8,3 -8,3 0,-6 8,3 z" fill="#000000" strokeWidth={0}></path>
         </marker>
       );
     }
     setUpdateSvgDefs(true);
-  }, [updateSvgDefs]);
+  }, [updateSvgDefs, addDef, hasDef]);
 
   const generatePathFromPoints = (points: number[]): string => {
     if (points.length < 2) return '';
@@ -35,7 +43,9 @@ const LineMovement: React.FC<LineMovementProps> = ({ id, points }) => {
     const offsetY = points[1];
 
     // Adjust the points
-    const adjustedPoints = points.map((value, index) => (index % 2 === 0 ? value - offsetX : value - offsetY));
+    const adjustedPoints = points.map((value, index) =>
+      index % 2 === 0 ? value - offsetX : value - offsetY
+    );
 
     // Generate the path
     let path = `M 0,0`; // First point is always (0,0)
@@ -47,17 +57,26 @@ const LineMovement: React.FC<LineMovementProps> = ({ id, points }) => {
       }
     }
 
-    console.log(path);
     return path;
   };
 
   return (
     <g>
-      {console.log('Selected ID:', selectedId)}
-      {console.log('ID:', id)}
-      <path className={id} d={generatePathFromPoints(points)} fill="none" stroke={'black'} strokeWidth={2} markerEnd="url(#markerArrow)" />
+      <path
+        className={id}
+        d={generatePathFromPoints(points)}
+        fill="none"
+        stroke={'black'}
+        strokeWidth={2}
+        markerEnd="url(#markerArrow)"
+      />
       {selectedId === id &&
-        currentPoints.map((point, index) => index % 2 === 0 && <circle key={index} cx={point} cy={currentPoints[index + 1]} r={4} fill="red" />)}
+        currentPoints.map(
+          (point, index) =>
+            index % 2 === 0 && (
+              <circle key={index} cx={point} cy={currentPoints[index + 1]} r={4} fill="red" />
+            )
+        )}
     </g>
   );
 };

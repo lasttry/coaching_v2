@@ -4,9 +4,13 @@ import { ClubInterface } from '@/types/club/types';
 import { validateClubSettings } from './assets/validateClub';
 
 // GET: Fetch all clubs
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
-    const clubs = await prisma.club.findMany();
+    const clubs = await prisma.club.findMany({
+      include: {
+        venues: true, // 👈 includes all related venues
+      },
+    });
 
     if (!clubs || clubs.length === 0) {
       return NextResponse.json({ error: 'No clubs found.' }, { status: 404 });
@@ -18,11 +22,10 @@ export async function GET() {
     return NextResponse.json({ error: 'Error fetching clubs.' }, { status: 500 });
   }
 }
-
 // POST: Create a new club
-export async function POST(request: Request) {
+export async function POST(request: Request): Promise<NextResponse> {
   try {
-    const data: ClubInterface = await request.json();
+    const data: ClubInterface & { venues?: { name: string }[] } = await request.json();
 
     // Validate input data
     validateClubSettings(data);
@@ -40,13 +43,26 @@ export async function POST(request: Request) {
     if (existingClub) {
       return NextResponse.json(
         { error: 'Club with this name already exists' },
-        { status: 409 } // Conflict
+        { status: 409 }
       );
     }
 
-    // Create the new club
+    // Separate venues and club data
+    const { venues, ...clubData } = data;
+
+    // Create the new club with optional venues
     const newClub = await prisma.club.create({
-      data,
+      data: {
+        ...clubData,
+        ...(venues && venues.length > 0 && {
+          venues: {
+            create: venues,
+          },
+        }),
+      },
+      include: {
+        venues: true,
+      },
     });
 
     return NextResponse.json(newClub, { status: 201 });

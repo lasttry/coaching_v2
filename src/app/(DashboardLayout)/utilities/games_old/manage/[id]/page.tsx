@@ -3,13 +3,30 @@ import React, { ReactElement } from 'react';
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
-import { Button, Box, Stack, Typography, TextField, Select, MenuItem, CircularProgress, IconButton } from '@mui/material';
+import {
+  Button,
+  Box,
+  Stack,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  CircularProgress,
+  IconButton,
+} from '@mui/material';
 import { Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import dayjs from 'dayjs';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import { GameInterface, AthleteInterface, GameAthleteInterface, ObjectiveInterface, ObjectiveType, OpponentInterface } from '@/types/games/types';
+import {
+  GameInterface,
+  AthleteInterface,
+  GameAthleteInterface,
+  ObjectiveInterface,
+  ObjectiveType,
+  OpponentInterface,
+} from '@/types/games/types';
 import { useRef } from 'react';
 
 type Params = Promise<{ id: string }>;
@@ -47,7 +64,11 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
     setObjectives([...objectives, { title: '', description: '', type: ObjectiveType.TEAM }]);
   };
 
-  const handleObjectiveChange = (index: number, field: string, value: string | ObjectiveType): void => {
+  const handleObjectiveChange = (
+    index: number,
+    field: string,
+    value: string | ObjectiveType
+  ): void => {
     const updatedObjectives = [...objectives];
     updatedObjectives[index] = {
       ...updatedObjectives[index],
@@ -128,14 +149,19 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
         }
 
         const gameData = await gameResponse.json();
-        const gameAthletes = gameData.game.gameAthletes.map((gameAthlete: GameAthleteInterface) => ({
-          athlete: gameAthlete.athlete, // Access `name` or other properties of the nested `athletes` object
-          number: gameAthlete && gameAthlete.number === '' ? gameAthlete.athlete?.number || 0 : gameAthlete?.number || 0,
-          period1: gameAthlete.period1,
-          period2: gameAthlete.period2,
-          period3: gameAthlete.period3,
-          period4: gameAthlete.period4,
-        }));
+        const gameAthletes = gameData.game.gameAthletes.map(
+          (gameAthlete: GameAthleteInterface) => ({
+            athlete: gameAthlete.athlete, // Access `name` or other properties of the nested `athletes` object
+            number:
+              gameAthlete && gameAthlete.number === ''
+                ? gameAthlete.athlete?.number || 0
+                : gameAthlete?.number || 0,
+            period1: gameAthlete.period1,
+            period2: gameAthlete.period2,
+            period3: gameAthlete.period3,
+            period4: gameAthlete.period4,
+          })
+        );
 
         setForm({
           number: gameData.game.number || 0, // Add this line
@@ -149,7 +175,10 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
         });
 
         const available = athletes.filter(
-          (athlete: GameAthleteInterface) => !gameAthletes.some((gameAthlete: GameAthleteInterface) => gameAthlete.athlete.id === athlete.athlete.id)
+          (athlete: GameAthleteInterface) =>
+            !gameAthletes.some(
+              (gameAthlete: GameAthleteInterface) => gameAthlete.athlete.id === athlete.athlete.id
+            )
         );
         setAvailableAthletes(sortAthletes(available));
         setSelectedAthletes(sortAthletes(gameAthletes));
@@ -263,7 +292,10 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
   if (loading) return <CircularProgress />;
 
   return (
-    <PageContainer title={gameId ? 'Edit Game' : 'Create Game'} description={gameId ? 'Edit Game' : 'Create Game'}>
+    <PageContainer
+      title={gameId ? 'Edit Game' : 'Create Game'}
+      description={gameId ? 'Edit Game' : 'Create Game'}
+    >
       <h1>{gameId ? 'Edit Game' : 'Create Game'}</h1>
 
       {error ? (
@@ -319,14 +351,23 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
 
           {/* Away Game Toggle */}
           <Box>
-            <Select name="away" value={form?.away ? 'true' : 'false'} onChange={(e) => handleSelectChange(e as React.ChangeEvent<HTMLInputElement>)}>
+            <Select
+              name="away"
+              value={form?.away ? 'true' : 'false'}
+              onChange={(e) => handleSelectChange(e as React.ChangeEvent<HTMLInputElement>)}
+            >
               <MenuItem value="false">Home</MenuItem>
               <MenuItem value="true">Away</MenuItem>
             </Select>
           </Box>
 
           {/* Opponent Select */}
-          <Select name="oponentId" value={opponents.length > 0 ? form?.oponentId || '' : ''} onChange={handleSelectChange} displayEmpty>
+          <Select
+            name="oponentId"
+            value={opponents.length > 0 ? form?.oponentId || '' : ''}
+            onChange={handleSelectChange}
+            displayEmpty
+          >
             <MenuItem value="">
               <em>Select Opponent</em>
             </MenuItem>
@@ -386,14 +427,24 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
                   multiline
                   rows={3}
                 />
-                <Select value={objective.type} onChange={(e) => handleObjectiveChange(index, 'type', e.target.value as ObjectiveType)} displayEmpty>
+                <Select
+                  value={objective.type}
+                  onChange={(e) =>
+                    handleObjectiveChange(index, 'type', e.target.value as ObjectiveType)
+                  }
+                  displayEmpty
+                >
                   {Object.values(ObjectiveType).map((type) => (
                     <MenuItem key={type} value={type}>
                       {objectiveTypeLabels[type]}
                     </MenuItem>
                   ))}
                 </Select>
-                <IconButton onClick={() => handleRemoveObjective(index)} color="error" sx={{ alignSelf: 'flex-end' }}>
+                <IconButton
+                  onClick={() => handleRemoveObjective(index)}
+                  color="error"
+                  sx={{ alignSelf: 'flex-end' }}
+                >
                   <DeleteIcon />
                 </IconButton>
               </Box>
@@ -424,11 +475,19 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
                   <TableRow key={athlete.athlete.id}>
                     <TableCell>
                       <TextField
-                        value={athlete.number === '' ? String(athlete.athlete.number) : athlete.number}
+                        value={
+                          athlete.number === '' ? String(athlete.athlete.number) : athlete.number
+                        }
                         inputRef={inputRef}
                         onChange={(e) => {
                           const updatedGameNumber = e.target.value;
-                          setSelectedAthletes((prev) => prev.map((a) => (a.athlete.id === athlete.athlete.id ? { ...a, number: updatedGameNumber } : a)));
+                          setSelectedAthletes((prev) =>
+                            prev.map((a) =>
+                              a.athlete.id === athlete.athlete.id
+                                ? { ...a, number: updatedGameNumber }
+                                : a
+                            )
+                          );
                         }}
                       />
 
@@ -438,11 +497,17 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
                           <label key={`period-${period}`}>
                             <input
                               type="checkbox"
-                              checked={Boolean(athlete[`period${period}` as keyof GameAthleteInterface])} // Cast to key of GameFormAthletesInterface
+                              checked={Boolean(
+                                athlete[`period${period}` as keyof GameAthleteInterface]
+                              )} // Cast to key of GameFormAthletesInterface
                               onChange={(e) => {
                                 const isChecked = e.target.checked;
                                 setSelectedAthletes((prev) =>
-                                  prev.map((a) => (a.athlete.id === athlete.athlete.id ? { ...a, [`period${period}`]: isChecked } : a))
+                                  prev.map((a) =>
+                                    a.athlete.id === athlete.athlete.id
+                                      ? { ...a, [`period${period}`]: isChecked }
+                                      : a
+                                  )
                                 );
                               }}
                             />
@@ -457,7 +522,11 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
                     <TableCell>{dayjs(athlete.athlete.birthdate).year()}</TableCell>
                     <TableCell>Selected</TableCell>
                     <TableCell align="right">
-                      <Button variant="contained" color="secondary" onClick={() => handleRemoveAthlete(athlete)}>
+                      <Button
+                        variant="contained"
+                        color="secondary"
+                        onClick={() => handleRemoveAthlete(athlete)}
+                      >
                         Remove
                       </Button>
                     </TableCell>
@@ -472,7 +541,11 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
                     <TableCell>{dayjs(athlete.athlete.birthdate).year()}</TableCell>
                     <TableCell>Available</TableCell>
                     <TableCell align="right">
-                      <Button variant="contained" color="primary" onClick={() => handleAddAthlete(athlete)}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleAddAthlete(athlete)}
+                      >
                         Add
                       </Button>
                     </TableCell>
@@ -487,7 +560,12 @@ const GameFormPage = (props: { params: Params }): ReactElement => {
             <Button type="submit" variant="contained" color="primary">
               Save Changes
             </Button>
-            <Button type="button" variant="outlined" color="secondary" onClick={() => router.push('/utilities/games')}>
+            <Button
+              type="button"
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push('/utilities/games')}
+            >
               Cancel
             </Button>
           </Box>

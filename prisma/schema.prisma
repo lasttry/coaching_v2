@@ -11,7 +11,7 @@ model athletes {
   id              Int             @id @default(autoincrement())
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
-  number          String?          @db.VarChar(2)
+  number          String?         @db.VarChar(2)
   name            String          @db.VarChar(50)
   birthdate       DateTime?
   fpbNumber       Int?
@@ -33,6 +33,7 @@ model gameAthletes {
   athlete   athletes @relation(fields: [athleteId], references: [id], onDelete: Cascade)
   gameId    Int
   game      games    @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
   number    String?
   period1   Boolean?
   period2   Boolean?
@@ -43,36 +44,55 @@ model gameAthletes {
 }
 
 model games {
-  clubId              Int
-  club                Club            @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  id                  Int             @id @default(autoincrement())
-  number              Int?
-  date                DateTime
-  away                Boolean
-  competition         String?         @db.VarChar(30)
-  subcomp             String?         @db.VarChar(30)
-  notes               String?         @db.VarChar(1000)
-  opponentId          Int
-  opponent            Opponent        @relation(fields: [opponentId], references: [id])
-  gameAthletes        gameAthletes[]
-  objectives          objectives[]    @relation("objectives")
-  athleteReports      athleteReport[]
-  statistics          statistic[]
-  timeEntry           timeEntry[]
+  clubId Int
+  club   Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  id     Int      @id @default(autoincrement())
+  number Int?
+  date   DateTime
+  away   Boolean
+  notes          String?         @db.VarChar(1000)
 
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
+  teamId Int?
+  team   Team? @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  competitionId      Int? // 👈 added
+  competition        Competition?      @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  competitionSerieId Int? // 👈 added (optional because not all games may belong to a series)
+  competitionSerie   CompetitionSerie? @relation(fields: [competitionSerieId], references: [id])
+
+  opponentId     Int
+  opponent       Opponent        @relation(fields: [opponentId], references: [id])
+
+  venueId     Int?
+  venue       Venue?     @relation(fields: [venueId], references: [id])
+
+  gameAthletes   gameAthletes[]
+  objectives     objectives[]    @relation("objectives")
+  athleteReports athleteReport[]
+  statistics     statistic[]
+  timeEntry      timeEntry[]
+
+  refereeMain    String?    // Árbitro Principal
+  referee1       String?    // Árbitro Auxiliar 1
+  scorer         String?    // Marcador
+  timer          String?    // Cronometrista
+  shotClock      String?    // Operador 24"
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Opponent {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime
   name      String   @db.VarChar(50)
   shortName String   @db.VarChar(6)
-  location  String   @db.VarChar(30)
   image     String?
   games     games[]
+
+  venues    Venue[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime
 }
 
 model Account {
@@ -244,14 +264,14 @@ enum TeamType {
 }
 
 model Echelon {
-  id          Int      @id @default(autoincrement())
+  id          Int           @id @default(autoincrement())
   minAge      Int
   maxAge      Int?
-  name        String   @db.VarChar(50)
-  description String?  @db.VarChar(255)
+  name        String        @db.VarChar(50)
+  description String?       @db.VarChar(255)
   gender      Gender
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   Team        Team[]
   Competition Competition[]
 }
@@ -260,18 +280,36 @@ model Club {
   id              Int           @id @default(autoincrement())
   name            String        @unique @db.VarChar(50)
   shortName       String?       @db.VarChar(6)
-  location        String?       @db.VarChar(50)
   image           String?
   backgroundColor String?       @db.VarChar(7)
   foregroundColor String?       @db.VarChar(7)
   season          String?       @db.VarChar(10)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
   accounts        AccountClub[] @relation("ClubToAccounts") // Relation to AccountClub
   athletes        athletes[]
   games           games[]
   macrocycle      macrocycle[]
   Team            Team[]
+  venues          Venue[]       // 👈 New relation to venues
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Venue {
+  id        Int    @id @default(autoincrement())
+  name      String @db.VarChar(50)
+  address   String? @db.VarChar(100)
+
+  opponentId Int?
+  opponent   Opponent? @relation(fields: [opponentId], references: [id], onDelete: Cascade)
+
+  clubId    Int?
+  club      Club?   @relation(fields: [clubId], references: [id], onDelete: Cascade)
+
+  games  games[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model AccountClub {
@@ -303,8 +341,10 @@ model Team {
   echelonId Int
   echelon   Echelon       @relation(fields: [echelonId], references: [id], onDelete: Cascade)
   athletes  TeamAthlete[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  games     games[]
 }
 
 model TeamAthlete {
@@ -318,12 +358,25 @@ model TeamAthlete {
 }
 
 model Competition {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(50)
-  description String?  @db.VarChar(255)
-  image       String?  @db.Text
-  echelonId   Int
-  echelon     Echelon  @relation(fields: [echelonId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                Int                @id @default(autoincrement())
+  name              String             @db.VarChar(50)
+  description       String?            @db.VarChar(255)
+  image             String?            @db.Text
+  echelonId         Int
+  echelon           Echelon            @relation(fields: [echelonId], references: [id], onDelete: Cascade)
+  competitionSeries CompetitionSerie[] // 👈 added here
+  games             games[] // 👈 this fixes the error
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model CompetitionSerie {
+  id            Int         @id @default(autoincrement())
+  name          String      @db.VarChar(50)
+  competitionId Int
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  games         games[] // one serie can have many games
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

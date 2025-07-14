@@ -14,7 +14,9 @@ interface DraggableProps {
   selectable?: boolean;
 }
 
-const withDraggable = <P extends object>(WrappedComponent: React.ComponentType<P>) => {
+const withDraggable = <P extends object>(
+  WrappedComponent: React.ComponentType<P>
+): React.FC<P & DraggableProps> => {
   const DraggableComponent: React.FC<P & DraggableProps> = ({
     x,
     y,
@@ -49,7 +51,7 @@ const withDraggable = <P extends object>(WrappedComponent: React.ComponentType<P
       latestPosition.current = { x, y, rotation: rotation || 0 };
     }, [x, y, rotation]);
 
-    const handleMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+    const handleMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
       if (draggable && !rotatingRef.current) {
         event.preventDefault();
         // Add global event listeners for mousemove and mouseup
@@ -59,7 +61,7 @@ const withDraggable = <P extends object>(WrappedComponent: React.ComponentType<P
       }
     };
 
-    const handleMouseMove = (event: MouseEvent) => {
+    const handleMouseMove = (event: MouseEvent): void => {
       if (draggingRef.current && svgRect) {
         const { left, top } = svgRect; // Use cached bounding rect
         const newX = event.clientX - left;
@@ -92,7 +94,7 @@ const withDraggable = <P extends object>(WrappedComponent: React.ComponentType<P
       }
     };
 
-    const handleMouseUp = () => {
+    const handleMouseUp = (): void => {
       if (draggingRef.current) {
         draggingRef.current = false;
         window.removeEventListener('mousemove', handleMouseMove);
@@ -107,12 +109,11 @@ const withDraggable = <P extends object>(WrappedComponent: React.ComponentType<P
         onMove(x, y, rotation || 0, { id });
       }
       if (draggable) {
-        console.log(id);
         select(id); // Select the component when mouse down
       }
     };
 
-    const handleRotateStart = (event: React.MouseEvent<SVGGElement, MouseEvent>) => {
+    const handleRotateStart = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
       if (rotatable) {
         event.preventDefault();
         rotatingRef.current = true;
