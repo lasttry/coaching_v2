@@ -16,7 +16,7 @@ export async function GET(req: Request, segmentData: { params: Params }): Promis
   if (id && !isNaN(Number(id))) {
     try {
       // Find the athlete by ID
-      const athlete = await prisma.athletes.findUnique({
+      const athlete = await prisma.athlete.findUnique({
         where: { id: Number(id) },
       });
 
@@ -45,12 +45,12 @@ export async function DELETE(req: Request, segmentData: { params: Params }): Pro
   if (id && !isNaN(Number(id))) {
     try {
       // First, delete all related gameAthletes records
-      await prisma.gameAthletes.deleteMany({
+      await prisma.gameAthlete.deleteMany({
         where: { athleteId: Number(id) },
       });
 
       // Then, delete the athlete
-      await prisma.athletes.delete({
+      await prisma.athlete.delete({
         where: { id: Number(id) },
       });
 
@@ -97,7 +97,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     }
 
     // Update the athlete in the database
-    const updatedAthlete = await prisma.athletes.update({
+    const updatedAthlete = await prisma.athlete.update({
       where: { id: Number(id) },
       data: {
         number: data.number,
@@ -105,6 +105,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         birthdate: birthdate,
         fpbNumber: data.fpbNumber ? Number(data.fpbNumber) : null,
         idNumber: data.idNumber ? Number(data.idNumber) : null,
+        shirtSize: data.shirtSize,
         idType: data.idType || null,
         active: data.active ?? true, // Handle the `active` field if provided
         updatedAt: new Date(), // Automatically set the updatedAt field

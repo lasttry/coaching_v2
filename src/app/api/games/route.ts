@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { GameAthleteInterface } from '@/types/games/types';
 import { log } from '@/lib/logger';
@@ -63,7 +63,7 @@ export async function POST(req: Request): Promise<NextResponse> {
         }),
       },
     };
-    const newGame = await prisma.games.create({
+    const newGame = await prisma.game.create({
       ...payload,
       include: {
         opponent: true,
@@ -82,46 +82,40 @@ export async function POST(req: Request): Promise<NextResponse> {
   }
 }
 
-// GET handler for fetching all games
-export async function GET(): Promise<NextResponse> {
-  const session = await auth();
-  if (
-    !session?.user ||
-    !session.user.selectedClubId ||
-    isNaN(Number(session.user.selectedClubId))
-  ) {
-    log.error('games/route.ts>GET: session invalid or club not selected');
-    return NextResponse.json({ status: 402 });
-  }
-
+// GET /api/games?page=1&pageSize=10
+export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
-    const payload = {
-      where: {
-        clubId: Number(session.user.selectedClubId), // Filter by clubId
-      },
-      include: {
-        opponent: true, // Include opponent team details in the response
-        team: {
-          include: {
-            echelon: true, // ✅ include the nested echelon inside team
-          },
-        },
-        competition: true,
-        competitionSerie: true,
-        gameAthletes: {
-          include: {
-            athlete: true,
-          }
-        },
-        venue: true,
-      },
-    };
+    const { searchParams } = new URL(req.url);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const pageSize = parseInt(searchParams.get('pageSize') || '10', 10);
 
-    const games = await prisma.games.findMany(payload);
-    log.debug(games)
-    return NextResponse.json(games);
+    const skip = (page - 1) * pageSize;
+
+    const [games, total] = await Promise.all([
+      prisma.game.findMany({
+        skip,
+        take: pageSize,
+        orderBy: { date: 'desc' },
+        include: {
+          team: { include: { echelon: true, club: true } },
+          opponent: true,
+          competition: { include: { competitionSeries: true } },
+          venue: true,
+          gameAthletes: { include: { athlete: true } },
+        },
+      }),
+      prisma.game.count(),
+    ]);
+
+    return NextResponse.json({
+      games,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    });
   } catch (error) {
-    log.error('Error fetching games:', error);
-    return NextResponse.json({ error: `Error fetching game: ${error}` }, { status: 500 });
+    log.error('Failed to fetch games:', error);
+    return NextResponse.json({ error: 'Failed to fetch games' }, { status: 500 });
   }
 }

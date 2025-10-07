@@ -57,9 +57,7 @@ const GameComponent: React.FC<GameProps> = ({
   const [opponents, setOpponents] = React.useState<OpponentInterface[]>([]);
   const [teamAthletes, setTeamAthletes] = useState<AthleteInterface[]>([]);
   const [gameAthletes, setGameAthletes] = useState<GameAthleteInterface[]>([]);
-  const [clubVenues, setClubVenues] = useState<VenueInterface[]>([]);
-  const [opponentVenues, setOpponentVenues] = useState<VenueInterface[]>([]);
-
+  const [venues, setVenues] = useState<VenueInterface[]>([]);
 
   const selectedCompetition = competitions.find((comp) => comp.id === game.competitionId);
   const seriesOptions = selectedCompetition?.competitionSeries ?? [];
@@ -132,15 +130,15 @@ const GameComponent: React.FC<GameProps> = ({
         setTeamAthletes([]);
         return;
       }
-  
+
       try {
         const response = await fetch(`/api/teams/${game.team.id}`);
         const data = await response.json();
-  
+
         if (!response.ok) {
           throw new Error(data.error || 'Failed to fetch team data');
         }
-  
+
         setTeamAthletes(
           data.athletes.map((a: { athlete: AthleteInterface }) => a.athlete)
         );
@@ -149,7 +147,7 @@ const GameComponent: React.FC<GameProps> = ({
         setErrorMessage('Failed to load team athletes.');
       }
     };
-  
+
     fetchTeamAthletes();
   }, [game?.team?.id, setErrorMessage]);
 
@@ -158,7 +156,7 @@ const GameComponent: React.FC<GameProps> = ({
       setGameAthletes(
         teamAthletes.map((athlete) => {
           const selected = game.gameAthletes?.find((g) => g.athleteId === athlete.id);
-  
+
           return {
             athleteId: athlete.id,
             athlete,
@@ -180,31 +178,48 @@ const GameComponent: React.FC<GameProps> = ({
   useEffect(() => {
     const fetchVenues = async (): Promise<void> => {
       try {
-        if (!game.away ) {
-          const res = await fetch(`/api/clubs/${Number(session?.user.selectedClubId)}`);
-          const data = await res.json();
-          const venues = data.venues ?? [];
-          setClubVenues(venues);
-          if (venues.length > 0 && !game.venueId) {
-            setGame((prev) => ({ ...prev, venueId: venues[0].id }));
-          }
+        let url: string | null = null;
+
+        if (!game.away) {
+          // Home game → use club venues
+          if (!session?.user.selectedClubId) return;
+          url = `/api/clubs/${Number(session.user.selectedClubId)}`;
         } else if (game.away && game.opponentId) {
-          const res = await fetch(`/api/opponents/${game.opponentId}`);
-          const data = await res.json();
-          const venues = data.venues ?? [];
-          setOpponentVenues(venues);
-          if (venues.length > 0 && !game.venueId) {
-            setGame((prev) => ({ ...prev, venueId: venues[0].id }));
-          } 
+          // Away game → use opponent venues
+          url = `/api/opponents/${game.opponentId}`;
         }
+
+        if (!url) {
+          setVenues([]);
+          setGame((prev) => ({ ...prev, venueId: null }));
+          return;
+        }
+
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Failed to fetch venues");
+
+        const data = await res.json();
+        const venues = data.venues ?? [];
+
+        setVenues(venues);
+
+        // auto-pick first venue if none selected or invalid
+        setGame((prev) => {
+          if (!venues.length) return { ...prev, venueId: null };
+          if (!prev.venueId || !venues.find((v: VenueInterface) => v.id === prev.venueId)) {
+            return { ...prev, venueId: venues[0].id };
+          }
+          return prev;
+        });
       } catch (error) {
-        log.error('Error fetching venues:', error);
-        setErrorMessage('Failed to load venues.');
+        log.error("Error fetching venues:", error);
+        setErrorMessage("Failed to load venues.");
+        setVenues([]);
       }
     };
-  
+
     fetchVenues();
-  }, [game.away, game.clubId, game.opponentId, setErrorMessage]);
+  }, [game.away, game.opponentId, session?.user.selectedClubId, setErrorMessage, setGame]);
 
   const validateField = (
     field: string,
@@ -393,7 +408,7 @@ const GameComponent: React.FC<GameProps> = ({
       log.warn('handleAthleteFieldChange > id is null.');
       return;
     }
-  
+
     setGameAthletes((prev) =>
       prev.map((a) =>
         a.athleteId === id
@@ -415,9 +430,9 @@ const GameComponent: React.FC<GameProps> = ({
     try {
       const response = await fetch(`/api/fpb/game-officials/${game.number}`);
       const data = await response.json();
-  
+
       if (!response.ok) throw new Error(data.error || 'Failed to fetch game details');
-  
+
       log.debug(data);
       setGame({
         ...game,
@@ -488,11 +503,8 @@ const GameComponent: React.FC<GameProps> = ({
               }))
             }
             label={t('venue')}
-            disabled={
-              game.away ? opponentVenues.length === 0 : clubVenues.length === 0
-            }
           >
-            {(game.away ? opponentVenues : clubVenues).map((venue) => (
+            {(venues).map((venue) => (
               <MenuItem key={venue.id} value={Number(venue.id)}>
                 {venue.name}
               </MenuItem>

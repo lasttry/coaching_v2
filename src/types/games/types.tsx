@@ -61,6 +61,14 @@ export enum ObjectiveType {
 }
 /* eslint-enable no-unused-vars */
 
+export enum Size {
+  S = "S",
+  M = "M",
+  L = "L",
+  XL = "XL",
+  XXL = "XXL"
+}
+
 export interface OpponentInterface {
   id?: number;
   name: string;
@@ -100,6 +108,7 @@ export interface AthleteInterface {
   idType?: string | null;
   active: boolean;
   clubId?: number;
+  shirtSize: AthleteSize
 }
 
 export interface jsPDFWithAutoTable extends jsPDF {

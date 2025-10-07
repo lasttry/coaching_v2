@@ -15,15 +15,16 @@ import {
   TableHead,
   TableRow,
   TableBody,
-  Paper,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
   DialogActions,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AthleteInterface } from '@/types/games/types';
+import { AthleteInterface, Size } from '@/types/games/types';
 import { useTranslation } from 'react-i18next';
 
 interface AthleteListComponentProps {
@@ -101,13 +102,14 @@ const AthleteListComponent: React.FC<AthleteListComponentProps> = ({
           <Typography variant="h6">{t('athletes')}</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Table component={Paper}>
+          <Table component="table">
             <TableHead>
               <TableRow>
                 <TableCell>{t('number')}</TableCell>
                 <TableCell>{t('name')}</TableCell>
                 <TableCell>{t('birthdate')}</TableCell>
                 <TableCell>{t('fpbNumber')}</TableCell>
+                <TableCell>{t('shirtSize')}</TableCell>
                 <TableCell>{t('active')}</TableCell>
                 <TableCell>{t('actions')}</TableCell>
               </TableRow>
@@ -175,6 +177,24 @@ const AthleteListComponent: React.FC<AthleteListComponentProps> = ({
                             />
                           </TableCell>
                           <TableCell>
+                            <Select
+                              value={editedAthletes[athlete.id!]?.shirtSize ?? ''}
+                              onChange={(e) =>
+                                handleEditChange(
+                                  athlete.id!,
+                                  'shirtSize',
+                                  e.target.value ? e.target.value as Size : null
+                                )
+                              }
+                            >
+                              {['S', 'M', 'L', 'XL', 'XXL'].map((shirtSize) => (
+                                <MenuItem key={shirtSize} value={shirtSize}>
+                                  {shirtSize}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </TableCell>
+                          <TableCell>
                             <Switch
                               checked={editedAthletes[athlete.id!]?.active ?? true}
                               onChange={(e) =>
@@ -204,6 +224,7 @@ const AthleteListComponent: React.FC<AthleteListComponentProps> = ({
                           <TableCell>{athlete.name}</TableCell>
                           <TableCell>{new Date(athlete.birthdate).toLocaleDateString()}</TableCell>
                           <TableCell>{athlete.fpbNumber || '—'}</TableCell>
+                          <TableCell>{athlete.shirtSize || ''}</TableCell>
                           <TableCell>{athlete.active ? t('yes') : t('no')}</TableCell>
                           <TableCell>
                             <Stack direction="row" spacing={1}>

@@ -97,7 +97,7 @@ const Profile = (): ReactElement => {
         <MenuItem>
           <ListItemText>{`Selected Club Id: ${session?.user?.selectedClubId}`}</ListItemText>
         </MenuItem>
-        <Link href="/utilities/profile" passHref legacyBehavior>
+        <Link href="/utilities/profile" passHref>
           <MenuItem>
             <ListItemIcon>
               <IconUser width={20} />

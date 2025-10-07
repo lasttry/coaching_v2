@@ -11,34 +11,43 @@ import { Grid } from '@mui/system';
 import AddIcon from '@mui/icons-material/Add';
 
 interface OpponentAddProps {
+  opponent: OpponentInterface;
+  setOpponent: React.Dispatch<React.SetStateAction<OpponentInterface>>;
   setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
   setSuccessMessage: React.Dispatch<React.SetStateAction<string | null>>;
-  onAddOpponent: (opponent: OpponentInterface) => void;
+  onAddOpponent: () => void;
 }
 
 const OpponentAddComponent: React.FC<OpponentAddProps> = ({
-  setErrorMessage,
-  onAddOpponent
+  opponent,
+  setOpponent,
+  onAddOpponent,
+  setErrorMessage
 }) => {
   const { t } = useTranslation();
-  const [opponent, setOpponent] = useState<OpponentInterface>({ name: '', shortName: '', venues: [] });
   const [expanded, setExpanded] = useState(false);
 
   const handleSave = async (): Promise<void> => {
-    try {
-      const response = await fetch('/api/opponents', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(opponent),
-      });
-      if (!response.ok) throw new Error(await response.text());
-      const newOpponent = await response.json();
-      onAddOpponent(newOpponent);
-      setOpponent({ name: '', shortName: '', venues: [] });
-    } catch (err) {
-      setErrorMessage(`${t('opponentFailedSave')} ${err}`);
-      setTimeout(() => setErrorMessage(null), 5000);
+    if (!validate()) return;
+    if (onAddOpponent) onAddOpponent();
+    setExpanded(false);
+  };
+
+  const validate = (): boolean => {
+    let error: string | null = null;
+
+    if (!opponent.name?.trim()) {
+      error = t('nameRequired', { defaultValue: 'Name is required' });
+    } else if (opponent.name.length > 50) {
+      error = t('nameTooLong', { defaultValue: 'Name cannot exceed 50 characters' });
+    } else if (!opponent.shortName?.trim()) {
+      error = t('shortNameRequired', { defaultValue: 'Short name is required' });
+    } else if (opponent.shortName.length > 6) {
+      error = t('shortNameTooLong', { defaultValue: 'Short name cannot exceed 6 characters' });
     }
+
+    setErrorMessage(error);
+    return !error;
   };
 
   return (
@@ -47,13 +56,10 @@ const OpponentAddComponent: React.FC<OpponentAddProps> = ({
 
         <Grid container spacing={2} alignItems="center" sx={{ width: '100%' }} >
           <Grid size={6}>
-            <Typography><span suppressHydrationWarning>{t('addNewAthlete')}</span></Typography>
+            <Typography><span suppressHydrationWarning>{t('addOponent')}</span></Typography>
           </Grid>
           <Grid size={6} sx={{ ml: 'auto' }}>
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
-              <IconButton size="small" color="success" onClick={(e) => { e.stopPropagation(); handleSave(); }}>
-                <AddIcon />
-              </IconButton>
             </Box>
           </Grid>
         </Grid>
@@ -63,8 +69,11 @@ const OpponentAddComponent: React.FC<OpponentAddProps> = ({
           opponent={opponent}
           setOpponent={setOpponent}
         />
+        <IconButton size="small" color="success" onClick={(e) => { e.stopPropagation(); handleSave(); }}>
+          <AddIcon />
+        </IconButton>
       </AccordionDetails>
-    </Accordion>    
+    </Accordion>
   );
 };
 

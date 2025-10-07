@@ -2,17 +2,16 @@
 
 import React, { useState } from 'react';
 import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
   Typography,
   TextField,
   Button,
   Grid,
+  Select,
+  MenuItem
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
-import { AthleteInterface } from '@/types/games/types';
+import { AthleteInterface, Size } from '@/types/games/types';
 interface AthleteAddProps {
   newAthlete: AthleteInterface;
   setNewAthlete: React.Dispatch<React.SetStateAction<AthleteInterface>>;
@@ -73,24 +72,20 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
       setErrors((prev) => ({ ...prev, [field]: validate(field, value) }));
     };
 
-  const handleSubmit = (): void => {
+  const handleSave = (): void => {
     if (!validateAll()) return;
     if (onAddAthlete) onAddAthlete();
     setExpanded(false);
   };
 
   const handleReset = (): void => {
-    setNewAthlete({ id: null, name: '', number: '', birthdate: '', fpbNumber: null, active: true });
+    setNewAthlete({ id: null, name: '', number: '', birthdate: '', fpbNumber: null, active: true, shirtSize: Size.S });
     setExpanded(false);
     setErrors({});
   };
 
   return (
-    <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography>{t('addNewAthlete')}</Typography>
-      </AccordionSummary>
-      <AccordionDetails>
+    <>
         {newAthlete && (
           <Grid container spacing={2}>
             <Grid size={{ xs: 2, sm: 2 }}>
@@ -134,8 +129,23 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
                 onChange={handleChange('fpbNumber')}
               />
             </Grid>
+            <Grid size={{ xs: 2, sm: 2 }}>
+              <Select
+                value={newAthlete.shirtSize ?? ''}
+                onChange={(e) => setNewAthlete({ ...newAthlete, shirtSize: e.target.value as Size })}
+                fullWidth
+                displayEmpty
+              >
+                <MenuItem value="">{t('selectSize')}</MenuItem>
+                {['S', 'M', 'L', 'XL', 'XXL'].map((shirtSize) => (
+                  <MenuItem key={shirtSize} value={shirtSize}>
+                    {shirtSize}
+                  </MenuItem>
+                ))}
+              </Select>
+            </Grid>
             <Grid size={{ xs: 6, sm: 6 }} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Button variant="contained" onClick={handleSubmit}>
+              <Button variant="contained" onClick={handleSave}>
                 {t('add')}
               </Button>
               <Button variant="outlined" onClick={handleReset} sx={{ ml: 2 }}>
@@ -144,8 +154,7 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
             </Grid>
           </Grid>
         )}
-      </AccordionDetails>
-    </Accordion>
+      </>
   );
 };
 

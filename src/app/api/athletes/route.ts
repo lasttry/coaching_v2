@@ -10,7 +10,7 @@ export async function GET(req: Request): Promise<NextResponse> {
   await i18next.changeLanguage(lng);
 
   try {
-    const athletes = await prisma.athletes.findMany();
+    const athletes = await prisma.athlete.findMany();
     if (!athletes || athletes.length === 0) {
       return NextResponse.json({ error: i18next.t('noAthletesFound') }, { status: 404 });
     }
@@ -34,7 +34,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     if (!session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
       throw new Error(i18next.t('invalidClubId'));
     }
-    const newAthlete = await prisma.athletes.create({
+    const newAthlete = await prisma.athlete.create({
       data: {
         number: data.number,
         name: data.name,

@@ -43,7 +43,7 @@ export async function GET(
       club: true,
     },
   };
-  const game = await prisma.games.findUnique(payload);
+  const game = await prisma.game.findUnique(payload);
   if (!game) {
     return NextResponse.json({ error: 'Game not found' }, { status: 404 });
   }

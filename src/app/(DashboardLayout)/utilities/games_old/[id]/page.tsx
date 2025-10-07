@@ -198,7 +198,7 @@ const GameDetails = (props: { params: Params }): ReactElement => {
         >
           Manage Reports
         </Button>
-        <Button onClick={() => game && generateReportsPDF(game)}>Export Reports to PDF</Button>
+        <Button onClick={() => game && generateReportsPDF(game, )}>Export Reports to PDF</Button>
 
         <Button variant="outlined" color="secondary" onClick={() => window.history.back()}>
           Back

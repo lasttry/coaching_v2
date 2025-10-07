@@ -56,19 +56,19 @@ const OpponentListComponent: React.FC<OpponentListProps> = ({
   const handleSave = async (id: number): Promise<void> => {
     const updatedOpponent = editedOpponents[id];
     if (!updatedOpponent) return;
-  
+
     const res = await fetch(`/api/opponents/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedOpponent),
     });
-  
+
     if (!res.ok) {
       setErrorMessage(t('opponentFailedSave'));
       setTimeout(() => setErrorMessage(null), 10000);
       return;
     }
-  
+
     const updated = await res.json();
     setOpponents((prev) => prev.map((o) => (o.id === updated.id ? updated : o)));
     setSuccessMessage(t('opponentSuccessUpdate'));
@@ -79,7 +79,7 @@ const OpponentListComponent: React.FC<OpponentListProps> = ({
   const handleDelete = async (id: number): Promise<void> => {
     try {
       const res = await fetch(`/api/opponents/${id}`, { method: 'DELETE' });
-  
+
       if (!res.ok) {
         const data = await res.json();
         const errorMessage = data?.error || t('opponentFailedDelete');
@@ -89,7 +89,7 @@ const OpponentListComponent: React.FC<OpponentListProps> = ({
         setDeleteConfirm(null); // Close the dialog
         return;
       }
-  
+
       setOpponents((prev) => prev.filter((o) => o.id !== id));
       setSuccessMessage(t('opponentDeleteSuccess'));
       setTimeout(() => setSuccessMessage(null), 5000);
@@ -150,15 +150,15 @@ const OpponentListComponent: React.FC<OpponentListProps> = ({
                   <Grid size={2} sx={{ ml: 'auto' }}>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 0.1 }}>
                     {isEditing ? (
-                        <IconButton size="small" color="success" onClick={(e) => { e.stopPropagation(); handleSave(opponent.id!); }}>
+                        <IconButton component="span" size="small" color="success" onClick={(e) => { e.stopPropagation(); handleSave(opponent.id!); }}>
                           <SaveIcon />
                         </IconButton>
                       ) : (
-                        <IconButton size="small" color="primary" onClick={(e) => { e.stopPropagation(); handleEditToggle(opponent.id!); }}>
+                        <IconButton component="span" size="small" color="primary" onClick={(e) => { e.stopPropagation(); handleEditToggle(opponent.id!); }}>
                           <EditIcon />
                         </IconButton>
                       )}
-                      <IconButton size="small" color="error" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(opponent); }}>
+                      <IconButton component="span" size="small" color="error" onClick={(e) => { e.stopPropagation(); setDeleteConfirm(opponent); }}>
                         <DeleteIcon />
                       </IconButton>
                     </Box>

@@ -32,26 +32,64 @@ export async function GET(
   }
 }
 
-// PUT: Update a specific team
-export async function PUT(
-  req: NextRequest,
-  segmentData: { params: Params }
-): Promise<NextResponse> {
-  const { id } = await segmentData.params;
-  try {
-    const { name, type, clubId, echelonId } = await req.json();
+  export async function PUT(
+    req: NextRequest,
+    segmentData: { params: Params }
+  ): Promise<NextResponse> {
+    const { id } = await segmentData.params;
+    const teamId = Number(id);
 
-    const updatedTeam = await prisma.team.update({
-      where: { id },
-      data: { name, type, clubId, echelonId },
-    });
+    try {
+      const body = await req.json();
 
-    return NextResponse.json(updatedTeam);
-  } catch (error) {
-    log.error('Failed to update team:', error);
-    return NextResponse.json({ error: 'Failed to update team' }, { status: 500 });
+      // CASE 1: Update athletes
+      console.log(body)
+      if (Array.isArray(body.athleteIds)) {
+        const athleteIds: number[] = body.athleteIds.map(Number);
+
+        const payload = {
+          where: { id: teamId },
+          data: {
+            athletes: {
+              set: [], // clear existing
+              create: athleteIds.map((athleteId) => ({
+                athlete: { connect: { id: athleteId } },
+              })),
+            },
+          },
+          include: { athletes: { include: { athlete: true } }, echelon: true },
+        }
+
+        console.log(payload)
+
+        const updatedTeam = await prisma.team.update(payload);
+
+        return NextResponse.json(updatedTeam);
+      }
+
+      // CASE 2: Update team fields
+      const { name, type, clubId, echelonId } = body;
+
+      const updatedTeam = await prisma.team.update({
+        where: { id: teamId },
+        data: {
+          ...(name && { name }),
+          ...(type && { type }),
+          ...(clubId && { clubId }),
+          ...(echelonId && { echelonId }),
+        },
+        include: { athletes: { include: { athlete: true } }, echelon: true },
+      });
+
+      return NextResponse.json(updatedTeam);
+    } catch (error) {
+      log.error('Failed to update team:', error);
+      return NextResponse.json(
+        { error: 'Failed to update team' },
+        { status: 500 }
+      );
+    }
   }
-}
 
 // DELETE: Remove a specific team
 export async function DELETE(

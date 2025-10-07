@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { GameInterface } from '@/types/games/types'; // Make sure you import the correct Game type
 import { generateHeader, generateGameDetailsHeader } from './utils';
+import { Session } from "next-auth";
 
 interface Athlete {
   id: number;
@@ -20,7 +21,7 @@ interface Report {
   timePlayedObservation?: string;
 }
 
-export const generateReportsPDF = async (game: GameInterface): Promise<void> => {
+export const generateReportsPDF = async (game: GameInterface, session: Session): Promise<void> => {
   const doc = new jsPDF();
 
   const athletesResponse = await fetch('/api/athletes');
@@ -29,6 +30,8 @@ export const generateReportsPDF = async (game: GameInterface): Promise<void> => 
   const reports = await reportsResponse.json();
   const settingsResponse = await fetch('/api/settings');
   const settings = await settingsResponse.json();
+
+  console.log(session.user)
 
   // Add game details to the PDF
   let top = generateHeader(doc, settings);
