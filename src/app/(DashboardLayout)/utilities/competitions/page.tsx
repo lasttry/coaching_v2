@@ -20,9 +20,6 @@ import {
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
-import dayjs from 'dayjs';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
 import { log } from '@/lib/logger';
 import { useMessage } from '@/hooks/useMessage';
 import { CompetitionInterface } from '@/types/competition/types';
