@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 // GET: Retrieve a specific mesocycle
 export async function GET(request: Request, { params }: { params: Params }): Promise<NextResponse> {

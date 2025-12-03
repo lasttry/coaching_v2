@@ -1,17 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  Typography,
-  TextField,
-  Button,
-  Grid,
-  Select,
-  MenuItem
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { TextField, Button, Grid, Select, MenuItem, SelectChangeEvent } from '@mui/material';
+import { AthleteInterface, Size } from '@/types/game/types';
+
+import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
-import { AthleteInterface, Size } from '@/types/games/types';
+
 interface AthleteAddProps {
   newAthlete: AthleteInterface;
   setNewAthlete: React.Dispatch<React.SetStateAction<AthleteInterface>>;
@@ -28,7 +23,6 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
   onAddAthlete,
 }) => {
   const { t } = useTranslation();
-  const [expanded, setExpanded] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = (
@@ -72,89 +66,101 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
       setErrors((prev) => ({ ...prev, [field]: validate(field, value) }));
     };
 
+  const handleSelectChange =
+    (field: keyof AthleteInterface) => (e: SelectChangeEvent<string | number>) => {
+      const value = e.target.value;
+      setNewAthlete((prev) => ({ ...prev, [field]: value }));
+    };
+
   const handleSave = (): void => {
     if (!validateAll()) return;
     if (onAddAthlete) onAddAthlete();
-    setExpanded(false);
   };
 
   const handleReset = (): void => {
-    setNewAthlete({ id: null, name: '', number: '', birthdate: '', fpbNumber: null, active: true, shirtSize: Size.S });
-    setExpanded(false);
+    setNewAthlete({
+      id: null,
+      name: '',
+      number: '',
+      birthdate: '',
+      fpbNumber: null,
+      active: true,
+      shirtSize: Size.S,
+    });
     setErrors({});
   };
 
   return (
     <>
-        {newAthlete && (
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 2, sm: 2 }}>
-              <TextField
-                label={t('number')}
-                fullWidth
-                value={newAthlete.number}
-                onChange={handleChange('number')}
-                error={!!errors.number}
-                helperText={errors.number}
-              />
-            </Grid>
-            <Grid size={{ xs: 3, sm: 3 }}>
-              <TextField
-                label={t('name')}
-                fullWidth
-                value={newAthlete.name}
-                onChange={handleChange('name')}
-                error={!!errors.name}
-                helperText={errors.name}
-              />
-            </Grid>
-            <Grid size={{ xs: 2, sm: 2 }}>
-              <TextField
-                label={t('birthdate')}
-                type="date"
-                fullWidth
-                value={newAthlete.birthdate}
-                onChange={handleChange('birthdate')}
-                slotProps={{ inputLabel: { shrink: true } }}
-                error={!!errors.birthdate}
-                helperText={errors.birthdate}
-              />
-            </Grid>
-            <Grid size={{ xs: 2, sm: 2 }}>
-              <TextField
-                label={t('fpbNumber')}
-                fullWidth
-                type="number"
-                value={newAthlete.fpbNumber ?? ''}
-                onChange={handleChange('fpbNumber')}
-              />
-            </Grid>
-            <Grid size={{ xs: 2, sm: 2 }}>
-              <Select
-                value={newAthlete.shirtSize ?? ''}
-                onChange={(e) => setNewAthlete({ ...newAthlete, shirtSize: e.target.value as Size })}
-                fullWidth
-                displayEmpty
-              >
-                <MenuItem value="">{t('selectSize')}</MenuItem>
-                {['S', 'M', 'L', 'XL', 'XXL'].map((shirtSize) => (
-                  <MenuItem key={shirtSize} value={shirtSize}>
-                    {shirtSize}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid size={{ xs: 6, sm: 6 }} sx={{ display: 'flex', justifyContent: 'center' }}>
-              <Button variant="contained" onClick={handleSave}>
-                {t('add')}
-              </Button>
-              <Button variant="outlined" onClick={handleReset} sx={{ ml: 2 }}>
-                {t('cancel')}
-              </Button>
-            </Grid>
+      {newAthlete && (
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 2, sm: 2 }}>
+            <TextField
+              label={t('number')}
+              fullWidth
+              value={newAthlete.number}
+              onChange={handleChange('number')}
+              error={!!errors.number}
+              helperText={errors.number}
+            />
           </Grid>
-        )}
-      </>
+          <Grid size={{ xs: 3, sm: 3 }}>
+            <TextField
+              label={t('name')}
+              fullWidth
+              value={newAthlete.name}
+              onChange={handleChange('name')}
+              error={!!errors.name}
+              helperText={errors.name}
+            />
+          </Grid>
+          <Grid size={{ xs: 2, sm: 2 }}>
+            <TextField
+              label={t('birthdate')}
+              type="date"
+              fullWidth
+              value={newAthlete.birthdate}
+              onChange={handleChange('birthdate')}
+              slotProps={{ inputLabel: { shrink: true } }}
+              error={!!errors.birthdate}
+              helperText={errors.birthdate}
+            />
+          </Grid>
+          <Grid size={{ xs: 2, sm: 2 }}>
+            <TextField
+              label={t('fpbNumber')}
+              fullWidth
+              type="number"
+              value={newAthlete.fpbNumber ?? ''}
+              onChange={handleChange('fpbNumber')}
+            />
+          </Grid>
+          <Grid size={{ xs: 2, sm: 2 }}>
+            <Select
+              value={newAthlete.shirtSize ?? ''}
+              onChange={handleSelectChange('shirtSize')}
+              fullWidth
+              displayEmpty
+            >
+              <MenuItem value="">{t('selectSize')}</MenuItem>
+              {['S', 'M', 'L', 'XL', 'XXL'].map((shirtSize) => (
+                <MenuItem key={shirtSize} value={shirtSize}>
+                  {shirtSize}
+                </MenuItem>
+              ))}
+            </Select>
+          </Grid>
+          <Grid size={{ xs: 6, sm: 6 }} sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Button variant="contained" onClick={handleSave}>
+              {t('add')}
+            </Button>
+            <Button variant="outlined" onClick={handleReset} sx={{ ml: 2 }}>
+              {t('cancel')}
+            </Button>
+          </Grid>
+        </Grid>
+      )}
+    </>
   );
 };
 

@@ -2,41 +2,43 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
 
-// GET: Retrieve a specific echelon
+// ✅ GET: Retrieve a specific echelon
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const id = parseInt(params.id, 10);
+  const { id } = await context.params;
+  const parsedId = parseInt(id, 10);
 
-  if (isNaN(id)) {
+  if (isNaN(parsedId)) {
     log.error('Invalid ID parameter');
     return NextResponse.json({ error: 'Invalid ID parameter' }, { status: 400 });
   }
 
   try {
-    const echelon = await prisma.echelon.findUnique({ where: { id } });
+    const echelon = await prisma.echelon.findUnique({ where: { id: parsedId } });
 
     if (!echelon) {
-      log.error(`Echelon with ID ${id} not found`);
+      log.error(`Echelon with ID ${parsedId} not found`);
       return NextResponse.json({ error: 'Echelon not found' }, { status: 404 });
     }
 
     return NextResponse.json(echelon);
   } catch (error) {
-    log.error(`Failed to fetch echelon with ID ${id}:`, error);
+    log.error(`Failed to fetch echelon with ID ${parsedId}:`, error);
     return NextResponse.json({ error: 'Failed to fetch echelon' }, { status: 500 });
   }
 }
 
-// PUT: Update a specific echelon
+// ✅ PUT: Update a specific echelon
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const id = parseInt(params.id, 10);
+  const { id } = await context.params;
+  const parsedId = parseInt(id, 10);
 
-  if (isNaN(id)) {
+  if (isNaN(parsedId)) {
     log.error('Invalid ID parameter');
     return NextResponse.json({ error: 'Invalid ID parameter' }, { status: 400 });
   }
@@ -46,35 +48,35 @@ export async function PUT(
     const { minAge, maxAge, name, description, gender } = body;
 
     const updatedEchelon = await prisma.echelon.update({
-      where: { id },
+      where: { id: parsedId },
       data: { minAge, maxAge, name, description, gender },
     });
 
     return NextResponse.json(updatedEchelon);
   } catch (error) {
-    log.error(`Failed to update echelon with ID ${id}:`, error);
+    log.error(`Failed to update echelon with ID ${parsedId}:`, error);
     return NextResponse.json({ error: 'Failed to update echelon' }, { status: 500 });
   }
 }
 
-// DELETE: Remove a specific echelon
+// ✅ DELETE: Remove a specific echelon
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  context: { params: Promise<{ id: string }> }
 ): Promise<NextResponse> {
-  const id = parseInt(params.id, 10);
+  const { id } = await context.params;
+  const parsedId = parseInt(id, 10);
 
-  if (isNaN(id)) {
+  if (isNaN(parsedId)) {
     log.error('Invalid ID parameter');
     return NextResponse.json({ error: 'Invalid ID parameter' }, { status: 400 });
   }
 
   try {
-    await prisma.echelon.delete({ where: { id } });
-
+    await prisma.echelon.delete({ where: { id: parsedId } });
     return NextResponse.json({ message: 'Echelon deleted successfully' });
   } catch (error) {
-    log.error(`Failed to delete echelon with ID ${id}:`, error);
+    log.error(`Failed to delete echelon with ID ${parsedId}:`, error);
     return NextResponse.json({ error: 'Failed to delete echelon' }, { status: 500 });
   }
 }

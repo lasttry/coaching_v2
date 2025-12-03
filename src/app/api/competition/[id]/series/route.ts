@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { log } from '@/lib/logger';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 export async function GET(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
   const params = await segmentData.params;
-  const id = params.id;
+  const id = Number(params.id);
 
   if (isNaN(id)) {
     return NextResponse.json({ error: 'Invalid competition ID' }, { status: 400 });
@@ -31,25 +30,6 @@ export async function GET(req: Request, segmentData: { params: Params }): Promis
     console.error('Error fetching competition series:', error);
     return NextResponse.json(
       { error: 'An error occurred while fetching competition series' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function POST(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
-  const params = await segmentData.params;
-  const id = params.id;
-
-  if (isNaN(id)) {
-    return NextResponse.json({ error: 'Invalid competition ID' }, { status: 400 });
-  }
-
-  try {
-    log.debug("create new competions series...")
-  } catch (error) {
-    console.error('Error creating competition series:', error);
-    return NextResponse.json(
-      { error: 'An error occurred while creating competition series' },
       { status: 500 }
     );
   }

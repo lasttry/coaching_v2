@@ -1,8 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { GameAthleteInterface } from '@/types/games/types';
+import { GameAthleteInterface } from '@/types/game/types';
 import { log } from '@/lib/logger';
 import { auth } from '@/lib/auth';
+import sharp from 'sharp';
+
+async function resizeBase64Image(base64: string, width = 288, height = 203): Promise<string> {
+  const buffer = Buffer.from(base64.split(',')[1], 'base64');
+
+  const resized = await sharp(buffer)
+    .resize(width, height, {
+      fit: 'inside',
+    })
+    .toBuffer();
+
+  // devolve o base64 final já com o prefixo
+  return `data:image/png;base64,${resized.toString('base64')}`;
+}
 
 // POST handler for creating a new game
 export async function POST(req: Request): Promise<NextResponse> {
@@ -18,6 +32,10 @@ export async function POST(req: Request): Promise<NextResponse> {
 
   try {
     const data = await req.json();
+    const image1 = data.image1 ? await resizeBase64Image(data.image1) : null;
+    const image2 = data.image2 ? await resizeBase64Image(data.image2) : null;
+    const image3 = data.image3 ? await resizeBase64Image(data.image3) : null;
+    const image4 = data.image4 ? await resizeBase64Image(data.image4) : null;
 
     const payload = {
       data: {
@@ -28,17 +46,21 @@ export async function POST(req: Request): Promise<NextResponse> {
         date: new Date(data.date),
         away: Boolean(data.away),
         notes: data.notes ?? null,
+        image1,
+        image2,
+        image3,
+        image4,
         gameAthletes: {
           create: (data.gameAthletes || [])
-          .filter((athlete: GameAthleteInterface) => athlete.athlete?.id !== null)
-          .map((athlete: GameAthleteInterface) => ({
-            athleteId: athlete.athlete!.id,
-            number: athlete.number,
-            period1: athlete.period1,
-            period2: athlete.period2,
-            period3: athlete.period3,
-            period4: athlete.period4,
-          })),
+            .filter((athlete: GameAthleteInterface) => athlete.athlete?.id !== null)
+            .map((athlete: GameAthleteInterface) => ({
+              athleteId: athlete.athlete!.id,
+              number: athlete.number,
+              period1: athlete.period1,
+              period2: athlete.period2,
+              period3: athlete.period3,
+              period4: athlete.period4,
+            })),
         },
         ...(data.venueId
           ? { venue: { connect: { id: data.venueId } } }
@@ -99,7 +121,8 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         include: {
           team: { include: { echelon: true, club: true } },
           opponent: true,
-          competition: { include: { competitionSeries: true } },
+          competition: true,
+          competitionSerie: true,
           venue: true,
           gameAthletes: { include: { athlete: true } },
         },

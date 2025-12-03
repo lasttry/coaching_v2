@@ -1,12 +1,17 @@
+'use client';
+
 import {
   IconBallBasketball,
   IconTypography,
   IconUser,
-  IconUserHexagon,
   IconUsersGroup,
   IconTrophy,
+  type TablerIcon,
 } from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
+
+import '@/lib/i18n.client';
+import { useTranslation } from 'react-i18next';
 
 const openDrillsPage = (): void => {
   const url = '/utilities/drills_v2'; // Update with the correct path to the Drills_v2 page
@@ -15,90 +20,103 @@ const openDrillsPage = (): void => {
   window.open(url, 'Drills_v2', windowFeatures);
 };
 
-const Menuitems = [
-  {
-    id: uniqueId(),
-    title: 'testes',
-    icon: IconBallBasketball,
-    href: '/utilities/test',
-  },
-  { navlabel: true, subheader: 'Jogos' },
-  {
-    id: uniqueId(),
-    title: 'Jogos',
-    icon: IconBallBasketball,
-    href: '/utilities/games',
-  },
-  { navlabel: true, subheader: 'Treinos' },
-  {
-    id: uniqueId(),
-    title: 'Microciclos',
-    icon: IconBallBasketball,
-    href: '/utilities/cycles/microcycles',
-  },
-  {
-    id: uniqueId(),
-    title: 'Mesociclos',
-    icon: IconBallBasketball,
-    href: '/utilities/cycles/mesocycles',
-  },
-  {
-    id: uniqueId(),
-    title: 'Macrociclos',
-    icon: IconBallBasketball,
-    href: '/utilities/cycles/macrocycles',
-  },
-  {
-    id: uniqueId(),
-    title: 'Drills',
-    icon: IconBallBasketball,
-    href: '',
-    onClick: openDrillsPage,
-  },
-  { navlabel: true, subheader: 'Definições' },
-  {
-    id: uniqueId(),
-    title: 'Atletas',
-    icon: IconUser,
-    href: '/utilities/athletes',
-  },
-  {
-    id: uniqueId(),
-    title: 'Oponentes',
-    icon: IconUsersGroup,
-    href: '/utilities/opponents',
-  },
-  {
-    id: uniqueId(),
-    title: 'Equipas',
-    icon: IconUsersGroup,
-    href: '/utilities/teams',
-  },
-  {
-    id: uniqueId(),
-    title: 'Clube',
-    icon: IconTypography,
-    href: '/utilities/club',
-  },
-  {
-    id: uniqueId(),
-    title: 'Escalões',
-    icon: IconBallBasketball,
-    href: '/utilities/echelons',
-  },
-  {
-    id: uniqueId(),
-    title: 'Competições',
-    icon: IconTrophy,
-    href: '/utilities/competitions',
-  },
-  { navlabel: true, subheader: 'Configurações' },
-  {
-    id: uniqueId(),
-    title: 'Contas',
-    icon: IconUserHexagon,
-    href: '/utilities/accounts',
-  },
-];
+type MenuItem = {
+  id?: string;
+  navlabel?: boolean;
+  subheader?: string;
+  title?: string;
+  icon?: TablerIcon;
+  href?: string;
+  onClick?: () => void;
+};
 
-export default Menuitems;
+const MenuItemsComponent = (): MenuItem[] => {
+  const { t } = useTranslation();
+
+  const menuItems: MenuItem[] = [
+    {
+      id: uniqueId(),
+      title: t('tests'),
+      icon: IconBallBasketball,
+      href: '/utilities/test',
+    },
+    { navlabel: true, subheader: t('Games') },
+    {
+      id: uniqueId(),
+      title: t('Games'),
+      icon: IconBallBasketball,
+      href: '/utilities/games',
+    },
+    { navlabel: true, subheader: t('Practices') },
+    {
+      id: uniqueId(),
+      title: t('Microciclos'),
+      icon: IconBallBasketball,
+      href: '/utilities/cycles/microcycles',
+    },
+    {
+      id: uniqueId(),
+      title: t('Mesociclos'),
+      icon: IconBallBasketball,
+      href: '/utilities/cycles/mesocycles',
+    },
+    {
+      id: uniqueId(),
+      title: t('Macrociclos'),
+      icon: IconBallBasketball,
+      href: '/utilities/cycles/macrocycles',
+    },
+    {
+      id: uniqueId(),
+      title: t('Drills'),
+      icon: IconBallBasketball,
+      href: '',
+      onClick: openDrillsPage,
+    },
+    { navlabel: true, subheader: t('Settings') },
+    {
+      id: uniqueId(),
+      title: t('Athletes'),
+      icon: IconUser,
+      href: '/utilities/athletes',
+    },
+    {
+      id: uniqueId(),
+      title: t('Opponents'),
+      icon: IconUsersGroup,
+      href: '/utilities/opponents',
+    },
+    {
+      id: uniqueId(),
+      title: t('Teams'),
+      icon: IconUsersGroup,
+      href: '/utilities/teams',
+    },
+    {
+      id: uniqueId(),
+      title: t('Club'),
+      icon: IconTypography,
+      href: '/utilities/club',
+    },
+    {
+      id: uniqueId(),
+      title: t('Echelons'),
+      icon: IconBallBasketball,
+      href: '/utilities/echelons',
+    },
+    {
+      id: uniqueId(),
+      title: t('Competitions'),
+      icon: IconTrophy,
+      href: '/utilities/competitions',
+    },
+    { navlabel: true, subheader: t('Configurations') },
+    {
+      id: uniqueId(),
+    },
+  ];
+
+  return menuItems;
+};
+
+export default MenuItemsComponent;

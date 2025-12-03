@@ -11,7 +11,7 @@ interface LineMovementProps {
 
 const LineMovement: React.FC<LineMovementProps> = ({ id, points }) => {
   const { addDef, hasDef } = useSvgDefs();
-  const [updateSvgDefs, setUpdateSvgDefs] = useState<boolean>(false);
+  //const [updateSvgDefs, setUpdateSvgDefs] = useState<boolean>(false);
   const { selectedId } = useSelection();
   const [currentPoints] = useState<number[]>(points);
 
@@ -32,8 +32,8 @@ const LineMovement: React.FC<LineMovementProps> = ({ id, points }) => {
         </marker>
       );
     }
-    setUpdateSvgDefs(true);
-  }, [updateSvgDefs, addDef, hasDef]);
+    //setUpdateSvgDefs(true);
+  }, [addDef, hasDef]);
 
   const generatePathFromPoints = (points: number[]): string => {
     if (points.length < 2) return '';

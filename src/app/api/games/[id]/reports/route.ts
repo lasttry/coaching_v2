@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GameAthleteReport } from '@/types/games/types';
+import { GameAthleteReport } from '@/types/game/types';
 import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
+import { parseAndValidateId } from '@/utils/validateId';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 // GET: Retrieve all reports for a specific game
 export async function GET(
@@ -11,11 +12,8 @@ export async function GET(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = params.id;
-
-  if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
-  }
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
 
   try {
     const payload = {
@@ -41,7 +39,7 @@ export async function PUT(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = params.id;
+  const gameId = Number(params.id);
 
   if (isNaN(gameId)) {
     return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });

@@ -1,0 +1,31 @@
+/c local surface=game.player.surface
+local ore=nil
+local size=40
+local density=300000
+for y=-size, size do
+	for x=-size, size do
+		a=(size+1-math.abs(x))*10
+		b=(size+1-math.abs(y))*10
+		if a<b then
+			ore=math.random(a*density-a*(density-8), a*density+a*(density-8))
+		end
+		if b<a then
+			ore=math.random(b*density-b*(density-8), b*density+b*(density-8))
+		end
+		if surface.get_tile(game.player.position.x+x, game.player.position.y+y).collides_with("ground_tile") then
+			surface.create_entity({name="scrap", amount=ore, position={game.player.position.x+x, game.player.position.y+y}})
+		end
+	end
+end
+
+Remove:
+/c local surface=game.player.surface
+local size=50
+local pos=game.player.position
+
+for _, e in pairs(surface.find_entities_filtered{area={{pos.x-size, pos.y-size},{pos.x+size, pos.y+size}}, type="resource"})
+	do e.destroy()
+end
+
+
+/c game.player.selected.amount=7500

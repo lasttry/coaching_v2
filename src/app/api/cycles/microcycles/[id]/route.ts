@@ -11,7 +11,7 @@ interface SessionGoalInput {
   order?: number;
 }
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 // GET: Retrieve a specific microcycle
 export async function GET(

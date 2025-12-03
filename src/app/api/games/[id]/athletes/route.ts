@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 export async function GET(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
   const params = await segmentData.params;
-  const id = params.id;
+  const id = Number(params.id);
 
   if (isNaN(id)) {
     return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
   }
 
   try {
-    const athletes = await prisma.gameAthletes.findMany({
+    const athletes = await prisma.gameAthlete.findMany({
       where: {
         gameId: id,
       },

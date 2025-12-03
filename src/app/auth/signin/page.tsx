@@ -11,13 +11,11 @@ import {
   Alert,
 } from '@mui/material';
 import { signIn } from 'next-auth/react';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import { log } from '@/lib/logger';
 
 const SignInPage = (): ReactElement => {
-  const { update } = useSession();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -61,14 +59,10 @@ const SignInPage = (): ReactElement => {
         return;
       }
 
-
       // Redirect logic based on account data
       if (data.length >= 1 && data[0].defaultClubId !== 0) {
         router.push('/utilities/games');
       } else if (data[0].clubs.length === 1) {
-        const updatedSession = await update({
-          selectedClubId: data[0].clubs[0].clubId,
-        });
         router.push('/utilities/games');
       } else {
         router.push('/utilities/chooseClub');

@@ -33,7 +33,6 @@ const Logo = (): ReactElement => {
           return;
         }
 
-
         if (data[0]?.clubs?.length > 1) {
           setHasMultipleClubs(true);
         }
@@ -66,7 +65,7 @@ const Logo = (): ReactElement => {
     }
 
     fetchAccountData();
-  }, [session]);
+  }, [session, t]);
 
   if (!club) {
     return (

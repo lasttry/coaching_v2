@@ -1,10 +1,12 @@
 import { log } from '@/lib/logger';
-import type { NextAuthConfig } from 'next-auth';
+import type { Account, NextAuthConfig, Profile, User } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
 import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import { PlatformRole } from '@prisma/client';
 import { validatePassword } from './password';
-import { UserInterface } from '@/types/user';
+import { mapClubToInterface } from '@/types/club/types';
+import { Session } from 'next-auth';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -56,14 +58,25 @@ export default {
             log.error('Invalid password for email:', { email });
             throw new Error('Invalid password');
           }
-          const selectedClub = user.clubs.find((club) => club.clubId === user.defaultClubId);
-          const userobj: UserInterface = {
-            id: user.id,
+          const selectedClubRelation = user.clubs.find((c) => c.clubId === user.defaultClubId);
+
+          if (!selectedClubRelation || !selectedClubRelation.club) {
+            log.error(
+              `Default club (ID: ${user.defaultClubId}) not found or not included for user ${user.email}`
+            );
+            throw new Error('Default club configuration error');
+          }
+
+          const selectedClub = mapClubToInterface(selectedClubRelation.club);
+
+          const userobj = {
+            id: String(user.id),
             name: user.name,
             email: user.email,
             selectedClubId: user.defaultClubId,
-            selectedSeason: selectedClub?.club?.season || '',
-            role: user.role
+            selectedSeason: selectedClub.season || '',
+            club: selectedClub,
+            role: user.role,
           };
           return userobj;
         } catch (error: unknown) {
@@ -82,28 +95,45 @@ export default {
     error: '/auth/error',
   },
   callbacks: {
-    jwt: async ({ token, user, session, trigger }) => {
+    jwt: async ({
+      token,
+      user,
+      trigger,
+      session,
+    }: {
+      token: JWT;
+      user?: User | null;
+      account?: Account | null;
+      profile?: Profile | null;
+      trigger?: 'update' | 'signIn' | 'signUp';
+      isNewUser?: boolean;
+      session?: Session | null;
+    }): Promise<JWT> => {
       if (user) {
-        token.id = user.id;
+        token.id = user.id ?? '';
+        token.name = user.name;
+        token.email = user.email ?? '';
         token.role = user.role;
         token.selectedClubId = user.selectedClubId;
+        token.club = user.club;
       }
-      if (trigger === 'update' && session) {
-        token.selectedClubId = session.selectedClubId;
+
+      if (trigger === 'update' && session?.user) {
+        token.selectedClubId = session.user.selectedClubId;
+        token.club = session.user.club;
       }
+
       return token;
     },
-    session: async ({ session, token }) => {
-      if (token) {
-        session.user = {
-          id: token.id as string,
-          name: token.name || null,
-          email: token.email || '',
-          emailVerified: new Date(),
-          selectedClubId: token.selectedClubId as number,
-          role: token.role as PlatformRole,
-        };
-      }
+    session: async ({ session, token }: { session: Session; token: JWT }): Promise<Session> => {
+      session.user = {
+        id: token.id,
+        name: token.name ?? null,
+        email: token.email ?? '',
+        selectedClubId: token.selectedClubId,
+        role: token.role as PlatformRole,
+        club: token.club ?? undefined,
+      };
       return session;
     },
     authorized: async ({ auth }) => {

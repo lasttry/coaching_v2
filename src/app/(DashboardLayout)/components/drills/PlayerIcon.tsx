@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import withDraggable from './withDraggable';
 import { useSvgDefs } from '@/app/(DashboardLayout)/components/drills/SvgDefsProvider';
 
@@ -17,7 +17,6 @@ interface PlayerIconProps {
 
 const PlayerIcon: React.FC<PlayerIconProps> = React.memo(({ value = 1, id = '', type }) => {
   const { addDef, hasDef } = useSvgDefs();
-  const [updateSvgDefs, setUpdateSvgDefs] = useState<boolean>(false);
 
   useEffect(() => {
     if (!hasDef('offense')) {
@@ -54,8 +53,7 @@ const PlayerIcon: React.FC<PlayerIconProps> = React.memo(({ value = 1, id = '', 
         </g>
       );
     }
-    setUpdateSvgDefs(true);
-  }, [updateSvgDefs, addDef, hasDef]);
+  }, [addDef, hasDef]);
 
   return (
     <>

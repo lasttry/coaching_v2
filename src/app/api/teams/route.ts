@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
 import { auth } from '@/lib/auth';
-import i18next from '@/lib/i18next';
+import i18next from '@/lib/i18n.server';
 
 // GET: Retrieve all teams
 export async function GET(req: NextRequest): Promise<NextResponse> {

@@ -1,10 +1,10 @@
-import { AthleteInterface } from '../games/types';
+import { AthleteInterface } from '../game/types';
 import { EchelonInterface } from '../echelons/types';
 
 export interface TeamInterface {
   id: number | null;
   name: string;
-  type: 'A' | 'B' | 'OTHER'; // Subtypes of the team
+  type: 'A' | 'B' | 'C' | 'OTHER'; // Subtypes of the team
   clubId: number;
   echelonId: number;
   createdAt?: string | null; // ISO string for date

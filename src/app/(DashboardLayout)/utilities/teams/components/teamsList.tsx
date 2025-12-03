@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { TeamInterface } from '@/types/teams/types';
 import { isNumber } from 'lodash';
 import { EchelonInterface } from '@/types/echelons/types';
-import { AthleteInterface } from '@/types/games/types';
+import { AthleteInterface } from '@/types/game/types';
 import { log } from '@/lib/logger';
 
 interface TeamsListProps {
@@ -137,7 +137,6 @@ const TeamsListComponent: React.FC<TeamsListProps> = ({
         setErrorMessage(errorText);
         return;
       }
-
     } catch (error) {
       log.error('Error toggling athlete:', error);
       setErrorMessage('An unexpected error occurred.');

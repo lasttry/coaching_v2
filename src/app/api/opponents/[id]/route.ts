@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 // GET handler for fetching an opponent by ID
 export async function GET(
@@ -21,7 +21,7 @@ export async function GET(
       where: { id },
       include: {
         venues: true,
-      }
+      },
     });
 
     if (!opponent) {
@@ -49,13 +49,14 @@ export async function PUT(
 
   try {
     const data = await request.json();
-
     const updatedOpponent = await prisma.opponent.update({
       where: { id },
       data: {
         name: data.name,
         shortName: data.shortName,
         image: data.image ?? null,
+        fpbClubId: data.fpbClubId ?? null,
+        fpbTeamId: data.fpbTeamId ?? null,
         updatedAt: new Date(),
 
         venues: {
@@ -93,7 +94,6 @@ export async function DELETE(
     await prisma.opponent.delete({
       where: { id },
     });
-
     return NextResponse.json({ message: 'Opponent deleted successfully' }, { status: 200 });
   } catch (error) {
     log.error('Error deleting opponent:', error);

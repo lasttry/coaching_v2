@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 // GET: Fetch accounts linked to a club by ID
 export async function GET(

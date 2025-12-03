@@ -24,6 +24,7 @@ export async function POST(req: Request): Promise<NextResponse> {
       data: {
         name: data.name,
         description: data.description || null,
+        fpbCompetitionId: data.fpbCompetitionId,
         image: data.image || null,
         echelon: { connect: { id: data.echelonId } },
       },

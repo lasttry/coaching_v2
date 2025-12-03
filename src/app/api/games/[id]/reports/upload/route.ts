@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 export async function POST(
   req: NextRequest,
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = params.id;
+  const gameId = Number(params.id);
 
   if (isNaN(gameId)) {
     return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
@@ -18,7 +18,7 @@ export async function POST(
     const data = await req.json(); // Parse the JSON body (from the CSV rows)
 
     // Fetch the game from the database
-    const game = await prisma.games.findUnique({
+    const game = await prisma.game.findUnique({
       where: { id: gameId },
       include: { opponent: true },
     });
@@ -41,7 +41,7 @@ export async function POST(
     for (const row of data) {
       // Ignore rows where the competition does not match
       if (
-        game.competition?.trim().toLowerCase() !== row['Campeonato'].trim().toLowerCase() ||
+        game.competitionId?.toString() !== row['Campeonato'].trim().toLowerCase() ||
         game.opponent.name.trim().toLowerCase() !== row['Adversário'].trim().toLowerCase()
       ) {
         continue;
@@ -50,7 +50,7 @@ export async function POST(
       const athleteNameReview = row['Atleta a analizar'].trim();
       const isSelf = athleteNameReview.toLowerCase().includes('eu'); // If "Eu", it's self
       // Find the athlete who submitted the report
-      const athleteSubmitted = await prisma.athletes.findFirst({
+      const athleteSubmitted = await prisma.athlete.findFirst({
         where: {
           name: athleteName,
         },
@@ -63,7 +63,7 @@ export async function POST(
       // Find the athlete being reviewed (self or another athlete)
       const reviewedAthlete = isSelf
         ? athleteSubmitted
-        : await prisma.athletes.findFirst({
+        : await prisma.athlete.findFirst({
             where: {
               name: athleteNameReview,
             },

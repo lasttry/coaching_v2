@@ -79,7 +79,7 @@ const ChooseClubPage = (): ReactElement => {
     }
 
     try {
-      const updatedSession = await update({ selectedClubId: club.id });
+      await update({ selectedClubId: club.id });
     } catch (error) {
       const errorText = `Error updating session: ${error}`;
       log.error(errorText);

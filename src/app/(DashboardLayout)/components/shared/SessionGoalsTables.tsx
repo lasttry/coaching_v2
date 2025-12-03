@@ -49,10 +49,11 @@ const SessionGoalsTables = ({ data }: SessionGoalsTablesProps): ReactElement => 
           goals: group.goals.sort((a, b) => a.order - b.order),
         }))
         .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
-
-      setGroupedData(sortedGroupedData);
+      if (data && !groupedData) {
+        setTimeout(() => setGroupedData(sortedGroupedData), 0);
+      }
     }
-  }, [data]);
+  }, [data, groupedData]);
 
   if (groupedData.length === 0) {
     return <Typography>No data available</Typography>;

@@ -41,10 +41,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     });
 
     if (existingClub) {
-      return NextResponse.json(
-        { error: 'Club with this name already exists' },
-        { status: 409 }
-      );
+      return NextResponse.json({ error: 'Club with this name already exists' }, { status: 409 });
     }
 
     // Separate venues and club data
@@ -54,11 +51,12 @@ export async function POST(request: Request): Promise<NextResponse> {
     const newClub = await prisma.club.create({
       data: {
         ...clubData,
-        ...(venues && venues.length > 0 && {
-          venues: {
-            create: venues,
-          },
-        }),
+        ...(venues &&
+          venues.length > 0 && {
+            venues: {
+              create: venues,
+            },
+          }),
       },
       include: {
         venues: true,

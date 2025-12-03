@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 export async function GET(
   req: NextRequest,

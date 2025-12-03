@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
 import { CompetitionSerieInterface } from '@/types/competition/types';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 export async function PUT(req: Request, segmentData: { params: Params }): Promise<NextResponse> {
   const params = await segmentData.params;
@@ -30,6 +30,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
             deleteMany: { competitionId: id },
             create: data.competitionSeries.map((serie: CompetitionSerieInterface) => ({
               name: serie.name,
+              fpbSerieId: serie.fpbSerieId,
             })),
           },
         }),

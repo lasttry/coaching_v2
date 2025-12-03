@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { parseAndValidateId } from '@/utils/validateId';
 
 interface TimeEntryInput {
   id?: number;
@@ -11,7 +12,7 @@ interface TimeEntryInput {
   exitSecond: number;
 }
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 // Handle GET request
 export async function GET(
@@ -89,11 +90,8 @@ export async function PUT(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = params.id;
-
-  if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
-  }
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
 
   try {
     const reqBody = await req.text(); // Read the raw body text

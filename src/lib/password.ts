@@ -19,11 +19,16 @@ export async function hashPassword(password: string, salt?: string): Promise<str
   if (!salt) {
     salt = generateSalt();
   }
+
   const passwordData = encode(password + salt);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData);
+
+  // ✅ Explicitly cast to BufferSource (TypeScript fix)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', passwordData as unknown as BufferSource);
+
   const hashedPassword = Array.from(new Uint8Array(hashBuffer))
     .map((byte) => byte.toString(16).padStart(2, '0'))
     .join('');
+
   return `${salt}:${hashedPassword}`;
 }
 

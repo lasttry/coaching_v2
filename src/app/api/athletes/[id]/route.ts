@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
-import i18next from '@/lib/i18next';
+import i18next from '@/lib/i18n.server';
 
 type Params = Promise<{ id: string }>;
 // GET handler for fetching a specific athlete by ID

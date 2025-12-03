@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 const logLevels: Record<LogLevel, number> = {
@@ -7,18 +8,31 @@ const logLevels: Record<LogLevel, number> = {
   error: 3,
 };
 
-const isValidLogLevel = (value: string): value is LogLevel =>
-  ['debug', 'info', 'warn', 'error'].includes(value);
+const isValidLogLevel = (value: unknown): value is LogLevel =>
+  typeof value === 'string' && ['debug', 'info', 'warn', 'error'].includes(value);
 
-// Check environment variable first, fallback to NODE_ENV
-const rawEnvLevel = process.env.TRACE_LEVEL;
-const envLevel = typeof rawEnvLevel === 'string' ? rawEnvLevel.toLowerCase() : undefined;
+let traceLevel: LogLevel | null = null;
 
-let traceLevel: LogLevel = isValidLogLevel(envLevel)
-  ? envLevel
-  : process.env.NODE_ENV === 'production'
-    ? 'warn'
-    : 'debug';
+function getTraceLevel(): LogLevel {
+  if (traceLevel) return traceLevel;
+
+  try {
+    const raw = process?.env?.TRACE_LEVEL ?? '';
+    const level = raw.toLowerCase();
+
+    if (isValidLogLevel(level)) {
+      traceLevel = level;
+    } else if (process?.env?.NODE_ENV === 'production') {
+      traceLevel = 'warn';
+    } else {
+      traceLevel = 'debug';
+    }
+  } catch {
+    traceLevel = 'debug'; // safe default if env is unavailable
+  }
+
+  return traceLevel;
+}
 
 export const setTraceLevel = (level: LogLevel): void => {
   traceLevel = level;
@@ -26,28 +40,20 @@ export const setTraceLevel = (level: LogLevel): void => {
 
 export const logger = {
   debug: (...args: unknown[]) => {
-    if (logLevels['debug'] >= logLevels[traceLevel]) {
-      // eslint-disable-next-line no-console
-      console.debug('[DEBUG]', ...args);
-    }
+    const level = getTraceLevel();
+    if (logLevels['debug'] >= logLevels[level]) console.debug('[DEBUG]', ...args);
   },
   info: (...args: unknown[]) => {
-    if (logLevels['info'] >= logLevels[traceLevel]) {
-      // eslint-disable-next-line no-console
-      console.info('[INFO]', ...args);
-    }
+    const level = getTraceLevel();
+    if (logLevels['info'] >= logLevels[level]) console.info('[INFO]', ...args);
   },
   warn: (...args: unknown[]) => {
-    if (logLevels['warn'] >= logLevels[traceLevel]) {
-      // eslint-disable-next-line no-console
-      console.warn('[WARN]', ...args);
-    }
+    const level = getTraceLevel();
+    if (logLevels['warn'] >= logLevels[level]) console.warn('[WARN]', ...args);
   },
   error: (...args: unknown[]) => {
-    if (logLevels['error'] >= logLevels[traceLevel]) {
-      // eslint-disable-next-line no-console
-      console.error('[ERROR]', ...args);
-    }
+    const level = getTraceLevel();
+    if (logLevels['error'] >= logLevels[level]) console.error('[ERROR]', ...args);
   },
 };
 

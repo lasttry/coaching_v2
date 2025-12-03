@@ -30,7 +30,6 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
   const [addAccount, setAddAccount] = useState<AccountInterface | null>(null);
   const [filteredAccounts, setFilteredAccounts] = useState<AccountInterface[]>([]);
   const [accounts, setAccounts] = useState<AccountClubInterface[]>([]);
-
   useEffect(() => {
     if (!clubId) return;
 

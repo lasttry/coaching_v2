@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -22,13 +22,20 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import { log } from '@/lib/logger';
 import { useMessage } from '@/hooks/useMessage';
-import { CompetitionInterface } from '@/types/competition/types';
+import { CompetitionInterface, CompetitionSerieInterface } from '@/types/competition/types';
 import { EchelonInterface } from '@/types/echelons/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Chip from '@mui/material/Chip';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import EditIcon from '@mui/icons-material/Edit';
 
 const CompetitionsPage: React.FC = () => {
+  const initialSeries: CompetitionSerieInterface = {
+    id: null,
+    name: '',
+    fpbSerieId: undefined,
+  };
+
   const { t } = useTranslation();
 
   const { message: errorMessage, setTimedMessage: setErrorMessage } = useMessage(5000);
@@ -42,10 +49,15 @@ const CompetitionsPage: React.FC = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCompetition, setSelectedCompetition] = useState<CompetitionInterface | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
-  const [newSeriesName, setNewSeriesName] = useState('');
+  const [newSeries, setNewSeries] = useState<CompetitionSerieInterface>(initialSeries);
 
-  // ✅ Fetch Competitions & Echelons
-  const fetchData = async (): Promise<void> => {
+  const [editingSerie, setEditingSerie] = useState<CompetitionSerieInterface | null>(null);
+
+  const formatSerie = (serie: CompetitionSerieInterface): string => {
+    return serie.fpbSerieId ? `${serie.name} (${serie.fpbSerieId})` : serie.name;
+  };
+
+  const fetchData = useCallback(async (): Promise<void> => {
     try {
       setLoading(true);
       const [compRes, echRes] = await Promise.all([
@@ -62,11 +74,11 @@ const CompetitionsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [t, setErrorMessage]);
 
   useEffect(() => {
-    void fetchData();
-  }, []);
+    fetchData();
+  }, [fetchData]);
 
   // ✅ Save Competition (Create/Update)
   const handleSaveCompetition = async (): Promise<void> => {
@@ -120,18 +132,18 @@ const CompetitionsPage: React.FC = () => {
   };
 
   // ✅ Series management
-  const handleAddSeries = (): void => {
-    const name = prompt(t('enterSeriesName') || 'Series name');
-    if (name && selectedCompetition) {
-      setSelectedCompetition((prev) => ({
-        ...prev!,
-        competitionSeries: [
-          ...(prev?.competitionSeries || []),
-          { id: Date.now(), name },
-        ],
-      }));
-    }
-  };
+  //const handleAddSeries = (): void => {
+  //  const name = prompt(t('enterSeriesName') || 'Series name');
+  //  if (name && selectedCompetition) {
+  //    setSelectedCompetition((prev) => ({
+  //      ...prev!,
+  //      competitionSeries: [
+  //      ...(prev?.competitionSeries || []),
+  //        { id: Date.now(), name },
+  //      ],
+  //    }));
+  //  }
+  //};
 
   const handleRemoveSeries = (id: number): void => {
     setSelectedCompetition((prev) => ({
@@ -210,7 +222,7 @@ const CompetitionsPage: React.FC = () => {
           >
             <MenuItem value="">{t('allEchelons')}</MenuItem>
             {echelons.map((e) => (
-              <MenuItem key={e.id} value={e.id}>
+              <MenuItem key={Number(e.id)} value={String(e.id)}>
                 {e.name}
               </MenuItem>
             ))}
@@ -257,7 +269,7 @@ const CompetitionsPage: React.FC = () => {
         <DialogContent>
           {selectedCompetition && (
             <Grid container spacing={2} mt={1}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   label={t('name')}
                   fullWidth
@@ -267,7 +279,7 @@ const CompetitionsPage: React.FC = () => {
                   }
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <Select
                   value={selectedCompetition.echelonId ?? ''}
                   onChange={(e) =>
@@ -281,13 +293,27 @@ const CompetitionsPage: React.FC = () => {
                 >
                   <MenuItem value="">{t('selectEchelon')}</MenuItem>
                   {echelons.map((e) => (
-                    <MenuItem key={e.id} value={e.id}>
+                    <MenuItem key={Number(e.id)} value={String(e.id)}>
                       {e.name}
                     </MenuItem>
                   ))}
                 </Select>
               </Grid>
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  label={t('FPB Competition Id')}
+                  type="number"
+                  value={selectedCompetition.fpbCompetitionId ?? ''}
+                  onChange={(e) =>
+                    setSelectedCompetition((prev) => ({
+                      ...prev!,
+                      fpbCompetitionId: e.target.value === '' ? undefined : Number(e.target.value),
+                    }))
+                  }
+                  inputProps={{ min: 0 }}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   label={t('description')}
                   fullWidth
@@ -303,7 +329,7 @@ const CompetitionsPage: React.FC = () => {
               </Grid>
 
               {/* Image Upload */}
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Stack direction="row" spacing={2} alignItems="center">
                   <Avatar
                     src={selectedCompetition.image || ''}
@@ -318,7 +344,7 @@ const CompetitionsPage: React.FC = () => {
               </Grid>
 
               {/* Series Section */}
-              <Grid item xs={12}>
+              <Grid size={{ xs: 12 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   {t('series')}
                 </Typography>
@@ -350,16 +376,19 @@ const CompetitionsPage: React.FC = () => {
                           transition={{ duration: 0.25 }}
                         >
                           <Chip
-                            label={serie.name}
+                            label={formatSerie(serie)}
                             color="primary"
                             variant="outlined"
-                            onDelete={() => handleRemoveSeries(serie.id)}
+                            onDelete={() => handleRemoveSeries(Number(serie.id))}
                             sx={{
                               fontSize: '0.9rem',
                               m: 0.5,
                               px: 1.2,
                             }}
                           />
+                          <IconButton onClick={() => setEditingSerie(serie)}>
+                            <EditIcon />
+                          </IconButton>
                         </motion.div>
                       ))
                     ) : (
@@ -374,44 +403,122 @@ const CompetitionsPage: React.FC = () => {
                   </AnimatePresence>
                 </Stack>
 
-                {/* Input para adicionar nova série */}
                 <Stack direction="row" spacing={2} alignItems="center">
                   <TextField
                     label={t('newSeries')}
                     placeholder={t('seriesName')}
-                    fullWidth
-                    size="small"
-                    value={newSeriesName}
-                    onChange={(e) => setNewSeriesName(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && newSeriesName.trim()) {
-                        const newSerie = { id: Date.now(), name: newSeriesName.trim() };
-                        setSelectedCompetition((prev) => ({
-                          ...prev!,
-                          competitionSeries: [...(prev?.competitionSeries || []), newSerie],
-                        }));
-                        setNewSeriesName('');
-                      }
-                    }}
+                    value={newSeries.name}
+                    onChange={(e) =>
+                      setNewSeries((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                  />
+
+                  <TextField
+                    label={t('FPB Série Id')}
+                    type="number"
+                    value={newSeries.fpbSerieId ?? ''}
+                    onChange={(e) =>
+                      setNewSeries((prev) => ({
+                        ...prev,
+                        fpbSerieId: e.target.value === '' ? undefined : Number(e.target.value),
+                      }))
+                    }
+                    inputProps={{ min: 0 }}
                   />
                   <IconButton
                     color="primary"
+                    disabled={!!editingSerie}
                     onClick={() => {
-                      if (!newSeriesName.trim()) return;
-                      const newSerie = { id: Date.now(), name: newSeriesName.trim() };
-                      setSelectedCompetition((prev) => ({
-                        ...prev!,
-                        competitionSeries: [...(prev?.competitionSeries || []), newSerie],
-                      }));
-                      setNewSeriesName('');
+                      const serieName = newSeries.name.trim();
+                      if (!serieName || !selectedCompetition) return;
+
+                      const serieToAdd: CompetitionSerieInterface = {
+                        ...newSeries,
+                        id: Date.now(), // id local; o real virá do backend
+                        name: serieName,
+                      };
+
+                      setSelectedCompetition((prev) => {
+                        if (!prev) return prev;
+                        return {
+                          ...prev,
+                          competitionSeries: [...(prev.competitionSeries ?? []), serieToAdd],
+                        };
+                      });
+
+                      setNewSeries(initialSeries);
                     }}
                   >
                     <AddCircleOutlineIcon fontSize="large" />
                   </IconButton>
                 </Stack>
+
+                {editingSerie && (
+                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2 }}>
+                    <TextField
+                      label={t('Series Name')}
+                      value={editingSerie.name}
+                      onChange={(e) =>
+                        setEditingSerie((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                name: e.target.value,
+                              }
+                            : prev
+                        )
+                      }
+                    />
+
+                    <TextField
+                      label={t('FPB Série Id')}
+                      type="number"
+                      value={editingSerie.fpbSerieId ?? ''}
+                      onChange={(e) =>
+                        setEditingSerie((prev) =>
+                          prev
+                            ? {
+                                ...prev,
+                                fpbSerieId:
+                                  e.target.value === '' ? undefined : Number(e.target.value),
+                              }
+                            : prev
+                        )
+                      }
+                      inputProps={{ min: 0 }}
+                    />
+
+                    <Button
+                      variant="contained"
+                      onClick={() => {
+                        if (!selectedCompetition || !editingSerie) return;
+
+                        setSelectedCompetition((prev) => {
+                          if (!prev) return prev;
+
+                          const updated = (prev.competitionSeries ?? []).map((s) =>
+                            s.id === editingSerie.id ? editingSerie : s
+                          );
+
+                          return {
+                            ...prev,
+                            competitionSeries: updated,
+                          };
+                        });
+
+                        setEditingSerie(null);
+                      }}
+                    >
+                      {t('save')}
+                    </Button>
+
+                    <Button onClick={() => setEditingSerie(null)}>{t('cancel')}</Button>
+                  </Stack>
+                )}
               </Grid>
-
-
             </Grid>
           )}
         </DialogContent>

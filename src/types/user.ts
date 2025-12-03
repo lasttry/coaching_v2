@@ -1,7 +1,7 @@
-import { ClubInterface } from './club/types';
+//import { ClubInterface } from './club/types';
 
 export interface UserInterface {
-  id: number;
+  id: string;
   name: string | null;
   email: string;
   selectedClubId: number;

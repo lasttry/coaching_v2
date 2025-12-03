@@ -23,8 +23,8 @@ import { Gender } from '@prisma/client';
 interface EchelonAddProps {
   newEchelon: EchelonInterface;
   setNewEchelon: React.Dispatch<React.SetStateAction<EchelonInterface>>;
-  setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
-  setSuccessMessage: React.Dispatch<React.SetStateAction<string | null>>;
+  setErrorMessage: (msg: string | null) => void;
+  setSuccessMessage: (msg: string | null) => void;
 
   onAddEchelon: () => void;
 }

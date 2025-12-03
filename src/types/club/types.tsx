@@ -1,18 +1,19 @@
-import { Role } from '@prisma/client';
-import { GameInterface } from '../games/types';
+import { Club, Role } from '@prisma/client';
+import { VenueInterface } from '../venues/types';
+import { EquipmentInterface } from '../equipment/type';
 
-export interface VenueInterface {
-  id?: number | null;
-  name: string;
-  address?: string
-
-  clubId?: number | null;
-  club?: ClubInterface | null;
-
-  games?: GameInterface[];
-
-  createdAt?: Date;
-  updatedAt?: Date;
+export function mapClubToInterface(club: Club): ClubInterface {
+  return {
+    id: club.id,
+    name: club.name,
+    shortName: club.shortName ?? '',
+    image: club.image ?? undefined,
+    backgroundColor: club.backgroundColor ?? undefined,
+    foregroundColor: club.foregroundColor ?? undefined,
+    season: club.season ?? undefined,
+    createdAt: club.createdAt ?? undefined,
+    updatedAt: club.updatedAt ?? undefined,
+  };
 }
 
 export interface ClubInterface {
@@ -25,6 +26,8 @@ export interface ClubInterface {
   season?: string;
 
   venues?: VenueInterface[];
+
+  equipments?: EquipmentInterface[];
 
   createdAt?: Date;
   updatedAt?: Date;

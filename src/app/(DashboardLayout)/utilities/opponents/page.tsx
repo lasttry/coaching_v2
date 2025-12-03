@@ -1,17 +1,29 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Typography, IconButton, Stack, Chip, Avatar
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Typography,
+  IconButton,
+  Stack,
+  Chip,
+  Avatar,
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { OpponentInterface } from '@/types/games/types';
+import { OpponentInterface } from '@/types/game/types';
 
 const initialOpponent: OpponentInterface = {
   name: '',
   shortName: '',
-  venues: []
+  fpbClubId: undefined,
+  fpbTeamId: undefined,
+  venues: [],
 };
 
 export default function OpponentManagement(): React.JSX.Element {
@@ -24,31 +36,60 @@ export default function OpponentManagement(): React.JSX.Element {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | undefined>(undefined);
 
-  const fetchOpponents = async (): Promise<void> => {
-    const res = await fetch('/api/opponents');
-    const data = await res.json();
-    setOpponents(data);
-  };
-
   useEffect(() => {
+    const fetchOpponents = async (): Promise<void> => {
+      const res = await fetch('/api/opponents');
+      const data = await res.json();
+      setOpponents(data);
+    };
     fetchOpponents();
   }, []);
 
-  const handleSave = (): void => {
-    if (!formOpponent.name.trim() || !formOpponent.shortName.trim()) return;
-
-    if (editingOpponent) {
-      setOpponents(prev =>
-        prev.map(o => (o.id === editingOpponent.id ? { ...formOpponent } : o))
-      );
-    } else {
-      setOpponents(prev => [...prev, { ...formOpponent, id: Date.now() }]);
+  const handleSave = async (): Promise<void> => {
+    if (!formOpponent.name.trim() || !formOpponent.shortName.trim()) {
+      return;
     }
 
-    setDialogOpen(false);
-    setEditingOpponent(null);
-    setFormOpponent(initialOpponent);
-    setNewVenue('');
+    try {
+      let res: Response;
+
+      if (editingOpponent && editingOpponent.id !== null) {
+        // Update existing opponent
+        res = await fetch(`/api/opponents/${editingOpponent.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formOpponent),
+        });
+      } else {
+        // Create new opponent
+        res = await fetch('/api/opponents', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formOpponent),
+        });
+      }
+
+      if (!res.ok) throw new Error(await res.text());
+      const saved: OpponentInterface = await res.json();
+
+      setOpponents((prev) => {
+        // If it has an id that already exists, update; otherwise, append
+        if (saved.id !== null) {
+          const exists = prev.some((o) => o.id === saved.id);
+          if (exists) {
+            return prev.map((o) => (o.id === saved.id ? saved : o));
+          }
+        }
+        return [...prev, saved];
+      });
+
+      setDialogOpen(false);
+      setFormOpponent(initialOpponent);
+      setNewVenue('');
+      setEditingOpponent(null);
+    } catch (err) {
+      console.error('Error saving opponent:', err);
+    }
   };
 
   const handleEdit = (opponent: OpponentInterface): void => {
@@ -62,10 +103,25 @@ export default function OpponentManagement(): React.JSX.Element {
     setDeleteConfirmOpen(true);
   };
 
-  const handleDelete = (): void => {
-    setOpponents(prev => prev.filter(o => o.id !== deleteId));
-    setDeleteConfirmOpen(false);
-    setDeleteId(undefined);
+  const handleDelete = async (): Promise<void> => {
+    if (!deleteId) return;
+
+    try {
+      const res = await fetch(`/api/opponents/${deleteId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+
+      // Remove from UI state
+      setOpponents((prev) => prev.filter((o) => o.id !== deleteId));
+
+      setDeleteConfirmOpen(false);
+      setDeleteId(undefined);
+    } catch (err) {
+      console.error('❌ Error deleting opponent:', err);
+      alert('Failed to delete opponent.');
+    }
   };
 
   // Define DataGrid columns
@@ -73,14 +129,14 @@ export default function OpponentManagement(): React.JSX.Element {
     {
       field: 'image',
       headerName: 'Logo',
-      renderCell: (params) => (
-        <Avatar src={params.value as string} variant="rounded" />
-      ),
+      renderCell: (params) => <Avatar src={params.value as string} variant="rounded" />,
       width: 80,
-      sortable: false
+      sortable: false,
     },
     { field: 'name', headerName: 'Name', flex: 1 },
     { field: 'shortName', headerName: 'Short', width: 120 },
+    { field: 'fpbClubId', headerName: 'Club Id', flex: 1 },
+    { field: 'fpbTeamId', headerName: 'Team Id', flex: 1 },
     {
       field: 'venues',
       headerName: 'Venues',
@@ -92,7 +148,7 @@ export default function OpponentManagement(): React.JSX.Element {
           ))}
         </Box>
       ),
-      sortable: false
+      sortable: false,
     },
     {
       field: 'actions',
@@ -109,8 +165,8 @@ export default function OpponentManagement(): React.JSX.Element {
         </>
       ),
       sortable: false,
-      filterable: false
-    }
+      filterable: false,
+    },
   ];
 
   return (
@@ -120,7 +176,11 @@ export default function OpponentManagement(): React.JSX.Element {
         <Button
           variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setDialogOpen(true)}
+          onClick={() => {
+            setEditingOpponent(null);
+            setFormOpponent(initialOpponent);
+            setDialogOpen(true);
+          }}
         >
           Add Opponent
         </Button>
@@ -135,7 +195,7 @@ export default function OpponentManagement(): React.JSX.Element {
           pageSizeOptions={[5, 10, 25]}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
-            sorting: { sortModel: [{ field: 'name', sort: 'asc' }] }
+            sorting: { sortModel: [{ field: 'name', sort: 'asc' }] },
           }}
         />
       </Box>
@@ -145,31 +205,105 @@ export default function OpponentManagement(): React.JSX.Element {
         <DialogTitle>{editingOpponent ? 'Edit Opponent' : 'Add Opponent'}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
+            {/* Upload Image */}
+            <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+              {formOpponent.image ? (
+                <>
+                  <Avatar
+                    src={formOpponent.image}
+                    alt={formOpponent.name}
+                    sx={{ width: 80, height: 80, mb: 1 }}
+                    variant="rounded"
+                  />
+                  <Button
+                    size="small"
+                    color="secondary"
+                    onClick={() => setFormOpponent({ ...formOpponent, image: undefined })}
+                  >
+                    Remove Image
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Typography variant="body2" sx={{ mb: 1 }}>
+                    No image selected
+                  </Typography>
+                  <Button variant="outlined" component="label">
+                    Upload Image
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          const base64 = reader.result as string;
+                          setFormOpponent({ ...formOpponent, image: base64 });
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                    />
+                  </Button>
+                </>
+              )}
+            </Box>
+
+            {/* Name and Short Name */}
             <TextField
               label="Name"
               value={formOpponent.name}
-              onChange={e => setFormOpponent({ ...formOpponent, name: e.target.value })}
+              onChange={(e) => setFormOpponent({ ...formOpponent, name: e.target.value })}
               required
             />
             <TextField
               label="Short Name"
               value={formOpponent.shortName}
-              onChange={e => setFormOpponent({ ...formOpponent, shortName: e.target.value })}
+              onChange={(e) => setFormOpponent({ ...formOpponent, shortName: e.target.value })}
               required
               inputProps={{ maxLength: 6 }}
             />
+
+            <TextField
+              label="FPB Club ID"
+              type="number"
+              value={formOpponent.fpbClubId ?? ''}
+              onChange={(e) =>
+                setFormOpponent({
+                  ...formOpponent,
+                  fpbClubId: e.target.value === '' ? undefined : Number(e.target.value),
+                })
+              }
+              inputProps={{ min: 0 }}
+            />
+
+            <TextField
+              label="FPB Team ID"
+              type="number"
+              value={formOpponent.fpbTeamId ?? ''}
+              onChange={(e) =>
+                setFormOpponent({
+                  ...formOpponent,
+                  fpbTeamId: e.target.value === '' ? undefined : Number(e.target.value),
+                })
+              }
+              inputProps={{ min: 0 }}
+            />
+
+            {/* Venues */}
             <Stack direction="row" spacing={1} alignItems="center">
               <TextField
                 label="Add Venue"
                 value={newVenue}
-                onChange={e => setNewVenue(e.target.value)}
+                onChange={(e) => setNewVenue(e.target.value)}
               />
               <Button
                 onClick={() => {
                   if (!newVenue.trim()) return;
                   setFormOpponent({
                     ...formOpponent,
-                    venues: [...(formOpponent.venues ?? []), { name: newVenue }]
+                    venues: [...(formOpponent.venues ?? []), { name: newVenue }],
                   });
                   setNewVenue('');
                 }}
@@ -185,7 +319,7 @@ export default function OpponentManagement(): React.JSX.Element {
                   onDelete={() =>
                     setFormOpponent({
                       ...formOpponent,
-                      venues: formOpponent.venues!.filter((_, idx) => idx !== i)
+                      venues: formOpponent.venues!.filter((_, idx) => idx !== i),
                     })
                   }
                   sx={{ m: 0.5 }}
@@ -203,10 +337,7 @@ export default function OpponentManagement(): React.JSX.Element {
       </Dialog>
 
       {/* Delete confirm dialog */}
-      <Dialog
-        open={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
-      >
+      <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
         <DialogTitle>Confirm delete</DialogTitle>
         <DialogContent>
           <Typography>Are you sure you want to delete this opponent?</Typography>

@@ -3,8 +3,9 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ClubInterface } from '@/types/club/types';
 import { validateClubSettings } from '../assets/validateClub';
+import { VenueInterface } from '@/types/venues/types';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 // GET: Fetch club by ID
 export async function GET(
   req: NextRequest,
@@ -22,7 +23,7 @@ export async function GET(
       where: { id: clubId },
       include: {
         venues: true,
-      }
+      },
     });
 
     if (!club) {
@@ -74,7 +75,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Invalid club ID provided' }, { status: 400 });
     }
 
-    const data: ClubInterface & { venues?: { name: string }[] } = await req.json();
+    const data: ClubInterface & { venues?: VenueInterface[] } = await req.json();
 
     // Validate input data
     validateClubSettings(data);
@@ -91,11 +92,11 @@ export async function PUT(
       return NextResponse.json({ error: 'A club with this name already exists.' }, { status: 400 });
     }
 
-    // Extract venues
+    // Extract venues from payload, rest goes directly to club update
     const { venues, ...clubData } = data;
 
-    // Update the club with optional venues
-    const updatedClub = await prisma.club.update({
+    // First, update the club itself (without nested venues write)
+    await prisma.club.update({
       where: { id: clubId },
       data: {
         ...clubData,
@@ -104,19 +105,42 @@ export async function PUT(
         image: data.image || null,
         backgroundColor: data.backgroundColor || '#ffffff',
         foregroundColor: data.foregroundColor || '#000000',
-        ...(venues && {
-          venues: {
-            deleteMany: { clubId }, // clears previous
-            create: venues,
-          },
-        }),
       },
+    });
+
+    // Then handle venues explicitly: update existing by id or create new ones.
+    if (venues && venues.length > 0) {
+      for (const v of venues) {
+        const venueData = {
+          name: v.name,
+          address: v.address ?? null,
+          clubId,
+        };
+
+        if (v.id) {
+          // Update existing venue (preserves game->venue links)
+          await prisma.venue.update({
+            where: { id: v.id },
+            data: venueData,
+          });
+        } else {
+          // Create new venue for this club
+          await prisma.venue.create({
+            data: venueData,
+          });
+        }
+      }
+    }
+
+    // Finally, fetch the updated club with venues and return
+    const updatedClubWithVenues = await prisma.club.findUnique({
+      where: { id: clubId },
       include: {
         venues: true,
       },
     });
 
-    return NextResponse.json(updatedClub, { status: 200 });
+    return NextResponse.json(updatedClubWithVenues, { status: 200 });
   } catch (error) {
     console.error('Error updating club settings:', error);
     return NextResponse.json(

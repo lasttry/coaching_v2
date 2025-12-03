@@ -1,17 +1,27 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
-export const useMessage = (
-  timeout = 5000
-): {
+/**
+ * useMessage
+ * Exemplo de hook para gerir mensagens temporárias (success / error)
+ *
+ * @param timeout Tempo em ms até desaparecer (default 5000)
+ */
+export function useMessage(timeout: number = 5000): {
   message: string | null;
-  setTimedMessage: React.Dispatch<React.SetStateAction<string | null>>;
-} => {
+  setTimedMessage: (msg: string | null) => void;
+} {
   const [message, setMessage] = useState<string | null>(null);
 
-  const setTimedMessage: React.Dispatch<React.SetStateAction<string | null>> = (newMessage) => {
-    setMessage(newMessage);
-    setTimeout(() => setMessage(null), timeout);
-  };
+  const setTimedMessage = useCallback(
+    (msg: string | null) => {
+      setMessage(msg);
+      if (msg && timeout > 0) {
+        const timer = setTimeout(() => setMessage(null), timeout);
+        return () => clearTimeout(timer);
+      }
+    },
+    [timeout]
+  );
 
   return { message, setTimedMessage };
-};
+}

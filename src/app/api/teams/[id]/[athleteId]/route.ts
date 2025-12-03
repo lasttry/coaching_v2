@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
 
-type Params = Promise<{ id: number; athleteId: number }>;
+type Params = Promise<{ id: string; athleteId: string }>;
 
 // POST: Add an athlete to a team
 export async function POST(

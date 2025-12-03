@@ -29,8 +29,8 @@ import { EchelonInterface } from '@/types/echelons/types';
 import { Gender } from '@prisma/client';
 
 interface EchelonListProps {
-  setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
-  setSuccessMessage: React.Dispatch<React.SetStateAction<string | null>>;
+  setErrorMessage: (msg: string | null) => void;
+  setSuccessMessage: (msg: string | null) => void;
   echelons: Record<string, EchelonInterface[]>;
   setEditedEchelons: React.Dispatch<React.SetStateAction<{ [key: number]: EchelonInterface }>>;
   editedEchelons: { [key: number]: EchelonInterface };

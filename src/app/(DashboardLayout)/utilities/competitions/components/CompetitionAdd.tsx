@@ -20,8 +20,8 @@ import { CompetitionInterface } from '@/types/competition/types';
 
 interface CompetitionAddProps {
   echelons: EchelonInterface[];
-  setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
-  setSuccessMessage: React.Dispatch<React.SetStateAction<string | null>>;
+  setErrorMessage: (msg: string | null) => void;
+  setSuccessMessage: (msg: string | null) => void;
 
   newCompetition: CompetitionInterface;
   setNewCompetition: React.Dispatch<React.SetStateAction<CompetitionInterface>>;
@@ -94,7 +94,10 @@ const CompetitionAddComponent: React.FC<CompetitionAddProps> = ({
 
     // Use keyof CompetitionInterface to type the field correctly
     (Object.keys(newCompetition) as Array<keyof CompetitionInterface>).forEach((field) => {
-      const error = validateField(field, newCompetition[field]);
+      const error = validateField(
+        field,
+        newCompetition[field] as string | number | EchelonInterface | null
+      );
       if (error) {
         errors[field] = error;
       }

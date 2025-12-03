@@ -16,19 +16,28 @@ import {
 } from '@mui/material';
 import { Grid } from '@mui/material';
 import {
-  AthleteInterface,
   GameAthleteInterface,
   GameAthleteReport,
   GameInterface,
   ObjectiveInterface,
   OpponentInterface,
-} from '@/types/games/types';
+} from '@/types/game/types';
+import { AthleteInterface } from '@/types/athlete/type';
 import { log } from '@/lib/logger';
 import { useTranslation } from 'react-i18next';
 import { useSession } from 'next-auth/react';
 import { CompetitionInterface, CompetitionSerieInterface } from '@/types/competition/types';
 import { TeamInterface } from '@/types/teams/types';
-import { ClubInterface, VenueInterface } from '@/types/club/types';
+import { ClubInterface } from '@/types/club/types';
+import { VenueInterface } from '@/types/venues/types';
+import { generateVsBanner } from '@/utils/generateVsBanner';
+import { GameEquipmentInterface } from '@/types/gameEquipment/type';
+
+interface BannerTeam {
+  image: string;
+  name: string;
+  isClub: boolean;
+}
 
 interface GameProps {
   game: GameInterface;
@@ -58,6 +67,10 @@ const GameComponent: React.FC<GameProps> = ({
   const [teamAthletes, setTeamAthletes] = useState<AthleteInterface[]>([]);
   const [gameAthletes, setGameAthletes] = useState<GameAthleteInterface[]>([]);
   const [venues, setVenues] = useState<VenueInterface[]>([]);
+  const selectedOpponent = opponents.find((o) => o.id === game.opponentId);
+  const [club, setClub] = useState<ClubInterface | null>(null);
+  const [bannerHomeTeam, setBannerHomeTeam] = useState<BannerTeam | null>(null);
+  const [bannerAwayTeam, setBannerAwayTeam] = useState<BannerTeam | null>(null);
 
   const selectedCompetition = competitions.find((comp) => comp.id === game.competitionId);
   const seriesOptions = selectedCompetition?.competitionSeries ?? [];
@@ -65,6 +78,97 @@ const GameComponent: React.FC<GameProps> = ({
   const filteredTeams = selectedCompetition
     ? teams.filter((team) => team.echelonId === selectedCompetition.echelonId)
     : [];
+
+  useEffect(() => {
+    async function fetchClub(): Promise<void> {
+      try {
+        if (!session?.user?.selectedClubId) {
+          return;
+        }
+
+        const clubResponse = await fetch(`/api/clubs/${session.user.selectedClubId}`);
+        const clubData = await clubResponse.json();
+
+        if (clubResponse.ok) {
+          setClub(clubData);
+        } else {
+          const clubErrorText = `Failed to fetch club data: ${clubData.error || 'Unknown error'}`;
+          log.error(clubErrorText);
+        }
+      } catch (error) {
+        let errorText: string;
+
+        if (error instanceof Error) {
+          errorText = `Error fetching club data: ${error.message}`;
+        } else {
+          errorText = 'An unknown error occurred while fetching club data.';
+        }
+
+        log.error(errorText);
+      }
+    }
+
+    fetchClub();
+  }, [session]);
+
+  useEffect(() => {
+    if (!club || !selectedOpponent) {
+      setBannerHomeTeam(null);
+      setBannerAwayTeam(null);
+      return;
+    }
+
+    const clubName = club.shortName || club.name || t('home');
+    const opponentName = selectedOpponent.shortName || t('opponent');
+
+    if (game.away) {
+      // jogo fora: adversário é equipa da casa
+      setBannerHomeTeam({
+        image: selectedOpponent.image ?? '/images/logos/logo-dark.svg',
+        name: opponentName,
+        isClub: false,
+      });
+      setBannerAwayTeam({
+        image: club.image || '/images/logos/logo-dark.svg',
+        name: clubName,
+        isClub: true,
+      });
+    } else {
+      // jogo em casa: clube é equipa da casa
+      setBannerHomeTeam({
+        image: club.image || '/images/logos/logo-dark.svg',
+        name: clubName,
+        isClub: true,
+      });
+      setBannerAwayTeam({
+        image: selectedOpponent.image ?? '/images/logos/logo-dark.svg',
+        name: opponentName,
+        isClub: false,
+      });
+    }
+  }, [club, selectedOpponent, game.away, t]);
+
+  const handleDownloadBanner = async (): Promise<void> => {
+    if (!bannerHomeTeam || !bannerAwayTeam) {
+      return;
+    }
+
+    try {
+      const dataUrl = await generateVsBanner(bannerHomeTeam, bannerAwayTeam);
+
+      const link = document.createElement('a');
+      const homeNameSafe = bannerHomeTeam.name.replace(/\s+/g, '_').toLowerCase();
+      const awayNameSafe = bannerAwayTeam.name.replace(/\s+/g, '_').toLowerCase();
+
+      link.download = `${homeNameSafe}-vs-${awayNameSafe}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error generating banner image', error);
+    }
+  };
 
   React.useEffect(() => {
     const fetchCompetitions = async (): Promise<void> => {
@@ -139,9 +243,7 @@ const GameComponent: React.FC<GameProps> = ({
           throw new Error(data.error || 'Failed to fetch team data');
         }
 
-        setTeamAthletes(
-          data.athletes.map((a: { athlete: AthleteInterface }) => a.athlete)
-        );
+        setTeamAthletes(data.athletes.map((a: { athlete: AthleteInterface }) => a.athlete));
       } catch (err) {
         log.error('Error fetching team athletes:', err);
         setErrorMessage('Failed to load team athletes.');
@@ -196,7 +298,7 @@ const GameComponent: React.FC<GameProps> = ({
         }
 
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Failed to fetch venues");
+        if (!res.ok) throw new Error('Failed to fetch venues');
 
         const data = await res.json();
         const venues = data.venues ?? [];
@@ -212,8 +314,8 @@ const GameComponent: React.FC<GameProps> = ({
           return prev;
         });
       } catch (error) {
-        log.error("Error fetching venues:", error);
-        setErrorMessage("Failed to load venues.");
+        log.error('Error fetching venues:', error);
+        setErrorMessage('Failed to load venues.');
         setVenues([]);
       }
     };
@@ -238,6 +340,8 @@ const GameComponent: React.FC<GameProps> = ({
       | OpponentInterface
       | GameAthleteInterface[]
       | ObjectiveInterface[]
+      | VenueInterface
+      | GameEquipmentInterface[]
   ): string => {
     let error = '';
     setErrorMessage('');
@@ -337,15 +441,15 @@ const GameComponent: React.FC<GameProps> = ({
   };
 
   const handleCancelGame = (): void => {
-    if(onCancel) onCancel();
-  }
+    if (onCancel) onCancel();
+  };
 
   // Handle Add Competition
   const handleSaveGame = (): undefined => {
     if (validateAllFields().length > 0) {
       return;
     }
-     // Only pass selected athletes to game.gameAthletes
+    // Only pass selected athletes to game.gameAthletes
     const filtered = gameAthletes.filter((a) => a.selected);
 
     const updatedGame: GameInterface = {
@@ -380,7 +484,6 @@ const GameComponent: React.FC<GameProps> = ({
         team: firstTeam ?? undefined,
         gameAthletes: [],
       }));
-
     } else {
       setGame((prev) => ({ ...prev, [field]: value }));
     }
@@ -441,7 +544,7 @@ const GameComponent: React.FC<GameProps> = ({
         shotClock: data.shotClock,
         scorer: data.scorer,
         timekeeper: data.timekeeper,
-      })
+      });
       // You can now do something with `data`, like updating the game state
     } catch (error) {
       log.error('Error fetching game officials:', error);
@@ -451,6 +554,99 @@ const GameComponent: React.FC<GameProps> = ({
 
   return (
     <Grid container spacing={2}>
+      <Grid size={{ xs: 12 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            my: 3,
+            gap: 2,
+            px: 3,
+            py: 2,
+            borderRadius: 3,
+            background: 'radial-gradient(circle at top, #333 0, #111 45%, #000 100%)',
+            boxShadow: '0 0 25px rgba(0,0,0,0.7)',
+          }}
+        >
+          {bannerHomeTeam && bannerAwayTeam && (
+            <>
+              {/* Lado da equipa da casa (ou adversário se jogo for fora) */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <img
+                  src={bannerHomeTeam.image}
+                  alt={bannerHomeTeam.name}
+                  width={72}
+                  height={72}
+                  style={{
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '2px solid #ccc',
+                    boxShadow: '0 0 10px rgba(255,255,255,0.2)',
+                  }}
+                />
+                <Typography variant="subtitle1" sx={{ mt: 1, color: '#ffffff' }}>
+                  {bannerHomeTeam.name}
+                </Typography>
+              </Box>
+
+              {/* VS com glow no meio */}
+              <Box sx={{ px: 1 }}>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    fontWeight: 900,
+                    letterSpacing: 4,
+                    color: '#ffffff',
+                    textShadow:
+                      '0 0 6px rgba(255,140,0,0.9), 0 0 14px rgba(255,69,0,0.85), 0 0 24px rgba(255,69,0,0.6)',
+                    transform: 'scale(1.1)',
+                  }}
+                >
+                  VS
+                </Typography>
+              </Box>
+
+              {/* Lado da equipa visitante (ou clube se jogo for fora) */}
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <img
+                  src={bannerAwayTeam.image}
+                  alt={bannerAwayTeam.name}
+                  width={72}
+                  height={72}
+                  style={{
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    border: '2px solid #ccc',
+                    boxShadow: '0 0 10px rgba(255,255,255,0.2)',
+                  }}
+                />
+                <Typography variant="subtitle1" sx={{ mt: 1, color: '#ffffff' }}>
+                  {bannerAwayTeam.name}
+                </Typography>
+              </Box>
+            </>
+          )}
+        </Box>
+
+        {/* Botão para download */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+          <button
+            type="button"
+            onClick={handleDownloadBanner}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '8px',
+              border: 'none',
+              cursor: 'pointer',
+              fontWeight: 600,
+            }}
+          >
+            Download imagem
+          </button>
+        </Box>
+      </Grid>
+
       <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
           fullWidth
@@ -504,7 +700,7 @@ const GameComponent: React.FC<GameProps> = ({
             }
             label={t('venue')}
           >
-            {(venues).map((venue) => (
+            {venues.map((venue) => (
               <MenuItem key={venue.id} value={Number(venue.id)}>
                 {venue.name}
               </MenuItem>
@@ -572,7 +768,7 @@ const GameComponent: React.FC<GameProps> = ({
                 ...prev,
                 teamId: Number(e.target.value),
                 team: teams.find((team) => team.id === Number(e.target.value)),
-                gameAthletes: []
+                gameAthletes: [],
               }))
             }
             label={t('team')}
@@ -659,8 +855,10 @@ const GameComponent: React.FC<GameProps> = ({
             <Grid size={1}>
               <Checkbox
                 checked={athlete.selected ?? false}
-                disabled={!athlete.selected && gameAthletes.filter(a => a.selected).length >= 12}
-                onChange={(e) => handleAthleteFieldChange(athlete.athleteId, 'selected', e.target.checked)}
+                disabled={!athlete.selected && gameAthletes.filter((a) => a.selected).length >= 12}
+                onChange={(e) =>
+                  handleAthleteFieldChange(athlete.athleteId, 'selected', e.target.checked)
+                }
               />
             </Grid>
             <Grid size={3}>
@@ -703,9 +901,55 @@ const GameComponent: React.FC<GameProps> = ({
           </Grid>
         ))}
       </Box>
+      <Grid size={{ xs: 12 }}>
+        <Typography variant="h6">Images</Typography>
 
+        {[1, 2, 3, 4].map((idx) => {
+          const imageKey = `image${idx}` as keyof GameInterface;
+          return (
+            <Box key={idx} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <Button variant="outlined" component="label">
+                Upload image {idx}
+                <input
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                      setGame((prev) => ({
+                        ...prev,
+                        [imageKey]: reader.result as string,
+                      }));
+                    };
+                    reader.readAsDataURL(file);
+                  }}
+                />
+              </Button>
+
+              {game[imageKey] && (
+                <img
+                  src={(game[imageKey] as string) || ''}
+                  alt={`image ${idx}`}
+                  width={128}
+                  height={90}
+                  style={{
+                    marginLeft: '10px',
+                    objectFit: 'cover',
+                    borderRadius: '4px',
+                    border: '1px solid #ccc',
+                  }}
+                />
+              )}
+            </Box>
+          );
+        })}
+      </Grid>
       <Grid size={{ xs: 12 }} sx={{ display: 'flex', justifyContent: 'center' }}>
-        <Button variant='contained' onClick={handleUpdateInfos}>
+        <Button variant="contained" onClick={handleUpdateInfos}>
           {t('getInfos')}
         </Button>
         <Button variant="contained" onClick={handleSaveGame}>

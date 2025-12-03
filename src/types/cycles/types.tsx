@@ -33,7 +33,7 @@ export interface MicrocycleInterface {
 }
 
 export interface SessionGoalInterface {
-  id?: number;
+  id?: string | number;
   date: Date;
   order: number;
   duration: number; // Duration in minutes

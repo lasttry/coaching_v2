@@ -25,9 +25,10 @@ import { Grid } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import dayjs from 'dayjs';
 import { log } from '@/lib/logger';
-import { AthleteInterface } from '@/types/games/types';
+import { AthleteInterface } from '@/types/game/types';
 import { TeamInterface } from '@/types/teams/types';
 import { EchelonInterface } from '@/types/echelons/types';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 const TeamsPage = (): ReactElement => {
   const { data: session } = useSession();
@@ -93,8 +94,11 @@ const TeamsPage = (): ReactElement => {
     }
   };
 
-  const handleFormChange = (e): void => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>
+  ): void => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name as string]: value }));
   };
 
   const handleCreateTeam = async (): Promise<void> => {
@@ -130,7 +134,7 @@ const TeamsPage = (): ReactElement => {
     const age = dayjs().diff(dayjs(athlete.birthdate), 'year');
 
     const teamEchelon = selectedTeam.echelon;
-    if (teamEchelon.maxAge && age > teamEchelon.maxAge) {
+    if (teamEchelon && teamEchelon.maxAge && age > teamEchelon.maxAge) {
       setErrorMessage(`Athlete age exceeds maximum age (${teamEchelon.maxAge})`);
       setTimeout(() => setErrorMessage(''), 10000);
       return;
@@ -226,7 +230,7 @@ const TeamsPage = (): ReactElement => {
                 <em>None</em> {/* Placeholder for unselected state */}
               </MenuItem>
               {echelons.map((echelon) => (
-                <MenuItem key={echelon.id} value={echelon.id}>
+                <MenuItem key={echelon.id ?? 0} value={echelon.id ?? ''}>
                   {echelon.name} (Max Age: {echelon.maxAge})
                 </MenuItem>
               ))}

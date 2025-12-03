@@ -1,10 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-import {
-  Box, Button, TextField, Typography, Stack, Grid
-} from '@mui/material';
+import { Box, Button, TextField, Typography, Stack, Grid } from '@mui/material';
 import Image from 'next/image';
-import { OpponentInterface } from '@/types/games/types';
+import { OpponentInterface } from '@/types/game/types';
 import { VenueInterface } from '@/types/club/types';
 import { useTranslation } from 'react-i18next';
 
@@ -55,7 +53,13 @@ const OpponentComponent: React.FC<Props> = ({ opponent, setOpponent }) => {
       <Grid size={{ xs: 12, sm: 12 }}>
         {imagePreview ? (
           <Box>
-            <Image src={imagePreview} alt="Preview" width={64} height={64} style={{ borderRadius: '50%' }} />
+            <Image
+              src={imagePreview}
+              alt="Preview"
+              width={64}
+              height={64}
+              style={{ borderRadius: '50%' }}
+            />
             <Button
               onClick={() => {
                 setImagePreview(null);
@@ -73,7 +77,8 @@ const OpponentComponent: React.FC<Props> = ({ opponent, setOpponent }) => {
 
       <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
-          fullWidth label={t('name')}
+          fullWidth
+          label={t('name')}
           value={opponent?.name ?? ''}
           onChange={(e) => setOpponent((prev) => ({ ...prev, name: e.target.value }))}
           margin="normal"
@@ -82,7 +87,8 @@ const OpponentComponent: React.FC<Props> = ({ opponent, setOpponent }) => {
 
       <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
-          fullWidth label={t('shortName')}
+          fullWidth
+          label={t('shortName')}
           value={opponent?.shortName ?? ''}
           onChange={(e) => setOpponent((prev) => ({ ...prev, shortName: e.target.value }))}
           margin="normal"
@@ -93,7 +99,9 @@ const OpponentComponent: React.FC<Props> = ({ opponent, setOpponent }) => {
         <Typography variant="subtitle1">{t('venues')}</Typography>
         <Stack direction="row" spacing={1} mt={1}>
           <TextField
-            fullWidth label={t('newVenue')} value={newVenue}
+            fullWidth
+            label={t('newVenue')}
+            value={newVenue}
             onChange={(e) => setNewVenue(e.target.value)}
           />
           <Button onClick={handleAddVenue}>{t('add')}</Button>
@@ -118,5 +126,5 @@ const OpponentComponent: React.FC<Props> = ({ opponent, setOpponent }) => {
   );
 };
 
-OpponentComponent.displayName = "OpponentComponent";
+OpponentComponent.displayName = 'OpponentComponent';
 export default OpponentComponent;

@@ -9,6 +9,8 @@ import EchelonAddComponent from './components/EchelonAdd';
 import EchelonListComponent from './components/EchelonList';
 import { useMessage } from '@/hooks/useMessage';
 
+export const dynamic = 'force-dynamic';
+
 const EchelonsPage: React.FC = () => {
   const { t } = useTranslation();
   const [echelons, setEchelons] = useState<Record<string, EchelonInterface[]>>({});
@@ -31,11 +33,13 @@ const EchelonsPage: React.FC = () => {
     const response = await fetch('/api/echelons');
     const data = await response.json();
     if (!response.ok) {
-      setErrorMessage(data.error || 'Error getting competitions.');
+      setErrorMessage(data.error || 'Error getting echelons.');
+      console.error('❌ Fetch failed:', data.error);
       return;
     }
     setEchelons(groupedAndSortedEchelons(data));
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.error('done,..,.');
   }, []);
 
   const groupedAndSortedEchelons = (
@@ -58,6 +62,7 @@ const EchelonsPage: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log('useEffect');
     fetchEchelons();
   }, [fetchEchelons]);
 
@@ -147,16 +152,16 @@ const EchelonsPage: React.FC = () => {
       <EchelonAddComponent
         newEchelon={newEchelon}
         setNewEchelon={setNewEchelon}
-        setErrorMessage={setErrorMessage}
-        setSuccessMessage={setSuccessMessage}
+        setErrorMessage={(msg) => setErrorMessage(msg)} // ✅ ignore return
+        setSuccessMessage={(msg) => setSuccessMessage(msg)}
         onAddEchelon={handleAddEchelon}
       />
       <EchelonListComponent
         echelons={echelons}
         editedEchelons={editedEchelons}
         setEditedEchelons={setEditedEchelons}
-        setErrorMessage={setErrorMessage}
-        setSuccessMessage={setSuccessMessage}
+        setErrorMessage={(msg) => setErrorMessage(msg)} // ✅ ignore return
+        setSuccessMessage={(msg) => setSuccessMessage(msg)}
         onSaveEchelon={handleSaveEchelon}
         onDeleteEchelon={handleDeleteEchelon}
       />

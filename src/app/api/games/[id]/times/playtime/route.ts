@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 interface TimeEntryWithAthlete {
   athleteId: number;

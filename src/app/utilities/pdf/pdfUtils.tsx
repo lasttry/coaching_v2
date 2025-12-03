@@ -1,14 +1,35 @@
 import { jsPDF } from 'jspdf';
-import autoTable, { RowInput } from 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import dayjs from 'dayjs';
-
-import { GameInterface, jsPDFWithAutoTable } from '@/types/games/types';
-import { generateHeader, generateGameDetailsHeader } from './utils';
+import { generateVsBanner } from '@/utils/generateVsBanner';
+import { GameInterface, jsPDFWithAutoTable } from '@/types/game/types';
 import { ClubInterface } from '@/types/club/types';
 import { log } from '@/lib/logger';
 
+import { scienceGothicRegular } from './fonts/ScienceGothic-Regular';
+import { FpbResultInterface } from '@/types/fpb/result/type';
+import { FpbStandingInterface } from '@/types/fpb/standing/type';
+import { FpbGameOfficialInterface } from '@/types/fpb/gameOfficial/type';
+
 const lineWidthNormal = 0.1;
 const lineWidthBold = 0.5;
+const padding = 10;
+const bannerWidth = 45;
+const bannerHeight = 25;
+
+export const toCamelCaseName = (value: string | undefined | null): string => {
+  if (!value) return '';
+
+  return value
+    .trim()
+    .toLowerCase()
+    .split(/\s+/) // separa por espaços múltiplos
+    .map((part) => {
+      if (!part) return '';
+      return part.charAt(0).toUpperCase() + part.slice(1);
+    })
+    .join(' ');
+};
 
 const generateCells = (
   contentOrArray: string | string[],
@@ -104,15 +125,15 @@ const timedPeriod = (): (
 
 const formatAthleteName = (fullName: string | undefined): string => {
   if (fullName === undefined) {
-    return "";
+    return '';
   }
   const parts = fullName.trim().split(' ');
   if (parts.length === 0) return '';
 
-  const firstInitial = parts[0].charAt(0).toUpperCase();
+  const firstInitial = parts[0]; //.charAt(0).toUpperCase();
   const lastName = parts[parts.length - 1];
 
-  return `${firstInitial}. ${lastName}`;
+  return `${firstInitial} ${lastName}`;
 };
 
 const athletesTableBody = (game: GameInterface): (string | number | null | undefined)[][] => {
@@ -126,19 +147,17 @@ const athletesTableBody = (game: GameInterface): (string | number | null | undef
       if (numberB === -1 && numberA !== -1) return -1;
       if (numberA !== numberB) return numberA - numberB;
 
-      // If numbers are the same, sort by name
-      return a.athlete.name.localeCompare(b.athlete.name);
+      // ✅ Safely handle missing athlete or athlete.name
+      const nameA = a.athlete?.name ?? '';
+      const nameB = b.athlete?.name ?? '';
+      return nameA.localeCompare(nameB);
     })
     .map((entry) => [
       formatAthleteName(entry.athlete?.name),
       entry.number === '-1' ? '' : entry.number,
-      '',
       entry.period1 ? 'X' : '',
-      '',
       entry.period2 ? 'X' : '',
-      '',
       entry.period3 ? 'X' : '',
-      '',
       entry.period4 ? 'X' : '',
     ]);
 };
@@ -167,6 +186,7 @@ const timedAthletesTableBody = (
         {
           content: String(entry[2] ?? ''),
           styles: {
+            font: 'scienceGothic',
             lineWidth: {
               left: lineWidthBold,
               right: lineWidthNormal,
@@ -312,207 +332,394 @@ const statisticsAthletesTableBody = (
     ];
   });
 };
+const fetchClub = async (clubId: number): Promise<ClubInterface | null> => {
+  try {
+    const res = await fetch(`/api/clubs/${clubId}`);
+    if (!res.ok) throw new Error('Failed to fetch club');
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    log.error('Error fetching club:', err);
+    return null;
+  }
+};
 
-// Helper function to create game details PDF
-export const generatePDF = async (game: GameInterface, clubId: number | undefined): void => {
+const generateTopLeft = async (
+  doc: jsPDF,
+  startX: number,
+  startY: number,
+  game: GameInterface,
+  club: ClubInterface,
+  bannerImage: string
+): Promise<void> => {
+  doc.setFontSize(12);
+  doc.text('Jogadores', startX, startY);
 
-  if(clubId === undefined) {
-    log.error("ClubId is missing");
-    return;
+  if (bannerImage) {
+    doc.addImage(bannerImage, 'PNG', startX + 55, startY - padding, bannerWidth, bannerHeight);
   }
 
-  const fetchClub = async (clubId: number): Promise<ClubInterface | null> => {
-    try {
-      const res = await fetch(`/api/clubs/${clubId}`);
-      if (!res.ok) throw new Error('Failed to fetch club');
-      const data = await res.json();
-      return data;
-    } catch (err) {
-      log.error('Error fetching club:', err);
-      return null;
-    }
-  };
-
-  const club = await fetchClub(clubId);
-  if(club === null) {
-    log.debug("Failed to find the club");
-    return;
-  }
-
-  const doc = new jsPDF() as jsPDFWithAutoTable;
-  const pageWidth = doc.internal.pageSize.getWidth(); // Get the page width
-
-  // Generate the page header.
-  let top = generateHeader(club, doc);
-
-  top = generateGameDetailsHeader(club, doc, top, game);
-
-  doc.setFontSize(18);
-  // Add H3-like title below the table
-  const playersText = 'Jogadores';
-  doc.text(playersText, 10, top + 8);
-  const afterPlayersText = top + 15; // Get the next Y position after the text
-
-  // Define the custom column widths
+  const tableWidth = doc.internal.pageSize.getWidth() / 2 - padding * 2;
+  const columns = 4;
   const columnWidths = [
-    25, // First column (for 6 characters)
+    40, // First column (for 6 characters)
     10,
-    ...Array(10).fill((pageWidth - 20 - 25 * 2 - 50) / 10), // Last 10 columns, equally wide for a big "X"
+    ...Array(columns).fill((tableWidth - 50) / columns), // Last 10 columns, equally wide for a big "X"
   ];
-  const columnStyles = columnWidths.reduce((acc, width, index) => {
+  type ColumnStyle = {
+    cellWidth: number;
+    halign: 'left' | 'center' | 'right';
+  };
+  const columnStyles = columnWidths.reduce<Record<number, ColumnStyle>>((acc, width, index) => {
     acc[index] = {
       cellWidth: width,
       halign: index === 0 ? 'left' : 'center', // Nome is left, rest are centered
     };
     return acc;
-  }, {} as Record<number, any>);
+  }, {});
 
-  // Add a table with 13 columns
   autoTable(doc, {
-    startY: afterPlayersText,
-    margin: { left: 10 },
+    startY: startY + 15,
+    margin: { left: startX },
+    tableWidth: tableWidth + 10,
     columnStyles,
-    head: [['Nome', '#', '', '1', '', '2', '', '3', '', '4', '']],
+    head: [['Nome', '#', '1', '2', '3', '4']],
     body: athletesTableBody(game)?.map(
       (row) => row.map((cell) => String(cell ?? '')) // Convert null/undefined to ''
     ),
     headStyles: {
-      fillColor: club?.backgroundColor, // Background color (RGB)
-      textColor: club?.foregroundColor, // Foreground text color (white)
-      fontStyle: 'bold', // Optional: make the header text bold
+      font: 'scienceGothic',
+      fontStyle: 'normal', // <- não tentar bold na fonte custom
+      fillColor: club?.backgroundColor,
+      textColor: club?.foregroundColor,
       halign: 'center',
+      fontSize: 9, // compensa o “bold” com tamanho
     },
     styles: {
+      font: 'scienceGothic',
       lineColor: [0, 0, 0], // Black borders
       lineWidth: 0.2, // Border thickness
+      fontSize: 8,
+      cellPadding: 1,
     },
     theme: 'grid', // Use grid to draw borders
   });
+};
 
-  const afterPlayersTableY = doc.lastAutoTable?.finalY ?? 0;
-  // First column: "Resultado" with table
-  doc.setFontSize(18);
-  doc.text('Resultado', 10, afterPlayersTableY + 10); // Title for first column
+const generateTopRight = async (
+  doc: jsPDF,
+  startX: number,
+  startY: number,
+  game: GameInterface,
+  club: ClubInterface,
+  bannerImage: string
+): Promise<void> => {
+  doc.setFontSize(20);
+  doc.text(club?.name, startX, startY);
+  doc.setFontSize(14);
+  doc.text(club?.season as string, startX, startY + 10);
+
+  const imageSource = bannerImage || club?.image;
+
+  if (imageSource) {
+    try {
+      doc.addImage(imageSource, 'PNG', startX + 55, startY - padding, bannerWidth, bannerHeight);
+    } catch (err) {
+      console.warn('⚠️ Erro ao carregar imagem do clube:', err);
+    }
+  }
+
+  let officials: FpbGameOfficialInterface[] = [];
+
+  try {
+    const officialsRes = await fetch(`/api/games/${game.number}/fpb/officials`);
+    if (officialsRes.ok) {
+      officials = (await officialsRes.json()) as FpbGameOfficialInterface[];
+    }
+  } catch (err) {
+    log.error('Error fetching FPB officials:', err);
+  }
+  const bodyRows: string[][] = [
+    ['Jogo', game.number !== null && game.number !== undefined ? `${game.number}` : ''],
+    ['Competição', game.competition?.name || ''],
+    ['Local', game.venue?.name || ''],
+    ['Série', game.competitionSerie?.name || ''],
+    ['Adversário', game.opponent?.name || ''],
+    ['Data/Hora', game.date ? dayjs(game.date).format('YYYY-MM-DD HH:mm') : ''],
+  ];
+  // Adicionar informação dos juízes no fim da tabela, se existir
+  if (officials.length > 0) {
+    bodyRows.push(['Juízes', '']);
+    officials.forEach((o) => {
+      bodyRows.push([o.role, `${toCamelCaseName(o.name)} (${o.license})`]);
+    });
+  }
 
   autoTable(doc, {
-    startY: afterPlayersTableY + 15, // Position the table below the title
-    margin: { left: 10 },
-    head: [
-      [
-        '',
-        `${game.away ? game.opponent?.shortName : club.shortName}`,
-        `${game.away ? club.shortName : game.opponent?.shortName}`,
-      ],
-    ],
-    body: [
-      ['1º Periodo', '', ''],
-      ['2º Periodo', '', ''],
-      ['3º Periodo', '', ''],
-      ['4º Periodo', '', ''],
-    ],
-    //tableWidth: 'auto',
-    columnStyles: {
-      0: { cellWidth: 25 }, // First column with automatic width
-      1: { cellWidth: 15 }, // Third column with 15 width
-      2: { cellWidth: 15 }, // Fourth column with 15 width
+    startY: startY + 15,
+    margin: { left: startX },
+    head: [],
+    body: bodyRows,
+    styles: {
+      font: 'scienceGothic',
+      fontSize: 8,
+      lineWidth: 0.2, // “espessura” da linha (mais grosso, ~1px visual)
+      lineColor: [0, 0, 0], // preto
     },
     headStyles: {
-      fillColor: club?.backgroundColor, // Background color (RGB)
-      textColor: club?.foregroundColor, // Foreground text color (white)
-      fontStyle: 'bold', // Optional: make the header text bold
+      fontSize: 8,
+      fillColor: club?.backgroundColor, // cor de fundo do cabeçalho
+      textColor: club?.foregroundColor, // cor do texto do cabeçalho
+      fontStyle: 'bold',
+      halign: 'center',
     },
-    styles: {
-      cellPadding: 2,
-      halign: 'left',
-      lineColor: [0, 0, 0], // Black borders
-      lineWidth: 0.2, // Border thickness
-    },
-    theme: 'grid', // Use grid to draw borders
   });
-  const afterResultsTableY = doc.lastAutoTable?.finalY ?? 0;
-  // Second column: "Notas" with lorem ipsum text
-  doc.setFontSize(18);
-  doc.text('Notas', 80, afterPlayersTableY + 10); // Title for second column
-  doc.setFontSize(10);
+};
 
-  const loremText = doc.splitTextToSize(`${game.notes === null ? '' : game.notes}`, 120);
-  doc.text(loremText, 80, afterPlayersTableY + 15); // Text under the "Notas" header
+const generateBottomLeft = async (
+  doc: jsPDF,
+  startX: number,
+  startY: number,
+  game: GameInterface,
+  club: ClubInterface
+): Promise<void> => {
+  // FPB latest results for opponent
+  if (game.opponent && game.opponent.fpbTeamId) {
+    try {
+      const res = await fetch(`/api/opponents/${game.opponent.id}/fpb/results`);
+      const resultsJson = (await res.json()) as { results?: FpbResultInterface[] };
 
-  doc.setFontSize(18);
-  const pageHeight = doc.internal.pageSize.height;
-  doc.text('Observações', 10, afterResultsTableY + 10); // Title for second column
+      const latestResults: FpbResultInterface[] = resultsJson.results ?? [];
 
-  let i = 0; // Start the loop counter
-  let currentHeight = afterResultsTableY + 20;
-  while (i < 4) {
-    // Check if the current Y position exceeds the page height
-    if (currentHeight > pageHeight - 5) {
-      break;
-    }
-    doc.line(8, currentHeight, pageWidth - 8, currentHeight);
-    currentHeight += 8;
-    i++;
-  }
+      if (latestResults.length > 0) {
+        //        const afterResultsY =
+        //          (doc as jsPDFWithAutoTable).lastAutoTable?.finalY ?? resultsStartY + 25;
 
-  // Goals of the game if there are any.
-  if (game.objectives?.length || game.objectives?.length) {
-    doc.addPage();
-
-    const groupedObjectives: Record<string, RowInput[]> = {
-      TEAM: [],
-      OFFENSIVE: [],
-      DEFENSIVE: [],
-      INDIVIDUAL: [],
-    };
-    const objectiveTypeHeaders: Record<string, string> = {
-      TEAM: 'Objectivos da Equipa',
-      OFFENSIVE: 'Objectivos Ofensivos',
-      DEFENSIVE: 'Objectivos Defensivos',
-      INDIVIDUAL: 'Objectivos Individuais',
-    };
-
-    // Group objectives by their type
-    game.objectives?.forEach((objective) => {
-      const type = objective.type;
-      groupedObjectives[type].push(
-        [
-          {
-            content: objective.title,
-            styles: { fontStyle: 'bold', fillColor: [230, 230, 230] },
+        doc.setFontSize(10);
+        doc.text(`Últimos Resultados (FPB - ${game.opponent.shortName})`, startX, startY);
+        autoTable(doc, {
+          startY: startY + 2,
+          margin: { left: startX },
+          tableWidth: doc.internal.pageSize.getWidth() / 2 - padding * 2,
+          head: [['Data', 'Casa', 'Resultado', 'Fora']],
+          body: latestResults.map((r) => [
+            r.date ?? '',
+            r.homeTeam ?? '',
+            r.homeScore !== null && r.awayScore !== null ? `${r.homeScore} - ${r.awayScore}` : '',
+            r.awayTeam ?? '',
+          ]),
+          theme: 'grid',
+          styles: {
+            font: 'scienceGothic',
+            fontSize: 7,
+            lineWidth: 0.2,
+            lineColor: [0, 0, 0],
+            cellPadding: 1,
           },
-        ], // Title row
-        [
-          {
-            content: objective.description || '',
-            styles: { fontStyle: 'normal', fillColor: [255, 255, 255] },
+          headStyles: {
+            font: 'scienceGothic',
+            fontStyle: 'normal',
+            fillColor: club?.backgroundColor,
+            textColor: club?.foregroundColor,
+            halign: 'center',
+            fontSize: 8,
           },
-        ] // Description row
-      );
-    });
-    // Draw the table
-    let startY = 15;
-    Object.entries(groupedObjectives).forEach(([type, rows]) => {
-      autoTable(doc, {
-        startY: startY, // Position the table below previous content
-        margin: { top: 10, left: 10, right: 10 },
-        tableWidth: doc.internal.pageSize.getWidth() - 20,
-        head: [[objectiveTypeHeaders[type] || type]], // Table header
-        body: rows,
-        headStyles: {
-          fillColor: `backgroundColor`, // Background color (RGB)
-          textColor: `foregroundColor`, // Foreground text color (white)
-          fontStyle: 'bold', // Optional: make the header text bold
-        },
-        columnStyles: {
-          0: { cellWidth: 'auto', halign: 'left' }, // Adjust title column to auto-width
-          1: { cellWidth: 'auto', halign: 'left' }, // Adjust description column to auto-width
-        },
-      });
-      if (doc.lastAutoTable?.finalY) {
-        startY = doc.lastAutoTable.finalY; // Position next table 10 points below the previous
+        });
+        const afterLatestResultsY =
+          (doc as jsPDFWithAutoTable).lastAutoTable?.finalY ?? startY + padding;
+
+        const standingsRes = await fetch(
+          `/api/opponents/${game.opponent.id}/fpb/standings?competitionId=${game.competition?.fpbCompetitionId}&phaseId=${game.competitionSerie?.fpbSerieId}`
+        );
+        if (standingsRes.ok) {
+          const standingsJson = (await standingsRes.json()) as {
+            standings?: FpbStandingInterface[];
+          };
+          const standings: FpbStandingInterface[] = standingsJson.standings ?? [];
+
+          if (standings.length > 0) {
+            // tentar encontrar a linha da equipa do adversário pelo fpbTeamId
+            const opponentRow =
+              standings.find((row) => row.fpbTeamId === game.opponent?.fpbTeamId) ?? standings[0];
+
+            doc.setFontSize(10);
+            doc.text('Classificação FPB (fase regular)', startX, afterLatestResultsY + 6);
+
+            autoTable(doc, {
+              startY: afterLatestResultsY + 8,
+              margin: { left: startX },
+              tableWidth: doc.internal.pageSize.getWidth() / 2 - padding * 2,
+              head: [['Pos', 'Equipa', 'J', 'V', 'D', 'PTS', 'DIF']],
+              body: [
+                [
+                  String(opponentRow.position),
+                  opponentRow.name,
+                  String(opponentRow.games),
+                  String(opponentRow.wins),
+                  String(opponentRow.losses),
+                  String(opponentRow.points),
+                  opponentRow.dif !== undefined ? String(opponentRow.dif) : '',
+                ],
+              ],
+              theme: 'grid',
+              styles: {
+                font: 'scienceGothic',
+                fontSize: 7,
+                lineWidth: 0.2,
+                lineColor: [0, 0, 0],
+                cellPadding: 1,
+              },
+              headStyles: {
+                font: 'scienceGothic',
+                fontStyle: 'normal',
+                fillColor: club?.backgroundColor,
+                textColor: club?.foregroundColor,
+                halign: 'center',
+                fontSize: 8,
+              },
+            });
+          }
+        }
       }
-    });
+    } catch (err) {
+      log.error('Error fetching FPB latest results:', err);
+    }
+  } else {
+    if (!game.opponent) {
+      doc.text('Adversário não definido', startX, startY);
+    } else if (!game.opponent?.fpbTeamId) {
+      doc.text('FBP do adversário não definido', startX, startY);
+    }
   }
+};
+
+const generateBottomRight = async (
+  doc: jsPDF,
+  startX: number,
+  startY: number,
+  game: GameInterface
+): Promise<void> => {
+  doc.setFontSize(12);
+  doc.text('Notas', startX, startY);
+
+  const wrappedText = doc.splitTextToSize(
+    game.notes ?? '',
+    doc.internal.pageSize.width / 2 - padding * 2
+  );
+  doc.setFontSize(9);
+  doc.text(wrappedText, startX, startY + 6);
+
+  // Render game images (2x2 grid)
+  const imageSizeWidth = 43;
+  const imageSizeHeigth = 30; // 30x30 small images
+  const imageGap = 10;
+
+  const images = [game.image1, game.image2, game.image3, game.image4];
+
+  let imgX = startX;
+  let imgY = startY + 10;
+
+  images.forEach((img, index) => {
+    if (img) {
+      try {
+        const base64Data = img.replace(/^data:image\/\w+;base64,/, '');
+        doc.addImage(base64Data, 'PNG', imgX, imgY, imageSizeWidth, imageSizeHeigth);
+      } catch {
+        // ignore broken image
+      }
+    }
+
+    imgX += imageSizeHeigth + imageGap;
+
+    if ((index + 1) % 2 === 0) {
+      imgX = startX;
+      imgY += imageSizeHeigth + imageGap;
+    }
+  });
+};
+
+export const generatePDF = async (game: GameInterface, clubId?: number): Promise<void> => {
+  if (!clubId) {
+    log.error('ClubId is missing');
+    return;
+  }
+  // Fetch club
+  const club = await fetchClub(clubId);
+  if (club === null) {
+    log.debug('Failed to find the club');
+    return;
+  }
+
+  const doc = new jsPDF() as jsPDFWithAutoTable;
+  doc.addFileToVFS('ScienceGothic-Regular.ttf', scienceGothicRegular);
+  doc.addFont('ScienceGothic-Regular.ttf', 'scienceGothic', 'normal');
+  doc.setFont('scienceGothic', 'normal');
+  //  const pageWidth = doc.internal.pageSize.getWidth();
+  //  const pageHeight = doc.internal.pageSize.getHeight();
+
+  //  const midX = pageWidth / 2;
+  //  const midY = pageHeight / 2;
+
+  // generate banner image
+
+  const clubName = club.shortName || club.name || 'Clube';
+  const opponentName = game.opponent?.shortName || game.opponent?.name || 'Adversário';
+
+  const bannerHomeTeam = {
+    image: game.away
+      ? (game.opponent?.image ?? '/images/logos/logo-dark.svg')
+      : club.image || '/images/logos/logo-dark.svg',
+    name: game.away ? opponentName : clubName,
+    isClub: !game.away,
+  };
+  const bannerAwayTeam = {
+    image: !game.away
+      ? (game.opponent?.image ?? '/images/logos/logo-dark.svg')
+      : club.image || '/images/logos/logo-dark.svg',
+    name: !game.away ? opponentName : clubName,
+    isClub: game.away,
+  };
+
+  const bannerImage = await generateVsBanner(bannerHomeTeam, bannerAwayTeam);
+
+  // parte 1
+  await generateTopLeft(doc, padding, padding, game, club, bannerImage);
+  await generateTopRight(
+    doc,
+    doc.internal.pageSize.getWidth() / 2 + padding,
+    padding,
+    game,
+    club,
+    bannerImage
+  );
+  await generateBottomLeft(
+    doc,
+    padding,
+    doc.internal.pageSize.getHeight() / 2 + padding,
+    game,
+    club
+  );
+  await generateBottomRight(
+    doc,
+    doc.internal.pageSize.getWidth() / 2 + padding,
+    doc.internal.pageSize.getHeight() / 2 + padding,
+    game
+  );
+
+  // 🔹 Opcional: Linhas divisórias visuais
+  doc.setDrawColor(150);
+  doc.line(
+    doc.internal.pageSize.getWidth() / 2,
+    0,
+    doc.internal.pageSize.getWidth() / 2,
+    doc.internal.pageSize.getHeight()
+  ); // Vertical
+  doc.line(
+    0,
+    doc.internal.pageSize.getHeight() / 2,
+    doc.internal.pageSize.getWidth(),
+    doc.internal.pageSize.getHeight() / 2
+  ); // Horizontal
 
   doc.save(`Folha_de_Jogo_${game.id}.pdf`);
 };

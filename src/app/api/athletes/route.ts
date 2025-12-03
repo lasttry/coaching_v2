@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { log } from '@/lib/logger';
-import i18next from '@/lib/i18next';
+import i18next from '@/lib/i18n.server'; // 👈 usa o i18n do servidor
+import { AthleteInterface } from '@/types/athlete/type';
 
 // GET handler for fetching all athletes
 export async function GET(req: Request): Promise<NextResponse> {
@@ -25,10 +26,10 @@ export async function GET(req: Request): Promise<NextResponse> {
 export async function POST(req: Request): Promise<NextResponse> {
   const lng = req.headers.get('accept-language')?.split(',')[0] || 'pt';
   await i18next.changeLanguage(lng);
-  const data = await req.json();
+  const data = (await req.json()) as AthleteInterface;
   const session = await auth();
 
-  if (!session?.user) return null;
+  if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
     if (!session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
@@ -39,13 +40,25 @@ export async function POST(req: Request): Promise<NextResponse> {
         number: data.number,
         name: data.name,
         birthdate: new Date(data.birthdate),
-        fpbNumber: data.fpbNumber ? Number(data.fpbNumber) : null, // Handle nullable integer
-        idNumber: data.idNumber ? Number(data.idNumber) : null, // Handle nullable integer
-        idType: data.idType || null, // Handle nullable string
+        fpbNumber: data.fpbNumber ? Number(data.fpbNumber) : null,
+        idNumber: data.idNumber ? Number(data.idNumber) : null,
+        idType: data.idType || null,
         active: data.active ?? true,
-        createdAt: new Date(), // Set createdAt to current date
-        updatedAt: new Date(), // Set updatedAt to current date
-        clubId: session.user.selectedClubId,
+        clubId: Number(session.user.selectedClubId),
+        shirtSize: data.shirtSize,
+        preferredNumbers: data.preferredNumbers
+          ? {
+              create: data.preferredNumbers.map(
+                (p: { number: string | number; preference?: string | number }, index: number) => ({
+                  number: Number(p.number),
+                  preference: p.preference ? Number(p.preference) : index + 1,
+                })
+              ),
+            }
+          : undefined,
+      },
+      include: {
+        preferredNumbers: true,
       },
     });
     return NextResponse.json(newAthlete);

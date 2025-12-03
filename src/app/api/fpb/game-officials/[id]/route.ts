@@ -3,7 +3,7 @@ import { log } from '@/lib/logger';
 import { auth } from '@/lib/auth';
 import * as cheerio from 'cheerio';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 export async function GET(
   req: NextRequest,

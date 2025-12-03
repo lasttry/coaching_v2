@@ -5,7 +5,7 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     const data = await request.json();
 
-    const newOpponent = await prisma.opponent.create({
+    const payload = {
       data: {
         name: data.name,
         shortName: data.shortName,
@@ -21,7 +21,8 @@ export async function POST(request: Request): Promise<NextResponse> {
       include: {
         venues: true,
       },
-    });
+    };
+    const newOpponent = await prisma.opponent.create(payload);
 
     return NextResponse.json(newOpponent, { status: 201 });
   } catch (error) {

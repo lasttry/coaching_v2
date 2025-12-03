@@ -1,11 +1,18 @@
 'use client';
 import React, { useState } from 'react';
-import { OpponentInterface } from '@/types/games/types';
+import { OpponentInterface } from '@/types/game/types';
 
 import OpponentComponent from './Opponent';
 
 import { useTranslation } from 'react-i18next';
-import { Accordion, AccordionDetails, AccordionSummary, Box, IconButton, Typography } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  IconButton,
+  Typography,
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Grid } from '@mui/system';
 import AddIcon from '@mui/icons-material/Add';
@@ -22,7 +29,7 @@ const OpponentAddComponent: React.FC<OpponentAddProps> = ({
   opponent,
   setOpponent,
   onAddOpponent,
-  setErrorMessage
+  setErrorMessage,
 }) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -53,23 +60,29 @@ const OpponentAddComponent: React.FC<OpponentAddProps> = ({
   return (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-
-        <Grid container spacing={2} alignItems="center" sx={{ width: '100%' }} >
+        <Grid container spacing={2} alignItems="center" sx={{ width: '100%' }}>
           <Grid size={6}>
-            <Typography><span suppressHydrationWarning>{t('addOponent')}</span></Typography>
+            <Typography>
+              <span suppressHydrationWarning>{t('addOponent')}</span>
+            </Typography>
           </Grid>
           <Grid size={6} sx={{ ml: 'auto' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}>
-            </Box>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 1 }}
+            ></Box>
           </Grid>
         </Grid>
       </AccordionSummary>
       <AccordionDetails>
-        <OpponentComponent
-          opponent={opponent}
-          setOpponent={setOpponent}
-        />
-        <IconButton size="small" color="success" onClick={(e) => { e.stopPropagation(); handleSave(); }}>
+        <OpponentComponent opponent={opponent} setOpponent={setOpponent} />
+        <IconButton
+          size="small"
+          color="success"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleSave();
+          }}
+        >
           <AddIcon />
         </IconButton>
       </AccordionDetails>
@@ -77,5 +90,5 @@ const OpponentAddComponent: React.FC<OpponentAddProps> = ({
   );
 };
 
-OpponentAddComponent.displayName = "OpponentAddComponent";
+OpponentAddComponent.displayName = 'OpponentAddComponent';
 export default OpponentAddComponent;

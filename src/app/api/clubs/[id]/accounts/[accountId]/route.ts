@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 
-type Params = Promise<{ id: number; accountId: number }>;
+type Params = Promise<{ id: string; accountId: string }>;
 
 // PUT: Add/Remove a role of an account from a club
 export async function PUT(

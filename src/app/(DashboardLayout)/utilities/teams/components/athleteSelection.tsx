@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Typography, Checkbox } from '@mui/material';
 import { Grid } from '@mui/material';
-import { AthleteInterface } from '@/types/games/types';
+import { AthleteInterface } from '@/types/game/types';
 
 interface AthleteSelectionProps {
   teamId: number;

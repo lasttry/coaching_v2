@@ -27,6 +27,9 @@ import PageContainer from '@/app/(DashboardLayout)/components/container/PageCont
 import { AccountInterface } from '@/types/accounts/types';
 import ChangePasswordDialog from './assets/changePasswordDialog';
 
+import '@/lib/i18n.client';
+import { useTranslation } from 'react-i18next';
+
 interface AddAccountDialogProps {
   open: boolean;
   onClose: () => void;
@@ -38,6 +41,8 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
   onClose,
   onAddAccount,
 }): ReactElement => {
+  const { t } = useTranslation();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -52,12 +57,12 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add Account</DialogTitle>
+      <DialogTitle>{t('addAccount')}</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus
           margin="dense"
-          label="Name"
+          label={t('Name')}
           type="text"
           fullWidth
           value={name}
@@ -65,7 +70,7 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
         />
         <TextField
           margin="dense"
-          label="Email Address"
+          label={t('emailAddress')}
           type="email"
           fullWidth
           value={email}
@@ -73,7 +78,7 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
         />
         <TextField
           margin="dense"
-          label="Password"
+          label={t('password')}
           type="password"
           fullWidth
           value={password}
@@ -82,10 +87,10 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
-          Cancel
+          {t('Cancel')}
         </Button>
         <Button onClick={handleAddAccount} color="primary">
-          Add
+          {t('Add')}
         </Button>
       </DialogActions>
     </Dialog>
@@ -93,6 +98,8 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
 };
 
 const AccountsPage = (): ReactElement => {
+  const { t } = useTranslation();
+
   const { data: session } = useSession();
   const [accounts, setAccounts] = useState<AccountInterface[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -111,22 +118,22 @@ const AccountsPage = (): ReactElement => {
         } else {
           const errorData = await response.json();
           if (errorData?.error) {
-            setErrorMessage(`Failed to delete accounts: ${errorData.error}`);
+            setErrorMessage(`${t('failedDeleteAccounts')}: ${errorData.error}`);
           } else {
-            setErrorMessage('Failed to delete accounts');
+            setErrorMessage(t('failedDeleteAccounts'));
           }
         }
       } catch (error) {
-        setErrorMessage(`Error fetching accounts: ${error}`);
+        setErrorMessage(`${t('failedFetchingAccounts')}: ${error}`);
       }
     };
 
     fetchAccounts();
-  }, []);
+  }, [t]);
 
   const handleDeleteAccount = async (accountId?: number): Promise<void> => {
     if (session?.user.id === accountId) {
-      setErrorMessage('You cannot delete your own account');
+      setErrorMessage(t('deleteOwnAccount'));
       return;
     }
 
@@ -136,17 +143,17 @@ const AccountsPage = (): ReactElement => {
       });
       if (response.ok) {
         setAccounts((prev) => prev.filter((account) => account.id !== accountId));
-        setSuccessMessage('Account deleted successfully');
+        setSuccessMessage(t('accountDeletedSuccessfully'));
       } else {
         const errorData = await response.json();
         if (errorData?.error) {
-          setErrorMessage(`Failed to delete accounts: ${errorData.error}`);
+          setErrorMessage(`${t('failedDeleteAccounts')}: ${errorData.error}`);
         } else {
-          setErrorMessage('Failed to delete accounts');
+          setErrorMessage(t('failedDeleteAccounts'));
         }
       }
     } catch (error) {
-      setErrorMessage(`Error deleting accounts: ${error}`);
+      setErrorMessage(`${t('errorDeletingAccounts')}: ${error}`);
     }
   };
 
@@ -170,17 +177,17 @@ const AccountsPage = (): ReactElement => {
       if (response.ok) {
         const newAccount = await response.json();
         setAccounts((prev) => [...prev, newAccount]);
-        setSuccessMessage('Account added successfully');
+        setSuccessMessage(t('accountAddedSuccessfully'));
       } else {
         const errorData = await response.json();
         if (errorData?.error) {
-          setErrorMessage(`Failed to add accounts: ${errorData.error}`);
+          setErrorMessage(`${t('failedAddAccounts')}: ${errorData.error}`);
         } else {
-          console.error('Failed to add accounts');
+          console.error(t('failedAddAccounts'));
         }
       }
     } catch (error) {
-      setErrorMessage(`Error adding accounts: ${error}`);
+      setErrorMessage(`${t('errorAddingAccounts')}: ${error}`);
     }
   };
 
@@ -214,17 +221,17 @@ const AccountsPage = (): ReactElement => {
         setAccounts((prev) =>
           prev.map((account) => (account.id === accountId ? updatedAccount : account))
         );
-        setSuccessMessage('Account updated successfully');
+        setSuccessMessage(t('accountUpdatedSuccessfully'));
       } else {
         const errorData = await response.json();
         if (errorData?.error) {
-          setErrorMessage(`Failed to update account: ${errorData.error}`);
+          setErrorMessage(`${t('failedUpdateAccount')}: ${errorData.error}`);
         } else {
-          setErrorMessage('Failed to update account');
+          setErrorMessage(t('failedUpdateAccount'));
         }
       }
     } catch (error) {
-      setErrorMessage(`Error updating account: ${error}`);
+      setErrorMessage(`${t('errorUpdatingAccount')}: ${error}`);
     }
   };
 
@@ -238,14 +245,14 @@ const AccountsPage = (): ReactElement => {
           mb: 2,
         }}
       >
-        <Typography variant="h4">Manage Accounts</Typography>
+        <Typography variant="h4">{t('manageAccounts')}</Typography>
         <Button
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
           onClick={() => setAddAccountOpen(true)}
         >
-          Add Account
+          {t('addAccount')}
         </Button>
       </Box>
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
@@ -254,9 +261,9 @@ const AccountsPage = (): ReactElement => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell>{t('name')}</TableCell>
+              <TableCell>{t('email')}</TableCell>
+              <TableCell>{t('actions')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

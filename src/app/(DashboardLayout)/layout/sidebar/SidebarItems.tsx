@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import Menuitems from './MenuItems';
+import MenuItemsComponent from './MenuItems';
 import { usePathname } from 'next/navigation';
 import { Box, List } from '@mui/material';
 import NavItem from './NavItem';
@@ -16,7 +16,7 @@ const SidebarItems = ({ toggleMobileSidebar }: SidebarItemsProps): ReactElement 
   return (
     <Box sx={{ px: '20px' }}>
       <List sx={{ pt: 0 }} className="sidebarNav" component="div">
-        {Menuitems.map((item) => {
+        {MenuItemsComponent().map((item) => {
           // {/********SubHeader**********/}
           if (item.subheader) {
             return <NavGroup item={item} key={item.subheader} />;

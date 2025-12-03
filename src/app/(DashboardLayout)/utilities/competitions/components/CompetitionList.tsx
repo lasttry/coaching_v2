@@ -27,8 +27,8 @@ import { EchelonInterface } from '@/types/echelons/types';
 
 interface CompetitionListProps {
   echelons: EchelonInterface[];
-  setErrorMessage: React.Dispatch<React.SetStateAction<string | null>>;
-  setSuccessMessage: React.Dispatch<React.SetStateAction<string | null>>;
+  setErrorMessage: (msg: string | null) => void;
+  setSuccessMessage: (msg: string | null) => void;
   competitions: CompetitionInterface[] | null;
   setEditedCompetitions: React.Dispatch<
     React.SetStateAction<{ [key: number]: CompetitionInterface }>
@@ -40,8 +40,6 @@ interface CompetitionListProps {
 
 const CompetitionListComponent: React.FC<CompetitionListProps> = ({
   echelons,
-  setErrorMessage,
-  setSuccessMessage,
   competitions,
   setEditedCompetitions,
   editedCompetitions,
@@ -115,12 +113,13 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
       {competitions &&
         competitions?.map((competition) => {
           if (competition.id === null) return;
+          const id = competition.id!;
 
-          const isEditing = editMode[competition.id];
-          const edited = editedCompetitions[competition.id] ?? competition;
+          const isEditing = editMode[id];
+          const edited = editedCompetitions[id] ?? competition;
 
           return (
-            <Accordion key={competition.id}>
+            <Accordion key={id}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Grid container spacing={2} alignItems="center">
                   <Grid size={2}>
@@ -148,8 +147,8 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                         onChange={(e) =>
                           setEditedCompetitions((prev) => ({
                             ...prev,
-                            [competition.id]: {
-                              ...prev[competition.id],
+                            [id]: {
+                              ...prev[id],
                               name: e.target.value,
                             },
                           }))
@@ -165,8 +164,8 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                         onChange={(e) =>
                           setEditedCompetitions((prev) => ({
                             ...prev,
-                            [competition.id]: {
-                              ...prev[competition.id],
+                            [id]: {
+                              ...prev[id],
                               description: e.target.value,
                             },
                           }))
@@ -182,15 +181,15 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                           onChange={(e) =>
                             setEditedCompetitions((prev) => ({
                               ...prev,
-                              [competition.id]: {
-                                ...prev[competition.id],
+                              [id]: {
+                                ...prev[id],
                                 echelonId: Number(e.target.value),
                               },
                             }))
                           }
                         >
                           {echelons.map((e) => (
-                            <MenuItem key={e.id} value={e.id}>
+                            <MenuItem key={Number(e.id)} value={String(e.id)}>
                               {e.name}
                             </MenuItem>
                           ))}
@@ -213,11 +212,11 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                               onClick={() =>
                                 setEditedCompetitions((prev) => ({
                                   ...prev,
-                                  [competition.id]: {
-                                    ...prev[competition.id],
-                                    competitionSeries: prev[
-                                      competition.id
-                                    ].competitionSeries.filter((s) => s.id !== serie.id),
+                                  [id]: {
+                                    ...prev[id],
+                                    competitionSeries: (prev[id].competitionSeries ?? []).filter(
+                                      (s) => s.id !== serie.id
+                                    ),
                                   },
                                 }))
                               }
@@ -233,11 +232,11 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                           <TextField
                             fullWidth
                             label={t('newSerie')}
-                            value={newSeries[competition.id] || ''}
+                            value={newSeries[id] || ''}
                             onChange={(e) =>
                               setNewSeries((prev) => ({
                                 ...prev,
-                                [competition.id]: e.target.value,
+                                [id]: e.target.value,
                               }))
                             }
                           />
@@ -247,21 +246,16 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                             fullWidth
                             variant="outlined"
                             onClick={() => {
-                              const name = newSeries[competition.id]?.trim();
+                              const name = newSeries[id]?.trim();
                               if (!name) return;
-
-                              const newId = Date.now(); // temporary ID
                               setEditedCompetitions((prev) => {
-                                if (competition.id === null) return;
-                                const base =
-                                  prev[competition.id] ??
-                                  competitions?.find((c) => c.id === competition.id);
+                                const base = prev[id] ?? competitions?.find((c) => c.id === id);
 
                                 if (!base) return prev; // safely fallback
 
                                 return {
                                   ...prev,
-                                  [competition.id]: {
+                                  [id]: {
                                     ...base,
                                     competitionSeries: [
                                       ...(base.competitionSeries || []),
@@ -271,7 +265,7 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                                 };
                               });
 
-                              setNewSeries((prev) => ({ ...prev, [competition.id]: '' }));
+                              setNewSeries((prev) => ({ ...prev, [id]: '' }));
                             }}
                           >
                             {t('add')}
@@ -283,23 +277,19 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                     <Grid size={12} sx={{ display: 'flex', justifyContent: 'center' }}>
                       <Button variant="outlined" component="label">
                         {t('uploadImage')}
-                        <input
-                          type="file"
-                          hidden
-                          onChange={(e) => handleImageChange(e, competition.id)}
-                        />
+                        <input type="file" hidden onChange={(e) => handleImageChange(e, id)} />
                       </Button>
                       <Button
                         variant="contained"
                         sx={{ ml: 2 }}
-                        onClick={() => handleSaveCompetition(competition.id)}
+                        onClick={() => handleSaveCompetition(id)}
                       >
                         {t('save')}
                       </Button>
                       <Button
                         variant="outlined"
                         sx={{ ml: 2 }}
-                        onClick={() => handleCancelEdit(competition.id)}
+                        onClick={() => handleCancelEdit(id)}
                       >
                         {t('cancel')}
                       </Button>
@@ -314,14 +304,14 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
                       size={{ xs: 12, sm: 4 }}
                       sx={{ display: 'flex', justifyContent: 'flex-end' }}
                     >
-                      <Button variant="outlined" onClick={() => toggleEditMode(competition.id)}>
+                      <Button variant="outlined" onClick={() => toggleEditMode(id)}>
                         {t('edit')}
                       </Button>
                       <Button
                         variant="contained"
                         color="error"
                         sx={{ ml: 2 }}
-                        onClick={() => setDeleteConfirm(competition.id)}
+                        onClick={() => setDeleteConfirm(id)}
                       >
                         {t('Delete')}
                       </Button>

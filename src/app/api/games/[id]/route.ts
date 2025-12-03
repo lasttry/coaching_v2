@@ -1,10 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { GameAthleteInterface, ObjectiveInterface } from '@/types/games/types';
+import { GameAthleteInterface, ObjectiveInterface } from '@/types/game/types';
 import { log } from '@/lib/logger';
 import { auth } from '@/lib/auth';
+import { parseAndValidateId } from '@/utils/validateId';
+import sharp from 'sharp';
 
-type Params = Promise<{ id: number }>;
+async function resizeBase64Image(base64: string, width = 288, height = 203): Promise<string> {
+  const buffer = Buffer.from(base64.split(',')[1], 'base64');
+
+  const resized = await sharp(buffer)
+    .resize(width, height, {
+      fit: 'inside',
+    })
+    .toBuffer();
+
+  // devolve o base64 final já com o prefixo
+  return `data:image/png;base64,${resized.toString('base64')}`;
+}
+
+type Params = Promise<{ id: string }>;
 
 export async function GET(
   req: NextRequest,
@@ -21,15 +36,12 @@ export async function GET(
   }
 
   const params = await segmentData.params;
-  const id = Number(params.id);
-
-  if (!id) {
-    return NextResponse.json({ error: 'Game id is invalid' }, { status: 400 });
-  }
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
 
   const payload = {
     where: {
-      id,
+      id: gameId,
       clubId: Number(session.user.selectedClubId),
     },
     include: {
@@ -41,6 +53,8 @@ export async function GET(
       opponent: true,
       objectives: true,
       club: true,
+      competition: true,
+      competitionSerie: true,
     },
   };
   const game = await prisma.game.findUnique(payload);
@@ -64,7 +78,9 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
   }
 
   const params = await segmentData.params;
-  const id = Number(params.id);
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
+
   try {
     const data = await req.json();
     if (data === null) {
@@ -72,7 +88,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     }
     // Update the game details with `gameNumber` for each athlete
     const payload = {
-      where: { id },
+      where: { id: gameId },
       data: {
         club: {
           connect: { id: session.user.selectedClubId },
@@ -86,13 +102,13 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
           : { venue: { disconnect: true } }),
         ...(data.competition && {
           competition: {
-            connect: { id: Number(data.competitionId)}
-          }
+            connect: { id: Number(data.competitionId) },
+          },
         }),
         ...(data.competitionSerieId && {
           competitionSerie: {
-            connect: { id: Number(data.competitionSerieId)}
-          }
+            connect: { id: Number(data.competitionSerieId) },
+          },
         }),
         ...(data.opponentId && {
           opponent: {
@@ -101,13 +117,13 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         }),
         ...(data.teamId && {
           team: {
-            connect: { id : data.teamId },
-          }
+            connect: { id: data.teamId },
+          },
         }),
         ...(data.objectives && {
           objectives: {
             deleteMany: {
-              gameId: id,
+              gameId: gameId,
             },
             create:
               data.objectives?.map((objective: ObjectiveInterface) => ({
@@ -120,20 +136,32 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         ...(data.gameAthletes && {
           gameAthletes: {
             deleteMany: {
-              gameId: id,
+              gameId: gameId,
             },
             create: (data.gameAthletes || [])
-            .filter((athlete: GameAthleteInterface) => athlete.athlete?.id !== null)
-            .map((athlete: GameAthleteInterface) => ({
-              athleteId: athlete.athlete!.id,
-              number: athlete.number,
-              period1: athlete.period1,
-              period2: athlete.period2,
-              period3: athlete.period3,
-              period4: athlete.period4,
-            })),
+              .filter((athlete: GameAthleteInterface) => athlete.athlete?.id !== null)
+              .map((athlete: GameAthleteInterface) => ({
+                athleteId: athlete.athlete!.id,
+                number: athlete.number,
+                period1: athlete.period1,
+                period2: athlete.period2,
+                period3: athlete.period3,
+                period4: athlete.period4,
+              })),
           },
-        })
+        }),
+        ...(data.image1 !== undefined && {
+          image1: data.image1 ? await resizeBase64Image(data.image1) : null,
+        }),
+        ...(data.image2 !== undefined && {
+          image2: data.image2 ? await resizeBase64Image(data.image2) : null,
+        }),
+        ...(data.image3 !== undefined && {
+          image3: data.image3 ? await resizeBase64Image(data.image3) : null,
+        }),
+        ...(data.image4 !== undefined && {
+          image4: data.image4 ? await resizeBase64Image(data.image4) : null,
+        }),
       },
       include: {
         opponent: true, // Include opponent team details in the response
@@ -147,14 +175,13 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         gameAthletes: {
           include: {
             athlete: true,
-          }
+          },
         },
         venue: true,
       },
     };
-    log.debug(data);
-    log.debug(JSON.stringify(payload));
-    const updatedGame = await prisma.games.update(payload);
+
+    const updatedGame = await prisma.game.update(payload);
     return NextResponse.json(updatedGame, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
@@ -174,14 +201,12 @@ export async function DELETE(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = params.id;
-  if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
-  }
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
 
   try {
     // Delete the game
-    await prisma.games.delete({
+    await prisma.game.delete({
       where: { id: Number(gameId) },
     });
 

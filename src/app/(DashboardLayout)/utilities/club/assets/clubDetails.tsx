@@ -118,11 +118,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
                   alignItems="center"
                 >
                   <Typography>{venue.name}</Typography>
-                  <Button
-                    size="small"
-                    color="error"
-                    onClick={() => handleRemoveVenue(index)}
-                  >
+                  <Button size="small" color="error" onClick={() => handleRemoveVenue(index)}>
                     Remove
                   </Button>
                 </Stack>

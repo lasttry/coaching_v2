@@ -7,7 +7,7 @@ import Sidebar from '@/app/(DashboardLayout)/layout/sidebar/Sidebar';
 import { SessionProvider } from 'next-auth/react';
 import { log } from '@/lib/logger'; // Import the logger
 import { I18nextProvider } from 'react-i18next';
-import i18n from '@/i18n';
+import i18n from '@/lib/i18n.client';
 
 // Styled Components
 const MainWrapper = styled('div')(() => ({

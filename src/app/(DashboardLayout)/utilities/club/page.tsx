@@ -12,6 +12,8 @@ import '@/styles/clubsAccordion.css';
 import { useSession } from 'next-auth/react';
 import ClubDetails from './assets/clubDetails';
 import ClubAccounts from './assets/clubAccounts';
+
+import '@/lib/i18n.client'; // garante inicialização só no cliente
 import { useTranslation } from 'react-i18next';
 
 const ClubPage = (): ReactElement => {
@@ -26,10 +28,15 @@ const ClubPage = (): ReactElement => {
 
   useEffect(() => {
     async function fetchClubs(): Promise<void> {
-      const response = await fetch('/api/clubs');
-      if (response.ok) {
-        const data: ClubInterface[] = await response.json();
-        setClubs(data.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)));
+      try {
+        const response = await fetch('/api/clubs');
+        if (response.ok) {
+          const data: ClubInterface[] = await response.json();
+          setClubs(data.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)));
+        }
+      } catch (error) {
+        console.error('Failed to fetch clubs:', error);
+        // Opcional: setErrorMessage('Failed to load clubs');
       }
     }
     fetchClubs();
@@ -57,7 +64,10 @@ const ClubPage = (): ReactElement => {
     setErrorMessage('');
   };
 
-  const handleEditChange = (field: keyof ClubInterface, value: ClubInterface[keyof ClubInterface]): void => {
+  const handleEditChange = (
+    field: keyof ClubInterface,
+    value: ClubInterface[keyof ClubInterface]
+  ): void => {
     if (selectedClub) {
       setSelectedClub({ ...selectedClub, [field]: value });
     }

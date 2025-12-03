@@ -16,13 +16,15 @@ import {
 import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
-import { GameInterface } from '@/types/games/types';
+import { GameInterface } from '@/types/game/types';
 import { log } from '@/lib/logger';
 import GameComponent from './components/Game';
-import { generateReportsPDF } from '@/app/utilities/pdf/reports';
+import { generatePDF } from '@/app/utilities/pdf/pdfUtils';
 
 const GamesPage: React.FC = () => {
   const { t } = useTranslation();
+
+  const { data: session } = useSession();
 
   const [games, setGames] = useState<GameInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,16 +40,15 @@ const GamesPage: React.FC = () => {
     date: new Date(),
     away: false,
     gameAthletes: [],
-    clubId: 0
+    clubId: 0,
   });
 
-  const [rowSelectionModel, setRowSelectionModel] =
-    useState<GridRowSelectionModel>({
-      type: 'include',
-      ids: new Set(),
-    });
+  const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>({
+    type: 'include',
+    ids: new Set(),
+  });
 
-  const fetchGames = async () => {
+  const fetchGames = async (): Promise<void> => {
     setLoading(true);
     try {
       const res = await fetch('/api/games');
@@ -72,8 +73,7 @@ const GamesPage: React.FC = () => {
     fetchGames();
   }, []);
 
-
-  const handleDeleteGame = async (id: number) => {
+  const handleDeleteGame = async (id: number): Promise<void> => {
     try {
       const res = await fetch(`/api/games/${id}`, { method: 'DELETE' });
       const data = await res.json();
@@ -88,7 +88,7 @@ const GamesPage: React.FC = () => {
     }
   };
 
-  const handleAddGame = async (game: GameInterface) => {
+  const handleAddGame = async (game: GameInterface): Promise<void> => {
     try {
       const res = await fetch('/api/games', {
         method: 'POST',
@@ -111,7 +111,7 @@ const GamesPage: React.FC = () => {
     }
   };
 
-  const handleUpdateGame = async (game: GameInterface) => {
+  const handleUpdateGame = async (game: GameInterface): Promise<void> => {
     try {
       const res = await fetch(`/api/games/${game.id}`, {
         method: 'PUT',
@@ -141,30 +141,29 @@ const GamesPage: React.FC = () => {
       field: 'date',
       headerName: t('date'),
       flex: 1,
-      valueFormatter: (value) =>
-        value ? dayjs(value as string).format('YYYY-MM-DD HH:mm') : '-',
+      valueFormatter: (value) => (value ? dayjs(value as string).format('YYYY-MM-DD HH:mm') : '-'),
     },
     {
       field: 'team',
-      headerName: t('team'),
+      headerName: t('Team'),
       flex: 1,
       valueFormatter: (_value, row) => row.team?.name ?? '-',
     },
     {
       field: 'opponent',
-      headerName: t('opponent'),
+      headerName: t('Opponent'),
       flex: 1,
       valueFormatter: (_value, row) => row.opponent?.name ?? '-',
     },
     {
       field: 'venue',
-      headerName: t('venue'),
+      headerName: t('Venue'),
       flex: 1,
       valueFormatter: (_value, row) => row.venue?.name ?? '-',
     },
     {
       field: 'competition',
-      headerName: t('competition'),
+      headerName: t('Competition'),
       flex: 1,
       valueFormatter: (_value, row) =>
         `${row.competition?.name ?? '-'} ${row.team?.echelon?.name ?? ''}`,
@@ -180,9 +179,13 @@ const GamesPage: React.FC = () => {
             color="primary"
             size="small"
             sx={{ mr: 1 }}
-            onClick={() => generateReportsPDF(params.row)}
+            onClick={() =>
+              session?.user.selectedClubId
+                ? generatePDF(params.row, session.user.selectedClubId)
+                : null
+            }
           >
-            {t('folha')}
+            {t('gameSheet')}
           </Button>
           <Button
             variant="outlined"
@@ -210,14 +213,10 @@ const GamesPage: React.FC = () => {
     <Box sx={{ height: 700, width: '100%' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" gutterBottom>
-          {t('Games Management')}
+          {t('gamesManagement')}
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setOpenAddDialog(true)}
-        >
-          {t('Add Game')}
+        <Button variant="contained" color="primary" onClick={() => setOpenAddDialog(true)}>
+          {t('addGame')}
         </Button>
       </Box>
 
@@ -234,16 +233,11 @@ const GamesPage: React.FC = () => {
         checkboxSelection
         disableRowSelectionOnClick
         rowSelectionModel={rowSelectionModel}
-        onRowSelectionModelChange={(newSelection) =>
-          setRowSelectionModel(newSelection)
-        }
+        onRowSelectionModelChange={(newSelection) => setRowSelectionModel(newSelection)}
       />
 
       {/* Confirm Delete Dialog */}
-      <Dialog
-        open={deleteConfirmId !== null}
-        onClose={() => setDeleteConfirmId(null)}
-      >
+      <Dialog open={deleteConfirmId !== null} onClose={() => setDeleteConfirmId(null)}>
         <DialogTitle>{t('confirmDelete')}</DialogTitle>
         <DialogContent>
           <DialogContentText>{t('deleteConfirmationMessage')}</DialogContentText>
@@ -267,11 +261,11 @@ const GamesPage: React.FC = () => {
 
       {/* Add Game Dialog */}
       <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} maxWidth="md" fullWidth>
-        <DialogTitle>{t('Add New Game')}</DialogTitle>
+        <DialogTitle>{t('addGame')}</DialogTitle>
         <DialogContent>
           <GameComponent
             game={newGame}
-            setGame={setNewGame}   // ✅ agora o state é real
+            setGame={setNewGame} // ✅ agora o state é real
             setErrorMessage={setErrorMessage}
             setSuccessMessage={setSuccessMessage}
             onSave={handleAddGame}
@@ -282,17 +276,17 @@ const GamesPage: React.FC = () => {
 
       {/* Edit Game Dialog */}
       <Dialog open={!!editGame} onClose={() => setEditGame(null)} maxWidth="md" fullWidth>
-        <DialogTitle>{t('Edit Game')}</DialogTitle>
+        <DialogTitle>{t('editGame')}</DialogTitle>
         <DialogContent>
           {editGame && (
             <GameComponent
               game={editGame}
-              setGame={setEditGame}
+              setGame={setEditGame as React.Dispatch<React.SetStateAction<GameInterface>>}
               setErrorMessage={setErrorMessage}
               setSuccessMessage={setSuccessMessage}
               onSave={handleUpdateGame}
               onCancel={() => setEditGame(null)}
-              saveText="Save"
+              saveText={t("Save")}
             />
           )}
         </DialogContent>

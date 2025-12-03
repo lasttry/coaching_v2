@@ -48,7 +48,15 @@ const MicrocycleDetailsDialog: React.FC<MicrocycleDetailsDialogProps> = ({
             {dayjs(mesocycle.endDate).format('DD/MM/YYYY')})
           </Typography>
         )}
-        <SessionGoalsTables data={data} />
+        <SessionGoalsTables
+          data={data.map((goal) => ({
+            ...goal,
+            id: goal.id ?? '',
+            date: goal.date instanceof Date ? goal.date.toISOString() : goal.date, // ✅ Convert
+            microcycleId: goal.microcycleId ?? 0,
+            note: goal.note ?? '',
+          }))}
+        />
       </DialogContent>
     </Dialog>
   );

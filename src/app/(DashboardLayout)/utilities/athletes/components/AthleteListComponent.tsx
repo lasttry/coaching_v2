@@ -24,7 +24,9 @@ import {
   MenuItem,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { AthleteInterface, Size } from '@/types/games/types';
+import { AthleteInterface, Size } from '@/types/game/types';
+
+import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
 
 interface AthleteListComponentProps {
@@ -65,11 +67,11 @@ const AthleteListComponent: React.FC<AthleteListComponentProps> = ({
     setEditMode((prev) => ({ ...prev, [id]: false }));
   };
 
-  const openDeleteDialog = (athlete: AthleteInterface) => {
+  const openDeleteDialog = (athlete: AthleteInterface): void => {
     setDeleteConfirm(athlete);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = (): void => {
     if (deleteConfirm?.id) {
       onDelete(deleteConfirm.id);
     }
@@ -183,7 +185,7 @@ const AthleteListComponent: React.FC<AthleteListComponentProps> = ({
                                 handleEditChange(
                                   athlete.id!,
                                   'shirtSize',
-                                  e.target.value ? e.target.value as Size : null
+                                  e.target.value ? (e.target.value as Size) : null
                                 )
                               }
                             >

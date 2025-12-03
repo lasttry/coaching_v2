@@ -1,39 +1,53 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import {
-  Box, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-  Typography, IconButton, Select, MenuItem, TextField
+  Box,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  IconButton,
+  Select,
+  MenuItem,
+  TextField,
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  People as PeopleIcon
+  People as PeopleIcon,
 } from '@mui/icons-material';
-import {
-  DataGrid,
-  GridColDef,
-  GridRowSelectionModel,
-} from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 
 import dayjs from 'dayjs';
 
 import { TeamInterface } from '@/types/teams/types';
-import { AthleteInterface } from '@/types/games/types';
 import { EchelonInterface } from '@/types/echelons/types';
 
+import '@/lib/i18n.client'; // garante inicialização só no cliente
+import { useTranslation } from 'react-i18next';
+import { AthleteInterface } from '@/types/athlete/type';
+
 export default function TeamsPage(): React.JSX.Element {
+  const { t } = useTranslation();
+
   const [teams, setTeams] = useState<TeamInterface[]>([]);
   const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
   const [athletes, setAthletes] = useState<AthleteInterface[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [formTeam, setFormTeam] = useState<Partial<TeamInterface>>({ name: '', type: 'OTHER', echelonId: 0 });
+  const [formTeam, setFormTeam] = useState<Partial<TeamInterface>>({
+    name: '',
+    type: 'OTHER',
+    echelonId: 0,
+  });
   const [editingTeam, setEditingTeam] = useState<TeamInterface | null>(null);
 
   const [athletesDialogOpen, setAthletesDialogOpen] = useState(false);
   const [selectedTeam, setSelectedTeam] = useState<TeamInterface | null>(null);
   const [selectedAthletes, setSelectedAthletes] = useState<GridRowSelectionModel>({
-    type: "include",
+    type: 'include',
     ids: new Set(),
   });
 
@@ -45,14 +59,14 @@ export default function TeamsPage(): React.JSX.Element {
         const [teamsRes, echelonsRes, athletesRes] = await Promise.all([
           fetch('/api/teams'),
           fetch('/api/echelons'),
-          fetch('/api/athletes')
+          fetch('/api/athletes'),
         ]);
         if (!active) return; // evita update depois de desmontar
 
         const [teams, echelons, athletes] = await Promise.all([
           teamsRes.json(),
           echelonsRes.json(),
-          athletesRes.json()
+          athletesRes.json(),
         ]);
         setTeams(teams);
         setEchelons(echelons);
@@ -89,7 +103,7 @@ export default function TeamsPage(): React.JSX.Element {
     setDialogOpen(false);
     setEditingTeam(null);
     setFormTeam({ name: '', type: 'OTHER', echelonId: 0 });
-    const data = await fetch('/api/teams').then(res => res.json());
+    const data = await fetch('/api/teams').then((res) => res.json());
     setTeams(data);
   };
 
@@ -102,13 +116,13 @@ export default function TeamsPage(): React.JSX.Element {
   const handleDelete = async (id: number | null): Promise<void> => {
     if (id === null) return;
     await fetch(`/api/teams/${id}`, { method: 'DELETE' });
-    setTeams(prev => prev.filter(t => t.id !== id));
+    setTeams((prev) => prev.filter((t) => t.id !== id));
   };
 
   // Manage Athletes
-  const openAthletesDialog = (team: TeamInterface) => {
+  const openAthletesDialog = (team: TeamInterface): void => {
     setSelectedTeam(team);
-    const preselected = team.athletes?.map(a => a.athleteId) ?? [];
+    const preselected = team.athletes?.map((a) => a.athleteId) ?? [];
     setSelectedAthletes({ type: 'include', ids: new Set(preselected) });
     setAthletesDialogOpen(true);
   };
@@ -118,11 +132,13 @@ export default function TeamsPage(): React.JSX.Element {
     await fetch(`/api/teams/${selectedTeam.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({athleteIds: Array.from(selectedAthletes.ids).map((id) => Number(id))})
+      body: JSON.stringify({
+        athleteIds: Array.from(selectedAthletes.ids).map((id) => Number(id)),
+      }),
     });
     setAthletesDialogOpen(false);
     setSelectedTeam(null);
-    const data = await fetch('/api/teams').then(res => res.json());
+    const data = await fetch('/api/teams').then((res) => res.json());
     setTeams(data);
   };
 
@@ -133,25 +149,23 @@ export default function TeamsPage(): React.JSX.Element {
 
   // Columns Teams
   const teamColumns: GridColDef<TeamInterface>[] = [
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'type', headerName: 'Type', width: 120 },
+    { field: 'name', headerName: t('Name'), flex: 1 },
+    { field: 'type', headerName: t('Type'), width: 120 },
     {
       field: 'echelon',
-      headerName: 'Echelon',
+      headerName: t('Echelon'),
       flex: 1,
-      valueGetter: (_value: EchelonInterface) =>
-        _value.name ?? '-',
+      valueGetter: (_value: EchelonInterface) => _value.name ?? '-',
     },
     {
       field: 'athletes',
-      headerName: 'Athletes',
+      headerName: t('Athletes'),
       width: 120,
-      valueGetter: (_value: AthleteInterface[]) =>
-        _value.length ?? 0,
+      valueGetter: (_value: AthleteInterface[]) => _value.length ?? 0,
     },
     {
       field: 'actions',
-      headerName: 'Actions',
+      headerName: t('Actions'),
       width: 160,
       renderCell: (params) => (
         <>
@@ -170,20 +184,18 @@ export default function TeamsPage(): React.JSX.Element {
   ];
 
   const athleteColumns: GridColDef<AthleteInterface>[] = [
-    { field: 'name', headerName: 'Name', flex: 1 },
+    { field: 'name', headerName: t('Name'), flex: 1 },
     {
       field: 'birthdate',
-      headerName: 'Birthdate',
+      headerName: t('Birthdate'),
       flex: 1,
-      valueFormatter: (_value) =>
-        dayjs(_value as string).format('YYYY-MM-DD'),
+      valueFormatter: (_value) => dayjs(_value as string).format('YYYY-MM-DD'),
     },
     {
       field: 'age',
-      headerName: 'Age',
+      headerName: t('Age'),
       width: 100,
-      valueGetter: (_value, row: AthleteInterface) =>
-        dayjs().diff(dayjs(row.birthdate), 'year'),
+      valueGetter: (_value, row: AthleteInterface) => dayjs().diff(dayjs(row.birthdate), 'year'),
     },
   ];
 
@@ -191,13 +203,9 @@ export default function TeamsPage(): React.JSX.Element {
     <Box>
       {/* Header with Add Button */}
       <Box display="flex" justifyContent="space-between" mb={2}>
-        <Typography variant="h5">Teams Management</Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setDialogOpen(true)}
-        >
-          Add Team
+        <Typography variant="h5">{t('teamsManagement')}</Typography>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setDialogOpen(true)}>
+          {t('addTeam')}
         </Button>
       </Box>
 
@@ -206,7 +214,7 @@ export default function TeamsPage(): React.JSX.Element {
         <DataGrid
           rows={teams}
           columns={teamColumns}
-          getRowId={(row) => row.id}
+          getRowId={(row) => Number(row.id)}
           pageSizeOptions={[5, 10]}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
@@ -217,61 +225,77 @@ export default function TeamsPage(): React.JSX.Element {
 
       {/* Add/Edit Team Dialog */}
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>{editingTeam ? 'Edit Team' : 'Add Team'}</DialogTitle>
+        <DialogTitle>{editingTeam ? t('editTeam') : t('addTeam')}</DialogTitle>
         <DialogContent>
           <TextField
-            label="Name"
+            label={t('Name')}
             value={formTeam.name ?? ''}
             onChange={(e) => setFormTeam({ ...formTeam, name: e.target.value })}
-            fullWidth margin="normal"
+            fullWidth
+            margin="normal"
           />
           <Select
-            fullWidth value={formTeam.type ?? 'OTHER'}
-            onChange={(e) => setFormTeam({ ...formTeam, type: e.target.value as string })}
+            fullWidth
+            value={formTeam.type ?? 'OTHER'}
+            onChange={(e) =>
+              setFormTeam({ ...formTeam, type: e.target.value as 'A' | 'B' | 'OTHER' })
+            }
           >
             <MenuItem value="A">A</MenuItem>
             <MenuItem value="B">B</MenuItem>
             <MenuItem value="C">C</MenuItem>
-            <MenuItem value="OTHER">Other</MenuItem>
+            <MenuItem value="OTHER">{'other'}</MenuItem>
           </Select>
           <Select
-            fullWidth value={formTeam.echelonId ?? 0}
+            fullWidth
+            value={formTeam.echelonId ?? 0}
             onChange={(e) => setFormTeam({ ...formTeam, echelonId: Number(e.target.value) })}
           >
-            {echelons.map(e => (
-              <MenuItem key={e.id} value={e.id}>{e.name}</MenuItem>
+            {echelons.map((e) => (
+              <MenuItem key={Number(e.id)} value={String(e.id)}>
+                {e.name}
+              </MenuItem>
             ))}
           </Select>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>Save</Button>
+          <Button variant="contained" onClick={handleSave}>
+            {t('Save')}
+          </Button>
         </DialogActions>
       </Dialog>
 
       {/* Athletes Manager Dialog */}
-      <Dialog open={athletesDialogOpen} onClose={() => setAthletesDialogOpen(false)} fullWidth maxWidth="md">
-        <DialogTitle>Manage Athletes {selectedTeam ? `for ${selectedTeam.name}` : ''}</DialogTitle>
+      <Dialog
+        open={athletesDialogOpen}
+        onClose={() => setAthletesDialogOpen(false)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>
+          {t('manageAthletes')} {selectedTeam ? `${t('for')} ${selectedTeam.name}` : ''}
+        </DialogTitle>
         <DialogContent>
           <Box sx={{ height: 400 }}>
             <DataGrid
               rows={(athletes ?? [])
-                .map(a => ({
+                .map((a) => ({
                   ...a,
                   age: getFederativeAge(a.birthdate),
                 }))
-                .filter(a => {
+                .filter((a) => {
                   const echelon = selectedTeam?.echelon;
                   if (!echelon) return true;
 
-                  const minAge = echelon.minAge ?? 0;       // fallback seguro
-                  const maxAge = echelon.maxAge ?? 100;     // fallback seguro
+                  const minAge = echelon.minAge ?? 0; // fallback seguro
+                  const maxAge = echelon.maxAge ?? 100; // fallback seguro
 
                   return a.age >= minAge && a.age <= maxAge;
                 })}
               columns={athleteColumns}
               checkboxSelection
-              getRowId={(row) => row.id}
+              getRowId={(row) => Number(row.id)}
               disableRowSelectionOnClick
               pageSizeOptions={[5, 10]}
               initialState={{
@@ -286,8 +310,10 @@ export default function TeamsPage(): React.JSX.Element {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setAthletesDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={handleSaveAthletes}>Save</Button>
+          <Button onClick={() => setAthletesDialogOpen(false)}>{t('Cancel')}</Button>
+          <Button variant="contained" onClick={handleSaveAthletes}>
+            {t('Save')}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 // GET: Retrieve all objectives for a game
 export async function GET(
@@ -9,10 +9,10 @@ export async function GET(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = params.id;
+  const gameId = Number(params.id);
 
   try {
-    const objectives = await prisma.objectives.findMany({ where: { gameId } });
+    const objectives = await prisma.objective.findMany({ where: { gameId } });
 
     return NextResponse.json({ objectives });
   } catch (error) {

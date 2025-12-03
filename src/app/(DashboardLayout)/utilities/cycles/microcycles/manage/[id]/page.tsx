@@ -288,7 +288,14 @@ const ManageMicrocyclePage = (props: { params: Params }): ReactElement => {
             value={microcycle.notes || ''}
             onChange={(e) => setMicrocycle((prev) => ({ ...prev, notes: e.target.value }))}
           />
-          <SessionGoalsTables data={microcycle.sessionGoals || []} />
+          <SessionGoalsTables
+            data={(microcycle.sessionGoals || []).map((goal, index) => ({
+              ...goal,
+              id: goal.id ?? `temp-${index}`, // ensure every goal has an id
+              date: dayjs(goal.date).toISOString(), // ensure date is a string if required
+              note: goal.note ?? '',
+            }))}
+          />
           {/* Session Goals */}
           <Box>
             <Typography variant="h6" gutterBottom>

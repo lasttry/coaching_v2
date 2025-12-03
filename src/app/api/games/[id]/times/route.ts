@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { parseAndValidateId } from '@/utils/validateId';
 
 interface TimeEntry {
   id: number;
@@ -11,7 +12,7 @@ interface TimeEntry {
   exitSecond: number;
 }
 
-type Params = Promise<{ id: number }>;
+type Params = Promise<{ id: string }>;
 
 // GET: Retrieve all time entries for a specific game
 export async function GET(
@@ -19,11 +20,8 @@ export async function GET(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = Number(params.id);
-
-  if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
-  }
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
 
   try {
     const timeEntries = await prisma.timeEntry.findMany({
@@ -46,11 +44,8 @@ export async function POST(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = params.id;
-
-  if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
-  }
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
 
   try {
     const reqBody = await req.text();
@@ -85,11 +80,8 @@ export async function PUT(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const gameId = params.id;
-
-  if (isNaN(gameId)) {
-    return NextResponse.json({ error: 'Invalid game ID' }, { status: 400 });
-  }
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
 
   try {
     const reqBody = await req.text();
@@ -139,16 +131,13 @@ export async function DELETE(
   segmentData: { params: Params }
 ): Promise<NextResponse> {
   const params = await segmentData.params;
-  const entryId = params.id;
-
-  if (isNaN(entryId)) {
-    return NextResponse.json({ error: 'Invalid entry ID' }, { status: 400 });
-  }
+  const gameId = parseAndValidateId(params.id, 'game');
+  if (gameId instanceof NextResponse) return gameId;
 
   try {
     await prisma.timeEntry.delete({
       where: {
-        id: entryId,
+        id: gameId,
       },
     });
 

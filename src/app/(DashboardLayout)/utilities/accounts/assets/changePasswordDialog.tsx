@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -16,6 +16,9 @@ import {
   InputLabel,
 } from '@mui/material';
 import { AccountInterface } from '@/types/accounts/types';
+
+import '@/lib/i18n.client';
+import { useTranslation } from 'react-i18next';
 
 interface ChangePasswordDialogProps {
   open: boolean;
@@ -38,6 +41,8 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
   account,
   onUpdateAccount,
 }) => {
+  const { t } = useTranslation();
+
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -48,12 +53,15 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
   const [clubs, setClubs] = useState<{ id: number; name: string }[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (account) {
-      setName(account.name);
-      setEmail(account.email);
-      setImage(account.image || null);
-      setDefaultClubId(account.defaultClubId || null);
+      const timeout = setTimeout(() => {
+        setName(account.name);
+        setEmail(account.email);
+        setImage(account.image || null);
+        setDefaultClubId(account.defaultClubId || null);
+      }, 0);
+      return () => clearTimeout(timeout);
     }
   }, [account]);
 
@@ -65,15 +73,15 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
           const data = await response.json();
           setClubs([{ id: 0, name: 'None' }, ...data]);
         } else {
-          setErrorMessage('Failed to fetch clubs');
+          setErrorMessage(t('failedFetchClubs'));
         }
       } catch (error) {
-        setErrorMessage(`Error fetching clubs: ${error}`);
+        setErrorMessage(`${t('ErrorFetchingClubs')}: ${error}`);
       }
     };
 
     fetchClubs();
-  }, []);
+  }, [t]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
@@ -89,15 +97,15 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
   const handleUpdateAccount = (): void => {
     if (newPassword || confirmPassword) {
       if (!newPassword || !confirmPassword) {
-        setErrorMessage('Please fill in all password fields.');
+        setErrorMessage(t('fillAllPasswordFields.'));
         return;
       }
       if (newPassword !== confirmPassword) {
-        setErrorMessage('New password and confirmation password do not match.');
+        setErrorMessage(t('NewPasswordConfirmationDoNotMatch.'));
         return;
       }
       if (!oldPassword) {
-        setErrorMessage('Please provide the old password.');
+        setErrorMessage(t('pleaseProvideOldPassword.'));
         return;
       }
     }
@@ -123,11 +131,15 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
       <DialogTitle>Change Password</DialogTitle>
       <DialogContent>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-        <Typography variant="subtitle1">Name: {account?.name}</Typography>
-        <Typography variant="subtitle1">Email: {account?.email}</Typography>
+        <Typography variant="subtitle1">
+          {t('Name')}: {account?.name}
+        </Typography>
+        <Typography variant="subtitle1">
+          {t('Email')}: {account?.email}
+        </Typography>
         <TextField
           margin="dense"
-          label="Old Password"
+          label={t('oldPassword')}
           type="password"
           fullWidth
           value={oldPassword}
@@ -135,7 +147,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
         />
         <TextField
           margin="dense"
-          label="New Password"
+          label={t('newPassword')}
           type="password"
           fullWidth
           value={newPassword}
@@ -143,7 +155,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
         />
         <TextField
           margin="dense"
-          label="Confirm Password"
+          label={t('confirmPassword')}
           type="password"
           fullWidth
           value={confirmPassword}
@@ -151,17 +163,17 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
         />
         <Stack spacing={2}>
           <Typography variant="subtitle1" fontWeight={600}>
-            Update Account
+            {t('updateAccount')}
           </Typography>
           <TextField
-            label="Display Name"
+            label={t('displayName')}
             type="text"
             fullWidth
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
           <TextField
-            label="Email Address"
+            label={t('emailAddress')}
             type="email"
             fullWidth
             value={email}
@@ -173,7 +185,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
               labelId="default-club-label"
               value={defaultClubId || ''}
               onChange={(e) => setDefaultClubId(Number(e.target.value))}
-              label="Default Club"
+              label={t('defaultClub')}
             >
               {clubs.map((club) => (
                 <MenuItem key={club.id} value={club.id}>
@@ -192,17 +204,17 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
             </Box>
           )}
           <Button variant="outlined" component="label" sx={{ textAlign: 'center' }}>
-            Upload Photo
+            {t('uploadPhoto')}
             <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
           </Button>
         </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} variant="outlined" color="secondary">
-          Cancel
+          {t('Cancel')}
         </Button>
         <Button onClick={handleUpdateAccount} variant="contained" color="success">
-          Update Account
+          {'Update'}
         </Button>
       </DialogActions>
     </Dialog>

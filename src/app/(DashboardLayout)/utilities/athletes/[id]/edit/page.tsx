@@ -6,6 +6,9 @@ import { useRouter } from 'next/navigation';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer'; // Corrected import path
 import { TextField, Button, Box, Stack, Typography } from '@mui/material';
 
+import '@/lib/i18n.client';
+import { useTranslation } from 'react-i18next';
+
 // Define the Athlete type based on the schema
 interface Athlete {
   id: number;
@@ -20,6 +23,8 @@ interface Athlete {
 type Params = Promise<{ id: string }>;
 
 const EditAthlete = (props: { params: Params }): ReactElement => {
+  const { t } = useTranslation();
+
   const params = use(props.params);
   const [form, setForm] = useState<Athlete | null>(null); // Initialize form as null until data is fetched
   const [loading, setLoading] = useState<boolean>(true);
@@ -43,14 +48,14 @@ const EditAthlete = (props: { params: Params }): ReactElement => {
         setForm(data);
       } catch (err) {
         console.error(err);
-        setError('Failed to fetch athlete data.');
+        setError(t('failedFetchAthleteData'));
       } finally {
         setLoading(false);
       }
     }
 
     fetchAthlete();
-  }, [params.id]);
+  }, [params.id, t]);
 
   // Handle input change and reset field error on change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
