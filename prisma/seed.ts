@@ -1,32 +1,19 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PlatformRole, PrismaClient, Gender } from '../generated/prisma/client';
-import { webcrypto } from 'crypto';
+import { createHash, randomBytes } from 'crypto';
 import 'dotenv/config';
 
-function encode(text: string): Uint8Array {
-  return new TextEncoder().encode(text);
-}
-
 function generateSalt(length: number = 16): string {
-  const array = new Uint8Array(length);
-  webcrypto.getRandomValues(array);
-  return Array.from(array)
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+  return randomBytes(length).toString('hex');
 }
 
-async function hashPassword(password: string, salt?: string): Promise<string> {
+function hashPassword(password: string, salt?: string): string {
   if (!salt) {
     salt = generateSalt();
   }
-  const passwordData = encode(password + salt);
-  const hashBuffer = await webcrypto.subtle.digest(
-    'SHA-256',
-    passwordData as unknown as BufferSource
-  );
-  const hashedPassword = Array.from(new Uint8Array(hashBuffer))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+  const hash = createHash('sha256');
+  hash.update(password + salt);
+  const hashedPassword = hash.digest('hex');
   return `${salt}:${hashedPassword}`;
 }
 
@@ -35,9 +22,8 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main(): Promise<void> {
-  // Generate a salt
   const password = 'admin123';
-  const hashedPassword = await hashPassword(password);
+  const hashedPassword = hashPassword(password);
 
   await prisma.accountClub.deleteMany({});
   await prisma.accountClubRole.deleteMany({});
