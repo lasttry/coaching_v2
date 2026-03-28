@@ -1,5 +1,10 @@
 import { PlatformRole, PrismaClient, Gender } from '@prisma/client';
-import { hashPassword } from '@/lib/password';
+import bcrypt from 'bcryptjs';
+
+async function hashPassword(password: string): Promise<string> {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
+}
 
 // Initialize Prisma Client
 const prisma = new PrismaClient();
