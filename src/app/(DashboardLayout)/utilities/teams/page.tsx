@@ -26,6 +26,7 @@ import dayjs from 'dayjs';
 
 import { TeamInterface } from '@/types/teams/types';
 import { EchelonInterface } from '@/types/echelons/types';
+import { SeasonInterface } from '@/types/season/types';
 
 import '@/lib/i18n.client'; // garante inicialização só no cliente
 import { useTranslation } from 'react-i18next';
@@ -37,6 +38,7 @@ export default function TeamsPage(): React.JSX.Element {
   const [teams, setTeams] = useState<TeamInterface[]>([]);
   const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
   const [athletes, setAthletes] = useState<AthleteInterface[]>([]);
+  const [currentSeason, setCurrentSeason] = useState<SeasonInterface | null>(null);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formTeam, setFormTeam] = useState<Partial<TeamInterface>>({
@@ -58,21 +60,26 @@ export default function TeamsPage(): React.JSX.Element {
 
     const load = async (): Promise<void> => {
       try {
-        const [teamsRes, echelonsRes, athletesRes] = await Promise.all([
+        const [teamsRes, echelonsRes, athletesRes, seasonRes] = await Promise.all([
           fetch('/api/teams'),
           fetch('/api/echelons'),
           fetch('/api/athletes'),
+          fetch('/api/seasons/current'),
         ]);
-        if (!active) return; // evita update depois de desmontar
+        if (!active) return;
 
         const [teams, echelons, athletes] = await Promise.all([
           teamsRes.json(),
           echelonsRes.json(),
           athletesRes.json(),
         ]);
+
+        const season = seasonRes.ok ? await seasonRes.json() : null;
+
         setTeams(teams);
         setEchelons(echelons);
         setAthletes(athletes);
+        setCurrentSeason(season);
       } catch (err) {
         log.error('Error loading teams data:', err);
       } finally {
@@ -147,8 +154,12 @@ export default function TeamsPage(): React.JSX.Element {
   };
 
   const getFederativeAge = (birthdate: string): number => {
-    const endOfYear = dayjs().endOf('year'); // 31 de dezembro do ano atual
-    return endOfYear.diff(dayjs(birthdate), 'year');
+    // Idade federativa = ano de início da época - ano de nascimento
+    const seasonStartYear = currentSeason?.startDate
+      ? dayjs(currentSeason.startDate).year()
+      : dayjs().year();
+    const birthYear = dayjs(birthdate).year();
+    return seasonStartYear - birthYear;
   };
 
   // Columns Teams
@@ -199,7 +210,7 @@ export default function TeamsPage(): React.JSX.Element {
       field: 'age',
       headerName: t('Age'),
       width: 100,
-      valueGetter: (_value, row: AthleteInterface) => dayjs().diff(dayjs(row.birthdate), 'year'),
+      valueGetter: (_value, row: AthleteInterface) => getFederativeAge(row.birthdate),
     },
   ];
 
