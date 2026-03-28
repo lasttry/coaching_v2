@@ -667,17 +667,15 @@ const GameComponent: React.FC<GameProps> = ({
       const preferredNumbers = athlete.athlete?.preferredNumbers;
       let assigned = false;
       if (Array.isArray(preferredNumbers) && preferredNumbers.length > 0) {
-        // Sort preferred numbers by ascending preference and number
-        const sortedPrefs = [...preferredNumbers].sort(
-          (a, b) => (a.preference ?? 0) - (b.preference ?? 0) || (a.number ?? 0) - (b.number ?? 0)
-        );
-        for (const pref of sortedPrefs) {
+        // Find preferred number for the selected color
+        const preferredForColor = preferredNumbers.find((p) => p.color === selectedEquipmentColor);
+        if (preferredForColor) {
           for (const eq of availableForColor) {
             if (!eq.id) {
               continue;
             }
             if (
-              eq.number === pref.number &&
+              eq.number === preferredForColor.number &&
               sizeRank(eq.size) >= sizeRank(athlete.athlete?.shirtSize) &&
               !usedEquipmentIds.has(eq.id)
             ) {
@@ -696,7 +694,6 @@ const GameComponent: React.FC<GameProps> = ({
               break;
             }
           }
-          if (assigned) break;
         }
       }
     });

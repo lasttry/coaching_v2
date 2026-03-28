@@ -32749,35 +32749,33 @@ export namespace Prisma {
     id: number | null
     athleteId: number | null
     number: number | null
-    preference: number | null
   }
 
   export type AthletePreferredNumberSumAggregateOutputType = {
     id: number | null
     athleteId: number | null
     number: number | null
-    preference: number | null
   }
 
   export type AthletePreferredNumberMinAggregateOutputType = {
     id: number | null
     athleteId: number | null
+    color: string | null
     number: number | null
-    preference: number | null
   }
 
   export type AthletePreferredNumberMaxAggregateOutputType = {
     id: number | null
     athleteId: number | null
+    color: string | null
     number: number | null
-    preference: number | null
   }
 
   export type AthletePreferredNumberCountAggregateOutputType = {
     id: number
     athleteId: number
+    color: number
     number: number
-    preference: number
     _all: number
   }
 
@@ -32786,35 +32784,33 @@ export namespace Prisma {
     id?: true
     athleteId?: true
     number?: true
-    preference?: true
   }
 
   export type AthletePreferredNumberSumAggregateInputType = {
     id?: true
     athleteId?: true
     number?: true
-    preference?: true
   }
 
   export type AthletePreferredNumberMinAggregateInputType = {
     id?: true
     athleteId?: true
+    color?: true
     number?: true
-    preference?: true
   }
 
   export type AthletePreferredNumberMaxAggregateInputType = {
     id?: true
     athleteId?: true
+    color?: true
     number?: true
-    preference?: true
   }
 
   export type AthletePreferredNumberCountAggregateInputType = {
     id?: true
     athleteId?: true
+    color?: true
     number?: true
-    preference?: true
     _all?: true
   }
 
@@ -32907,8 +32903,8 @@ export namespace Prisma {
   export type AthletePreferredNumberGroupByOutputType = {
     id: number
     athleteId: number
+    color: string
     number: number
-    preference: number
     _count: AthletePreferredNumberCountAggregateOutputType | null
     _avg: AthletePreferredNumberAvgAggregateOutputType | null
     _sum: AthletePreferredNumberSumAggregateOutputType | null
@@ -32933,35 +32929,35 @@ export namespace Prisma {
   export type AthletePreferredNumberSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     athleteId?: boolean
+    color?: boolean
     number?: boolean
-    preference?: boolean
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["athletePreferredNumber"]>
 
   export type AthletePreferredNumberSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     athleteId?: boolean
+    color?: boolean
     number?: boolean
-    preference?: boolean
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["athletePreferredNumber"]>
 
   export type AthletePreferredNumberSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     athleteId?: boolean
+    color?: boolean
     number?: boolean
-    preference?: boolean
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["athletePreferredNumber"]>
 
   export type AthletePreferredNumberSelectScalar = {
     id?: boolean
     athleteId?: boolean
+    color?: boolean
     number?: boolean
-    preference?: boolean
   }
 
-  export type AthletePreferredNumberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "athleteId" | "number" | "preference", ExtArgs["result"]["athletePreferredNumber"]>
+  export type AthletePreferredNumberOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "athleteId" | "color" | "number", ExtArgs["result"]["athletePreferredNumber"]>
   export type AthletePreferredNumberInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
   }
@@ -32980,8 +32976,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       athleteId: number
+      color: string
       number: number
-      preference: number
     }, ExtArgs["result"]["athletePreferredNumber"]>
     composites: {}
   }
@@ -33408,8 +33404,8 @@ export namespace Prisma {
   interface AthletePreferredNumberFieldRefs {
     readonly id: FieldRef<"AthletePreferredNumber", 'Int'>
     readonly athleteId: FieldRef<"AthletePreferredNumber", 'Int'>
+    readonly color: FieldRef<"AthletePreferredNumber", 'String'>
     readonly number: FieldRef<"AthletePreferredNumber", 'Int'>
-    readonly preference: FieldRef<"AthletePreferredNumber", 'Int'>
   }
     
 
@@ -33863,6 +33859,7 @@ export namespace Prisma {
     seasonId: number | null
     echelonId: number | null
     color: string | null
+    colorHex: string | null
     number: number | null
     size: $Enums.Size | null
     createdAt: Date | null
@@ -33875,6 +33872,7 @@ export namespace Prisma {
     seasonId: number | null
     echelonId: number | null
     color: string | null
+    colorHex: string | null
     number: number | null
     size: $Enums.Size | null
     createdAt: Date | null
@@ -33887,6 +33885,7 @@ export namespace Prisma {
     seasonId: number
     echelonId: number
     color: number
+    colorHex: number
     number: number
     size: number
     createdAt: number
@@ -33917,6 +33916,7 @@ export namespace Prisma {
     seasonId?: true
     echelonId?: true
     color?: true
+    colorHex?: true
     number?: true
     size?: true
     createdAt?: true
@@ -33929,6 +33929,7 @@ export namespace Prisma {
     seasonId?: true
     echelonId?: true
     color?: true
+    colorHex?: true
     number?: true
     size?: true
     createdAt?: true
@@ -33941,6 +33942,7 @@ export namespace Prisma {
     seasonId?: true
     echelonId?: true
     color?: true
+    colorHex?: true
     number?: true
     size?: true
     createdAt?: true
@@ -34040,6 +34042,7 @@ export namespace Prisma {
     seasonId: number
     echelonId: number
     color: string
+    colorHex: string
     number: number
     size: $Enums.Size
     createdAt: Date
@@ -34071,6 +34074,7 @@ export namespace Prisma {
     seasonId?: boolean
     echelonId?: boolean
     color?: boolean
+    colorHex?: boolean
     number?: boolean
     size?: boolean
     createdAt?: boolean
@@ -34088,6 +34092,7 @@ export namespace Prisma {
     seasonId?: boolean
     echelonId?: boolean
     color?: boolean
+    colorHex?: boolean
     number?: boolean
     size?: boolean
     createdAt?: boolean
@@ -34103,6 +34108,7 @@ export namespace Prisma {
     seasonId?: boolean
     echelonId?: boolean
     color?: boolean
+    colorHex?: boolean
     number?: boolean
     size?: boolean
     createdAt?: boolean
@@ -34118,13 +34124,14 @@ export namespace Prisma {
     seasonId?: boolean
     echelonId?: boolean
     color?: boolean
+    colorHex?: boolean
     number?: boolean
     size?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EquipmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "seasonId" | "echelonId" | "color" | "number" | "size" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>
+  export type EquipmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "seasonId" | "echelonId" | "color" | "colorHex" | "number" | "size" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>
   export type EquipmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
     season?: boolean | SeasonDefaultArgs<ExtArgs>
@@ -34157,6 +34164,7 @@ export namespace Prisma {
       seasonId: number
       echelonId: number
       color: string
+      colorHex: string
       number: number
       size: $Enums.Size
       createdAt: Date
@@ -34593,6 +34601,7 @@ export namespace Prisma {
     readonly seasonId: FieldRef<"Equipment", 'Int'>
     readonly echelonId: FieldRef<"Equipment", 'Int'>
     readonly color: FieldRef<"Equipment", 'String'>
+    readonly colorHex: FieldRef<"Equipment", 'String'>
     readonly number: FieldRef<"Equipment", 'Int'>
     readonly size: FieldRef<"Equipment", 'Size'>
     readonly createdAt: FieldRef<"Equipment", 'DateTime'>
@@ -36504,8 +36513,8 @@ export namespace Prisma {
   export const AthletePreferredNumberScalarFieldEnum: {
     id: 'id',
     athleteId: 'athleteId',
-    number: 'number',
-    preference: 'preference'
+    color: 'color',
+    number: 'number'
   };
 
   export type AthletePreferredNumberScalarFieldEnum = (typeof AthletePreferredNumberScalarFieldEnum)[keyof typeof AthletePreferredNumberScalarFieldEnum]
@@ -36517,6 +36526,7 @@ export namespace Prisma {
     seasonId: 'seasonId',
     echelonId: 'echelonId',
     color: 'color',
+    colorHex: 'colorHex',
     number: 'number',
     size: 'size',
     createdAt: 'createdAt',
@@ -38601,36 +38611,36 @@ export namespace Prisma {
     NOT?: AthletePreferredNumberWhereInput | AthletePreferredNumberWhereInput[]
     id?: IntFilter<"AthletePreferredNumber"> | number
     athleteId?: IntFilter<"AthletePreferredNumber"> | number
+    color?: StringFilter<"AthletePreferredNumber"> | string
     number?: IntFilter<"AthletePreferredNumber"> | number
-    preference?: IntFilter<"AthletePreferredNumber"> | number
     athlete?: XOR<AthleteScalarRelationFilter, AthleteWhereInput>
   }
 
   export type AthletePreferredNumberOrderByWithRelationInput = {
     id?: SortOrder
     athleteId?: SortOrder
+    color?: SortOrder
     number?: SortOrder
-    preference?: SortOrder
     athlete?: AthleteOrderByWithRelationInput
   }
 
   export type AthletePreferredNumberWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    athleteId_number?: AthletePreferredNumberAthleteIdNumberCompoundUniqueInput
+    athleteId_color?: AthletePreferredNumberAthleteIdColorCompoundUniqueInput
     AND?: AthletePreferredNumberWhereInput | AthletePreferredNumberWhereInput[]
     OR?: AthletePreferredNumberWhereInput[]
     NOT?: AthletePreferredNumberWhereInput | AthletePreferredNumberWhereInput[]
     athleteId?: IntFilter<"AthletePreferredNumber"> | number
+    color?: StringFilter<"AthletePreferredNumber"> | string
     number?: IntFilter<"AthletePreferredNumber"> | number
-    preference?: IntFilter<"AthletePreferredNumber"> | number
     athlete?: XOR<AthleteScalarRelationFilter, AthleteWhereInput>
-  }, "id" | "athleteId_number">
+  }, "id" | "athleteId_color">
 
   export type AthletePreferredNumberOrderByWithAggregationInput = {
     id?: SortOrder
     athleteId?: SortOrder
+    color?: SortOrder
     number?: SortOrder
-    preference?: SortOrder
     _count?: AthletePreferredNumberCountOrderByAggregateInput
     _avg?: AthletePreferredNumberAvgOrderByAggregateInput
     _max?: AthletePreferredNumberMaxOrderByAggregateInput
@@ -38644,8 +38654,8 @@ export namespace Prisma {
     NOT?: AthletePreferredNumberScalarWhereWithAggregatesInput | AthletePreferredNumberScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"AthletePreferredNumber"> | number
     athleteId?: IntWithAggregatesFilter<"AthletePreferredNumber"> | number
+    color?: StringWithAggregatesFilter<"AthletePreferredNumber"> | string
     number?: IntWithAggregatesFilter<"AthletePreferredNumber"> | number
-    preference?: IntWithAggregatesFilter<"AthletePreferredNumber"> | number
   }
 
   export type EquipmentWhereInput = {
@@ -38657,6 +38667,7 @@ export namespace Prisma {
     seasonId?: IntFilter<"Equipment"> | number
     echelonId?: IntFilter<"Equipment"> | number
     color?: StringFilter<"Equipment"> | string
+    colorHex?: StringFilter<"Equipment"> | string
     number?: IntFilter<"Equipment"> | number
     size?: EnumSizeFilter<"Equipment"> | $Enums.Size
     createdAt?: DateTimeFilter<"Equipment"> | Date | string
@@ -38673,6 +38684,7 @@ export namespace Prisma {
     seasonId?: SortOrder
     echelonId?: SortOrder
     color?: SortOrder
+    colorHex?: SortOrder
     number?: SortOrder
     size?: SortOrder
     createdAt?: SortOrder
@@ -38692,6 +38704,7 @@ export namespace Prisma {
     seasonId?: IntFilter<"Equipment"> | number
     echelonId?: IntFilter<"Equipment"> | number
     color?: StringFilter<"Equipment"> | string
+    colorHex?: StringFilter<"Equipment"> | string
     number?: IntFilter<"Equipment"> | number
     size?: EnumSizeFilter<"Equipment"> | $Enums.Size
     createdAt?: DateTimeFilter<"Equipment"> | Date | string
@@ -38708,6 +38721,7 @@ export namespace Prisma {
     seasonId?: SortOrder
     echelonId?: SortOrder
     color?: SortOrder
+    colorHex?: SortOrder
     number?: SortOrder
     size?: SortOrder
     createdAt?: SortOrder
@@ -38728,6 +38742,7 @@ export namespace Prisma {
     seasonId?: IntWithAggregatesFilter<"Equipment"> | number
     echelonId?: IntWithAggregatesFilter<"Equipment"> | number
     color?: StringWithAggregatesFilter<"Equipment"> | string
+    colorHex?: StringWithAggregatesFilter<"Equipment"> | string
     number?: IntWithAggregatesFilter<"Equipment"> | number
     size?: EnumSizeWithAggregatesFilter<"Equipment"> | $Enums.Size
     createdAt?: DateTimeWithAggregatesFilter<"Equipment"> | Date | string
@@ -40687,52 +40702,53 @@ export namespace Prisma {
   }
 
   export type AthletePreferredNumberCreateInput = {
+    color: string
     number: number
-    preference?: number
     athlete: AthleteCreateNestedOneWithoutPreferredNumbersInput
   }
 
   export type AthletePreferredNumberUncheckedCreateInput = {
     id?: number
     athleteId: number
+    color: string
     number: number
-    preference?: number
   }
 
   export type AthletePreferredNumberUpdateInput = {
+    color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
-    preference?: IntFieldUpdateOperationsInput | number
     athlete?: AthleteUpdateOneRequiredWithoutPreferredNumbersNestedInput
   }
 
   export type AthletePreferredNumberUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
-    preference?: IntFieldUpdateOperationsInput | number
   }
 
   export type AthletePreferredNumberCreateManyInput = {
     id?: number
     athleteId: number
+    color: string
     number: number
-    preference?: number
   }
 
   export type AthletePreferredNumberUpdateManyMutationInput = {
+    color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
-    preference?: IntFieldUpdateOperationsInput | number
   }
 
   export type AthletePreferredNumberUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
-    preference?: IntFieldUpdateOperationsInput | number
   }
 
   export type EquipmentCreateInput = {
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -40749,6 +40765,7 @@ export namespace Prisma {
     seasonId: number
     echelonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -40758,6 +40775,7 @@ export namespace Prisma {
 
   export type EquipmentUpdateInput = {
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40774,6 +40792,7 @@ export namespace Prisma {
     seasonId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40787,6 +40806,7 @@ export namespace Prisma {
     seasonId: number
     echelonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -40795,6 +40815,7 @@ export namespace Prisma {
 
   export type EquipmentUpdateManyMutationInput = {
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -40807,6 +40828,7 @@ export namespace Prisma {
     seasonId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -42618,44 +42640,42 @@ export namespace Prisma {
     competitionId?: SortOrder
   }
 
-  export type AthletePreferredNumberAthleteIdNumberCompoundUniqueInput = {
+  export type AthletePreferredNumberAthleteIdColorCompoundUniqueInput = {
     athleteId: number
-    number: number
+    color: string
   }
 
   export type AthletePreferredNumberCountOrderByAggregateInput = {
     id?: SortOrder
     athleteId?: SortOrder
+    color?: SortOrder
     number?: SortOrder
-    preference?: SortOrder
   }
 
   export type AthletePreferredNumberAvgOrderByAggregateInput = {
     id?: SortOrder
     athleteId?: SortOrder
     number?: SortOrder
-    preference?: SortOrder
   }
 
   export type AthletePreferredNumberMaxOrderByAggregateInput = {
     id?: SortOrder
     athleteId?: SortOrder
+    color?: SortOrder
     number?: SortOrder
-    preference?: SortOrder
   }
 
   export type AthletePreferredNumberMinOrderByAggregateInput = {
     id?: SortOrder
     athleteId?: SortOrder
+    color?: SortOrder
     number?: SortOrder
-    preference?: SortOrder
   }
 
   export type AthletePreferredNumberSumOrderByAggregateInput = {
     id?: SortOrder
     athleteId?: SortOrder
     number?: SortOrder
-    preference?: SortOrder
   }
 
   export type EnumSizeFilter<$PrismaModel = never> = {
@@ -42676,6 +42696,7 @@ export namespace Prisma {
     seasonId?: SortOrder
     echelonId?: SortOrder
     color?: SortOrder
+    colorHex?: SortOrder
     number?: SortOrder
     size?: SortOrder
     createdAt?: SortOrder
@@ -42696,6 +42717,7 @@ export namespace Prisma {
     seasonId?: SortOrder
     echelonId?: SortOrder
     color?: SortOrder
+    colorHex?: SortOrder
     number?: SortOrder
     size?: SortOrder
     createdAt?: SortOrder
@@ -42708,6 +42730,7 @@ export namespace Prisma {
     seasonId?: SortOrder
     echelonId?: SortOrder
     color?: SortOrder
+    colorHex?: SortOrder
     number?: SortOrder
     size?: SortOrder
     createdAt?: SortOrder
@@ -45617,14 +45640,14 @@ export namespace Prisma {
   }
 
   export type AthletePreferredNumberCreateWithoutAthleteInput = {
+    color: string
     number: number
-    preference?: number
   }
 
   export type AthletePreferredNumberUncheckedCreateWithoutAthleteInput = {
     id?: number
+    color: string
     number: number
-    preference?: number
   }
 
   export type AthletePreferredNumberCreateOrConnectWithoutAthleteInput = {
@@ -45893,8 +45916,8 @@ export namespace Prisma {
     NOT?: AthletePreferredNumberScalarWhereInput | AthletePreferredNumberScalarWhereInput[]
     id?: IntFilter<"AthletePreferredNumber"> | number
     athleteId?: IntFilter<"AthletePreferredNumber"> | number
+    color?: StringFilter<"AthletePreferredNumber"> | string
     number?: IntFilter<"AthletePreferredNumber"> | number
-    preference?: IntFilter<"AthletePreferredNumber"> | number
   }
 
   export type GameEquipmentUpsertWithWhereUniqueWithoutAthleteInput = {
@@ -48463,6 +48486,7 @@ export namespace Prisma {
 
   export type EquipmentCreateWithoutEchelonInput = {
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -48477,6 +48501,7 @@ export namespace Prisma {
     clubId: number
     seasonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -48578,6 +48603,7 @@ export namespace Prisma {
     seasonId?: IntFilter<"Equipment"> | number
     echelonId?: IntFilter<"Equipment"> | number
     color?: StringFilter<"Equipment"> | string
+    colorHex?: StringFilter<"Equipment"> | string
     number?: IntFilter<"Equipment"> | number
     size?: EnumSizeFilter<"Equipment"> | $Enums.Size
     createdAt?: DateTimeFilter<"Equipment"> | Date | string
@@ -48820,6 +48846,7 @@ export namespace Prisma {
 
   export type EquipmentCreateWithoutClubInput = {
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -48834,6 +48861,7 @@ export namespace Prisma {
     seasonId: number
     echelonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -48996,6 +49024,7 @@ export namespace Prisma {
 
   export type EquipmentCreateWithoutSeasonInput = {
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -49010,6 +49039,7 @@ export namespace Prisma {
     clubId: number
     echelonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -50738,6 +50768,7 @@ export namespace Prisma {
 
   export type EquipmentCreateWithoutGameEquipmentsInput = {
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -50753,6 +50784,7 @@ export namespace Prisma {
     seasonId: number
     echelonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -50901,6 +50933,7 @@ export namespace Prisma {
 
   export type EquipmentUpdateWithoutGameEquipmentsInput = {
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50916,6 +50949,7 @@ export namespace Prisma {
     seasonId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50987,8 +51021,8 @@ export namespace Prisma {
 
   export type AthletePreferredNumberCreateManyAthleteInput = {
     id?: number
+    color: string
     number: number
-    preference?: number
   }
 
   export type GameEquipmentCreateManyAthleteInput = {
@@ -51182,20 +51216,20 @@ export namespace Prisma {
   }
 
   export type AthletePreferredNumberUpdateWithoutAthleteInput = {
+    color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
-    preference?: IntFieldUpdateOperationsInput | number
   }
 
   export type AthletePreferredNumberUncheckedUpdateWithoutAthleteInput = {
     id?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
-    preference?: IntFieldUpdateOperationsInput | number
   }
 
   export type AthletePreferredNumberUncheckedUpdateManyWithoutAthleteInput = {
     id?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
-    preference?: IntFieldUpdateOperationsInput | number
   }
 
   export type GameEquipmentUpdateWithoutAthleteInput = {
@@ -51764,6 +51798,7 @@ export namespace Prisma {
     clubId: number
     seasonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -51835,6 +51870,7 @@ export namespace Prisma {
 
   export type EquipmentUpdateWithoutEchelonInput = {
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51849,6 +51885,7 @@ export namespace Prisma {
     clubId?: IntFieldUpdateOperationsInput | number
     seasonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51861,6 +51898,7 @@ export namespace Prisma {
     clubId?: IntFieldUpdateOperationsInput | number
     seasonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51943,6 +51981,7 @@ export namespace Prisma {
     seasonId: number
     echelonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -52196,6 +52235,7 @@ export namespace Prisma {
 
   export type EquipmentUpdateWithoutClubInput = {
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52210,6 +52250,7 @@ export namespace Prisma {
     seasonId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52222,6 +52263,7 @@ export namespace Prisma {
     seasonId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52233,6 +52275,7 @@ export namespace Prisma {
     clubId: number
     echelonId: number
     color: string
+    colorHex?: string
     number: number
     size: $Enums.Size
     createdAt?: Date | string
@@ -52241,6 +52284,7 @@ export namespace Prisma {
 
   export type EquipmentUpdateWithoutSeasonInput = {
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52255,6 +52299,7 @@ export namespace Prisma {
     clubId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52267,6 +52312,7 @@ export namespace Prisma {
     clubId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string

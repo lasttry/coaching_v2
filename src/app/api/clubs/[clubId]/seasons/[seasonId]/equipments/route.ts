@@ -28,6 +28,7 @@ export async function GET(
     seasonId: e.seasonId,
     echelonId: e.echelonId,
     color: e.color,
+    colorHex: e.colorHex,
     number: e.number,
     size: e.size,
     createdAt: e.createdAt.toISOString(),
@@ -56,6 +57,7 @@ export async function POST(
 
   const number = Number(data.number);
   const color = data.color?.trim();
+  const colorHex = data.colorHex?.trim() || '#000000';
   const echelonId = Number(data.echelonId);
 
   if (!color) {
@@ -77,15 +79,16 @@ export async function POST(
   const created = await prisma.equipment.create({
     data: {
       club: {
-        connect: { id: clubId }, // relação obrigatória: club
+        connect: { id: clubId },
       },
       season: {
-        connect: { id: seasonId }, // relação obrigatória: season
+        connect: { id: seasonId },
       },
       echelon: {
         connect: { id: echelonId },
       },
       color,
+      colorHex,
       size,
       number,
     },
@@ -97,6 +100,7 @@ export async function POST(
     seasonId: created.seasonId,
     echelonId: created.echelonId,
     color: created.color,
+    colorHex: created.colorHex,
     number: created.number,
     size: created.size,
     createdAt: created.createdAt.toISOString(),

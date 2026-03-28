@@ -9,6 +9,7 @@ export interface EquipmentInterface {
   echelon?: EchelonInterface;
 
   color: string;
+  colorHex: string;
   number: number;
   size: Size;
   createdAt?: string;

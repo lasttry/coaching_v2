@@ -43,6 +43,8 @@
   "missingFields": "Campos obrigatórios em falta",
 
   "Athletes": "Atletas",
+  "athlete": "atleta",
+  "inactive": "Inativo",
   "noAthletesFound": "Nenhum atleta encontrado",
   "athleteNotFound": "Atleta não encontrado",
   "failedFetchAthletes": "Falha ao obter atletas",
@@ -228,6 +230,7 @@
     "edit": "Editar Equipamento",
 
     "color": "Cor",
+    "colorHex": "Cor (hex)",
     "number": "Número",
     "size": "Tamanho",
 
@@ -256,5 +259,12 @@
 
     "confirmDeleteTitle": "Confirmar eliminação",
     "confirmDeleteMessage": "Tem a certeza que pretende eliminar este equipamento?"
-  }
+  },
+
+  "preferredNumbers": "Números Preferidos",
+  "noEquipmentColors": "Adicione equipamentos primeiro",
+  "remove": "Remover",
+  "optional": "opcional",
+  "selectColor": "Selecionar cor",
+  "preferredNumberDuplicate": "O número {{number}} para a cor {{color}} já está atribuído ao atleta {{athlete}}"
 }

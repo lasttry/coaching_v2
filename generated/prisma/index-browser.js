@@ -386,8 +386,8 @@ exports.Prisma.CompetitionSerieScalarFieldEnum = {
 exports.Prisma.AthletePreferredNumberScalarFieldEnum = {
   id: 'id',
   athleteId: 'athleteId',
-  number: 'number',
-  preference: 'preference'
+  color: 'color',
+  number: 'number'
 };
 
 exports.Prisma.EquipmentScalarFieldEnum = {
@@ -396,6 +396,7 @@ exports.Prisma.EquipmentScalarFieldEnum = {
   seasonId: 'seasonId',
   echelonId: 'echelonId',
   color: 'color',
+  colorHex: 'colorHex',
   number: 'number',
   size: 'size',
   createdAt: 'createdAt',

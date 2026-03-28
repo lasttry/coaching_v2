@@ -24,7 +24,8 @@ import { Size } from '@prisma/client';
 
 interface NewEquipmentState {
   color: string;
-  number: string; // input como string, validado para numero antes de enviar
+  colorHex: string;
+  number: string;
   size: string;
 }
 
@@ -35,6 +36,7 @@ interface SimpleEchelon {
 
 const defaultNewEquipment = (): NewEquipmentState => ({
   color: '',
+  colorHex: '#000000',
   number: '',
   size: '',
 });
@@ -176,6 +178,7 @@ const EquipmentsPage: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           color: newEquipment.color.trim(),
+          colorHex: newEquipment.colorHex.trim() || '#000000',
           number: parsedNumber,
           size: newEquipment.size.trim(),
           echelonId: selectedEchelonId,
@@ -222,6 +225,7 @@ const EquipmentsPage: React.FC = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             color: editEquipment.color.trim(),
+            colorHex: editEquipment.colorHex?.trim() || '#000000',
             number: editEquipment.number,
             size: editEquipment.size,
             echelonId: editEquipment.echelonId,
@@ -355,7 +359,18 @@ const EquipmentsPage: React.FC = () => {
                     width: '100%',
                   }}
                 >
-                  <Typography variant="h6">{color}</Typography>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box
+                      sx={{
+                        width: 24,
+                        height: 24,
+                        backgroundColor: items[0]?.colorHex || '#ccc',
+                        border: '1px solid #999',
+                        borderRadius: 1,
+                      }}
+                    />
+                    <Typography variant="h6">{color}</Typography>
+                  </Box>
                   <Typography variant="body2">{items.length}</Typography>
                 </Box>
               </AccordionSummary>
@@ -427,13 +442,24 @@ const EquipmentsPage: React.FC = () => {
               </MenuItem>
             ))}
           </TextField>
-          <TextField
-            label={t('equipment.color')}
-            fullWidth
-            size="small"
-            value={newEquipment.color}
-            onChange={(e) => handleNewFieldChange('color', e.target.value)}
-          />
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <TextField
+              label={t('equipment.color')}
+              fullWidth
+              size="small"
+              value={newEquipment.color}
+              onChange={(e) => handleNewFieldChange('color', e.target.value)}
+            />
+            <TextField
+              label={t('equipment.colorHex')}
+              size="small"
+              type="color"
+              value={newEquipment.colorHex}
+              onChange={(e) => handleNewFieldChange('colorHex', e.target.value)}
+              sx={{ width: 80 }}
+              slotProps={{ input: { sx: { p: 0.5, height: 40 } } }}
+            />
+          </Box>
           <TextField
             label={t('equipment.number')}
             fullWidth
@@ -488,13 +514,24 @@ const EquipmentsPage: React.FC = () => {
               </MenuItem>
             ))}
           </TextField>
-          <TextField
-            label={t('equipment.color')}
-            fullWidth
-            size="small"
-            value={editEquipment?.color ?? ''}
-            onChange={(e) => handleEditFieldChange('color', e.target.value)}
-          />
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <TextField
+              label={t('equipment.color')}
+              fullWidth
+              size="small"
+              value={editEquipment?.color ?? ''}
+              onChange={(e) => handleEditFieldChange('color', e.target.value)}
+            />
+            <TextField
+              label={t('equipment.colorHex')}
+              size="small"
+              type="color"
+              value={editEquipment?.colorHex ?? '#000000'}
+              onChange={(e) => handleEditFieldChange('colorHex', e.target.value)}
+              sx={{ width: 80 }}
+              slotProps={{ input: { sx: { p: 0.5, height: 40 } } }}
+            />
+          </Box>
           <TextField
             label={t('equipment.number')}
             fullWidth

@@ -413,13 +413,13 @@ model CompetitionSerie {
 }
 
 model AthletePreferredNumber {
-  id         Int     @id @default(autoincrement())
-  athleteId  Int
-  number     Int
-  preference Int     @default(1)
-  athlete    Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  id        Int     @id @default(autoincrement())
+  athleteId Int
+  color     String
+  number    Int
+  athlete   Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
 
-  @@unique([athleteId, number])
+  @@unique([athleteId, color])
 }
 
 model Equipment {
@@ -432,9 +432,10 @@ model Equipment {
   season  Season  @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   echelon Echelon @relation(fields: [echelonId], references: [id], onDelete: Cascade)
 
-  color  String
-  number Int
-  size   Size
+  color    String
+  colorHex String @default("#000000")
+  number   Int
+  size     Size
 
   gameEquipments GameEquipment[]
 

@@ -36,6 +36,39 @@ export async function POST(req: Request): Promise<NextResponse> {
     if (!session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
       throw new Error(i18next.t('invalidClubId'));
     }
+
+    const clubId = Number(session.user.selectedClubId);
+
+    // Validate preferred numbers - check for duplicates per color in the club
+    if (data.preferredNumbers?.length) {
+      for (const pref of data.preferredNumbers) {
+        const existing = await prisma.athletePreferredNumber.findFirst({
+          where: {
+            color: pref.color,
+            number: Number(pref.number),
+            athlete: {
+              clubId: clubId,
+            },
+          },
+          include: {
+            athlete: true,
+          },
+        });
+        if (existing) {
+          return NextResponse.json(
+            {
+              error: i18next.t('preferredNumberDuplicate', {
+                number: pref.number,
+                color: pref.color,
+                athlete: existing.athlete.name,
+              }),
+            },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     const newAthlete = await prisma.athlete.create({
       data: {
         number: data.number,
@@ -45,14 +78,14 @@ export async function POST(req: Request): Promise<NextResponse> {
         idNumber: data.idNumber ? Number(data.idNumber) : null,
         idType: data.idType || null,
         active: data.active ?? true,
-        clubId: Number(session.user.selectedClubId),
+        clubId: clubId,
         shirtSize: data.shirtSize,
-        preferredNumbers: data.preferredNumbers
+        preferredNumbers: data.preferredNumbers?.length
           ? {
               create: data.preferredNumbers.map(
-                (p: { number: string | number; preference?: string | number }, index: number) => ({
+                (p: { color: string; number: string | number }) => ({
+                  color: p.color,
                   number: Number(p.number),
-                  preference: p.preference ? Number(p.preference) : index + 1,
                 })
               ),
             }

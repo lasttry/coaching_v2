@@ -105,6 +105,8 @@
   "yes": "Yes",
   "no": "No",
   "unknown": "Unknown",
+  "athlete": "athlete",
+  "inactive": "Inactive",
   "na": "N/A",
 
   "gamesPageTitle": "Games",
@@ -123,6 +125,14 @@
 
   "errorUnknown": "An unknown error occurred.",
 
-  "confirmDelete": "Tem a certeza que quer apagar?",
-  "deleteConfirmationMessage": "Tem a certeza que deseja apagar o objecto, esta ação é final."
+  "confirmDelete": "Are you sure you want to delete?",
+  "deleteConfirmationMessage": "Are you sure you want to delete this object? This action is final.",
+
+  "preferredNumbers": "Preferred Numbers",
+  "noEquipmentColors": "Add equipments first",
+  "remove": "Remove",
+  "number": "Number",
+  "optional": "optional",
+  "selectColor": "Select color",
+  "preferredNumberDuplicate": "Number {{number}} for color {{color}} is already assigned to athlete {{athlete}}"
 }

@@ -33,6 +33,7 @@ export async function GET(
     seasonId: equipment.seasonId,
     echelonId: equipment.echelonId,
     color: equipment.color,
+    colorHex: equipment.colorHex,
     number: equipment.number,
     size: equipment.size,
     createdAt: equipment.createdAt.toISOString(),
@@ -69,6 +70,7 @@ export async function PUT(
     seasonId?: number;
     echelonId?: number;
     color?: string;
+    colorHex?: string;
     number?: number;
     size?: Size;
   } = {};
@@ -103,6 +105,10 @@ export async function PUT(
     updateData.color = data.color.trim();
   }
 
+  if (data.colorHex !== undefined) {
+    updateData.colorHex = data.colorHex.trim();
+  }
+
   if (data.size !== undefined) {
     updateData.size = data.size as Size;
   }
@@ -118,6 +124,7 @@ export async function PUT(
     seasonId: updated.seasonId,
     echelonId: updated.echelonId,
     color: updated.color,
+    colorHex: updated.colorHex,
     number: updated.number,
     size: updated.size,
     createdAt: updated.createdAt.toISOString(),

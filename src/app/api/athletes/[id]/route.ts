@@ -102,16 +102,52 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
 
     const preferredNumbersData = rawPreferred
       .filter(
-        (p: { number?: number; preference?: number } | null | undefined) =>
-          p && p.number !== undefined && p.number !== null
+        (p: { color?: string; number?: number } | null | undefined) =>
+          p && p.color && p.number !== undefined && p.number !== null
       )
-      .map((p: { number: number; preference?: number }, index: number) => ({
+      .map((p: { color: string; number: number }) => ({
+        color: p.color,
         number: Number(p.number),
-        preference:
-          typeof p.preference === 'number' && !Number.isNaN(p.preference)
-            ? p.preference
-            : index + 1,
       }));
+
+    // Get the athlete's clubId
+    const athlete = await prisma.athlete.findUnique({
+      where: { id: Number(id) },
+      select: { clubId: true },
+    });
+
+    if (!athlete) {
+      return NextResponse.json({ error: i18next.t('athleteNotFound') }, { status: 404 });
+    }
+
+    // Validate preferred numbers - check for duplicates per color in the club (excluding this athlete)
+    for (const pref of preferredNumbersData) {
+      const existing = await prisma.athletePreferredNumber.findFirst({
+        where: {
+          color: pref.color,
+          number: pref.number,
+          athlete: {
+            clubId: athlete.clubId,
+            id: { not: Number(id) },
+          },
+        },
+        include: {
+          athlete: true,
+        },
+      });
+      if (existing) {
+        return NextResponse.json(
+          {
+            error: i18next.t('preferredNumberDuplicate', {
+              number: pref.number,
+              color: pref.color,
+              athlete: existing.athlete.name,
+            }),
+          },
+          { status: 400 }
+        );
+      }
+    }
 
     // Update the athlete in the database, including preferredNumbers
     const updatedAthlete = await prisma.athlete.update({

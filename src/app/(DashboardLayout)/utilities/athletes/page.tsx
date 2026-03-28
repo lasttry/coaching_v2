@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -14,9 +14,10 @@ import {
   Grid,
   TextField,
   MenuItem,
+  Chip,
+  Divider,
 } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
@@ -55,7 +56,9 @@ const AthletesPage: React.FC = () => {
   const { message: successMessage, setTimedMessage: setSuccessMessage } = useMessage(5000);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [equipmentColors, setEquipmentColors] = useState<{ color: string; colorHex: string }[]>([]);
+  const [newPrefColor, setNewPrefColor] = useState<string>('');
+  const [newPrefNumber, setNewPrefNumber] = useState<string>('');
 
   const validateField = (
     field: keyof AthleteInterface,
@@ -117,84 +120,61 @@ const AthletesPage: React.FC = () => {
     }));
   };
 
-  const handlePreferredNumberChange = (index: number, value: string): void => {
+  const handlePreferredNumberChange = (color: string, value: string): void => {
     const numericValue = Number(value);
     if (Number.isNaN(numericValue)) return;
 
     setSelectedAthlete((prev) => {
       const current = prev.preferredNumbers ?? [];
-      const updated = current.map((p, i) =>
-        i === index
-          ? {
-              ...p,
-              number: numericValue,
-            }
-          : p
-      );
+      const existingIndex = current.findIndex((p) => p.color === color);
+
+      if (existingIndex >= 0) {
+        const updated = current.map((p) =>
+          p.color === color ? { ...p, number: numericValue } : p
+        );
+        return { ...prev, preferredNumbers: updated };
+      } else {
+        return {
+          ...prev,
+          preferredNumbers: [...current, { color, number: numericValue }],
+        };
+      }
+    });
+  };
+
+  const handleRemovePreferredNumber = (color: string): void => {
+    setSelectedAthlete((prev) => {
+      const current = prev.preferredNumbers ?? [];
+      const updated = current.filter((p) => p.color !== color);
       return { ...prev, preferredNumbers: updated };
     });
   };
 
-  const handleAddPreferredNumber = (): void => {
-    setSelectedAthlete((prev) => {
-      const current = prev.preferredNumbers ?? [];
-      const nextPreference =
-        current.length === 0 ? 1 : Math.max(...current.map((p) => p.preference ?? 0)) + 1;
-
-      const newPreferred: AthletePreferredNumberInterface = {
-        id: 0,
-        athleteId: prev.id ?? 0,
-        number: 0,
-        preference: nextPreference,
-      };
-
-      return {
-        ...prev,
-        preferredNumbers: [...current, newPreferred],
-      };
-    });
+  const getPreferredNumberForColor = (color: string): number | '' => {
+    const pref = selectedAthlete.preferredNumbers?.find((p) => p.color === color);
+    return pref?.number ?? '';
   };
 
-  const handleRemovePreferredNumber = (index: number): void => {
-    setSelectedAthlete((prev) => {
-      const current = prev.preferredNumbers ?? [];
-      const updated = current.filter((_, i) => i !== index);
-      return { ...prev, preferredNumbers: updated };
-    });
+  const getAvailableColorsForNewPref = (): { color: string; colorHex: string }[] => {
+    const usedColors = new Set(selectedAthlete.preferredNumbers?.map((p) => p.color) ?? []);
+    return equipmentColors.filter((c) => !usedColors.has(c.color));
   };
 
-  const handleDragStart = (index: number) => (): void => {
-    setDragIndex(index);
+  const getColorHex = (colorName: string): string => {
+    return equipmentColors.find((c) => c.color === colorName)?.colorHex || '#ccc';
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
-    event.preventDefault();
+  const handleAddNewPreferredNumber = (): void => {
+    if (!newPrefColor || !newPrefNumber) return;
+    const num = Number(newPrefNumber);
+    if (Number.isNaN(num) || num <= 0) return;
+    setSelectedAthlete((prev) => ({
+      ...prev,
+      preferredNumbers: [...(prev.preferredNumbers ?? []), { color: newPrefColor, number: num }],
+    }));
+    setNewPrefColor('');
+    setNewPrefNumber('');
   };
-
-  const handleDrop =
-    (index: number) =>
-    (event: React.DragEvent<HTMLDivElement>): void => {
-      event.preventDefault();
-      if (dragIndex === null || dragIndex === index) return;
-
-      setSelectedAthlete((prev) => {
-        const current = prev.preferredNumbers ?? [];
-        if (dragIndex < 0 || dragIndex >= current.length) return prev;
-
-        const reordered = [...current];
-        const [moved] = reordered.splice(dragIndex, 1);
-        reordered.splice(index, 0, moved);
-
-        const withPreferences = reordered.map((p, i) => ({
-          ...p,
-          preference: i + 1,
-        }));
-
-        return { ...prev, preferredNumbers: withPreferences };
-      });
-
-      setDragIndex(null);
-    };
 
   const handleResetForm = (): void => {
     setSelectedAthlete(buildEmptyAthlete());
@@ -225,11 +205,24 @@ const AthletesPage: React.FC = () => {
     }
   }, [t, setErrorMessage]);
 
+  const fetchEquipmentColors = useCallback(async (): Promise<void> => {
+    try {
+      const response = await fetch('/api/equipments/colors');
+      const data = await response.json();
+      if (response.ok && Array.isArray(data)) {
+        setEquipmentColors(data);
+      }
+    } catch (err) {
+      log.error('Error fetching equipment colors:', err);
+    }
+  }, []);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       fetchAthletes();
+      fetchEquipmentColors();
     }
-  }, [fetchAthletes]);
+  }, [fetchAthletes, fetchEquipmentColors]);
 
   const handleOpenNewAthleteDialog = (): void => {
     setSelectedAthlete(buildEmptyAthlete());
@@ -237,8 +230,12 @@ const AthletesPage: React.FC = () => {
   };
 
   const handleOpenEditAthleteDialog = (athlete: AthleteInterface): void => {
+    const birthdateFormatted = athlete.birthdate
+      ? new Date(athlete.birthdate).toISOString().split('T')[0]
+      : '';
     setSelectedAthlete({
       ...athlete,
+      birthdate: birthdateFormatted,
       preferredNumbers: athlete.preferredNumbers ?? [],
     });
     setOpenDialog(true);
@@ -290,55 +287,28 @@ const AthletesPage: React.FC = () => {
     }
   };
 
-  const columns: GridColDef<AthleteInterface>[] = [
-    { field: 'number', headerName: t('number'), flex: 0.7, minWidth: 80 },
-    { field: 'name', headerName: t('name'), flex: 2, minWidth: 180 },
-    {
-      field: 'birthdate',
-      headerName: t('birthdate'),
-      flex: 1,
-      minWidth: 120,
-      valueFormatter: (_value, row) =>
-        row.birthdate ? dayjs(row.birthdate).format('YYYY-MM-DD') : '-',
-    },
-    { field: 'fpbNumber', headerName: t('fpbNumber'), flex: 1, minWidth: 110 },
-    { field: 'shirtSize', headerName: t('shirtSize'), flex: 0.7, minWidth: 80 },
-    {
-      field: 'active',
-      headerName: t('active'),
-      flex: 0.7,
-      minWidth: 80,
-      valueFormatter: (_value, row) => (row.active ? t('yes') : t('no')),
-    },
-    {
-      field: 'actions',
-      headerName: t('actions'),
-      flex: 1,
-      minWidth: 160,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <Box>
-          <Button
-            size="small"
-            variant="outlined"
-            sx={{ mr: 1 }}
-            onClick={() => handleOpenEditAthleteDialog(params.row)}
-          >
-            {t('edit')}
-          </Button>
-          <Button
-            size="small"
-            color="error"
-            variant="contained"
-            onClick={() => params.row.id !== undefined && setDeleteConfirmId(params.row.id)}
-          >
-            {t('delete')}
-          </Button>
-        </Box>
-      ),
-    },
-  ];
+  const athletesGroupedByYear = useMemo(() => {
+    const grouped: Record<string, AthleteInterface[]> = {};
+
+    athletes.forEach((athlete) => {
+      const year = athlete.birthdate ? dayjs(athlete.birthdate).format('YYYY') : t('unknown');
+      if (!grouped[year]) {
+        grouped[year] = [];
+      }
+      grouped[year].push(athlete);
+    });
+
+    Object.keys(grouped).forEach((year) => {
+      grouped[year].sort((a, b) => a.name.localeCompare(b.name, 'pt'));
+    });
+
+    const sortedYears = Object.keys(grouped).sort((a, b) => b.localeCompare(a));
+
+    return sortedYears.map((year) => ({
+      year,
+      athletes: grouped[year],
+    }));
+  }, [athletes, t]);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -380,20 +350,85 @@ const AthletesPage: React.FC = () => {
         </Box>
       )}
 
-      {/* Tabela */}
-      <Paper elevation={1}>
-        <Box sx={{ height: 520, width: '100%' }}>
-          <DataGrid
-            rows={athletes}
-            columns={columns}
-            loading={loading}
-            getRowId={(row) => row.id!}
-            pageSizeOptions={[5, 10, 20]}
-            pagination
-            disableRowSelectionOnClick
-            autoHeight={false}
-          />
-        </Box>
+      {/* Lista agrupada por ano */}
+      <Paper elevation={1} sx={{ p: 2 }}>
+        {loading && <Typography color="text.secondary">{t('loading')}</Typography>}
+
+        {!loading && athletes.length === 0 && (
+          <Typography color="text.secondary">{t('noAthletesFound')}</Typography>
+        )}
+
+        {!loading &&
+          athletesGroupedByYear.map((group, groupIndex) => (
+            <Box key={group.year}>
+              {groupIndex > 0 && <Divider sx={{ my: 2 }} />}
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
+                <Chip
+                  label={group.year}
+                  size="small"
+                  color="primary"
+                  sx={{ fontWeight: 'bold', mr: 1 }}
+                />
+                <Typography variant="caption" color="text.secondary">
+                  ({group.athletes.length}{' '}
+                  {group.athletes.length === 1 ? t('athlete') : t('Athletes').toLowerCase()})
+                </Typography>
+              </Box>
+
+              {group.athletes.map((athlete) => (
+                <Box
+                  key={athlete.id}
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    py: 1,
+                    px: 1.5,
+                    mb: 0.5,
+                    borderRadius: 1,
+                    backgroundColor: athlete.active ? 'grey.50' : 'action.disabledBackground',
+                    '&:hover': { backgroundColor: 'grey.100' },
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ minWidth: 35, fontWeight: 'bold', color: 'primary.main' }}
+                    >
+                      {athlete.number || '-'}
+                    </Typography>
+                    <Typography variant="body1" sx={{ flex: 1 }}>
+                      {athlete.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
+                      {athlete.birthdate ? dayjs(athlete.birthdate).format('DD/MM/YYYY') : '-'}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ minWidth: 50 }}>
+                      {athlete.shirtSize || '-'}
+                    </Typography>
+                    {!athlete.active && <Chip label={t('inactive')} size="small" color="default" />}
+                  </Box>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={() => handleOpenEditAthleteDialog(athlete)}
+                    >
+                      {t('edit')}
+                    </Button>
+                    <Button
+                      size="small"
+                      color="error"
+                      variant="outlined"
+                      onClick={() => athlete.id !== undefined && setDeleteConfirmId(athlete.id)}
+                    >
+                      {t('delete')}
+                    </Button>
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          ))}
       </Paper>
 
       {/* Dialog Add/Edit */}
@@ -460,60 +495,112 @@ const AthletesPage: React.FC = () => {
                   </Select>
                 </Grid>
 
-                {/* Preferred numbers with drag-and-drop ordering */}
-                <Grid size={{ xs: 12 }}>
-                  <Grid container spacing={1} alignItems="center">
-                    <Grid size={{ xs: 12 }} sx={{ mb: 1 }}>
-                      <strong>{t('preferredNumbers')}</strong>
-                    </Grid>
+                {/* Preferred numbers per equipment color */}
+                {equipmentColors.length > 0 && (
+                  <Grid size={{ xs: 12 }}>
+                    <Grid container spacing={1} alignItems="center">
+                      <Grid size={{ xs: 12 }} sx={{ mb: 1 }}>
+                        <strong>{t('preferredNumbers')}</strong>
+                        <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
+                          ({t('optional')})
+                        </Typography>
+                      </Grid>
 
-                    {(selectedAthlete.preferredNumbers ?? []).map((p, index) => (
-                      <Grid
-                        key={`${p.id}-${index}`}
-                        container
-                        spacing={1}
-                        alignItems="center"
-                        sx={{ mb: 0.5, cursor: 'grab' }}
-                        draggable
-                        onDragStart={handleDragStart(index)}
-                        onDragOver={handleDragOver}
-                        onDrop={handleDrop(index)}
-                      >
-                        <Grid size={{ xs: 2, sm: 1 }}>
-                          <span>{index + 1}.</span>
-                        </Grid>
-                        <Grid size={{ xs: 7, sm: 4 }}>
-                          <TextField
-                            label={t('preferredNumber')}
-                            type="number"
-                            fullWidth
-                            size="small"
-                            value={p.number ?? ''}
-                            onChange={(e) => handlePreferredNumberChange(index, e.target.value)}
+                      {(selectedAthlete.preferredNumbers ?? []).map((pref) => (
+                        <Box
+                          key={pref.color}
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            mb: 1,
+                            p: 1,
+                            borderRadius: 1,
+                            backgroundColor: 'grey.50',
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              width: 24,
+                              height: 24,
+                              backgroundColor: getColorHex(pref.color),
+                              border: '1px solid #999',
+                              borderRadius: 1,
+                              flexShrink: 0,
+                            }}
                           />
-                        </Grid>
-                        <Grid size={{ xs: 3, sm: 2 }}>
+                          <Typography variant="body2" sx={{ minWidth: 80 }}>
+                            {pref.color}
+                          </Typography>
+                          <Typography variant="body1" fontWeight="bold" sx={{ minWidth: 50 }}>
+                            Nº {pref.number}
+                          </Typography>
                           <Button
                             variant="outlined"
                             color="error"
-                            onClick={() => handleRemovePreferredNumber(index)}
+                            size="small"
+                            onClick={() => handleRemovePreferredNumber(pref.color)}
                           >
                             {t('remove')}
                           </Button>
-                        </Grid>
-                      </Grid>
-                    ))}
+                        </Box>
+                      ))}
 
-                    <Grid
-                      size={{ xs: 12 }}
-                      sx={{ mt: 1, display: 'flex', justifyContent: 'flex-start' }}
-                    >
-                      <Button variant="outlined" onClick={handleAddPreferredNumber}>
-                        {t('addPreferredNumber')}
-                      </Button>
+                      {getAvailableColorsForNewPref().length > 0 && (
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1,
+                            mt: 1,
+                            flexWrap: 'wrap',
+                          }}
+                        >
+                          <Select
+                            value={newPrefColor}
+                            onChange={(e) => setNewPrefColor(e.target.value)}
+                            size="small"
+                            displayEmpty
+                            sx={{ minWidth: 150 }}
+                          >
+                            <MenuItem value="">{t('selectColor')}</MenuItem>
+                            {getAvailableColorsForNewPref().map((c) => (
+                              <MenuItem key={c.color} value={c.color}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                  <Box
+                                    sx={{
+                                      width: 16,
+                                      height: 16,
+                                      backgroundColor: c.colorHex,
+                                      border: '1px solid #999',
+                                      borderRadius: 1,
+                                    }}
+                                  />
+                                  {c.color}
+                                </Box>
+                              </MenuItem>
+                            ))}
+                          </Select>
+                          <TextField
+                            label={t('number')}
+                            type="number"
+                            size="small"
+                            value={newPrefNumber}
+                            onChange={(e) => setNewPrefNumber(e.target.value)}
+                            sx={{ width: 100 }}
+                          />
+                          <Button
+                            variant="contained"
+                            onClick={handleAddNewPreferredNumber}
+                            disabled={!newPrefColor || !newPrefNumber}
+                          >
+                            {t('add')}
+                          </Button>
+                        </Box>
+                      )}
                     </Grid>
                   </Grid>
-                </Grid>
+                )}
               </Grid>
             </Box>
           )}
