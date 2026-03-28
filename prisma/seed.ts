@@ -20,7 +20,10 @@ async function hashPassword(password: string, salt?: string): Promise<string> {
     salt = generateSalt();
   }
   const passwordData = encode(password + salt);
-  const hashBuffer = await webcrypto.subtle.digest('SHA-256', passwordData);
+  const hashBuffer = await webcrypto.subtle.digest(
+    'SHA-256',
+    passwordData as unknown as BufferSource
+  );
   const hashedPassword = Array.from(new Uint8Array(hashBuffer))
     .map((byte) => byte.toString(16).padStart(2, '0'))
     .join('');
