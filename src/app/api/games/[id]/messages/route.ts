@@ -5,21 +5,20 @@ import { log } from '@/lib/logger';
 import { parseAndValidateId } from '@/utils/validateId';
 import { prisma } from '@/lib/prisma';
 
-const apiKey = process.env.OPENAI_API_KEY;
-if (!apiKey) {
-  throw new Error('OPENAI_API_KEY is not configured');
-}
-
-const client = new OpenAI({
-  apiKey,
-});
-
 type Params = Promise<{ id: string }>;
 
 export async function GET(
   req: NextRequest,
   segmentData: { params: Params }
 ): Promise<NextResponse> {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    log.error('OPENAI_API_KEY is not configured');
+    return NextResponse.json({ error: 'OpenAI API key not configured' }, { status: 500 });
+  }
+
+  const client = new OpenAI({ apiKey });
+
   const session = await auth();
   if (
     !session?.user ||
@@ -61,7 +60,7 @@ export async function GET(
     const encontroMillis = gameStartTime.getTime() - 75 * 60 * 1000; // 1h15m antes
     const encontroDate = new Date(encontroMillis);
     const gameData = {
-      Adversário: game?.opponent.name,
+      Adversário: game?.opponent?.name,
       Local: game?.venue?.name,
       Data: gameDate.toISOString(),
       Encontro: encontroDate.toISOString(),
