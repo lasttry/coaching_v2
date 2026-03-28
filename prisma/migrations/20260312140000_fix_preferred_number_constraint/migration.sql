@@ -1,17 +1,6 @@
--- Drop ALL existing constraints on AthletePreferredNumber to start fresh
-DO $$ 
-DECLARE
-    r RECORD;
-BEGIN
-    FOR r IN (SELECT conname FROM pg_constraint WHERE conrelid = '"AthletePreferredNumber"'::regclass AND contype = 'u')
-    LOOP
-        EXECUTE 'ALTER TABLE "AthletePreferredNumber" DROP CONSTRAINT IF EXISTS ' || quote_ident(r.conname);
-    END LOOP;
-END $$;
+-- Drop the old unique INDEX (not constraint) on athleteId + number
+DROP INDEX IF EXISTS "AthletePreferredNumber_athleteId_number_key";
 
--- Ensure only the correct constraint exists (athleteId + color)
-ALTER TABLE "AthletePreferredNumber" DROP CONSTRAINT IF EXISTS "AthletePreferredNumber_athleteId_number_key";
-ALTER TABLE "AthletePreferredNumber" DROP CONSTRAINT IF EXISTS "AthletePreferredNumber_athleteId_color_key";
-
--- Recreate the correct unique constraint
-ALTER TABLE "AthletePreferredNumber" ADD CONSTRAINT "AthletePreferredNumber_athleteId_color_key" UNIQUE ("athleteId", "color");
+-- Ensure the correct unique index exists (athleteId + color)
+CREATE UNIQUE INDEX IF NOT EXISTS "AthletePreferredNumber_athleteId_color_key" 
+ON "AthletePreferredNumber"("athleteId", "color");
