@@ -1,11 +1,30 @@
 import { PrismaPg } from '@prisma/adapter-pg';
 import { PlatformRole, PrismaClient, Gender } from '../generated/prisma/client';
-import bcrypt from 'bcryptjs';
+import { webcrypto } from 'crypto';
 import 'dotenv/config';
 
-async function hashPassword(password: string): Promise<string> {
-  const salt = await bcrypt.genSalt(10);
-  return bcrypt.hash(password, salt);
+function encode(text: string): Uint8Array {
+  return new TextEncoder().encode(text);
+}
+
+function generateSalt(length: number = 16): string {
+  const array = new Uint8Array(length);
+  webcrypto.getRandomValues(array);
+  return Array.from(array)
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function hashPassword(password: string, salt?: string): Promise<string> {
+  if (!salt) {
+    salt = generateSalt();
+  }
+  const passwordData = encode(password + salt);
+  const hashBuffer = await webcrypto.subtle.digest('SHA-256', passwordData);
+  const hashedPassword = Array.from(new Uint8Array(hashBuffer))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+  return `${salt}:${hashedPassword}`;
 }
 
 // Initialize Prisma Client with adapter
