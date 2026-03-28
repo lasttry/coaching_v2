@@ -6,6 +6,7 @@ import { TeamInterface } from '../teams/types';
 import { AthleteInterface } from '../athlete/type';
 import { GameEquipmentInterface } from '../gameEquipment/type';
 import { OpponentInterface } from '../opponent/type';
+export { OpponentInterface };
 
 import type { $Enums } from '@prisma/client';
 
