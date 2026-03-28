@@ -42,6 +42,8 @@ export interface GameInterface {
   scorer?: string;
   timekeeper?: string;
   shotClock?: string;
+  opponentResultsCount?: number;
+  speech?: string | null;
 
   createdAt?: Date;
   updatedAt?: Date;

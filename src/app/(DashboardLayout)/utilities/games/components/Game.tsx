@@ -86,13 +86,17 @@ const GameComponent: React.FC<GameProps> = ({
     ? teams.filter((team) => team.echelonId === selectedCompetition.echelonId)
     : [];
 
-  const distinctEquipmentColors = React.useMemo(
-    () =>
-      Array.from(
-        new Set(equipments.map((eq) => eq.color).filter((c): c is string => Boolean(c)))
-      ).sort(),
-    [equipments]
-  );
+  const distinctEquipmentColors = React.useMemo(() => {
+    const colorMap = new Map<string, string>();
+    equipments.forEach((eq) => {
+      if (eq.color && !colorMap.has(eq.color)) {
+        colorMap.set(eq.color, eq.colorHex || '#000000');
+      }
+    });
+    return Array.from(colorMap.entries())
+      .map(([color, colorHex]) => ({ color, colorHex }))
+      .sort((a, b) => a.color.localeCompare(b.color));
+  }, [equipments]);
 
   useEffect(() => {
     if (Array.isArray(game.gameEquipments)) {
@@ -1064,8 +1068,54 @@ const GameComponent: React.FC<GameProps> = ({
         </FormControl>
       </Grid>
 
+      <Grid size={{ xs: 12, sm: 3 }}>
+        <TextField
+          fullWidth
+          type="number"
+          label={t('opponentResultsCount')}
+          value={game.opponentResultsCount ?? 5}
+          onChange={(e) =>
+            setGame((prev) => ({
+              ...prev,
+              opponentResultsCount: Number(e.target.value) || 5,
+            }))
+          }
+          inputProps={{ min: 0, max: 20 }}
+          helperText={t('opponentResultsCountHelper')}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12 }}>
+        <TextField
+          fullWidth
+          multiline
+          rows={4}
+          label={t('speech')}
+          value={game.speech ?? ''}
+          onChange={(e) =>
+            setGame((prev) => ({
+              ...prev,
+              speech: e.target.value,
+            }))
+          }
+          helperText={t('speechHelper')}
+        />
+      </Grid>
+
       <Box mt={2}>
-        <Typography variant="h6">{t('Athletes')}</Typography>
+        <Box display="flex" alignItems="center" gap={2} mb={1}>
+          <Typography variant="h6">{t('Athletes')}</Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              fontWeight: 'bold',
+              color:
+                gameAthletes.filter((a) => a.selected).length >= 12 ? 'error.main' : 'primary.main',
+            }}
+          >
+            {gameAthletes.filter((a) => a.selected).length}/12
+          </Typography>
+        </Box>
         {gameAthletes.map((athlete) => {
           const assignment = sourceGameEquipments.find((ge) => ge.athleteId === athlete.athleteId);
           const assignedEquipment = assignment
@@ -1123,11 +1173,31 @@ const GameComponent: React.FC<GameProps> = ({
                 </Grid>
               ))}
               <Grid size={2}>
-                <Typography variant="body2">
-                  {assignedEquipment
-                    ? `${assignedEquipment.color} #${assignedEquipment.number} (${assignedEquipment.size})`
-                    : t('equipment.notAssigned')}
-                </Typography>
+                {assignedEquipment ? (
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Box
+                      sx={{
+                        width: 16,
+                        height: 16,
+                        backgroundColor:
+                          assignedEquipment.colorHex ||
+                          assignedEquipment.equipmentColor?.colorHex ||
+                          '#000000',
+                        borderRadius: '3px',
+                        border: '1px solid #ccc',
+                        flexShrink: 0,
+                      }}
+                    />
+                    <Typography variant="body2">
+                      {assignedEquipment.color || assignedEquipment.equipmentColor?.color} #
+                      {assignedEquipment.number} ({assignedEquipment.size})
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    {t('equipment.notAssigned')}
+                  </Typography>
+                )}
               </Grid>
             </Grid>
           );
@@ -1144,11 +1214,41 @@ const GameComponent: React.FC<GameProps> = ({
                 value={selectedEquipmentColor}
                 label={t('equipment.color')}
                 onChange={(e) => setSelectedEquipmentColor(e.target.value as string)}
+                renderValue={(selected) => {
+                  const found = distinctEquipmentColors.find((c) => c.color === selected);
+                  return found ? (
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Box
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: found.colorHex,
+                          borderRadius: '4px',
+                          border: '1px solid #ccc',
+                        }}
+                      />
+                      {found.color}
+                    </Box>
+                  ) : (
+                    t('equipment.selectColor')
+                  );
+                }}
               >
                 <MenuItem value="">{t('equipment.selectColor')}</MenuItem>
-                {distinctEquipmentColors.map((color) => (
+                {distinctEquipmentColors.map(({ color, colorHex }) => (
                   <MenuItem key={color} value={color}>
-                    {color}
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <Box
+                        sx={{
+                          width: 20,
+                          height: 20,
+                          backgroundColor: colorHex,
+                          borderRadius: '4px',
+                          border: '1px solid #ccc',
+                        }}
+                      />
+                      {color}
+                    </Box>
                   </MenuItem>
                 ))}
               </Select>

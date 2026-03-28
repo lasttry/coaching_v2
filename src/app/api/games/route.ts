@@ -46,6 +46,8 @@ export async function POST(req: Request): Promise<NextResponse> {
         date: new Date(data.date),
         away: Boolean(data.away),
         notes: data.notes ?? null,
+        opponentResultsCount: data.opponentResultsCount ? Number(data.opponentResultsCount) : 5,
+        speech: data.speech ?? null,
         image1,
         image2,
         image3,
@@ -125,7 +127,15 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
           competitionSerie: true,
           venue: true,
           gameAthletes: { include: { athlete: true } },
-          gameEquipments: true,
+          gameEquipments: {
+            include: {
+              equipment: {
+                include: {
+                  equipmentColor: true,
+                },
+              },
+            },
+          },
         },
       }),
       prisma.game.count(),

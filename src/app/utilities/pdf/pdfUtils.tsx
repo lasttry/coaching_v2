@@ -136,30 +136,45 @@ const formatAthleteName = (fullName: string | undefined): string => {
   return `${firstInitial} ${lastName}`;
 };
 
-const athletesTableBody = (game: GameInterface): (string | number | null | undefined)[][] => {
-  return game.gameAthletes
-    ?.sort((a, b) => {
-      // First, sort by number, with -1 always last
-      const numberA = parseInt(a.number);
-      const numberB = parseInt(b.number);
+const getGameEquipmentColor = (game: GameInterface): { color: string; colorHex: string } | null => {
+  const firstAssignment = game.gameEquipments?.[0];
+  if (!firstAssignment?.equipment) return null;
+  const equipment = firstAssignment.equipment;
+  const color = equipment.color || equipment.equipmentColor?.color || '';
+  const colorHex = equipment.colorHex || equipment.equipmentColor?.colorHex || '';
+  return color ? { color, colorHex } : null;
+};
 
-      if (numberA === -1 && numberB !== -1) return 1;
-      if (numberB === -1 && numberA !== -1) return -1;
-      if (numberA !== numberB) return numberA - numberB;
+const athletesTableBody = (
+  game: GameInterface
+): { content: string; styles?: { fillColor?: string } }[][] => {
+  return (
+    game.gameAthletes
+      ?.sort((a, b) => {
+        // First, sort by number, with -1 always last
+        const numberA = parseInt(a.number);
+        const numberB = parseInt(b.number);
 
-      // ✅ Safely handle missing athlete or athlete.name
-      const nameA = a.athlete?.name ?? '';
-      const nameB = b.athlete?.name ?? '';
-      return nameA.localeCompare(nameB);
-    })
-    .map((entry) => [
-      formatAthleteName(entry.athlete?.name),
-      entry.number === '-1' ? '' : entry.number,
-      entry.period1 ? 'X' : '',
-      entry.period2 ? 'X' : '',
-      entry.period3 ? 'X' : '',
-      entry.period4 ? 'X' : '',
-    ]);
+        if (numberA === -1 && numberB !== -1) return 1;
+        if (numberB === -1 && numberA !== -1) return -1;
+        if (numberA !== numberB) return numberA - numberB;
+
+        // ✅ Safely handle missing athlete or athlete.name
+        const nameA = a.athlete?.name ?? '';
+        const nameB = b.athlete?.name ?? '';
+        return nameA.localeCompare(nameB);
+      })
+      .map((entry) => {
+        return [
+          { content: formatAthleteName(entry.athlete?.name) },
+          { content: entry.number === '-1' ? '' : entry.number },
+          { content: entry.period1 ? 'X' : '' },
+          { content: entry.period2 ? 'X' : '' },
+          { content: entry.period3 ? 'X' : '' },
+          { content: entry.period4 ? 'X' : '' },
+        ];
+      }) || []
+  );
 };
 
 const timedAthletesTableBody = (
@@ -184,7 +199,7 @@ const timedAthletesTableBody = (
     return [
       [
         {
-          content: String(entry[2] ?? ''),
+          content: entry[2]?.content ?? '',
           styles: {
             font: 'scienceGothic',
             lineWidth: {
@@ -195,7 +210,7 @@ const timedAthletesTableBody = (
             },
           },
         },
-        { content: String(entry[3] ?? '') },
+        { content: entry[3]?.content ?? '' },
         ...timedPeriod(),
         ...timedPeriod(),
         ...timedPeriod(),
@@ -230,7 +245,7 @@ const statisticsAthletesTableBody = (
     return [
       [
         {
-          content: String(entry[2] ?? ''),
+          content: entry[2]?.content ?? '',
           rowSpan: 2,
           styles: {
             lineWidth: {
@@ -242,7 +257,7 @@ const statisticsAthletesTableBody = (
           },
         },
         {
-          content: String(entry[3] ?? ''),
+          content: entry[3]?.content ?? '',
           rowSpan: 2,
           styles: {
             lineWidth: {
@@ -252,7 +267,7 @@ const statisticsAthletesTableBody = (
               left: lineWidthNormal,
             },
           },
-        }, // Athlete's number, spans 2 rows
+        }, // Athlete's period markers, spans 2 rows
         '1',
         '1',
         '1',
@@ -355,6 +370,21 @@ const generateTopLeft = async (
   doc.setFontSize(12);
   doc.text('Jogadores', startX, startY);
 
+  // Show equipment color indicator
+  const equipmentColor = getGameEquipmentColor(game);
+  if (equipmentColor) {
+    const colorBoxX = startX + 30;
+    const colorBoxY = startY - 3;
+    // Draw color box
+    doc.setFillColor(equipmentColor.colorHex || '#000000');
+    doc.rect(colorBoxX, colorBoxY, 8, 5, 'F');
+    doc.setDrawColor(0);
+    doc.rect(colorBoxX, colorBoxY, 8, 5, 'S');
+    // Draw color name
+    doc.setFontSize(9);
+    doc.text(equipmentColor.color, colorBoxX + 10, startY);
+  }
+
   if (bannerImage) {
     doc.addImage(bannerImage, 'PNG', startX + 55, startY - padding, bannerWidth, bannerHeight);
   }
@@ -362,9 +392,9 @@ const generateTopLeft = async (
   const tableWidth = doc.internal.pageSize.getWidth() / 2 - padding * 2;
   const columns = 4;
   const columnWidths = [
-    40, // First column (for 6 characters)
-    10,
-    ...Array(columns).fill((tableWidth - 50) / columns), // Last 10 columns, equally wide for a big "X"
+    40, // Nome
+    10, // #
+    ...Array(columns).fill((tableWidth - 50) / columns), // Periods
   ];
   type ColumnStyle = {
     cellWidth: number;
@@ -384,9 +414,7 @@ const generateTopLeft = async (
     tableWidth: tableWidth + 10,
     columnStyles,
     head: [['Nome', '#', '1', '2', '3', '4']],
-    body: athletesTableBody(game)?.map(
-      (row) => row.map((cell) => String(cell ?? '')) // Convert null/undefined to ''
-    ),
+    body: athletesTableBody(game),
     headStyles: {
       font: 'scienceGothic',
       fontStyle: 'normal', // <- não tentar bold na fonte custom
@@ -486,7 +514,10 @@ const generateBottomLeft = async (
   // FPB latest results for opponent
   if (game.opponent && game.opponent.fpbTeamId) {
     try {
-      const res = await fetch(`/api/opponents/${game.opponent.id}/fpb/results`);
+      const resultsCount = game.opponentResultsCount ?? 5;
+      const res = await fetch(
+        `/api/opponents/${game.opponent.id}/fpb/results?limit=${resultsCount}`
+      );
       const resultsJson = (await res.json()) as { results?: FpbResultInterface[] };
 
       const latestResults: FpbResultInterface[] = resultsJson.results ?? [];
@@ -721,6 +752,18 @@ export const generatePDF = async (game: GameInterface, clubId?: number): Promise
     doc.internal.pageSize.getWidth(),
     doc.internal.pageSize.getHeight() / 2
   ); // Horizontal
+
+  // Add speech page if speech exists
+  if (game.speech && game.speech.trim()) {
+    doc.addPage();
+    doc.setFont('scienceGothic', 'normal');
+    doc.setFontSize(11);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxWidth = pageWidth - margin * 2;
+    const lines = doc.splitTextToSize(game.speech, maxWidth);
+    doc.text(lines, margin, margin);
+  }
 
   doc.save(`Folha_de_Jogo_${game.id}.pdf`);
 };

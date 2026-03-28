@@ -12,6 +12,9 @@ export async function GET(
   const params = await segmentData.params;
   const opponentId = Number(params.id);
 
+  const url = new URL(request.url);
+  const limit = Math.min(Math.max(Number(url.searchParams.get('limit')) || 5, 1), 20);
+
   if (Number.isNaN(opponentId)) {
     return NextResponse.json({ error: 'Invalid opponent ID' }, { status: 400 });
   }
@@ -25,7 +28,7 @@ export async function GET(
   }
 
   try {
-    const latestResults = await fetchFpbLatestResults(opponent.fpbTeamId, 10);
+    const latestResults = await fetchFpbLatestResults(opponent.fpbTeamId, limit);
     return NextResponse.json({ results: latestResults });
   } catch (error) {
     log.error('Error fetching FPB results:', error);

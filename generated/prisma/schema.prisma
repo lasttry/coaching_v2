@@ -98,36 +98,38 @@ model GameAthlete {
 }
 
 model Game {
-  id                 Int               @id @default(autoincrement())
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  number             Int?
-  date               DateTime
-  away               Boolean
-  notes              String?           @db.VarChar(1000)
-  clubId             Int
-  club               Club              @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  teamId             Int?
-  team               Team?             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  competitionId      Int?
-  competition        Competition?      @relation(fields: [competitionId], references: [id], onDelete: Cascade)
-  competitionSerieId Int?
-  competitionSerie   CompetitionSerie? @relation(fields: [competitionSerieId], references: [id])
-  opponentId         Int
-  opponent           Opponent          @relation(fields: [opponentId], references: [id])
-  venueId            Int?
-  venue              Venue?            @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  gameAthletes       GameAthlete[]
-  gameEquipments     GameEquipment[]
-  objectives         Objective[]       @relation("Objectives")
-  athleteReports     AthleteReport[]
-  statistics         Statistic[]
-  timeEntries        TimeEntry[]
-  refereeMain        String?
-  referee1           String?
-  scorer             String?
-  timer              String?
-  shotClock          String?
+  id                   Int               @id @default(autoincrement())
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  number               Int?
+  date                 DateTime
+  away                 Boolean
+  notes                String?           @db.VarChar(1000)
+  clubId               Int
+  club                 Club              @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  teamId               Int?
+  team                 Team?             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  competitionId        Int?
+  competition          Competition?      @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  competitionSerieId   Int?
+  competitionSerie     CompetitionSerie? @relation(fields: [competitionSerieId], references: [id])
+  opponentId           Int
+  opponent             Opponent          @relation(fields: [opponentId], references: [id])
+  venueId              Int?
+  venue                Venue?            @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  gameAthletes         GameAthlete[]
+  gameEquipments       GameEquipment[]
+  objectives           Objective[]       @relation("Objectives")
+  athleteReports       AthleteReport[]
+  statistics           Statistic[]
+  timeEntries          TimeEntry[]
+  refereeMain          String?
+  referee1             String?
+  scorer               String?
+  timer                String?
+  shotClock            String?
+  opponentResultsCount Int               @default(5)
+  speech               String?           @db.Text
 
   image1 String?
   image2 String?
@@ -285,33 +287,33 @@ model Drill {
 }
 
 model Echelon {
-  id           Int           @id @default(autoincrement())
-  minAge       Int
-  maxAge       Int?
-  name         String        @db.VarChar(50)
-  description  String?       @db.VarChar(255)
-  gender       Gender
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  teams        Team[]
-  competitions Competition[]
-  equipments   Equipment[]
+  id              Int              @id @default(autoincrement())
+  minAge          Int
+  maxAge          Int?
+  name            String           @db.VarChar(50)
+  description     String?          @db.VarChar(255)
+  gender          Gender
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  teams           Team[]
+  competitions    Competition[]
+  equipmentColors EquipmentColor[]
 }
 
 model Club {
-  id              Int           @id @default(autoincrement())
-  name            String        @unique @db.VarChar(50)
-  shortName       String?       @db.VarChar(6)
+  id              Int              @id @default(autoincrement())
+  name            String           @unique @db.VarChar(50)
+  shortName       String?          @db.VarChar(6)
   image           String?
-  backgroundColor String?       @db.VarChar(7)
-  foregroundColor String?       @db.VarChar(7)
-  accounts        AccountClub[] @relation("ClubToAccounts")
+  backgroundColor String?          @db.VarChar(7)
+  foregroundColor String?          @db.VarChar(7)
+  accounts        AccountClub[]    @relation("ClubToAccounts")
   athletes        Athlete[]
   games           Game[]
   macrocycles     Macrocycle[]
   teams           Team[]
   venues          Venue[]
-  equipments      Equipment[]
+  equipmentColors EquipmentColor[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -324,7 +326,7 @@ model Season {
   endDate   DateTime
   isCurrent Boolean  @default(false)
 
-  equipments Equipment[]
+  equipmentColors EquipmentColor[]
 }
 
 model Venue {
@@ -422,7 +424,7 @@ model AthletePreferredNumber {
   @@unique([athleteId, color])
 }
 
-model Equipment {
+model EquipmentColor {
   id        Int @id @default(autoincrement())
   clubId    Int
   seasonId  Int
@@ -434,17 +436,33 @@ model Equipment {
 
   color    String
   colorHex String @default("#000000")
-  number   Int
-  size     Size
+
+  equipments Equipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clubId, seasonId, echelonId, color])
+  @@index([clubId])
+  @@index([clubId, seasonId])
+  @@index([clubId, seasonId, echelonId])
+}
+
+model Equipment {
+  id               Int @id @default(autoincrement())
+  equipmentColorId Int
+
+  equipmentColor EquipmentColor @relation(fields: [equipmentColorId], references: [id], onDelete: Cascade)
+
+  number Int
+  size   Size
 
   gameEquipments GameEquipment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([clubId])
-  @@index([clubId, seasonId])
-  @@index([clubId, seasonId, echelonId])
+  @@index([equipmentColorId])
 }
 
 model GameEquipment {

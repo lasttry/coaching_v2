@@ -123,11 +123,13 @@ model Game {
   athleteReports     AthleteReport[]
   statistics         Statistic[]
   timeEntries        TimeEntry[]
-  refereeMain        String?
-  referee1           String?
-  scorer             String?
-  timer              String?
-  shotClock          String?
+  refereeMain           String?
+  referee1              String?
+  scorer                String?
+  timer                 String?
+  shotClock             String?
+  opponentResultsCount  Int     @default(5)
+  speech                String? @db.Text
 
   image1 String?
   image2 String?
@@ -295,7 +297,7 @@ model Echelon {
   updatedAt    DateTime      @updatedAt
   teams        Team[]
   competitions Competition[]
-  equipments   Equipment[]
+  equipmentColors EquipmentColor[]
 }
 
 model Club {
@@ -311,7 +313,7 @@ model Club {
   macrocycles     Macrocycle[]
   teams           Team[]
   venues          Venue[]
-  equipments      Equipment[]
+  equipmentColors EquipmentColor[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -324,7 +326,7 @@ model Season {
   endDate   DateTime
   isCurrent Boolean  @default(false)
 
-  equipments Equipment[]
+  equipmentColors EquipmentColor[]
 }
 
 model Venue {
@@ -422,7 +424,7 @@ model AthletePreferredNumber {
   @@unique([athleteId, color])
 }
 
-model Equipment {
+model EquipmentColor {
   id        Int @id @default(autoincrement())
   clubId    Int
   seasonId  Int
@@ -434,17 +436,33 @@ model Equipment {
 
   color    String
   colorHex String @default("#000000")
-  number   Int
-  size     Size
+
+  equipments Equipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clubId, seasonId, echelonId, color])
+  @@index([clubId])
+  @@index([clubId, seasonId])
+  @@index([clubId, seasonId, echelonId])
+}
+
+model Equipment {
+  id               Int @id @default(autoincrement())
+  equipmentColorId Int
+
+  equipmentColor EquipmentColor @relation(fields: [equipmentColorId], references: [id], onDelete: Cascade)
+
+  number Int
+  size   Size
 
   gameEquipments GameEquipment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([clubId])
-  @@index([clubId, seasonId])
-  @@index([clubId, seasonId, echelonId])
+  @@index([equipmentColorId])
 }
 
 model GameEquipment {

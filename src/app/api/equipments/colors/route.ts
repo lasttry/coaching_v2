@@ -10,7 +10,7 @@ export async function GET(): Promise<NextResponse> {
   }
 
   try {
-    const equipments = await prisma.equipment.findMany({
+    const equipmentColors = await prisma.equipmentColor.findMany({
       where: {
         clubId: Number(session.user.selectedClubId),
       },
@@ -21,7 +21,7 @@ export async function GET(): Promise<NextResponse> {
       distinct: ['color'],
     });
 
-    const colors = equipments.map((e) => ({ color: e.color, colorHex: e.colorHex }));
+    const colors = equipmentColors.map((e) => ({ color: e.color, colorHex: e.colorHex }));
     return NextResponse.json(colors);
   } catch (error) {
     log.error('Failed to fetch equipment colors:', error);

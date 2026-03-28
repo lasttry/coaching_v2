@@ -55,7 +55,15 @@ export async function GET(
       club: true,
       competition: true,
       competitionSerie: true,
-      gameEquipments: true,
+      gameEquipments: {
+        include: {
+          equipment: {
+            include: {
+              equipmentColor: true,
+            },
+          },
+        },
+      },
     },
   };
   const game = await prisma.game.findUnique(payload);
@@ -98,6 +106,10 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         ...(data.date && { date: new Date(data.date) }),
         ...(data.away !== undefined && { away: data.away }),
         ...(data.notes !== undefined && { notes: data.notes || null }),
+        ...(data.opponentResultsCount !== undefined && {
+          opponentResultsCount: Number(data.opponentResultsCount) || 5,
+        }),
+        ...(data.speech !== undefined && { speech: data.speech || null }),
         ...(data.venueId
           ? { venue: { connect: { id: data.venueId } } }
           : { venue: { disconnect: true } }),
@@ -188,7 +200,15 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
           },
         },
         venue: true,
-        gameEquipments: true,
+        gameEquipments: {
+          include: {
+            equipment: {
+              include: {
+                equipmentColor: true,
+              },
+            },
+          },
+        },
       },
     };
 

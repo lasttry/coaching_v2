@@ -15,35 +15,25 @@ import {
   AccordionSummary,
   AccordionDetails,
   MenuItem,
+  IconButton,
+  Chip,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import type { EquipmentInterface } from '@/types/equipment/types';
 import { useSession } from 'next-auth/react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { Size } from '@prisma/client';
-
-interface NewEquipmentState {
-  color: string;
-  colorHex: string;
-  number: string;
-  size: string;
-}
+import type { EquipmentColorInterface, EquipmentItemInterface } from '@/types/equipmentColor/types';
 
 interface SimpleEchelon {
   id: number;
   name: string;
 }
 
-const defaultNewEquipment = (): NewEquipmentState => ({
-  color: '',
-  colorHex: '#000000',
-  number: '',
-  size: '',
-});
-
 const EquipmentsPage: React.FC = () => {
   const { t } = useTranslation();
-
   const { data: session, status } = useSession();
 
   const clubId = session?.user?.selectedClubId;
@@ -51,28 +41,42 @@ const EquipmentsPage: React.FC = () => {
 
   const [echelons, setEchelons] = useState<SimpleEchelon[]>([]);
   const [selectedEchelonId, setSelectedEchelonId] = useState<number | ''>('');
-
-  const [equipments, setEquipments] = useState<EquipmentInterface[]>([]);
+  const [equipmentColors, setEquipmentColors] = useState<EquipmentColorInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const [openAddDialog, setOpenAddDialog] = useState<boolean>(false);
-  const [openEditDialog, setOpenEditDialog] = useState<boolean>(false);
-  const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+  // Add color dialog
+  const [openAddColorDialog, setOpenAddColorDialog] = useState<boolean>(false);
+  const [newColor, setNewColor] = useState({ color: '', colorHex: '#000000' });
 
-  const [newEquipment, setNewEquipment] = useState<NewEquipmentState>(defaultNewEquipment);
-  const [editEquipment, setEditEquipment] = useState<EquipmentInterface | null>(null);
+  // Edit color dialog
+  const [openEditColorDialog, setOpenEditColorDialog] = useState<boolean>(false);
+  const [editColor, setEditColor] = useState<EquipmentColorInterface | null>(null);
 
-  const fetchEquipments = useCallback(async (): Promise<void> => {
-    // Enquanto a sessão ainda está a carregar ou o utilizador não está autenticado,
-    // não fazemos fetch nem mostramos erro de clube/época.
-    if (status !== 'authenticated') {
-      return;
-    }
+  // Add equipment dialog
+  const [openAddEquipmentDialog, setOpenAddEquipmentDialog] = useState<boolean>(false);
+  const [addEquipmentColorId, setAddEquipmentColorId] = useState<number | null>(null);
+  const [newEquipment, setNewEquipment] = useState({ number: '', size: '' });
 
+  // Edit equipment dialog
+  const [openEditEquipmentDialog, setOpenEditEquipmentDialog] = useState<boolean>(false);
+  const [editEquipment, setEditEquipment] = useState<{
+    colorId: number;
+    equipment: EquipmentItemInterface;
+  } | null>(null);
+
+  // Delete confirmations
+  const [deleteColorId, setDeleteColorId] = useState<number | null>(null);
+  const [deleteEquipmentInfo, setDeleteEquipmentInfo] = useState<{
+    colorId: number;
+    equipmentId: number;
+  } | null>(null);
+
+  const fetchEquipmentColors = useCallback(async (): Promise<void> => {
+    if (status !== 'authenticated') return;
     if (!clubId || !seasonId) {
-      setEquipments([]);
+      setEquipmentColors([]);
       setErrorMessage(t('equipment.missingClubOrSeason'));
       return;
     }
@@ -81,29 +85,29 @@ const EquipmentsPage: React.FC = () => {
     setErrorMessage(null);
 
     try {
-      const res = await fetch(`/api/clubs/${clubId}/seasons/${seasonId}/equipments`, {
-        cache: 'no-store',
-      });
+      const url = selectedEchelonId
+        ? `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors?echelonId=${selectedEchelonId}`
+        : `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors`;
+
+      const res = await fetch(url, { cache: 'no-store' });
       const data = await res.json();
 
       if (!res.ok) {
-        const msg = (data as { error?: string }).error ?? t('equipment.fetchError');
-        setErrorMessage(msg);
-        setLoading(false);
+        setErrorMessage((data as { error?: string }).error ?? t('equipment.fetchError'));
         return;
       }
 
-      setEquipments(data as EquipmentInterface[]);
+      setEquipmentColors(data as EquipmentColorInterface[]);
     } catch {
       setErrorMessage(t('equipment.fetchNetworkError'));
     } finally {
       setLoading(false);
     }
-  }, [status, clubId, seasonId, t]);
+  }, [status, clubId, seasonId, selectedEchelonId, t]);
 
   useEffect(() => {
-    void fetchEquipments();
-  }, [fetchEquipments]);
+    void fetchEquipmentColors();
+  }, [fetchEquipmentColors]);
 
   useEffect(() => {
     if (status !== 'authenticated') return;
@@ -112,191 +116,222 @@ const EquipmentsPage: React.FC = () => {
       try {
         const res = await fetch('/api/echelons', { cache: 'no-store' });
         if (!res.ok) return;
-        const data = (await res.json()) as Array<{ id: number; name: string }>;
+        const data = (await res.json()) as SimpleEchelon[];
         setEchelons(data);
-
-        // se ainda não houver escalão selecionado, escolher o primeiro
-        if (data.length > 0 && selectedEchelonId === '') {
-          setSelectedEchelonId(data[0].id);
-        }
+        setSelectedEchelonId((prev) => (prev === '' && data.length > 0 ? data[0].id : prev));
       } catch {
-        // silencioso por enquanto; podemos adicionar erro dedicado se for preciso
+        // Silent
       }
     };
 
     void loadEchelons();
-  }, [status, selectedEchelonId]);
+  }, [status]);
 
-  const handleNewFieldChange = (field: keyof NewEquipmentState, value: string): void => {
-    setNewEquipment((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleEditFieldChange = (field: keyof EquipmentInterface, value: string): void => {
-    setEditEquipment((prev) => {
-      if (!prev) return prev;
-      if (field === 'number' || field === 'echelonId') {
-        const num = Number(value);
-        return {
-          ...prev,
-          [field]: Number.isNaN(num)
-            ? (undefined as unknown as EquipmentInterface[typeof field])
-            : (num as EquipmentInterface[typeof field]),
-        };
-      }
-      return {
-        ...prev,
-        [field]: value as EquipmentInterface[typeof field],
-      };
+  // Group by echelon
+  const groupedByEchelon = useMemo(() => {
+    const grouped: Record<string, EquipmentColorInterface[]> = {};
+    equipmentColors.forEach((ec) => {
+      const echelonName = ec.echelon?.name || t('equipment.unknownEchelon');
+      if (!grouped[echelonName]) grouped[echelonName] = [];
+      grouped[echelonName].push(ec);
     });
-  };
+    return grouped;
+  }, [equipmentColors, t]);
 
-  const handleAddEquipment = async (): Promise<void> => {
-    if (!newEquipment.color.trim() || !newEquipment.number.trim() || !newEquipment.size.trim()) {
-      setErrorMessage(t('equipment.formRequiredFields'));
+  // Add color
+  const handleAddColor = async (): Promise<void> => {
+    if (!newColor.color.trim()) {
+      setErrorMessage(t('equipment.colorRequired'));
       return;
     }
-
-    if (selectedEchelonId === '' || selectedEchelonId === undefined || selectedEchelonId === null) {
+    if (!selectedEchelonId) {
       setErrorMessage(t('equipment.missingEchelon'));
       return;
     }
 
-    const parsedNumber = Number(newEquipment.number);
-    if (Number.isNaN(parsedNumber) || parsedNumber <= 0) {
-      setErrorMessage(t('equipment.invalidNumber'));
-      return;
-    }
-
-    setErrorMessage(null);
-
     try {
-      const res = await fetch(`/api/clubs/${clubId}/seasons/${seasonId}/equipments`, {
+      const res = await fetch(`/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          color: newEquipment.color.trim(),
-          colorHex: newEquipment.colorHex.trim() || '#000000',
-          number: parsedNumber,
-          size: newEquipment.size.trim(),
+          color: newColor.color.trim(),
+          colorHex: newColor.colorHex,
           echelonId: selectedEchelonId,
         }),
       });
 
       const data = await res.json();
-
       if (!res.ok) {
-        const msg = (data as { error?: string }).error ?? t('equipment.createError');
-        setErrorMessage(msg);
+        setErrorMessage((data as { error?: string }).error ?? t('equipment.createError'));
         return;
       }
 
-      setSuccessMessage(t('equipment.createSuccess'));
-      setNewEquipment(defaultNewEquipment());
-      setOpenAddDialog(false);
-      void fetchEquipments();
+      setSuccessMessage(t('equipment.colorCreated'));
+      setNewColor({ color: '', colorHex: '#000000' });
+      setOpenAddColorDialog(false);
+      void fetchEquipmentColors();
     } catch {
       setErrorMessage(t('equipment.createNetworkError'));
     }
   };
 
-  const handleUpdateEquipment = async (): Promise<void> => {
-    if (!editEquipment || editEquipment.id === null) return;
-
-    if (!editEquipment.color.trim() || editEquipment.number === null || !editEquipment.size) {
-      setErrorMessage(t('equipment.formRequiredFields'));
-      return;
-    }
-
-    if (!editEquipment.echelonId || editEquipment.echelonId <= 0) {
-      setErrorMessage(t('equipment.missingEchelon'));
-      return;
-    }
-
-    setErrorMessage(null);
+  // Update color
+  const handleUpdateColor = async (): Promise<void> => {
+    if (!editColor) return;
 
     try {
       const res = await fetch(
-        `/api/clubs/${clubId}/seasons/${seasonId}/equipments/${editEquipment.id}`,
+        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${editColor.id}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            color: editEquipment.color.trim(),
-            colorHex: editEquipment.colorHex?.trim() || '#000000',
-            number: editEquipment.number,
-            size: editEquipment.size,
-            echelonId: editEquipment.echelonId,
+            color: editColor.color,
+            colorHex: editColor.colorHex,
           }),
         }
       );
 
       const data = await res.json();
-
       if (!res.ok) {
-        const msg = (data as { error?: string }).error ?? t('equipment.updateError');
-        setErrorMessage(msg);
+        setErrorMessage((data as { error?: string }).error ?? t('equipment.updateError'));
         return;
       }
 
       setSuccessMessage(t('equipment.updateSuccess'));
-      setOpenEditDialog(false);
-      setEditEquipment(null);
-      void fetchEquipments();
+      setOpenEditColorDialog(false);
+      setEditColor(null);
+      void fetchEquipmentColors();
     } catch {
       setErrorMessage(t('equipment.updateNetworkError'));
     }
   };
 
-  const handleDeleteEquipment = async (id: number): Promise<void> => {
-    setErrorMessage(null);
-
+  // Delete color
+  const handleDeleteColor = async (colorId: number): Promise<void> => {
     try {
-      const res = await fetch(`/api/clubs/${clubId}/seasons/${seasonId}/equipments/${id}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(
+        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${colorId}`,
+        { method: 'DELETE' }
+      );
 
-      const data = await res.json();
-
-      if (!res.ok || !(data as { success?: boolean }).success) {
-        const msg = (data as { error?: string }).error ?? t('equipment.deleteError');
-        setErrorMessage(msg);
+      if (!res.ok) {
+        const data = await res.json();
+        setErrorMessage((data as { error?: string }).error ?? t('equipment.deleteError'));
         return;
       }
 
       setSuccessMessage(t('equipment.deleteSuccess'));
-      void fetchEquipments();
+      void fetchEquipmentColors();
     } catch {
       setErrorMessage(t('equipment.deleteNetworkError'));
     }
   };
 
-  const filteredEquipments = useMemo(() => {
-    if (!selectedEchelonId) return equipments;
-    return equipments.filter((eq) => eq.echelonId === selectedEchelonId);
-  }, [equipments, selectedEchelonId]);
+  // Add equipment item
+  const handleAddEquipment = async (): Promise<void> => {
+    if (!addEquipmentColorId) return;
+    if (!newEquipment.number || !newEquipment.size) {
+      setErrorMessage(t('equipment.formRequiredFields'));
+      return;
+    }
 
-  const groupedByColor = useMemo(() => {
-    return filteredEquipments.reduce<Record<string, EquipmentInterface[]>>((acc, eq) => {
-      const key = eq.color || t('equipment.unknownColor');
-      if (!acc[key]) {
-        acc[key] = [];
+    try {
+      const res = await fetch(
+        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${addEquipmentColorId}/equipments`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            number: Number(newEquipment.number),
+            size: newEquipment.size,
+          }),
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMessage((data as { error?: string }).error ?? t('equipment.createError'));
+        return;
       }
-      acc[key].push(eq);
-      return acc;
-    }, {});
-  }, [filteredEquipments, t]);
+
+      setSuccessMessage(t('equipment.createSuccess'));
+      setNewEquipment({ number: '', size: '' });
+      setOpenAddEquipmentDialog(false);
+      setAddEquipmentColorId(null);
+      void fetchEquipmentColors();
+    } catch {
+      setErrorMessage(t('equipment.createNetworkError'));
+    }
+  };
+
+  // Update equipment item
+  const handleUpdateEquipment = async (): Promise<void> => {
+    if (!editEquipment) return;
+
+    try {
+      const res = await fetch(
+        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${editEquipment.colorId}/equipments/${editEquipment.equipment.id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            number: editEquipment.equipment.number,
+            size: editEquipment.equipment.size,
+          }),
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMessage((data as { error?: string }).error ?? t('equipment.updateError'));
+        return;
+      }
+
+      setSuccessMessage(t('equipment.updateSuccess'));
+      setOpenEditEquipmentDialog(false);
+      setEditEquipment(null);
+      void fetchEquipmentColors();
+    } catch {
+      setErrorMessage(t('equipment.updateNetworkError'));
+    }
+  };
+
+  // Delete equipment item
+  const handleDeleteEquipment = async (colorId: number, equipmentId: number): Promise<void> => {
+    try {
+      const res = await fetch(
+        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${colorId}/equipments/${equipmentId}`,
+        { method: 'DELETE' }
+      );
+
+      if (!res.ok) {
+        const data = await res.json();
+        setErrorMessage((data as { error?: string }).error ?? t('equipment.deleteError'));
+        return;
+      }
+
+      setSuccessMessage(t('equipment.deleteSuccess'));
+      void fetchEquipmentColors();
+    } catch {
+      setErrorMessage(t('equipment.deleteNetworkError'));
+    }
+  };
 
   return (
-    <Box sx={{ height: 700, width: '100%' }}>
+    <Box sx={{ width: '100%' }}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h4" gutterBottom>
           {t('equipment.managementTitle')}
         </Typography>
-        <Button variant="contained" color="primary" onClick={() => setOpenAddDialog(true)}>
-          {t('Add')}
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={() => setOpenAddColorDialog(true)}
+          disabled={!selectedEchelonId}
+        >
+          {t('equipment.addColor')}
         </Button>
       </Box>
 
@@ -323,149 +358,209 @@ const EquipmentsPage: React.FC = () => {
       </Box>
 
       {errorMessage && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setErrorMessage(null)}>
           {errorMessage}
         </Alert>
       )}
 
       {successMessage && (
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccessMessage(null)}>
           {successMessage}
         </Alert>
       )}
 
-      {loading && !errorMessage && (
-        <Typography variant="body2" sx={{ mb: 2 }}>
-          {t('equipment.loading')}
-        </Typography>
+      {loading && <Typography variant="body2">{t('equipment.loading')}</Typography>}
+
+      {!loading && equipmentColors.length === 0 && !errorMessage && (
+        <Typography variant="body2">{t('equipment.emptyList')}</Typography>
       )}
 
-      {!loading && equipments.length === 0 && !errorMessage && (
-        <Typography variant="body2" sx={{ mb: 2 }}>
-          {t('equipment.emptyList')}
-        </Typography>
-      )}
-
-      {!loading && equipments.length > 0 && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-          {Object.entries(groupedByColor).map(([color, items]) => (
-            <Accordion key={color} defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    width: '100%',
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box
-                      sx={{
-                        width: 24,
-                        height: 24,
-                        backgroundColor: items[0]?.colorHex || '#ccc',
-                        border: '1px solid #999',
-                        borderRadius: 1,
-                      }}
-                    />
-                    <Typography variant="h6">{color}</Typography>
-                  </Box>
-                  <Typography variant="body2">{items.length}</Typography>
-                </Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                  {items.map((eq) => (
-                    <Box
-                      key={eq.id ?? `${eq.color}-${eq.number}-${eq.size}`}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        py: 0.5,
-                        px: 1,
-                        borderBottom: '1px solid rgba(0,0,0,0.12)',
-                      }}
-                    >
-                      <Typography variant="body2">
-                        Nº {eq.number} — {eq.size}
+      {!loading &&
+        Object.entries(groupedByEchelon).map(([echelonName, colors]) => (
+          <Box key={echelonName} sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ mb: 1, color: 'text.secondary' }}>
+              {echelonName}
+            </Typography>
+            {colors.map((ec) => (
+              <Accordion key={ec.id} defaultExpanded sx={{ mb: 1 }}>
+                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      width: '100%',
+                      pr: 2,
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <Box
+                        sx={{
+                          width: 28,
+                          height: 28,
+                          backgroundColor: ec.colorHex || '#ccc',
+                          border: '1px solid #999',
+                          borderRadius: 1,
+                        }}
+                      />
+                      <Typography variant="subtitle1" fontWeight="bold">
+                        {ec.color}
                       </Typography>
-                      <Box sx={{ display: 'flex', gap: 1 }}>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => {
-                            setEditEquipment(eq);
-                            setOpenEditDialog(true);
-                          }}
-                        >
-                          {t('Edit')}
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          color="error"
-                          size="small"
-                          onClick={() => setDeleteConfirmId(eq.id ?? 0)}
-                        >
-                          {t('Delete')}
-                        </Button>
-                      </Box>
+                      <Chip
+                        size="small"
+                        label={`${ec.equipments?.length || 0} ${t('equipment.items')}`}
+                      />
                     </Box>
-                  ))}
-                </Box>
-              </AccordionDetails>
-            </Accordion>
-          ))}
-        </Box>
-      )}
-
-      {/* Add equipment dialog */}
-      <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} maxWidth="sm" fullWidth>
-        <DialogTitle>{t('equipment.add')}</DialogTitle>
-        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-          <TextField
-            select
-            label={t('equipment.echelon')}
-            fullWidth
-            size="small"
-            value={selectedEchelonId === '' ? '' : selectedEchelonId}
-            onChange={(e) => {
-              const val = e.target.value;
-              setSelectedEchelonId(val === '' ? '' : Number(val));
-            }}
-            disabled={echelons.length === 0}
-          >
-            {echelons.map((ech) => (
-              <MenuItem key={ech.id} value={ech.id}>
-                {ech.name}
-              </MenuItem>
+                    <Box sx={{ display: 'flex', gap: 0.5 }} onClick={(e) => e.stopPropagation()}>
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          setAddEquipmentColorId(ec.id);
+                          setOpenAddEquipmentDialog(true);
+                        }}
+                        title={t('equipment.addItem')}
+                      >
+                        <AddIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          setEditColor(ec);
+                          setOpenEditColorDialog(true);
+                        }}
+                        title={t('Edit')}
+                      >
+                        <EditIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => setDeleteColorId(ec.id)}
+                        title={t('Delete')}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Box>
+                  </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {ec.equipments && ec.equipments.length > 0 ? (
+                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                      {ec.equipments.map((eq) => (
+                        <Chip
+                          key={eq.id}
+                          label={`Nº ${eq.number} — ${eq.size}`}
+                          variant="outlined"
+                          onDelete={() =>
+                            setDeleteEquipmentInfo({ colorId: ec.id, equipmentId: eq.id })
+                          }
+                          onClick={() => {
+                            setEditEquipment({ colorId: ec.id, equipment: { ...eq } });
+                            setOpenEditEquipmentDialog(true);
+                          }}
+                          sx={{ cursor: 'pointer' }}
+                        />
+                      ))}
+                    </Box>
+                  ) : (
+                    <Typography variant="body2" color="text.secondary">
+                      {t('equipment.noItems')}
+                    </Typography>
+                  )}
+                </AccordionDetails>
+              </Accordion>
             ))}
-          </TextField>
+          </Box>
+        ))}
+
+      {/* Add Color Dialog */}
+      <Dialog
+        open={openAddColorDialog}
+        onClose={() => setOpenAddColorDialog(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t('equipment.addColor')}</DialogTitle>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             <TextField
               label={t('equipment.color')}
               fullWidth
               size="small"
-              value={newEquipment.color}
-              onChange={(e) => handleNewFieldChange('color', e.target.value)}
+              value={newColor.color}
+              onChange={(e) => setNewColor({ ...newColor, color: e.target.value })}
             />
             <TextField
-              label={t('equipment.colorHex')}
-              size="small"
               type="color"
-              value={newEquipment.colorHex}
-              onChange={(e) => handleNewFieldChange('colorHex', e.target.value)}
-              sx={{ width: 80 }}
+              size="small"
+              value={newColor.colorHex}
+              onChange={(e) => setNewColor({ ...newColor, colorHex: e.target.value })}
+              sx={{ width: 60 }}
               slotProps={{ input: { sx: { p: 0.5, height: 40 } } }}
             />
           </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenAddColorDialog(false)}>{t('Cancel')}</Button>
+          <Button onClick={() => void handleAddColor()} variant="contained">
+            {t('Save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit Color Dialog */}
+      <Dialog
+        open={openEditColorDialog && !!editColor}
+        onClose={() => setOpenEditColorDialog(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t('equipment.editColor')}</DialogTitle>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+            <TextField
+              label={t('equipment.color')}
+              fullWidth
+              size="small"
+              value={editColor?.color ?? ''}
+              onChange={(e) => editColor && setEditColor({ ...editColor, color: e.target.value })}
+            />
+            <TextField
+              type="color"
+              size="small"
+              value={editColor?.colorHex ?? '#000000'}
+              onChange={(e) =>
+                editColor && setEditColor({ ...editColor, colorHex: e.target.value })
+              }
+              sx={{ width: 60 }}
+              slotProps={{ input: { sx: { p: 0.5, height: 40 } } }}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenEditColorDialog(false)}>{t('Cancel')}</Button>
+          <Button onClick={() => void handleUpdateColor()} variant="contained">
+            {t('Save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Add Equipment Item Dialog */}
+      <Dialog
+        open={openAddEquipmentDialog}
+        onClose={() => setOpenAddEquipmentDialog(false)}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>{t('equipment.addItem')}</DialogTitle>
+        <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField
             label={t('equipment.number')}
             fullWidth
             size="small"
+            type="number"
             value={newEquipment.number}
-            onChange={(e) => handleNewFieldChange('number', e.target.value)}
+            onChange={(e) => setNewEquipment({ ...newEquipment, number: e.target.value })}
           />
           <TextField
             select
@@ -473,7 +568,7 @@ const EquipmentsPage: React.FC = () => {
             fullWidth
             size="small"
             value={newEquipment.size}
-            onChange={(e) => handleNewFieldChange('size', e.target.value)}
+            onChange={(e) => setNewEquipment({ ...newEquipment, size: e.target.value })}
           >
             {Object.values(Size).map((s) => (
               <MenuItem key={s} value={s}>
@@ -483,69 +578,49 @@ const EquipmentsPage: React.FC = () => {
           </TextField>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenAddDialog(false)}>{t('Cancel')}</Button>
-          <Button onClick={() => void handleAddEquipment()} variant="contained" color="primary">
+          <Button onClick={() => setOpenAddEquipmentDialog(false)}>{t('Cancel')}</Button>
+          <Button onClick={() => void handleAddEquipment()} variant="contained">
             {t('Save')}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Edit equipment dialog */}
+      {/* Edit Equipment Item Dialog */}
       <Dialog
-        open={openEditDialog && !!editEquipment}
-        onClose={() => setOpenEditDialog(false)}
-        maxWidth="sm"
+        open={openEditEquipmentDialog && !!editEquipment}
+        onClose={() => setOpenEditEquipmentDialog(false)}
+        maxWidth="xs"
         fullWidth
       >
-        <DialogTitle>{t('equipment.edit')}</DialogTitle>
+        <DialogTitle>{t('equipment.editItem')}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-          <TextField
-            select
-            label={t('equipment.echelon')}
-            fullWidth
-            size="small"
-            value={editEquipment?.echelonId ?? ''}
-            onChange={(e) => handleEditFieldChange('echelonId', e.target.value)}
-            disabled={echelons.length === 0}
-          >
-            {echelons.map((ech) => (
-              <MenuItem key={ech.id} value={ech.id}>
-                {ech.name}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            <TextField
-              label={t('equipment.color')}
-              fullWidth
-              size="small"
-              value={editEquipment?.color ?? ''}
-              onChange={(e) => handleEditFieldChange('color', e.target.value)}
-            />
-            <TextField
-              label={t('equipment.colorHex')}
-              size="small"
-              type="color"
-              value={editEquipment?.colorHex ?? '#000000'}
-              onChange={(e) => handleEditFieldChange('colorHex', e.target.value)}
-              sx={{ width: 80 }}
-              slotProps={{ input: { sx: { p: 0.5, height: 40 } } }}
-            />
-          </Box>
           <TextField
             label={t('equipment.number')}
             fullWidth
             size="small"
-            value={editEquipment?.number?.toString() ?? ''}
-            onChange={(e) => handleEditFieldChange('number', e.target.value)}
+            type="number"
+            value={editEquipment?.equipment.number ?? ''}
+            onChange={(e) =>
+              editEquipment &&
+              setEditEquipment({
+                ...editEquipment,
+                equipment: { ...editEquipment.equipment, number: Number(e.target.value) },
+              })
+            }
           />
           <TextField
             select
             label={t('equipment.size')}
             fullWidth
             size="small"
-            value={editEquipment?.size ?? ''}
-            onChange={(e) => handleEditFieldChange('size', e.target.value)}
+            value={editEquipment?.equipment.size ?? ''}
+            onChange={(e) =>
+              editEquipment &&
+              setEditEquipment({
+                ...editEquipment,
+                equipment: { ...editEquipment.equipment, size: e.target.value as Size },
+              })
+            }
           >
             {Object.values(Size).map((s) => (
               <MenuItem key={s} value={s}>
@@ -555,33 +630,52 @@ const EquipmentsPage: React.FC = () => {
           </TextField>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => {
-              setOpenEditDialog(false);
-              setEditEquipment(null);
-            }}
-          >
-            {t('Cancel')}
-          </Button>
-          <Button onClick={() => void handleUpdateEquipment()} variant="contained" color="primary">
+          <Button onClick={() => setOpenEditEquipmentDialog(false)}>{t('Cancel')}</Button>
+          <Button onClick={() => void handleUpdateEquipment()} variant="contained">
             {t('Save')}
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Confirm delete dialog */}
-      <Dialog open={deleteConfirmId !== null} onClose={() => setDeleteConfirmId(null)}>
+      {/* Delete Color Confirmation */}
+      <Dialog open={deleteColorId !== null} onClose={() => setDeleteColorId(null)}>
+        <DialogTitle>{t('equipment.confirmDeleteTitle')}</DialogTitle>
+        <DialogContent>
+          <Typography>{t('equipment.confirmDeleteColorMessage')}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteColorId(null)}>{t('Cancel')}</Button>
+          <Button
+            onClick={() => {
+              if (deleteColorId !== null) {
+                void handleDeleteColor(deleteColorId);
+                setDeleteColorId(null);
+              }
+            }}
+            color="error"
+            variant="contained"
+          >
+            {t('Delete')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Equipment Confirmation */}
+      <Dialog open={deleteEquipmentInfo !== null} onClose={() => setDeleteEquipmentInfo(null)}>
         <DialogTitle>{t('equipment.confirmDeleteTitle')}</DialogTitle>
         <DialogContent>
           <Typography>{t('equipment.confirmDeleteMessage')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteConfirmId(null)}>{t('Cancel')}</Button>
+          <Button onClick={() => setDeleteEquipmentInfo(null)}>{t('Cancel')}</Button>
           <Button
             onClick={() => {
-              if (deleteConfirmId !== null) {
-                void handleDeleteEquipment(deleteConfirmId);
-                setDeleteConfirmId(null);
+              if (deleteEquipmentInfo !== null) {
+                void handleDeleteEquipment(
+                  deleteEquipmentInfo.colorId,
+                  deleteEquipmentInfo.equipmentId
+                );
+                setDeleteEquipmentInfo(null);
               }
             }}
             color="error"

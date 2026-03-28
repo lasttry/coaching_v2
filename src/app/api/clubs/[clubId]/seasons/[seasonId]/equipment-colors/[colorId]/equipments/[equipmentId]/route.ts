@@ -1,53 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import type { EquipmentInterface } from '@/types/equipment/types';
 import { Size } from '@prisma/client';
 
-type Params = Promise<{ clubId: string; seasonId: string; equipmentId: string }>;
-
-interface EquipmentWithColorResponse {
-  id: number;
-  equipmentColorId: number;
-  number: number;
-  size: string;
-  color: string;
-  colorHex: string;
-  echelonId: number;
-  clubId: number;
-  seasonId: number;
-  createdAt: string;
-  updatedAt: string;
-}
+type Params = Promise<{ clubId: string; seasonId: string; colorId: string; equipmentId: string }>;
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   segmentData: { params: Params }
-): Promise<NextResponse<EquipmentWithColorResponse | { error: string }>> {
+): Promise<NextResponse<EquipmentInterface | { error: string }>> {
   const params = await segmentData.params;
   const equipmentId = Number(params.equipmentId);
 
-  if (!equipmentId || Number.isNaN(equipmentId)) {
-    return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
-  }
-
   const equipment = await prisma.equipment.findUnique({
     where: { id: equipmentId },
-    include: { equipmentColor: true },
+    include: {
+      equipmentColor: true,
+    },
   });
 
   if (!equipment) {
     return NextResponse.json({ error: 'Equipment not found' }, { status: 404 });
   }
 
-  const response: EquipmentWithColorResponse = {
+  const response: EquipmentInterface = {
     id: equipment.id,
     equipmentColorId: equipment.equipmentColorId,
+    equipmentColor: equipment.equipmentColor
+      ? {
+          id: equipment.equipmentColor.id,
+          clubId: equipment.equipmentColor.clubId,
+          seasonId: equipment.equipmentColor.seasonId,
+          echelonId: equipment.equipmentColor.echelonId,
+          color: equipment.equipmentColor.color,
+          colorHex: equipment.equipmentColor.colorHex,
+        }
+      : undefined,
     number: equipment.number,
     size: equipment.size,
-    color: equipment.equipmentColor.color,
-    colorHex: equipment.equipmentColor.colorHex,
-    echelonId: equipment.equipmentColor.echelonId,
-    clubId: equipment.equipmentColor.clubId,
-    seasonId: equipment.equipmentColor.seasonId,
     createdAt: equipment.createdAt.toISOString(),
     updatedAt: equipment.updatedAt.toISOString(),
   };
@@ -58,13 +48,9 @@ export async function GET(
 export async function PUT(
   req: NextRequest,
   segmentData: { params: Params }
-): Promise<NextResponse<EquipmentWithColorResponse | { error: string }>> {
+): Promise<NextResponse<EquipmentInterface | { error: string }>> {
   const params = await segmentData.params;
   const equipmentId = Number(params.equipmentId);
-
-  if (!equipmentId || Number.isNaN(equipmentId)) {
-    return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
-  }
 
   let data: { number?: number; size?: string };
 
@@ -86,19 +72,26 @@ export async function PUT(
   const updated = await prisma.equipment.update({
     where: { id: equipmentId },
     data: updateData,
-    include: { equipmentColor: true },
+    include: {
+      equipmentColor: true,
+    },
   });
 
-  const response: EquipmentWithColorResponse = {
+  const response: EquipmentInterface = {
     id: updated.id,
     equipmentColorId: updated.equipmentColorId,
+    equipmentColor: updated.equipmentColor
+      ? {
+          id: updated.equipmentColor.id,
+          clubId: updated.equipmentColor.clubId,
+          seasonId: updated.equipmentColor.seasonId,
+          echelonId: updated.equipmentColor.echelonId,
+          color: updated.equipmentColor.color,
+          colorHex: updated.equipmentColor.colorHex,
+        }
+      : undefined,
     number: updated.number,
     size: updated.size,
-    color: updated.equipmentColor.color,
-    colorHex: updated.equipmentColor.colorHex,
-    echelonId: updated.equipmentColor.echelonId,
-    clubId: updated.equipmentColor.clubId,
-    seasonId: updated.equipmentColor.seasonId,
     createdAt: updated.createdAt.toISOString(),
     updatedAt: updated.updatedAt.toISOString(),
   };
@@ -107,15 +100,11 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   segmentData: { params: Params }
 ): Promise<NextResponse<{ success: boolean } | { error: string }>> {
   const params = await segmentData.params;
   const equipmentId = Number(params.equipmentId);
-
-  if (!equipmentId || Number.isNaN(equipmentId)) {
-    return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
-  }
 
   await prisma.equipment.delete({
     where: { id: equipmentId },

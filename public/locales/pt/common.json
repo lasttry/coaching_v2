@@ -228,11 +228,24 @@
     "managementTitle": "Gestão de Equipamentos",
     "add": "Adicionar Equipamento",
     "edit": "Editar Equipamento",
+    "addColor": "Adicionar Cor",
+    "editColor": "Editar Cor",
+    "addItem": "Adicionar Item",
+    "editItem": "Editar Item",
+    "items": "itens",
+    "noItems": "Nenhum equipamento nesta cor.",
 
     "color": "Cor",
     "colorHex": "Cor (hex)",
+    "colorRequired": "O nome da cor é obrigatório.",
+    "colorCreated": "Cor criada com sucesso.",
     "number": "Número",
     "size": "Tamanho",
+
+    "echelon": "Escalão",
+    "allEchelons": "Todos os escalões",
+    "missingEchelon": "Selecione um escalão.",
+    "unknownEchelon": "Escalão desconhecido",
 
     "loading": "A carregar equipamentos...",
     "emptyList": "Nenhum equipamento encontrado.",
@@ -258,9 +271,23 @@
     "deleteSuccess": "Equipamento apagado com sucesso.",
 
     "confirmDeleteTitle": "Confirmar eliminação",
-    "confirmDeleteMessage": "Tem a certeza que pretende eliminar este equipamento?"
+    "confirmDeleteMessage": "Tem a certeza que pretende eliminar este equipamento?",
+    "confirmDeleteColorMessage": "Tem a certeza que pretende eliminar esta cor e todos os seus equipamentos?",
+    
+    "title": "Equipamentos",
+    "selectColorFirst": "Selecione uma cor primeiro.",
+    "noEquipmentForColor": "Não existem equipamentos para esta cor.",
+    "assignToSelected": "Atribuir aos selecionados",
+    "selectColor": "Selecionar cor",
+    "notAssigned": "Não atribuído",
+    "notEnoughForAll": "Não existem equipamentos suficientes para todos os atletas.",
+    "assignedToSelected": "Equipamentos atribuídos com sucesso."
   },
 
+  "opponentResultsCount": "Nº Resultados Adversário",
+  "opponentResultsCountHelper": "Número de resultados a mostrar no relatório (1-20)",
+  "speech": "Discurso",
+  "speechHelper": "Texto do discurso para incluir no PDF",
   "preferredNumbers": "Números Preferidos",
   "noEquipmentColors": "Adicione equipamentos primeiro",
   "remove": "Remover",

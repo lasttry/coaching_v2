@@ -1,4 +1,8 @@
-import type { EquipmentInterface } from '../equipment/types';
+import type { EquipmentInterface, EquipmentColorBasicInterface } from '../equipment/types';
+
+export interface EquipmentWithColorInterface extends EquipmentInterface {
+  equipmentColor?: EquipmentColorBasicInterface;
+}
 
 export interface GameEquipmentInterface {
   id?: number;
@@ -6,5 +10,5 @@ export interface GameEquipmentInterface {
   athleteId: number;
   equipmentId: number;
 
-  equipment?: EquipmentInterface;
+  equipment?: EquipmentWithColorInterface;
 }

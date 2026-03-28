@@ -164,6 +164,8 @@ exports.Prisma.GameScalarFieldEnum = {
   scorer: 'scorer',
   timer: 'timer',
   shotClock: 'shotClock',
+  opponentResultsCount: 'opponentResultsCount',
+  speech: 'speech',
   image1: 'image1',
   image2: 'image2',
   image3: 'image3',
@@ -390,13 +392,20 @@ exports.Prisma.AthletePreferredNumberScalarFieldEnum = {
   number: 'number'
 };
 
-exports.Prisma.EquipmentScalarFieldEnum = {
+exports.Prisma.EquipmentColorScalarFieldEnum = {
   id: 'id',
   clubId: 'clubId',
   seasonId: 'seasonId',
   echelonId: 'echelonId',
   color: 'color',
   colorHex: 'colorHex',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.EquipmentScalarFieldEnum = {
+  id: 'id',
+  equipmentColorId: 'equipmentColorId',
   number: 'number',
   size: 'size',
   createdAt: 'createdAt',
@@ -498,6 +507,7 @@ exports.Prisma.ModelName = {
   Competition: 'Competition',
   CompetitionSerie: 'CompetitionSerie',
   AthletePreferredNumber: 'AthletePreferredNumber',
+  EquipmentColor: 'EquipmentColor',
   Equipment: 'Equipment',
   GameEquipment: 'GameEquipment'
 };
