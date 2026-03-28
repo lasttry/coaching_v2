@@ -1,13 +1,16 @@
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PlatformRole, PrismaClient, Gender } from '../generated/prisma/client';
 import bcrypt from 'bcryptjs';
+import 'dotenv/config';
 
 async function hashPassword(password: string): Promise<string> {
   const salt = await bcrypt.genSalt(10);
   return bcrypt.hash(password, salt);
 }
 
-// Initialize Prisma Client
-const prisma = new PrismaClient();
+// Initialize Prisma Client with adapter
+const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+const prisma = new PrismaClient({ adapter });
 
 async function main(): Promise<void> {
   // Generate a salt
