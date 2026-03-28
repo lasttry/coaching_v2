@@ -1,4 +1,4 @@
-import { PlatformRole, PrismaClient, Gender } from '@prisma/client';
+import { PlatformRole, PrismaClient, Gender } from '../generated/prisma/client';
 import bcrypt from 'bcryptjs';
 
 async function hashPassword(password: string): Promise<string> {
