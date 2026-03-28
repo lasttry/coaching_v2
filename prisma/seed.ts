@@ -30,7 +30,6 @@ async function main(): Promise<void> {
       shortName: 'VSC',
       backgroundColor: '#ffffff',
       foregroundColor: '#000000',
-      season: '2024/2025',
       venues: {
         create: [{ name: 'Pav. Vimaranense' }],
       },
