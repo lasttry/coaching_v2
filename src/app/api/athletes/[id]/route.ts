@@ -101,7 +101,10 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     const rawPreferred = Array.isArray(data.preferredNumbers) ? data.preferredNumbers : [];
 
     const preferredNumbersData = rawPreferred
-      .filter((p) => p && p.number !== undefined && p.number !== null)
+      .filter(
+        (p: { number?: number; preference?: number } | null | undefined) =>
+          p && p.number !== undefined && p.number !== null
+      )
       .map((p: { number: number; preference?: number }, index: number) => ({
         number: Number(p.number),
         preference:

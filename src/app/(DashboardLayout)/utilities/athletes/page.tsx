@@ -22,11 +22,11 @@ import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 
-import { SizeEnum } from '@/types/game/types';
+import { Size } from '@prisma/client';
 import { log } from '@/lib/logger';
 import { useMessage } from '@/hooks/useMessage';
-import { AthleteInterface } from '@/types/athlete/type';
-import { AthletePreferredNumberInterface } from '@/types/athletePreferredNumber/type';
+import { AthleteInterface } from '@/types/athlete/types';
+import { AthletePreferredNumberInterface } from '@/types/athletePreferredNumber/types';
 
 const buildEmptyAthlete = (): AthleteInterface => ({
   id: null,
@@ -35,7 +35,7 @@ const buildEmptyAthlete = (): AthleteInterface => ({
   birthdate: '',
   fpbNumber: null,
   active: true,
-  shirtSize: SizeEnum.S,
+  shirtSize: Size.S,
   // opcional no tipo, mas garantimos array para não dar undefined
   preferredNumbers: [],
 });
@@ -109,8 +109,8 @@ const AthletesPage: React.FC = () => {
       }));
     };
 
-  const handleSizeChange = (event: SelectChangeEvent<SizeEnum>, _child: React.ReactNode): void => {
-    const value = event.target.value as SizeEnum;
+  const handleSizeChange = (event: SelectChangeEvent<Size>, _child: React.ReactNode): void => {
+    const value = event.target.value as Size;
     setSelectedAthlete((prev) => ({
       ...prev,
       shirtSize: value,
@@ -452,7 +452,7 @@ const AthletesPage: React.FC = () => {
                     displayEmpty
                   >
                     <MenuItem value="">{t('selectSize')}</MenuItem>
-                    {Object.values(SizeEnum).map((s) => (
+                    {Object.values(Size).map((s) => (
                       <MenuItem key={s} value={s}>
                         {s}
                       </MenuItem>

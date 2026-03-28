@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import type { SeasonInterface } from '@/types/season/type';
+import type { SeasonInterface } from '@/types/season/types';
 
 type Params = Promise<{ id: string }>;
 

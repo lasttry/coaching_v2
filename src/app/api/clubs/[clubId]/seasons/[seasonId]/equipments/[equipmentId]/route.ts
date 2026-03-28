@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import type { EquipmentInterface } from '@/types/equipment/type';
+import type { EquipmentInterface } from '@/types/equipment/types';
 import { Size } from '@/types/game/types';
 
 type Params = Promise<{ clubId: string; seasonId: string; equipmentId: string }>;

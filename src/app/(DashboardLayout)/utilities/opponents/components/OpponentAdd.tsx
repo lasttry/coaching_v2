@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { OpponentInterface } from '@/types/game/types';
+import { OpponentInterface } from '@/types/opponent/types';
 
 import OpponentComponent from './Opponent';
 

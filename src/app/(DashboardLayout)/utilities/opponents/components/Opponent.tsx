@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, Stack, Grid } from '@mui/material';
 import Image from 'next/image';
-import { OpponentInterface } from '@/types/game/types';
-import { VenueInterface } from '@/types/club/types';
+import { OpponentInterface } from '@/types/opponent/types';
+import { VenueInterface } from '@/types/venues/types';
 import { useTranslation } from 'react-i18next';
 
 interface Props {

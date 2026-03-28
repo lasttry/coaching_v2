@@ -25,7 +25,7 @@ import { Grid } from '@mui/material';
 import { useSession } from 'next-auth/react';
 import dayjs from 'dayjs';
 import { log } from '@/lib/logger';
-import { AthleteInterface } from '@/types/game/types';
+import { AthleteInterface } from '@/types/athlete/types';
 import { TeamInterface } from '@/types/teams/types';
 import { EchelonInterface } from '@/types/echelons/types';
 import { SelectChangeEvent } from '@mui/material/Select';

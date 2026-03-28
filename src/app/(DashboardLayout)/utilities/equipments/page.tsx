@@ -17,10 +17,10 @@ import {
   MenuItem,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import type { EquipmentInterface } from '@/types/equipment/type';
+import type { EquipmentInterface } from '@/types/equipment/types';
 import { useSession } from 'next-auth/react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { SizeEnum } from '@/types/game/types';
+import { Size } from '@prisma/client';
 
 interface NewEquipmentState {
   color: string;
@@ -449,7 +449,7 @@ const EquipmentsPage: React.FC = () => {
             value={newEquipment.size}
             onChange={(e) => handleNewFieldChange('size', e.target.value)}
           >
-            {Object.values(SizeEnum).map((s) => (
+            {Object.values(Size).map((s) => (
               <MenuItem key={s} value={s}>
                 {s}
               </MenuItem>
@@ -510,7 +510,7 @@ const EquipmentsPage: React.FC = () => {
             value={editEquipment?.size ?? ''}
             onChange={(e) => handleEditFieldChange('size', e.target.value)}
           >
-            {Object.values(SizeEnum).map((s) => (
+            {Object.values(Size).map((s) => (
               <MenuItem key={s} value={s}>
                 {s}
               </MenuItem>

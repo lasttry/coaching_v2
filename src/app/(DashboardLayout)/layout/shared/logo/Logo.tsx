@@ -100,8 +100,6 @@ const Logo = (): ReactElement => {
       />
       <Typography variant="h6" sx={{ ml: 2, fontWeight: 'bold' }}>
         {club.shortName || 'Club Name'}
-        <br />
-        {club.season || ''}
       </Typography>
     </Box>
   );

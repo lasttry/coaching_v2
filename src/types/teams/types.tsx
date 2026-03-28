@@ -1,17 +1,17 @@
-import { AthleteInterface } from '../game/types';
+import { AthleteInterface } from '../athlete/types';
 import { EchelonInterface } from '../echelons/types';
 
 export interface TeamInterface {
   id: number | null;
   name: string;
-  type: 'A' | 'B' | 'C' | 'OTHER'; // Subtypes of the team
+  type: 'A' | 'B' | 'C' | 'OTHER';
   clubId: number;
   echelonId: number;
-  createdAt?: string | null; // ISO string for date
-  updatedAt?: string | null; // ISO string for date
+  createdAt?: string | null;
+  updatedAt?: string | null;
   athletes: Array<{
-    athlete: AthleteInterface; // Related athlete object
+    athlete: AthleteInterface;
     athleteId: number;
   }>;
-  echelon?: EchelonInterface | null; // Related echelon object
+  echelon?: EchelonInterface | null;
 }

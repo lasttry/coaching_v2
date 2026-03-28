@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import { OpponentInterface } from '@/types/game/types';
+import { OpponentInterface } from '@/types/opponent/types';
 import { log } from '@/lib/logger';
 
 const initialOpponent: OpponentInterface = {

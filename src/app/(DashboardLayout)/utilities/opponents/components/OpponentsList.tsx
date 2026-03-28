@@ -21,7 +21,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
-import { OpponentInterface } from '@/types/game/types';
+import { OpponentInterface } from '@/types/opponent/types';
 import { useTranslation } from 'react-i18next';
 import OpponentComponent from './Opponent';
 import { log } from '@/lib/logger';

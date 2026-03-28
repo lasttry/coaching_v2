@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import { log } from '@/lib/logger';
 import i18next from '@/lib/i18n.server'; // 👈 usa o i18n do servidor
-import { AthleteInterface } from '@/types/athlete/type';
+import { AthleteInterface } from '@/types/athlete/types';
 
 // GET handler for fetching all athletes
 export async function GET(req: Request): Promise<NextResponse> {

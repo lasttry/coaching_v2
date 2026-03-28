@@ -1,12 +1,11 @@
-import { jsPDF } from 'jspdf'; // Import jsPDF for PDF generation
+import { jsPDF } from 'jspdf';
 import { ClubInterface } from '../club/types';
 import { VenueInterface } from '../venues/types';
 import { CompetitionInterface, CompetitionSerieInterface } from '../competition/types';
 import { TeamInterface } from '../teams/types';
-import { AthleteInterface } from '../athlete/type';
-import { GameEquipmentInterface } from '../gameEquipment/type';
-import { OpponentInterface } from '../opponent/type';
-export { OpponentInterface };
+import { AthleteInterface } from '../athlete/types';
+import { GameEquipmentInterface } from '../gameEquipment/types';
+import { OpponentInterface } from '../opponent/types';
 
 import type { $Enums } from '@prisma/client';
 
@@ -35,7 +34,7 @@ export interface GameInterface {
   gameAthletes: GameAthleteInterface[];
   gameEquipments?: GameEquipmentInterface[];
 
-  objectives?: ObjectiveInterface[]; // Add default
+  objectives?: ObjectiveInterface[];
   athleteReports?: GameAthleteReport[];
 
   refereeMain?: string;
@@ -54,26 +53,19 @@ export interface GameInterface {
 }
 
 export interface ObjectiveInterface {
-  id?: number; // The unique identifier for the objective
-  title: string; // The title of the objective
-  description?: string | null; // The description of the objective (optional)
-  gameId?: number; // Foreign key linking to the game
-  game?: GameInterface; // Relation to the `Game` object
-  type: ObjectiveType; // The type of objective (enum)
+  id?: number;
+  title: string;
+  description?: string | null;
+  gameId?: number;
+  game?: GameInterface;
+  type: ObjectiveType;
 
-  createdAt?: Date; // Timestamp when the objective was created
-  updatedAt?: Date; // Timestamp when the objective was last updated
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export type ObjectiveType = $Enums.ObjectiveType;
 export type Size = $Enums.Size;
-export enum SizeEnum {
-  S = 'S',
-  M = 'M',
-  L = 'L',
-  XL = 'XL',
-  XXL = 'XXL',
-}
 
 export interface GameAthleteInterface {
   athleteId: number | null;

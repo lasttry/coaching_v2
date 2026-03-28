@@ -1,5 +1,4 @@
 import { EchelonInterface } from '../echelons/types';
-import { GameInterface } from '../game/types';
 
 export interface CompetitionInterface {
   id: number | null;
@@ -12,7 +11,6 @@ export interface CompetitionInterface {
   fpbCompetitionId?: number;
 
   competitionSeries?: CompetitionSerieInterface[] | null;
-  games?: GameInterface[] | null;
 
   createAt?: Date;
   updatedAt?: Date;
@@ -26,7 +24,6 @@ export interface CompetitionSerieInterface {
 
   competitionId?: number | null;
   competition?: CompetitionInterface | null;
-  games?: GameInterface | null;
 
   createdAt?: Date;
   updatedAt?: Date;

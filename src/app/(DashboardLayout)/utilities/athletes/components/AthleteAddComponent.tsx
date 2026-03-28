@@ -2,12 +2,12 @@
 
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { SizeEnum } from '@/types/game/types';
+import { Size } from '@prisma/client';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
-import { AthleteInterface } from '@/types/athlete/type';
-import { AthletePreferredNumberInterface } from '@/types/athletePreferredNumber/type';
+import { AthleteInterface } from '@/types/athlete/types';
+import { AthletePreferredNumberInterface } from '@/types/athletePreferredNumber/types';
 
 interface AthleteAddProps {
   newAthlete: AthleteInterface;
@@ -167,7 +167,7 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
       birthdate: '',
       fpbNumber: null,
       active: true,
-      shirtSize: SizeEnum.S,
+      shirtSize: Size.S,
       preferredNumbers: [],
     });
     setErrors({});
@@ -226,7 +226,7 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
               displayEmpty
             >
               <MenuItem value="">{t('selectSize')}</MenuItem>
-              {Object.values(SizeEnum).map((s) => (
+              {Object.values(Size).map((s) => (
                 <MenuItem key={s} value={s}>
                   {s}
                 </MenuItem>

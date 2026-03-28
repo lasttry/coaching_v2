@@ -7,7 +7,7 @@ export interface AccountInterface {
   email: string;
   password: string;
   confirmPassword: string;
-  image?: string; // Base64 string for the image
+  image?: string;
   clubs?: ClubInterface[];
   defaultClubId: number;
 }

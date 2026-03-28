@@ -1,5 +1,5 @@
-import { AthletePreferredNumberInterface } from '../athletePreferredNumber/type';
-import { SizeEnum } from '../game/types';
+import { Size } from '@prisma/client';
+import { AthletePreferredNumberInterface } from '../athletePreferredNumber/types';
 
 export interface AthleteInterface {
   id: number | null;
@@ -11,7 +11,7 @@ export interface AthleteInterface {
   idType?: IdTypeEnum | undefined;
   active: boolean;
   clubId?: number;
-  shirtSize: SizeEnum;
+  shirtSize: Size;
 
   preferredNumbers?: AthletePreferredNumberInterface[];
 }

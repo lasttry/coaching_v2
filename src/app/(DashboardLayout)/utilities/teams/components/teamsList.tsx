@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { TeamInterface } from '@/types/teams/types';
 import { isNumber } from 'lodash';
 import { EchelonInterface } from '@/types/echelons/types';
-import { AthleteInterface } from '@/types/game/types';
+import { AthleteInterface } from '@/types/athlete/types';
 import { log } from '@/lib/logger';
 
 interface TeamsListProps {

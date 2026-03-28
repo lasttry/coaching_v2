@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useTranslation } from 'react-i18next';
-import type { SeasonInterface } from '@/types/season/type';
+import type { SeasonInterface } from '@/types/season/types';
 
 interface NewSeasonState {
   name: string;

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import type { SeasonInterface } from '@/types/season/type';
+import type { SeasonInterface } from '@/types/season/types';
 
 // GET /api/seasons/current
 export async function GET(): Promise<NextResponse<SeasonInterface | { error: string }>> {

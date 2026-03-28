@@ -10,7 +10,7 @@ export const generateHeader = (club: ClubInterface, doc: jsPDF, top: number = 25
   // Set font size for H1 equivalent
   doc.setFontSize(20);
   // Add H1-like title on the top left (10 is the X and Y position)
-  doc.text(club?.name + ' - ' + club?.season, 10, top);
+  doc.text(club?.name ?? '', 10, top);
 
   // Add image on the top right corner
   const imgWidth = 30; // Set the width for the image

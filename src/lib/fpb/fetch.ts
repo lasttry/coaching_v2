@@ -1,6 +1,6 @@
-import { FpbGameOfficialInterface } from '@/types/fpb/gameOfficial/type';
-import { FpbResultInterface } from '@/types/fpb/result/type';
-import { FpbStandingInterface } from '@/types/fpb/standing/type';
+import { FpbGameOfficialInterface } from '@/types/fpb/gameOfficial/types';
+import { FpbResultInterface } from '@/types/fpb/result/types';
+import { FpbStandingInterface } from '@/types/fpb/standing/types';
 import * as cheerio from 'cheerio';
 
 export async function fetchFpbLatestResults(

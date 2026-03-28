@@ -20,9 +20,9 @@ import {
   GameAthleteReport,
   GameInterface,
   ObjectiveInterface,
-  SizeEnum,
 } from '@/types/game/types';
-import { AthleteInterface } from '@/types/athlete/type';
+import { Size } from '@prisma/client';
+import { AthleteInterface } from '@/types/athlete/types';
 import { log } from '@/lib/logger';
 import { useTranslation } from 'react-i18next';
 import { useSession } from 'next-auth/react';
@@ -31,9 +31,9 @@ import { TeamInterface } from '@/types/teams/types';
 import { ClubInterface } from '@/types/club/types';
 import { VenueInterface } from '@/types/venues/types';
 import { generateVsBanner } from '@/utils/generateVsBanner';
-import { GameEquipmentInterface } from '@/types/gameEquipment/type';
-import { OpponentInterface } from '@/types/opponent/type';
-import { EquipmentInterface } from '@/types/equipment/type';
+import { GameEquipmentInterface } from '@/types/gameEquipment/types';
+import { OpponentInterface } from '@/types/opponent/types';
+import { EquipmentInterface } from '@/types/equipment/types';
 
 interface BannerTeam {
   image: string;
@@ -622,17 +622,17 @@ const GameComponent: React.FC<GameProps> = ({
   };
 
   // Helper to rank sizes: XS < S < M < L < XL < XXL, undefined = very large
-  const sizeRank = (size?: SizeEnum): number => {
+  const sizeRank = (size?: Size): number => {
     switch (size) {
-      case SizeEnum.S:
+      case Size.S:
         return 1;
-      case SizeEnum.M:
+      case Size.M:
         return 2;
-      case SizeEnum.L:
+      case Size.L:
         return 3;
-      case SizeEnum.XL:
+      case Size.XL:
         return 4;
-      case SizeEnum.XXL:
+      case Size.XXL:
         return 5;
       default:
         return 999;

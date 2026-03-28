@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Typography, Checkbox } from '@mui/material';
 import { Grid } from '@mui/material';
-import { AthleteInterface } from '@/types/game/types';
+import { AthleteInterface } from '@/types/athlete/types';
 
 interface AthleteSelectionProps {
   teamId: number;
@@ -29,7 +29,7 @@ const AthleteSelectionComponent: React.FC<AthleteSelectionProps> = ({
           <Grid size={{ xs: 2 }}>
             <Checkbox
               checked={athlete.selected}
-              onChange={() => athlete.id !== undefined && onToggle(_teamId, athlete.id)}
+              onChange={() => athlete.id != null && onToggle(_teamId, athlete.id)}
             />
           </Grid>
           <Grid size={{ xs: 6 }}>

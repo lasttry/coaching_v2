@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { EchelonInterface } from '@/types/echelons/types';
 import { TeamInterface } from '@/types/teams/types';
 import { useSession } from 'next-auth/react';
-import { AthleteInterface } from '@/types/game/types';
+import { AthleteInterface } from '@/types/athlete/types';
 
 interface TeamAddProps {
   echelons: EchelonInterface[];

@@ -1,14 +1,14 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { GameInterface } from '@/types/game/types'; // Make sure you import the correct Game type
+import { GameInterface } from '@/types/game/types';
 import { generateHeader, generateGameDetailsHeader } from './utils';
 import { Session } from 'next-auth';
+import { ClubInterface } from '@/types/club/types';
 
 interface Athlete {
   id: number;
   name: string;
   number: string;
-  // Add other properties as needed
 }
 
 interface Report {
@@ -29,14 +29,20 @@ export const generateReportsPDF = async (game: GameInterface, session: Session):
   const reportsResponse = await fetch(`/api/games/${game.id}/reports`);
   const reports = await reportsResponse.json();
 
-  // Add game details to the PDF
-  if (!session.user.club) {
-    throw new Error('invalid session club...');
+  // Fetch the club based on selectedClubId
+  if (!session.user.selectedClubId) {
+    throw new Error('No club selected in session...');
   }
 
-  let top = generateHeader(session.user.club, doc);
+  const clubResponse = await fetch(`/api/clubs/${session.user.selectedClubId}`);
+  if (!clubResponse.ok) {
+    throw new Error('Failed to fetch club...');
+  }
+  const club: ClubInterface = await clubResponse.json();
 
-  top = generateGameDetailsHeader(session.user.club, doc, top, game);
+  let top = generateHeader(club, doc);
+
+  top = generateGameDetailsHeader(club, doc, top, game);
 
   // Prepare table body
   const tableBody = athletes.flatMap((athlete: Athlete) => {

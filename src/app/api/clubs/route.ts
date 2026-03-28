@@ -31,11 +31,6 @@ export async function POST(request: Request): Promise<NextResponse> {
     // Validate input data
     validateClubSettings(data);
 
-    // Remove the id field if it is 0 to allow autogeneration
-    if (data.id === 0) {
-      delete data.id;
-    }
-
     // Check if a club with the same name already exists
     const existingClub = await prisma.club.findUnique({
       where: { name: data.name },
@@ -45,13 +40,24 @@ export async function POST(request: Request): Promise<NextResponse> {
       return NextResponse.json({ error: 'Club with this name already exists' }, { status: 409 });
     }
 
-    // Separate venues and club data
-    const { venues, ...clubData } = data;
+    // Separate venues and extract only create-safe fields
+    const {
+      venues,
+      id: _id,
+      createdAt: _createdAt,
+      updatedAt: _updatedAt,
+      equipments: _equipments,
+      ...clubData
+    } = data;
 
     // Create the new club with optional venues
     const newClub = await prisma.club.create({
       data: {
-        ...clubData,
+        name: clubData.name,
+        shortName: clubData.shortName,
+        image: clubData.image,
+        backgroundColor: clubData.backgroundColor,
+        foregroundColor: clubData.foregroundColor,
         ...(venues &&
           venues.length > 0 && {
             venues: {

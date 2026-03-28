@@ -1,5 +1,5 @@
+import { Size } from '@prisma/client';
 import { EchelonInterface } from '../echelons/types';
-import { SizeEnum } from '../game/types';
 
 export interface EquipmentInterface {
   id: number;
@@ -10,14 +10,7 @@ export interface EquipmentInterface {
 
   color: string;
   number: number;
-  size: SizeEnum;
+  size: Size;
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface GameEquipmentInterface {
-  id: number;
-  gameId: number;
-  athleteId: number;
-  equipmentId: number;
 }

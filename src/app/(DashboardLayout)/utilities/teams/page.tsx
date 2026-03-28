@@ -29,7 +29,7 @@ import { EchelonInterface } from '@/types/echelons/types';
 
 import '@/lib/i18n.client'; // garante inicialização só no cliente
 import { useTranslation } from 'react-i18next';
-import { AthleteInterface } from '@/types/athlete/type';
+import { AthleteInterface } from '@/types/athlete/types';
 
 export default function TeamsPage(): React.JSX.Element {
   const { t } = useTranslation();

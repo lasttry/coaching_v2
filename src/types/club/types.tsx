@@ -1,6 +1,6 @@
 import { Club, Role } from '@prisma/client';
 import { VenueInterface } from '../venues/types';
-import { EquipmentInterface } from '../equipment/type';
+import { EquipmentInterface } from '../equipment/types';
 
 export function mapClubToInterface(club: Club): ClubInterface {
   return {
@@ -10,7 +10,6 @@ export function mapClubToInterface(club: Club): ClubInterface {
     image: club.image ?? undefined,
     backgroundColor: club.backgroundColor ?? undefined,
     foregroundColor: club.foregroundColor ?? undefined,
-    season: club.season ?? undefined,
     createdAt: club.createdAt ?? undefined,
     updatedAt: club.updatedAt ?? undefined,
   };
@@ -20,10 +19,9 @@ export interface ClubInterface {
   id?: number;
   name: string;
   shortName: string;
-  image?: string; // Base64 string for the image
+  image?: string;
   backgroundColor?: string;
   foregroundColor?: string;
-  season?: string;
 
   venues?: VenueInterface[];
 

@@ -7,9 +7,9 @@ import { ClubInterface } from '@/types/club/types';
 import { log } from '@/lib/logger';
 
 import { scienceGothicRegular } from './fonts/ScienceGothic-Regular';
-import { FpbResultInterface } from '@/types/fpb/result/type';
-import { FpbStandingInterface } from '@/types/fpb/standing/type';
-import { FpbGameOfficialInterface } from '@/types/fpb/gameOfficial/type';
+import { FpbResultInterface } from '@/types/fpb/result/types';
+import { FpbStandingInterface } from '@/types/fpb/standing/types';
+import { FpbGameOfficialInterface } from '@/types/fpb/gameOfficial/types';
 
 const lineWidthNormal = 0.1;
 const lineWidthBold = 0.5;

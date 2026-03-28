@@ -1,11 +1,5 @@
 import { ClubInterface } from '@/types/club/types';
 
-// Validate season format (YYYY/YYYY)
-export const validateSeason = (season: string): boolean => {
-  const regex = /^\d{4}\/\d{4}$/;
-  return regex.test(season);
-};
-
 // Validate hex color codes
 export const validateColor = (color: string): boolean => {
   const regex = /^#[0-9A-Fa-f]{6}$/;
@@ -20,10 +14,6 @@ export const validateClubSettings = (data: ClubInterface): void => {
 
   if (data.shortName && data.shortName.length > 6) {
     throw new Error('Short name must be less than 6 characters.');
-  }
-
-  if (data.season && !validateSeason(data.season)) {
-    throw new Error('Season format must be YYYY/YYYY.');
   }
 
   if (data.backgroundColor && !validateColor(data.backgroundColor)) {
