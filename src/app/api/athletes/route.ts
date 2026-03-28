@@ -13,13 +13,10 @@ export async function GET(req: Request): Promise<NextResponse> {
   try {
     const athletes = await prisma.athlete.findMany({
       include: {
-        preferredNumbers: true, // 👈 includes all related venues
+        preferredNumbers: true,
       },
     });
-    if (!athletes || athletes.length === 0) {
-      return NextResponse.json({ error: i18next.t('noAthletesFound') }, { status: 404 });
-    }
-    return NextResponse.json(athletes);
+    return NextResponse.json(athletes ?? []);
   } catch (error) {
     log.error('Failed to get athletes:', error);
     return NextResponse.json({ error: i18next.t('failedFetchAthletes') }, { status: 500 });

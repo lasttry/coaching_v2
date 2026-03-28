@@ -32,11 +32,7 @@ export async function GET(
       where: { gameId },
     });
 
-    if (!statistics || statistics.length === 0) {
-      return NextResponse.json({ error: 'Statistics not found' }, { status: 404 });
-    }
-
-    return NextResponse.json(statistics, { status: 200 });
+    return NextResponse.json(statistics ?? [], { status: 200 });
   } catch (error) {
     log.error('Error fetching statistics:', error);
     return NextResponse.json(

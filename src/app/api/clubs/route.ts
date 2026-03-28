@@ -9,15 +9,11 @@ export async function GET(): Promise<NextResponse> {
   try {
     const clubs = await prisma.club.findMany({
       include: {
-        venues: true, // 👈 includes all related venues
+        venues: true,
       },
     });
 
-    if (!clubs || clubs.length === 0) {
-      return NextResponse.json({ error: 'No clubs found.' }, { status: 404 });
-    }
-
-    return NextResponse.json(clubs, { status: 200 });
+    return NextResponse.json(clubs ?? [], { status: 200 });
   } catch (error) {
     log.error('Error fetching clubs:', error);
     return NextResponse.json({ error: 'Error fetching clubs.' }, { status: 500 });
