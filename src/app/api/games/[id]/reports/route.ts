@@ -28,7 +28,7 @@ export async function GET(
     const reports = await prisma.athleteReport.findMany(payload);
     return NextResponse.json(reports, { status: 200 });
   } catch (error) {
-    console.error('Error fetching reports:', error);
+    log.error('Error fetching reports:', error);
     return NextResponse.json({ error: 'Failed to fetch reports' }, { status: 500 });
   }
 }

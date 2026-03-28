@@ -194,7 +194,7 @@ const CompetitionsPage: React.FC = () => {
             variant="contained"
             color="error"
             size="small"
-            onClick={() => setDeleteConfirmId(params.row.id!)}
+            onClick={() => params.row.id !== undefined && setDeleteConfirmId(params.row.id)}
           >
             {t('delete')}
           </Button>

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { TextField, Button, Typography, Stack, Box, Avatar } from '@mui/material';
 import { AccountInterface } from '@/types/accounts/types';
+import { log } from '@/lib/logger';
 
 const ProfilePage = (): ReactElement => {
   const { data: session } = useSession();
@@ -53,7 +54,7 @@ const ProfilePage = (): ReactElement => {
           setError(data.error || 'Failed to fetch profile.');
         }
       } catch (error) {
-        console.error('Error fetching profile:', error);
+        log.error('Error fetching profile:', error);
         setError('An error occurred while fetching the profile.');
       }
     };
@@ -108,7 +109,7 @@ const ProfilePage = (): ReactElement => {
         setSuccess(null);
       }
     } catch (err) {
-      console.error('Error updating profile:', err);
+      log.error('Error updating profile:', err);
       setError('An error occurred while updating the profile.');
       setSuccess(null);
     }

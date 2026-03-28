@@ -1,5 +1,5 @@
-import { GameInterface } from "../game/types";
-import { VenueInterface } from "../venues/types";
+import { GameInterface } from '../game/types';
+import { VenueInterface } from '../venues/types';
 
 export interface OpponentInterface {
   id?: number;

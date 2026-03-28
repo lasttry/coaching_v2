@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { fetchFpbLatestResults } from '@/lib/fpb/fetch';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: string }>;
 
@@ -24,10 +25,10 @@ export async function GET(
   }
 
   try {
-    const latestResults = await fetchFpbLatestResults(opponent.fpbTeamId, 5);
+    const latestResults = await fetchFpbLatestResults(opponent.fpbTeamId, 10);
     return NextResponse.json({ results: latestResults });
   } catch (error) {
-    console.error('Error fetching FPB results', error);
+    log.error('Error fetching FPB results:', error);
     return NextResponse.json({ error: 'Error fetching FPB results' }, { status: 500 });
   }
 }

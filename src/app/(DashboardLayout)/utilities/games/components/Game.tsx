@@ -20,7 +20,7 @@ import {
   GameAthleteReport,
   GameInterface,
   ObjectiveInterface,
-  OpponentInterface,
+  SizeEnum,
 } from '@/types/game/types';
 import { AthleteInterface } from '@/types/athlete/type';
 import { log } from '@/lib/logger';
@@ -32,6 +32,8 @@ import { ClubInterface } from '@/types/club/types';
 import { VenueInterface } from '@/types/venues/types';
 import { generateVsBanner } from '@/utils/generateVsBanner';
 import { GameEquipmentInterface } from '@/types/gameEquipment/type';
+import { OpponentInterface } from '@/types/opponent/type';
+import { EquipmentInterface } from '@/types/equipment/type';
 
 interface BannerTeam {
   image: string;
@@ -65,10 +67,15 @@ const GameComponent: React.FC<GameProps> = ({
   const [teams, setTeams] = useState<TeamInterface[]>([]);
   const [opponents, setOpponents] = React.useState<OpponentInterface[]>([]);
   const [teamAthletes, setTeamAthletes] = useState<AthleteInterface[]>([]);
+
   const [gameAthletes, setGameAthletes] = useState<GameAthleteInterface[]>([]);
   const [venues, setVenues] = useState<VenueInterface[]>([]);
+  const [equipments, setEquipments] = useState<EquipmentInterface[]>([]);
+  const [selectedEquipmentColor, setSelectedEquipmentColor] = useState<string>('');
+  const [gameEquipments, setGameEquipments] = useState<GameEquipmentInterface[]>([]);
   const selectedOpponent = opponents.find((o) => o.id === game.opponentId);
   const [club, setClub] = useState<ClubInterface | null>(null);
+
   const [bannerHomeTeam, setBannerHomeTeam] = useState<BannerTeam | null>(null);
   const [bannerAwayTeam, setBannerAwayTeam] = useState<BannerTeam | null>(null);
 
@@ -78,6 +85,52 @@ const GameComponent: React.FC<GameProps> = ({
   const filteredTeams = selectedCompetition
     ? teams.filter((team) => team.echelonId === selectedCompetition.echelonId)
     : [];
+
+  const distinctEquipmentColors = React.useMemo(
+    () =>
+      Array.from(
+        new Set(equipments.map((eq) => eq.color).filter((c): c is string => Boolean(c)))
+      ).sort(),
+    [equipments]
+  );
+
+  useEffect(() => {
+    if (Array.isArray(game.gameEquipments)) {
+      setGameEquipments(game.gameEquipments);
+    } else {
+      setGameEquipments([]);
+    }
+  }, [game.gameEquipments]);
+
+  useEffect(() => {
+    const fetchEquipments = async (): Promise<void> => {
+      if (!session?.user?.selectedClubId || !session?.user?.selectedSeasonId) {
+        setEquipments([]);
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `/api/clubs/${Number(session.user.selectedClubId)}/seasons/${Number(
+            session.user.selectedSeasonId
+          )}/equipments`
+        );
+        const data = await res.json();
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Failed to fetch equipments');
+        }
+
+        setEquipments(data);
+      } catch (error) {
+        log.error('Error fetching equipments:', error);
+        setErrorMessage('Failed to load equipments.');
+        setEquipments([]);
+      }
+    };
+
+    fetchEquipments();
+  }, [session?.user?.selectedClubId, session?.user?.selectedSeasonId, setErrorMessage]);
 
   useEffect(() => {
     async function fetchClub(): Promise<void> {
@@ -166,7 +219,7 @@ const GameComponent: React.FC<GameProps> = ({
       link.click();
       document.body.removeChild(link);
     } catch (error) {
-      console.error('Error generating banner image', error);
+      log.error('Error generating banner image:', error);
     }
   };
 
@@ -275,7 +328,7 @@ const GameComponent: React.FC<GameProps> = ({
         })
       );
     }
-  }, [teamAthletes, game]);
+  }, [teamAthletes]);
 
   useEffect(() => {
     const fetchVenues = async (): Promise<void> => {
@@ -449,13 +502,15 @@ const GameComponent: React.FC<GameProps> = ({
     if (validateAllFields().length > 0) {
       return;
     }
-    // Only pass selected athletes to game.gameAthletes
+    // Só atletas selecionados
     const filtered = gameAthletes.filter((a) => a.selected);
 
-    const updatedGame: GameInterface = {
+    const updatedGame = {
       ...game,
       gameAthletes: filtered,
-    };
+      gameEquipments,
+    } as GameInterface;
+
     log.debug(updatedGame);
     if (onSave) {
       onSave(updatedGame);
@@ -512,14 +567,28 @@ const GameComponent: React.FC<GameProps> = ({
       return;
     }
 
+    if (field === 'selected' && value === false) {
+      //setGameEquipments((prev) => prev.filter((ge) => ge.athleteId === id ? false : true));
+      setGame((prev) => ({
+        ...prev,
+        gameEquipments: (prev.gameEquipments ?? []).filter((ge) =>
+          ge.athleteId === id ? false : true
+        ),
+      }));
+    }
     setGameAthletes((prev) =>
       prev.map((a) =>
         a.athleteId === id
           ? {
               ...a,
               [field]: value,
-              // if field isn't 'selected', mark athlete as selected
+              // se não for o campo 'selected', marca como selecionado
               ...(field !== 'selected' ? { selected: true } : {}),
+              ...(field === 'selected' && !value ? { number: '0' } : {}),
+              ...(field === 'selected' && !value ? { period1: false } : {}),
+              ...(field === 'selected' && !value ? { period2: false } : {}),
+              ...(field === 'selected' && !value ? { period3: false } : {}),
+              ...(field === 'selected' && !value ? { period4: false } : {}),
             }
           : a
       )
@@ -551,6 +620,156 @@ const GameComponent: React.FC<GameProps> = ({
       setErrorMessage('Failed to load game officials.');
     }
   };
+
+  // Helper to rank sizes: XS < S < M < L < XL < XXL, undefined = very large
+  const sizeRank = (size?: SizeEnum): number => {
+    switch (size) {
+      case SizeEnum.S:
+        return 1;
+      case SizeEnum.M:
+        return 2;
+      case SizeEnum.L:
+        return 3;
+      case SizeEnum.XL:
+        return 4;
+      case SizeEnum.XXL:
+        return 5;
+      default:
+        return 999;
+    }
+  };
+
+  const handleAssignEquipment = (): void => {
+    if (!selectedEquipmentColor) {
+      setErrorMessage(t('equipment.selectColorFirst'));
+      return;
+    }
+
+    const availableForColor = equipments.filter((eq) => eq.color === selectedEquipmentColor);
+    if (!availableForColor.length) {
+      setErrorMessage(t('equipment.noEquipmentForColor'));
+      return;
+    }
+
+    const selectedAthletes = gameAthletes.filter((a) => a.selected);
+    if (!selectedAthletes.length) {
+      setErrorMessage(t('equipment.noSelectedAthletes'));
+      return;
+    }
+
+    // First pass: try to assign by preferred numbers (ascending preference)
+    const usedEquipmentIds = new Set<number>();
+    const assignments: GameEquipmentInterface[] = [];
+    const athleteAssigned: Record<number, boolean> = {};
+    const athleteNumberAssignments: Record<number, number> = {};
+
+    selectedAthletes.forEach((athlete) => {
+      const preferredNumbers = athlete.athlete?.preferredNumbers;
+      let assigned = false;
+      if (Array.isArray(preferredNumbers) && preferredNumbers.length > 0) {
+        // Sort preferred numbers by ascending preference and number
+        const sortedPrefs = [...preferredNumbers].sort(
+          (a, b) => (a.preference ?? 0) - (b.preference ?? 0) || (a.number ?? 0) - (b.number ?? 0)
+        );
+        for (const pref of sortedPrefs) {
+          for (const eq of availableForColor) {
+            if (!eq.id) {
+              continue;
+            }
+            if (
+              eq.number === pref.number &&
+              sizeRank(eq.size) >= sizeRank(athlete.athlete?.shirtSize) &&
+              !usedEquipmentIds.has(eq.id)
+            ) {
+              if (!athlete.athleteId) {
+                continue;
+              }
+              assignments.push({
+                gameId: game.id ?? 0,
+                athleteId: athlete.athleteId,
+                equipmentId: eq.id,
+              });
+              usedEquipmentIds.add(eq.id);
+              athleteAssigned[athlete.athleteId] = true;
+              athleteNumberAssignments[athlete.athleteId] = eq.number;
+              assigned = true;
+              break;
+            }
+          }
+          if (assigned) break;
+        }
+      }
+    });
+
+    // Second pass: assign to remaining selected athletes by size
+    // Get athletes still not assigned, sort by shirt size smallest to largest
+    const remainingAthletes = selectedAthletes
+      .filter((athlete) => !athleteAssigned[Number(athlete.athleteId)])
+      .sort((a, b) => sizeRank(a.athlete?.shirtSize) - sizeRank(b.athlete?.shirtSize));
+    // Get available equipments of color not yet assigned, sort by size smallest to largest
+    const remainingEquipments = availableForColor
+      .filter((eq) => !usedEquipmentIds.has(eq.id))
+      .sort((a, b) => sizeRank(a.size) - sizeRank(b.size));
+
+    for (const athlete of remainingAthletes) {
+      // Find first equipment at least as big as athlete's shirt size
+      const eq = remainingEquipments.find(
+        (e) => sizeRank(e.size) >= sizeRank(athlete.athlete?.shirtSize)
+      );
+      if (eq) {
+        assignments.push({
+          gameId: game.id ?? 0,
+          athleteId: Number(athlete.athleteId),
+          equipmentId: eq.id,
+        });
+        usedEquipmentIds.add(eq.id);
+        athleteNumberAssignments[Number(athlete.athleteId)] = eq.number;
+        // Remove from remainingEquipments
+        const idx = remainingEquipments.findIndex((e) => e.id === eq.id);
+        if (idx !== -1) remainingEquipments.splice(idx, 1);
+        athleteAssigned[Number(athlete.athleteId)] = true;
+      }
+    }
+
+    // Guardar atribuições também no objeto `game`
+    setGame((prev) => ({
+      ...prev,
+      gameEquipments: assignments,
+    }));
+
+    // Atualizar o número dos atletas com o número do equipamento atribuído
+    setGameAthletes((prev) =>
+      prev.map((ga) => {
+        const assignedNumber = athleteNumberAssignments[Number(ga.athleteId)];
+        if (assignedNumber !== undefined) {
+          return {
+            ...ga,
+            number: String(assignedNumber),
+            selected: true,
+          };
+        }
+
+        // Para quem não foi selecionado, número passa a '0'
+        if (!ga.selected) {
+          return {
+            ...ga,
+            number: '0',
+          };
+        }
+
+        return ga;
+      })
+    );
+
+    setGameEquipments(assignments);
+    if (assignments.length < selectedAthletes.length) {
+      setErrorMessage(t('equipment.notEnoughForAll'));
+    } else {
+      setSuccessMessage(t('equipment.assignedToSelected'));
+    }
+  };
+
+  const sourceGameEquipments = game.gameEquipments ?? gameEquipments;
 
   return (
     <Grid container spacing={2}>
@@ -850,57 +1069,105 @@ const GameComponent: React.FC<GameProps> = ({
 
       <Box mt={2}>
         <Typography variant="h6">{t('Athletes')}</Typography>
-        {gameAthletes.map((athlete) => (
-          <Grid container key={athlete.athleteId} spacing={2} alignItems="center" sx={{ mb: 1 }}>
-            <Grid size={1}>
-              <Checkbox
-                checked={athlete.selected ?? false}
-                disabled={!athlete.selected && gameAthletes.filter((a) => a.selected).length >= 12}
-                onChange={(e) =>
-                  handleAthleteFieldChange(athlete.athleteId, 'selected', e.target.checked)
-                }
-              />
-            </Grid>
-            <Grid size={3}>
-              <Typography>{athlete.athlete?.name}</Typography>
-            </Grid>
-            <Grid size={2}>
-              <TextField
-                label="Number"
-                value={athlete.number}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^$|^0$|^00$|^[1-9]$|^[1-9][0-9]$/.test(value)) {
-                    handleAthleteFieldChange(athlete.athleteId, 'number', value);
+        {gameAthletes.map((athlete) => {
+          const assignment = sourceGameEquipments.find((ge) => ge.athleteId === athlete.athleteId);
+          const assignedEquipment = assignment
+            ? equipments.find((eq) => eq.id === assignment.equipmentId)
+            : undefined;
+
+          return (
+            <Grid container key={athlete.athleteId} spacing={2} alignItems="center" sx={{ mb: 1 }}>
+              <Grid size={1}>
+                <Checkbox
+                  checked={athlete.selected ?? false}
+                  disabled={
+                    !athlete.selected && gameAthletes.filter((a) => a.selected).length >= 12
                   }
-                }}
-                inputProps={{ maxLength: 2 }}
-                disabled={!athlete.selected}
-              />
-            </Grid>
-            {[1, 2, 3, 4].map((p) => (
-              <Grid size={1} key={p}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={athlete[`period${p}` as keyof GameAthleteInterface] as boolean}
-                      onChange={(e) =>
-                        handleAthleteFieldChange(
-                          athlete.athleteId,
-                          `period${p}` as keyof GameAthleteInterface,
-                          e.target.checked
-                        )
-                      }
-                      disabled={!athlete.selected}
-                    />
+                  onChange={(e) =>
+                    handleAthleteFieldChange(athlete.athleteId, 'selected', e.target.checked)
                   }
-                  label={`P${p}`}
                 />
               </Grid>
-            ))}
-          </Grid>
-        ))}
+              <Grid size={3}>
+                <Typography>{athlete.athlete?.name}</Typography>
+              </Grid>
+              <Grid size={2}>
+                <TextField
+                  label="Number"
+                  value={athlete.number}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^$|^0$|^00$|^[1-9]$|^[1-9][0-9]$/.test(value)) {
+                      handleAthleteFieldChange(athlete.athleteId, 'number', value);
+                    }
+                  }}
+                  inputProps={{ maxLength: 2 }}
+                  disabled={!athlete.selected}
+                />
+              </Grid>
+              {[1, 2, 3, 4].map((p) => (
+                <Grid size={1} key={p}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={athlete[`period${p}` as keyof GameAthleteInterface] as boolean}
+                        onChange={(e) =>
+                          handleAthleteFieldChange(
+                            athlete.athleteId,
+                            `period${p}` as keyof GameAthleteInterface,
+                            e.target.checked
+                          )
+                        }
+                        disabled={!athlete.selected}
+                      />
+                    }
+                    label={`P${p}`}
+                  />
+                </Grid>
+              ))}
+              <Grid size={2}>
+                <Typography variant="body2">
+                  {assignedEquipment
+                    ? `${assignedEquipment.color} #${assignedEquipment.number} (${assignedEquipment.size})`
+                    : t('equipment.notAssigned')}
+                </Typography>
+              </Grid>
+            </Grid>
+          );
+        })}
       </Box>
+
+      <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
+        <Typography variant="h6">{t('equipment.title')}</Typography>
+        <Grid container spacing={2} alignItems="center">
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <FormControl fullWidth>
+              <InputLabel>{t('equipment.color')}</InputLabel>
+              <Select
+                value={selectedEquipmentColor}
+                label={t('equipment.color')}
+                onChange={(e) => setSelectedEquipmentColor(e.target.value as string)}
+              >
+                <MenuItem value="">{t('equipment.selectColor')}</MenuItem>
+                {distinctEquipmentColors.map((color) => (
+                  <MenuItem key={color} value={color}>
+                    {color}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 4 }}>
+            <Button
+              variant="contained"
+              onClick={handleAssignEquipment}
+              disabled={!selectedEquipmentColor || !equipments.length}
+            >
+              {t('equipment.assignToSelected')}
+            </Button>
+          </Grid>
+        </Grid>
+      </Grid>
       <Grid size={{ xs: 12 }}>
         <Typography variant="h6">Images</Typography>
 

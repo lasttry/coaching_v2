@@ -83,14 +83,6 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
                 fullWidth
               />
             </Grid>
-            <Grid size={{ xs: 6 }}>
-              <TextField
-                label="Season"
-                value={selectedClub.season || ''}
-                onChange={(e) => onEditChange('season', e.target.value)}
-                fullWidth
-              />
-            </Grid>
           </Grid>
 
           {/* Venues */}

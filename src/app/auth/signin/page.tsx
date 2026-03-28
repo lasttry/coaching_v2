@@ -14,40 +14,35 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import CustomTextField from '@/app/(DashboardLayout)/components/forms/theme-elements/CustomTextField';
 import { log } from '@/lib/logger';
+import { useMessage } from '@/hooks/useMessage';
 
 const SignInPage = (): ReactElement => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const { message: errorMessage, setTimedMessage: setErrorMessage } = useMessage(10000);
   const router = useRouter();
 
   const handleSignIn = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
 
-    // Basic validation
     if (!username || !password) {
       setErrorMessage('Please fill in all fields');
-      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10s
       return;
     }
 
     try {
-      // Call NextAuth's signIn function
       const response = await signIn('credentials', {
         redirect: false,
         email: username,
         password,
       });
 
-      // Check if there's an error
       if (response?.error) {
         log.error('Login failed:', response.error);
         setErrorMessage('Invalid username or password');
-        setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10s
         return;
       }
 
-      // Fetch user details using the `/api/accounts` endpoint
       const accountResponse = await fetch(`/api/accounts?email=${encodeURIComponent(username)}`);
       const data = await accountResponse.json();
 
@@ -55,11 +50,9 @@ const SignInPage = (): ReactElement => {
         const errorText = data?.error || 'Failed to fetch user details';
         log.error(errorText);
         setErrorMessage(errorText);
-        setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10s
         return;
       }
 
-      // Redirect logic based on account data
       if (data.length >= 1 && data[0].defaultClubId !== 0) {
         router.push('/utilities/games');
       } else if (data[0].clubs.length === 1) {
@@ -70,7 +63,6 @@ const SignInPage = (): ReactElement => {
     } catch (error) {
       log.error('Unexpected error during login:', error);
       setErrorMessage('An unexpected error occurred. Please try again.');
-      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10s
     }
   };
 
@@ -133,6 +125,21 @@ const SignInPage = (): ReactElement => {
                 label="Remember this Device"
               />
             </FormGroup>
+            <Typography
+              variant="body2"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                router.push('/auth/forgot-password');
+              }}
+              sx={{
+                cursor: 'pointer',
+                color: 'primary.main',
+                '&:hover': { textDecoration: 'underline' },
+              }}
+            >
+              Forgot Password?
+            </Typography>
           </Stack>
         </Stack>
 

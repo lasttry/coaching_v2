@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { log } from '@/lib/logger';
 import {
   Box,
   Button,
@@ -42,12 +43,12 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
           const data: AccountClubInterface[] = await response.json();
           setAccounts(data);
         } else {
-          console.error('Failed to fetch accounts for the club');
+          log.error('Failed to fetch accounts for the club');
           onError?.('Failed to fetch accounts for the club');
         }
       } catch (error) {
-        console.error('Error fetching accounts:', error);
-        onError?.(`Error fetching accounts: ${error}`);
+        log.error('Error fetching accounts:', error);
+        onError?.('Error fetching accounts');
       }
     };
 
@@ -64,12 +65,12 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
           const data: AccountInterface[] = await response.json();
           setFilteredAccounts(data);
         } else {
-          console.error('Failed to fetch accounts for autocomplete');
-          onError?.(`Failed to fetch accounts for autocomplete`);
+          log.error('Failed to fetch accounts for autocomplete');
+          onError?.('Failed to fetch accounts for autocomplete');
         }
       } catch (error) {
-        console.error('Error fetching accounts:', error);
-        onError?.(`Error fetching accounts: ${error}`);
+        log.error('Error fetching accounts:', error);
+        onError?.('Error fetching accounts');
       }
     } else {
       setFilteredAccounts([]);
@@ -98,13 +99,13 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
         if (errorData?.error) {
           onError?.(`Failed to add account to the club: ${errorData.error}`);
         } else {
-          console.error('Failed to remove account from the club');
-          onError?.(`Failed to add account to the club`);
+          log.error('Failed to add account to the club');
+          onError?.('Failed to add account to the club');
         }
       }
     } catch (error) {
-      console.error('Error adding account to the club:', error);
-      onError?.(`Error adding account to the club: ${error}`);
+      log.error('Error adding account to the club:', error);
+      onError?.('Error adding account to the club');
     }
   };
 
@@ -137,12 +138,12 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
           )
         );
       } else {
-        console.error('Failed to update role');
-        onError?.(`Failed to update role`);
+        log.error('Failed to update role');
+        onError?.('Failed to update role');
       }
     } catch (error) {
-      console.error('Error updating role:', error);
-      onError?.(`Error updating role: ${error}`);
+      log.error('Error updating role:', error);
+      onError?.('Error updating role');
     }
   };
 
@@ -160,13 +161,13 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
         if (errorData?.error) {
           onError?.(`Error removing account from the club: ${errorData.error}`);
         } else {
-          console.error('Failed to remove account from the club');
-          onError?.(`Failed to remove account from the club`);
+          log.error('Failed to remove account from the club');
+          onError?.('Failed to remove account from the club');
         }
       }
     } catch (error) {
-      console.error('Error removing account from the club:', error);
-      onError?.(`Error removing account from the club: ${error}`);
+      log.error('Error removing account from the club:', error);
+      onError?.('Error removing account from the club');
     }
   };
 

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { parseHashedPassword, hashPassword, validatePassword } from '@/lib/password';
+import { log } from '@/lib/logger';
 
 // ✅ Correct param type for Next.js 14+
 type Params = Promise<{ id: string }>;
@@ -26,7 +27,7 @@ export async function DELETE(
     await prisma.account.delete({ where: { id: accountId } });
     return NextResponse.json({ message: 'Account deleted successfully.' }, { status: 200 });
   } catch (error) {
-    console.error('Error deleting account:', error);
+    log.error('Error deleting account:', error);
     return NextResponse.json(
       { error: 'An error occurred while deleting the account.' },
       { status: 500 }
@@ -77,7 +78,7 @@ export async function PUT(req: NextRequest, context: { params: Params }): Promis
 
     return NextResponse.json(updatedAccount, { status: 200 });
   } catch (error) {
-    console.error('Error updating account:', error);
+    log.error('Error updating account:', error);
     return NextResponse.json({ error: 'Failed to update account' }, { status: 500 });
   }
 }
@@ -125,7 +126,7 @@ export async function GET(_req: NextRequest, context: { params: Params }): Promi
 
     return NextResponse.json(account, { status: 200 });
   } catch (error) {
-    console.error('Error fetching account:', error);
+    log.error('Error fetching account:', error);
     return NextResponse.json({ error: 'Failed to fetch account' }, { status: 500 });
   }
 }

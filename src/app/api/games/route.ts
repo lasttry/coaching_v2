@@ -27,7 +27,7 @@ export async function POST(req: Request): Promise<NextResponse> {
     isNaN(Number(session.user.selectedClubId))
   ) {
     log.error('games/route.ts>POST: session invalid or club not selected');
-    return NextResponse.json({ status: 402 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -125,6 +125,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
           competitionSerie: true,
           venue: true,
           gameAthletes: { include: { athlete: true } },
+          gameEquipments: true,
         },
       }),
       prisma.game.count(),

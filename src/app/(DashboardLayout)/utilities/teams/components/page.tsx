@@ -29,6 +29,7 @@ import { AthleteInterface } from '@/types/game/types';
 import { TeamInterface } from '@/types/teams/types';
 import { EchelonInterface } from '@/types/echelons/types';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { useMessage } from '@/hooks/useMessage';
 
 const TeamsPage = (): ReactElement => {
   const { data: session } = useSession();
@@ -41,11 +42,11 @@ const TeamsPage = (): ReactElement => {
   const [form, setForm] = useState({
     name: '',
     type: '',
-    echelonId: '', // Default to an empty string
-    clubId: '', // Will be updated with session data
+    echelonId: '',
+    clubId: '',
   });
-  const [errorMessage, setErrorMessage] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const { message: errorMessage, setTimedMessage: setErrorMessage } = useMessage(10000);
+  const { message: successMessage, setTimedMessage: setSuccessMessage } = useMessage(5000);
 
   useEffect(() => {
     fetchTeams();
@@ -64,7 +65,6 @@ const TeamsPage = (): ReactElement => {
     } catch (error) {
       log.error('Failed to fetch echelons:', error);
       setErrorMessage('Failed to load echelons.');
-      setTimeout(() => setErrorMessage(''), 10000);
     }
   };
 
@@ -77,7 +77,6 @@ const TeamsPage = (): ReactElement => {
     } catch (error) {
       log.error('Failed to fetch teams:', error);
       setErrorMessage('An error occurred while fetching teams');
-      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10 seconds
     }
   };
 
@@ -88,9 +87,8 @@ const TeamsPage = (): ReactElement => {
       if (!response.ok) throw new Error(data.error);
       setAthletes(data);
     } catch (error) {
-      log.error('Failed to fetch teams:', error);
-      setErrorMessage('An error occurred while fetching teams');
-      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10 seconds
+      log.error('Failed to fetch athletes:', error);
+      setErrorMessage('An error occurred while fetching athletes');
     }
   };
 
@@ -117,11 +115,9 @@ const TeamsPage = (): ReactElement => {
       if (!response.ok) throw new Error(data.error);
       setSuccessMessage('Team created successfully');
       fetchTeams();
-      setTimeout(() => setSuccessMessage(''), 5000);
     } catch (error) {
-      log.error('Failed to fetch teams:', error);
-      setErrorMessage('An error occurred while fetching teams');
-      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10 seconds
+      log.error('Failed to create team:', error);
+      setErrorMessage('An error occurred while creating team');
     }
   };
 
@@ -136,7 +132,6 @@ const TeamsPage = (): ReactElement => {
     const teamEchelon = selectedTeam.echelon;
     if (teamEchelon && teamEchelon.maxAge && age > teamEchelon.maxAge) {
       setErrorMessage(`Athlete age exceeds maximum age (${teamEchelon.maxAge})`);
-      setTimeout(() => setErrorMessage(''), 10000);
       return;
     }
 
@@ -150,11 +145,9 @@ const TeamsPage = (): ReactElement => {
       if (!response.ok) throw new Error(data.error);
       setSuccessMessage('Athlete added successfully');
       fetchTeams();
-      setTimeout(() => setSuccessMessage(''), 5000);
     } catch (error) {
-      log.error('Failed to fetch teams:', error);
-      setErrorMessage('An error occurred while fetching teams');
-      setTimeout(() => setErrorMessage(''), 10000); // Clear error after 10 seconds
+      log.error('Failed to add athlete:', error);
+      setErrorMessage('An error occurred while adding athlete');
     }
   };
 

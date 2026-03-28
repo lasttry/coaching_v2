@@ -15,7 +15,6 @@ declare module 'next-auth' {
       email: string;
       selectedClubId?: number | null;
       role: PlatformRole;
-      club?: ClubInterface;
     } & DefaultSession['user'];
   }
 
@@ -24,8 +23,8 @@ declare module 'next-auth' {
     name: string | null;
     email: string;
     selectedClubId?: number | null;
+    selectedSeasonId?: number | null;
     role: PlatformRole;
-    club?: ClubInterface;
   }
 }
 
@@ -38,8 +37,8 @@ declare module 'next-auth/jwt' {
     name?: string | null;
     email?: string;
     selectedClubId?: number | null;
+    selectedSeasonId?: number | null;
     role: PlatformRole;
-    club?: ClubInterface;
   }
 }
 

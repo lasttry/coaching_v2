@@ -1,7 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, ReactElement } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Alert } from '@mui/material';
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Grid } from '@mui/material';
 import { Box, Typography } from '@mui/material';
@@ -12,8 +18,9 @@ import '@/styles/clubsAccordion.css';
 import { useSession } from 'next-auth/react';
 import ClubDetails from './assets/clubDetails';
 import ClubAccounts from './assets/clubAccounts';
+import { log } from '@/lib/logger';
 
-import '@/lib/i18n.client'; // garante inicialização só no cliente
+import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
 
 const ClubPage = (): ReactElement => {
@@ -22,6 +29,7 @@ const ClubPage = (): ReactElement => {
   const [clubs, setClubs] = useState<ClubInterface[]>([]);
   const [selectedClub, setSelectedClub] = useState<ClubInterface | null>(null);
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { data: session } = useSession();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null | undefined>(null);
@@ -35,8 +43,10 @@ const ClubPage = (): ReactElement => {
           setClubs(data.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)));
         }
       } catch (error) {
-        console.error('Failed to fetch clubs:', error);
-        // Opcional: setErrorMessage('Failed to load clubs');
+        log.error('Failed to fetch clubs:', error);
+        setErrorMessage('Failed to load clubs');
+      } finally {
+        setLoading(false);
       }
     }
     fetchClubs();
@@ -47,7 +57,6 @@ const ClubPage = (): ReactElement => {
       id: 0,
       name: '',
       shortName: '',
-      season: '',
       backgroundColor: '#ffffff',
       foregroundColor: '#000000',
       image: '',
@@ -167,41 +176,45 @@ const ClubPage = (): ReactElement => {
             </Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <Grid container spacing={3} justifyContent="flex-start" className="grid-container">
-              {sortedClubs.map((club) => (
+            {loading ? (
+              <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Grid container spacing={3} justifyContent="flex-start" className="grid-container">
+                {sortedClubs.map((club) => (
+                  <Grid
+                    key={club.id}
+                    size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
+                    sx={{ display: 'flex', justifyContent: 'center' }}
+                  >
+                    <Box
+                      className="club-item"
+                      style={{
+                        background: `${club.backgroundColor || '#ffffff'} url(${club.image || ''}) center/cover`,
+                      }}
+                      onClick={() => handleSelectClub(club)}
+                    >
+                      <Box className="club-item-overlay">
+                        <Typography variant="body1" className="club-item-overlay-text">
+                          {club.name}
+                        </Typography>
+                      </Box>
+                    </Box>
+                  </Grid>
+                ))}
                 <Grid
-                  key={club.id}
                   size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
                   sx={{ display: 'flex', justifyContent: 'center' }}
                 >
-                  <Box
-                    className="club-item"
-                    style={{
-                      background: `${club.backgroundColor || '#ffffff'} url(${club.image || ''}) center/cover`,
-                    }}
-                    onClick={() => handleSelectClub(club)}
-                  >
-                    <Box className="club-item-overlay">
-                      <Typography variant="body1" className="club-item-overlay-text">
-                        {club.name}
-                        <br></br>
-                        {club.season}
-                      </Typography>
-                    </Box>
+                  <Box className="add-new-item" onClick={handleNewClub}>
+                    <Typography variant="h6" className="add-new-item-text">
+                      {t('New')}
+                    </Typography>
                   </Box>
                 </Grid>
-              ))}
-              <Grid
-                size={{ xs: 12, sm: 6, md: 4, lg: 3 }}
-                sx={{ display: 'flex', justifyContent: 'center' }}
-              >
-                <Box className="add-new-item" onClick={handleNewClub}>
-                  <Typography variant="h6" className="add-new-item-text">
-                    {t('New')}
-                  </Typography>
-                </Box>
               </Grid>
-            </Grid>
+            )}
           </AccordionDetails>
         </Accordion>
         {/* Success/Error Messages */}

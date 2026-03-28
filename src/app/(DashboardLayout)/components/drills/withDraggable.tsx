@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSelection } from './SelectionContext';
 
 interface DraggableProps {
@@ -36,13 +36,15 @@ const withDraggable = <P extends object>(
     const draggingRef = useRef(false);
     const rotatingRef = useRef(false);
     const [svgRect, setSvgRect] = useState<DOMRect | null>(null);
+    const handlersRef = useRef<{
+      handleMouseMove: ((event: MouseEvent) => void) | null;
+      handleMouseUp: (() => void) | null;
+    }>({ handleMouseMove: null, handleMouseUp: null });
 
     useEffect(() => {
       if (elementRef.current) {
-        // Find the closest parent <svg> element
         const svgElement = elementRef.current.closest('svg');
         if (svgElement) {
-          // Get the bounding box of the <svg> element
           const rect = svgElement.getBoundingClientRect();
           setSvgRect(rect);
         }
@@ -51,65 +53,86 @@ const withDraggable = <P extends object>(
       latestPosition.current = { x, y, rotation: rotation || 0 };
     }, [x, y, rotation]);
 
-    const handleMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
-      if (draggable && !rotatingRef.current) {
-        event.preventDefault();
-        // Add global event listeners for mousemove and mouseup
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseup', handleMouseUp);
-        draggingRef.current = true;
-      }
-    };
+    useEffect(() => {
+      return () => {
+        if (handlersRef.current.handleMouseMove) {
+          window.removeEventListener('mousemove', handlersRef.current.handleMouseMove);
+        }
+        if (handlersRef.current.handleMouseUp) {
+          window.removeEventListener('mouseup', handlersRef.current.handleMouseUp);
+        }
+      };
+    }, []);
 
-    const handleMouseMove = (event: MouseEvent): void => {
-      if (draggingRef.current && svgRect) {
-        const { left, top } = svgRect; // Use cached bounding rect
-        const newX = event.clientX - left;
-        const newY = event.clientY - top;
+    const handleMouseMove = useCallback(
+      (event: MouseEvent): void => {
+        if (draggingRef.current && svgRect) {
+          const { left, top } = svgRect;
+          const newX = event.clientX - left;
+          const newY = event.clientY - top;
 
-        // Update position only if it changes significantly
-        setPosition((prevPosition) => {
-          const newPosition = { ...prevPosition, x: newX, y: newY };
-          latestPosition.current = newPosition;
-          return newPosition;
-        });
-      } else if (rotatingRef.current && svgRect) {
-        // Get the SVG element
-        const { left, top } = svgRect;
+          setPosition((prevPosition) => {
+            const newPosition = { ...prevPosition, x: newX, y: newY };
+            latestPosition.current = newPosition;
+            return newPosition;
+          });
+        } else if (rotatingRef.current && svgRect) {
+          const { left, top } = svgRect;
+          const centerX = left + latestPosition.current.x;
+          const centerY = top + latestPosition.current.y;
+          const deltaX = event.clientX - centerX;
+          const deltaY = event.clientY - centerY;
+          const angleRadians = Math.atan2(deltaY, deltaX);
+          let angleDegrees = (angleRadians * 180) / Math.PI;
+          angleDegrees = (angleDegrees + 90 + 360) % 360;
 
-        // Find the center of the SVG in viewport coordinates
-        const centerX = left + position.x;
-        const centerY = top + position.y;
-        const deltaX = event.clientX - centerX;
-        const deltaY = event.clientY - centerY;
-        const angleRadians = Math.atan2(deltaY, deltaX);
-        let angleDegrees = (angleRadians * 180) / Math.PI;
-        angleDegrees = (angleDegrees + 90 + 360) % 360;
-        // Set the updated rotation
-        setPosition((prevPosition) => {
-          const newPosition = { ...prevPosition, rotation: angleDegrees };
-          latestPosition.current = newPosition;
-          return newPosition;
-        });
-      }
-    };
+          setPosition((prevPosition) => {
+            const newPosition = { ...prevPosition, rotation: angleDegrees };
+            latestPosition.current = newPosition;
+            return newPosition;
+          });
+        }
+      },
+      [svgRect]
+    );
 
-    const handleMouseUp = (): void => {
+    const handleMouseUp = useCallback((): void => {
       if (draggingRef.current) {
         draggingRef.current = false;
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
+        if (handlersRef.current.handleMouseMove) {
+          window.removeEventListener('mousemove', handlersRef.current.handleMouseMove);
+        }
+        if (handlersRef.current.handleMouseUp) {
+          window.removeEventListener('mouseup', handlersRef.current.handleMouseUp);
+        }
       } else if (rotatingRef.current) {
         rotatingRef.current = false;
-        window.removeEventListener('mousemove', handleMouseMove);
-        window.removeEventListener('mouseup', handleMouseUp);
+        if (handlersRef.current.handleMouseMove) {
+          window.removeEventListener('mousemove', handlersRef.current.handleMouseMove);
+        }
+        if (handlersRef.current.handleMouseUp) {
+          window.removeEventListener('mouseup', handlersRef.current.handleMouseUp);
+        }
       }
       if (onMove) {
         const { x, y, rotation } = latestPosition.current;
         onMove(x, y, rotation || 0, { id });
       }
       if (draggable) {
-        select(id); // Select the component when mouse down
+        select(id);
+      }
+    }, [onMove, id, draggable, select]);
+
+    useEffect(() => {
+      handlersRef.current = { handleMouseMove, handleMouseUp };
+    }, [handleMouseMove, handleMouseUp]);
+
+    const handleMouseDown = (event: React.MouseEvent<SVGGElement, MouseEvent>): void => {
+      if (draggable && !rotatingRef.current) {
+        event.preventDefault();
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseup', handleMouseUp);
+        draggingRef.current = true;
       }
     };
 

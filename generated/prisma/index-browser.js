@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.1.0
- * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
+ * Prisma Client JS version: 7.6.0
+ * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
  */
 Prisma.prismaVersion = {
-  client: "7.1.0",
-  engine: "ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba"
+  client: "7.6.0",
+  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -190,7 +190,9 @@ exports.Prisma.AccountScalarFieldEnum = {
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   defaultClubId: 'defaultClubId',
-  role: 'role'
+  role: 'role',
+  resetToken: 'resetToken',
+  resetTokenExpiry: 'resetTokenExpiry'
 };
 
 exports.Prisma.StatisticScalarFieldEnum = {
@@ -310,9 +312,16 @@ exports.Prisma.ClubScalarFieldEnum = {
   image: 'image',
   backgroundColor: 'backgroundColor',
   foregroundColor: 'foregroundColor',
-  season: 'season',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.SeasonScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  isCurrent: 'isCurrent'
 };
 
 exports.Prisma.VenueScalarFieldEnum = {
@@ -384,6 +393,8 @@ exports.Prisma.AthletePreferredNumberScalarFieldEnum = {
 exports.Prisma.EquipmentScalarFieldEnum = {
   id: 'id',
   clubId: 'clubId',
+  seasonId: 'seasonId',
+  echelonId: 'echelonId',
   color: 'color',
   number: 'number',
   size: 'size',
@@ -477,6 +488,7 @@ exports.Prisma.ModelName = {
   Drill: 'Drill',
   Echelon: 'Echelon',
   Club: 'Club',
+  Season: 'Season',
   Venue: 'Venue',
   AccountClub: 'AccountClub',
   AccountClubRole: 'AccountClubRole',

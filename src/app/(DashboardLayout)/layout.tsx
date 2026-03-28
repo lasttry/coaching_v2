@@ -5,9 +5,10 @@ import React, { ReactElement, useState } from 'react';
 import Header from '@/app/(DashboardLayout)/layout/header/Header';
 import Sidebar from '@/app/(DashboardLayout)/layout/sidebar/Sidebar';
 import { SessionProvider } from 'next-auth/react';
-import { log } from '@/lib/logger'; // Import the logger
+import { log } from '@/lib/logger';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '@/lib/i18n.client';
+import ErrorBoundary from '@/app/(DashboardLayout)/components/shared/ErrorBoundary';
 
 // Styled Components
 const MainWrapper = styled('div')(() => ({
@@ -64,7 +65,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }):
               />
 
               {/* Page Route */}
-              <Box sx={{ minHeight: 'calc(100vh - 170px)', py: 3 }}>{children}</Box>
+              <Box sx={{ minHeight: 'calc(100vh - 170px)', py: 3 }}>
+                <ErrorBoundary>{children}</ErrorBoundary>
+              </Box>
             </Container>
           </PageWrapper>
         </MainWrapper>

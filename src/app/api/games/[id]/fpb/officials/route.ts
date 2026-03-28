@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { fetchFpbGameOfficials } from '@/lib/fpb/fetch';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: string }>;
 
@@ -18,7 +19,7 @@ export async function GET(
     const latestResults = await fetchFpbGameOfficials(gameId);
     return NextResponse.json(latestResults);
   } catch (error) {
-    console.error('Error fetching FPB results', error);
-    return NextResponse.json({ error: 'Error fetching FPB results' }, { status: 500 });
+    log.error('Error fetching FPB officials:', error);
+    return NextResponse.json({ error: 'Error fetching FPB officials' }, { status: 500 });
   }
 }

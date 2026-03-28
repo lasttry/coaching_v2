@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 // GET: List all microcycles
 export async function GET(): Promise<NextResponse> {
@@ -17,7 +18,7 @@ export async function GET(): Promise<NextResponse> {
 
     return NextResponse.json(microcycles);
   } catch (error) {
-    console.error(error);
+    log.error('Error fetching microcycles:', error);
     return NextResponse.json({ error: 'Failed to fetch microcycles' }, { status: 500 });
   }
 }
@@ -55,7 +56,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(newMicrocycle);
   } catch (error) {
-    console.error('Error creating microcycle:', error);
+    log.error('Error creating microcycle:', error);
     return NextResponse.json({ error: 'Failed to create microcycle' }, { status: 500 });
   }
 }

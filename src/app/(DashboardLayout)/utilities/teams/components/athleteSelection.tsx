@@ -27,7 +27,10 @@ const AthleteSelectionComponent: React.FC<AthleteSelectionProps> = ({
       {athletes.map((athlete) => (
         <Grid container key={athlete.id} spacing={2} alignItems="center" sx={{ mb: 1 }}>
           <Grid size={{ xs: 2 }}>
-            <Checkbox checked={athlete.selected} onChange={() => onToggle(_teamId, athlete.id!)} />
+            <Checkbox
+              checked={athlete.selected}
+              onChange={() => athlete.id !== undefined && onToggle(_teamId, athlete.id)}
+            />
           </Grid>
           <Grid size={{ xs: 6 }}>
             <Typography>{athlete.name}</Typography>

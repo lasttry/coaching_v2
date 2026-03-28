@@ -18,6 +18,9 @@ export async function GET(req: Request, segmentData: { params: Params }): Promis
       // Find the athlete by ID
       const athlete = await prisma.athlete.findUnique({
         where: { id: Number(id) },
+        include: {
+          preferredNumbers: true,
+        },
       });
 
       // If athlete is found, return the athlete details
@@ -44,17 +47,15 @@ export async function DELETE(req: Request, segmentData: { params: Params }): Pro
 
   if (id && !isNaN(Number(id))) {
     try {
-      // First, delete all related gameAthletes records
-      await prisma.gameAthlete.deleteMany({
-        where: { athleteId: Number(id) },
+      await prisma.$transaction(async (tx) => {
+        await tx.gameAthlete.deleteMany({
+          where: { athleteId: Number(id) },
+        });
+        await tx.athlete.delete({
+          where: { id: Number(id) },
+        });
       });
 
-      // Then, delete the athlete
-      await prisma.athlete.delete({
-        where: { id: Number(id) },
-      });
-
-      // Return 204 No Content (no body)
       return new NextResponse(null, { status: 204 });
     } catch (error) {
       log.error('Error deleting athlete:', error);
@@ -96,7 +97,20 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
       return NextResponse.json({ error: i18next.t('invalidBirthdate') }, { status: 400 });
     }
 
-    // Update the athlete in the database
+    // Normalize preferredNumbers from the payload (if provided)
+    const rawPreferred = Array.isArray(data.preferredNumbers) ? data.preferredNumbers : [];
+
+    const preferredNumbersData = rawPreferred
+      .filter((p) => p && p.number !== undefined && p.number !== null)
+      .map((p: { number: number; preference?: number }, index: number) => ({
+        number: Number(p.number),
+        preference:
+          typeof p.preference === 'number' && !Number.isNaN(p.preference)
+            ? p.preference
+            : index + 1,
+      }));
+
+    // Update the athlete in the database, including preferredNumbers
     const updatedAthlete = await prisma.athlete.update({
       where: { id: Number(id) },
       data: {
@@ -109,6 +123,18 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         idType: data.idType || null,
         active: data.active ?? true, // Handle the `active` field if provided
         updatedAt: new Date(), // Automatically set the updatedAt field
+        preferredNumbers: {
+          // Remove all existing preferredNumbers for this athlete and recreate from payload
+          deleteMany: {},
+          ...(preferredNumbersData.length > 0
+            ? {
+                create: preferredNumbersData,
+              }
+            : {}),
+        },
+      },
+      include: {
+        preferredNumbers: true,
       },
     });
 

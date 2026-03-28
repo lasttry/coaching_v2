@@ -3,7 +3,7 @@ import type { AthleteInterface } from '../athlete/type';
 import type { EquipmentInterface } from '../equipment/type';
 
 export interface GameEquipmentInterface {
-  id: number;
+  id?: number;
   gameId: number;
   athleteId: number;
   equipmentId: number;

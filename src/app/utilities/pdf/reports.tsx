@@ -41,7 +41,6 @@ export const generateReportsPDF = async (game: GameInterface, session: Session):
   // Prepare table body
   const tableBody = athletes.flatMap((athlete: Athlete) => {
     const report = reports.find((r: Report) => r.athleteId === athlete.id);
-    //console.log(report.reviewdAthlete)
     return [
       ['Atleta:', `${athlete.number === '-1' ? '' : athlete.number + ' - '}${athlete.name}`],
       [

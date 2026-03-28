@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { SessionGoalInterface } from '@/types/cycles/types';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 // GET: List all session goals
 export async function GET(): Promise<NextResponse> {
@@ -13,7 +14,7 @@ export async function GET(): Promise<NextResponse> {
 
     return NextResponse.json(sessionGoals);
   } catch (error) {
-    console.error(error);
+    log.error('Error fetching session goals:', error);
     return NextResponse.json({ error: 'Failed to fetch session goals' }, { status: 500 });
   }
 }
@@ -48,7 +49,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(newSessionGoal, { status: 201 });
   } catch (error) {
-    console.error(error);
+    log.error('Error creating session goal:', error);
     return NextResponse.json({ error: 'Failed to create session goal' }, { status: 500 });
   }
 }

@@ -149,16 +149,18 @@ model Opponent {
 }
 
 model Account {
-  id            Int           @id @default(autoincrement())
-  name          String?       @db.VarChar(100)
-  email         String        @unique @db.VarChar(100)
-  password      String
-  image         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  clubs         AccountClub[] @relation("AccountToClubs")
-  defaultClubId Int           @default(0)
-  role          PlatformRole  @default(USER)
+  id                 Int           @id @default(autoincrement())
+  name               String?       @db.VarChar(100)
+  email              String        @unique @db.VarChar(100)
+  password           String
+  image              String?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  clubs              AccountClub[] @relation("AccountToClubs")
+  defaultClubId      Int           @default(0)
+  role               PlatformRole  @default(USER)
+  resetToken         String?       @unique
+  resetTokenExpiry   DateTime?
 }
 
 model Statistic {
@@ -293,6 +295,7 @@ model Echelon {
   updatedAt    DateTime      @updatedAt
   teams        Team[]
   competitions Competition[]
+  equipments   Equipment[]
 }
 
 model Club {
@@ -302,7 +305,6 @@ model Club {
   image           String?
   backgroundColor String?       @db.VarChar(7)
   foregroundColor String?       @db.VarChar(7)
-  season          String?       @db.VarChar(10)
   accounts        AccountClub[] @relation("ClubToAccounts")
   athletes        Athlete[]
   games           Game[]
@@ -313,6 +315,16 @@ model Club {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Season {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(10) // e.g. "2025/2026"
+  startDate DateTime
+  endDate   DateTime
+  isCurrent Boolean  @default(false)
+
+  equipments Equipment[]
 }
 
 model Venue {
@@ -411,13 +423,18 @@ model AthletePreferredNumber {
 }
 
 model Equipment {
-  id     Int  @id @default(autoincrement())
-  clubId Int
-  club   Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  id        Int @id @default(autoincrement())
+  clubId    Int
+  seasonId  Int
+  echelonId Int
+
+  club    Club    @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  season  Season  @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+  echelon Echelon @relation(fields: [echelonId], references: [id], onDelete: Cascade)
 
   color  String
   number Int
-  size   Size // se quiseres, depois trocamos para enum ou para o teu tipo Size
+  size   Size
 
   gameEquipments GameEquipment[]
 
@@ -425,6 +442,8 @@ model Equipment {
   updatedAt DateTime @updatedAt
 
   @@index([clubId])
+  @@index([clubId, seasonId])
+  @@index([clubId, seasonId, echelonId])
 }
 
 model GameEquipment {
@@ -437,5 +456,5 @@ model GameEquipment {
   athlete   Athlete   @relation(fields: [athleteId], references: [id], onDelete: Cascade)
   equipment Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 
-  @@unique([gameId, athleteId, equipmentId])
+  @@unique([gameId, athleteId])
 }

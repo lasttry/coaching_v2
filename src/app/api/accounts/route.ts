@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { hashPassword } from '@/lib/password';
+import { log } from '@/lib/logger';
+import { auth } from '@/lib/auth';
 
 export async function POST(request: Request): Promise<NextResponse> {
   try {
@@ -37,12 +39,17 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(newAccount, { status: 201 });
   } catch (error) {
-    console.error('Error creating account:', error);
+    log.error('Error creating account:', error);
     return NextResponse.json({ error: 'Failed to create account' }, { status: 500 });
   }
 }
 
 export async function GET(request: Request): Promise<NextResponse> {
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const email = searchParams.get('email') || '';
 
@@ -53,7 +60,7 @@ export async function GET(request: Request): Promise<NextResponse> {
             where: {
               email: {
                 contains: email,
-                mode: 'insensitive', // Case-insensitive search
+                mode: 'insensitive',
               },
             },
             select: {
@@ -76,7 +83,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(accounts, { status: 200 });
   } catch (error) {
-    console.error('Error fetching accounts:', error);
+    log.error('Error fetching accounts:', error);
     return NextResponse.json({ error: 'Failed to fetch accounts' }, { status: 500 });
   }
 }

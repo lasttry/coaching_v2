@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 // GET: List all macrocycles
 export async function GET(): Promise<NextResponse> {
@@ -12,7 +13,7 @@ export async function GET(): Promise<NextResponse> {
 
     return NextResponse.json(macrocycles);
   } catch (error) {
-    console.error(error);
+    log.error('Error fetching macrocycles:', error);
     return NextResponse.json({ error: 'Failed to fetch macrocycles' }, { status: 500 });
   }
 }
@@ -42,7 +43,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(newMacrocycle, { status: 201 });
   } catch (error) {
-    console.error(error);
+    log.error('Error creating macrocycle:', error);
     return NextResponse.json({ error: 'Failed to create macrocycle' }, { status: 500 });
   }
 }

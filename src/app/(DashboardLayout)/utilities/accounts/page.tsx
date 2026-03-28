@@ -26,6 +26,7 @@ import { useSession } from 'next-auth/react';
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import { AccountInterface } from '@/types/accounts/types';
 import ChangePasswordDialog from './assets/changePasswordDialog';
+import { log } from '@/lib/logger';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
@@ -183,7 +184,8 @@ const AccountsPage = (): ReactElement => {
         if (errorData?.error) {
           setErrorMessage(`${t('failedAddAccounts')}: ${errorData.error}`);
         } else {
-          console.error(t('failedAddAccounts'));
+          log.error('Failed to add account');
+          setErrorMessage(t('failedAddAccounts'));
         }
       }
     } catch (error) {

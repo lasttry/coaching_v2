@@ -94,6 +94,11 @@ export type Echelon = $Result.DefaultSelection<Prisma.$EchelonPayload>
  */
 export type Club = $Result.DefaultSelection<Prisma.$ClubPayload>
 /**
+ * Model Season
+ * 
+ */
+export type Season = $Result.DefaultSelection<Prisma.$SeasonPayload>
+/**
  * Model Venue
  * 
  */
@@ -252,7 +257,9 @@ export const Size: typeof $Enums.Size
  * Type-safe database client for TypeScript & Node.js
  * @example
  * ```
- * const prisma = new PrismaClient()
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
  * // Fetch zero or more Athletes
  * const athletes = await prisma.athlete.findMany()
  * ```
@@ -273,7 +280,9 @@ export class PrismaClient<
    * Type-safe database client for TypeScript & Node.js
    * @example
    * ```
-   * const prisma = new PrismaClient()
+   * const prisma = new PrismaClient({
+   *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+   * })
    * // Fetch zero or more Athletes
    * const athletes = await prisma.athlete.findMany()
    * ```
@@ -353,7 +362,7 @@ export class PrismaClient<
    * ])
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
+   * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
@@ -524,6 +533,16 @@ export class PrismaClient<
   get club(): Prisma.ClubDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.season`: Exposes CRUD operations for the **Season** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Seasons
+    * const seasons = await prisma.season.findMany()
+    * ```
+    */
+  get season(): Prisma.SeasonDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.venue`: Exposes CRUD operations for the **Venue** model.
     * Example usage:
     * ```ts
@@ -672,8 +691,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.1.0
-   * Query Engine version: ab635e6b9d606fa5c8fb8b1a7f909c3c3c1c98ba
+   * Prisma Client JS version: 7.6.0
+   * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
    */
   export type PrismaVersion = {
     client: string
@@ -1072,6 +1091,7 @@ export namespace Prisma {
     Drill: 'Drill',
     Echelon: 'Echelon',
     Club: 'Club',
+    Season: 'Season',
     Venue: 'Venue',
     AccountClub: 'AccountClub',
     AccountClubRole: 'AccountClubRole',
@@ -1097,7 +1117,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "athlete" | "gameAthlete" | "game" | "opponent" | "account" | "statistic" | "timeEntry" | "athleteReport" | "macrocycle" | "mesocycle" | "microcycle" | "sessionGoal" | "objective" | "drill" | "echelon" | "club" | "venue" | "accountClub" | "accountClubRole" | "team" | "teamAthlete" | "competition" | "competitionSerie" | "athletePreferredNumber" | "equipment" | "gameEquipment"
+      modelProps: "athlete" | "gameAthlete" | "game" | "opponent" | "account" | "statistic" | "timeEntry" | "athleteReport" | "macrocycle" | "mesocycle" | "microcycle" | "sessionGoal" | "objective" | "drill" | "echelon" | "club" | "season" | "venue" | "accountClub" | "accountClubRole" | "team" | "teamAthlete" | "competition" | "competitionSerie" | "athletePreferredNumber" | "equipment" | "gameEquipment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2285,6 +2305,80 @@ export namespace Prisma {
           }
         }
       }
+      Season: {
+        payload: Prisma.$SeasonPayload<ExtArgs>
+        fields: Prisma.SeasonFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.SeasonFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.SeasonFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          findFirst: {
+            args: Prisma.SeasonFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.SeasonFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          findMany: {
+            args: Prisma.SeasonFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>[]
+          }
+          create: {
+            args: Prisma.SeasonCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          createMany: {
+            args: Prisma.SeasonCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.SeasonCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>[]
+          }
+          delete: {
+            args: Prisma.SeasonDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          update: {
+            args: Prisma.SeasonUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          deleteMany: {
+            args: Prisma.SeasonDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.SeasonUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.SeasonUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>[]
+          }
+          upsert: {
+            args: Prisma.SeasonUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$SeasonPayload>
+          }
+          aggregate: {
+            args: Prisma.SeasonAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateSeason>
+          }
+          groupBy: {
+            args: Prisma.SeasonGroupByArgs<ExtArgs>
+            result: $Utils.Optional<SeasonGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.SeasonCountArgs<ExtArgs>
+            result: $Utils.Optional<SeasonCountAggregateOutputType> | number
+          }
+        }
+      }
       Venue: {
         payload: Prisma.$VenuePayload<ExtArgs>
         fields: Prisma.VenueFieldRefs
@@ -3149,6 +3243,7 @@ export namespace Prisma {
     drill?: DrillOmit
     echelon?: EchelonOmit
     club?: ClubOmit
+    season?: SeasonOmit
     venue?: VenueOmit
     accountClub?: AccountClubOmit
     accountClubRole?: AccountClubRoleOmit
@@ -3575,11 +3670,13 @@ export namespace Prisma {
   export type EchelonCountOutputType = {
     teams: number
     competitions: number
+    equipments: number
   }
 
   export type EchelonCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     teams?: boolean | EchelonCountOutputTypeCountTeamsArgs
     competitions?: boolean | EchelonCountOutputTypeCountCompetitionsArgs
+    equipments?: boolean | EchelonCountOutputTypeCountEquipmentsArgs
   }
 
   // Custom InputTypes
@@ -3605,6 +3702,13 @@ export namespace Prisma {
    */
   export type EchelonCountOutputTypeCountCompetitionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: CompetitionWhereInput
+  }
+
+  /**
+   * EchelonCountOutputType without action
+   */
+  export type EchelonCountOutputTypeCountEquipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EquipmentWhereInput
   }
 
 
@@ -3689,6 +3793,37 @@ export namespace Prisma {
    * ClubCountOutputType without action
    */
   export type ClubCountOutputTypeCountEquipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: EquipmentWhereInput
+  }
+
+
+  /**
+   * Count Type SeasonCountOutputType
+   */
+
+  export type SeasonCountOutputType = {
+    equipments: number
+  }
+
+  export type SeasonCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    equipments?: boolean | SeasonCountOutputTypeCountEquipmentsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * SeasonCountOutputType without action
+   */
+  export type SeasonCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the SeasonCountOutputType
+     */
+    select?: SeasonCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * SeasonCountOutputType without action
+   */
+  export type SeasonCountOutputTypeCountEquipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EquipmentWhereInput
   }
 
@@ -4912,6 +5047,11 @@ export namespace Prisma {
      * Skip the first `n` Athletes.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Athletes.
+     */
     distinct?: AthleteScalarFieldEnum | AthleteScalarFieldEnum[]
   }
 
@@ -6234,6 +6374,11 @@ export namespace Prisma {
      * Skip the first `n` GameAthletes.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GameAthletes.
+     */
     distinct?: GameAthleteScalarFieldEnum | GameAthleteScalarFieldEnum[]
   }
 
@@ -7641,6 +7786,11 @@ export namespace Prisma {
      * Skip the first `n` Games.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Games.
+     */
     distinct?: GameScalarFieldEnum | GameScalarFieldEnum[]
   }
 
@@ -9000,6 +9150,11 @@ export namespace Prisma {
      * Skip the first `n` Opponents.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Opponents.
+     */
     distinct?: OpponentScalarFieldEnum | OpponentScalarFieldEnum[]
   }
 
@@ -9290,6 +9445,8 @@ export namespace Prisma {
     updatedAt: Date | null
     defaultClubId: number | null
     role: $Enums.PlatformRole | null
+    resetToken: string | null
+    resetTokenExpiry: Date | null
   }
 
   export type AccountMaxAggregateOutputType = {
@@ -9302,6 +9459,8 @@ export namespace Prisma {
     updatedAt: Date | null
     defaultClubId: number | null
     role: $Enums.PlatformRole | null
+    resetToken: string | null
+    resetTokenExpiry: Date | null
   }
 
   export type AccountCountAggregateOutputType = {
@@ -9314,6 +9473,8 @@ export namespace Prisma {
     updatedAt: number
     defaultClubId: number
     role: number
+    resetToken: number
+    resetTokenExpiry: number
     _all: number
   }
 
@@ -9338,6 +9499,8 @@ export namespace Prisma {
     updatedAt?: true
     defaultClubId?: true
     role?: true
+    resetToken?: true
+    resetTokenExpiry?: true
   }
 
   export type AccountMaxAggregateInputType = {
@@ -9350,6 +9513,8 @@ export namespace Prisma {
     updatedAt?: true
     defaultClubId?: true
     role?: true
+    resetToken?: true
+    resetTokenExpiry?: true
   }
 
   export type AccountCountAggregateInputType = {
@@ -9362,6 +9527,8 @@ export namespace Prisma {
     updatedAt?: true
     defaultClubId?: true
     role?: true
+    resetToken?: true
+    resetTokenExpiry?: true
     _all?: true
   }
 
@@ -9461,6 +9628,8 @@ export namespace Prisma {
     updatedAt: Date
     defaultClubId: number
     role: $Enums.PlatformRole
+    resetToken: string | null
+    resetTokenExpiry: Date | null
     _count: AccountCountAggregateOutputType | null
     _avg: AccountAvgAggregateOutputType | null
     _sum: AccountSumAggregateOutputType | null
@@ -9492,6 +9661,8 @@ export namespace Prisma {
     updatedAt?: boolean
     defaultClubId?: boolean
     role?: boolean
+    resetToken?: boolean
+    resetTokenExpiry?: boolean
     clubs?: boolean | Account$clubsArgs<ExtArgs>
     _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["account"]>
@@ -9506,6 +9677,8 @@ export namespace Prisma {
     updatedAt?: boolean
     defaultClubId?: boolean
     role?: boolean
+    resetToken?: boolean
+    resetTokenExpiry?: boolean
   }, ExtArgs["result"]["account"]>
 
   export type AccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9518,6 +9691,8 @@ export namespace Prisma {
     updatedAt?: boolean
     defaultClubId?: boolean
     role?: boolean
+    resetToken?: boolean
+    resetTokenExpiry?: boolean
   }, ExtArgs["result"]["account"]>
 
   export type AccountSelectScalar = {
@@ -9530,9 +9705,11 @@ export namespace Prisma {
     updatedAt?: boolean
     defaultClubId?: boolean
     role?: boolean
+    resetToken?: boolean
+    resetTokenExpiry?: boolean
   }
 
-  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "image" | "createdAt" | "updatedAt" | "defaultClubId" | "role", ExtArgs["result"]["account"]>
+  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "image" | "createdAt" | "updatedAt" | "defaultClubId" | "role" | "resetToken" | "resetTokenExpiry", ExtArgs["result"]["account"]>
   export type AccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     clubs?: boolean | Account$clubsArgs<ExtArgs>
     _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
@@ -9555,6 +9732,8 @@ export namespace Prisma {
       updatedAt: Date
       defaultClubId: number
       role: $Enums.PlatformRole
+      resetToken: string | null
+      resetTokenExpiry: Date | null
     }, ExtArgs["result"]["account"]>
     composites: {}
   }
@@ -9988,6 +10167,8 @@ export namespace Prisma {
     readonly updatedAt: FieldRef<"Account", 'DateTime'>
     readonly defaultClubId: FieldRef<"Account", 'Int'>
     readonly role: FieldRef<"Account", 'PlatformRole'>
+    readonly resetToken: FieldRef<"Account", 'String'>
+    readonly resetTokenExpiry: FieldRef<"Account", 'DateTime'>
   }
     
 
@@ -10184,6 +10365,11 @@ export namespace Prisma {
      * Skip the first `n` Accounts.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Accounts.
+     */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
   }
 
@@ -11520,6 +11706,11 @@ export namespace Prisma {
      * Skip the first `n` Statistics.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Statistics.
+     */
     distinct?: StatisticScalarFieldEnum | StatisticScalarFieldEnum[]
   }
 
@@ -12687,6 +12878,11 @@ export namespace Prisma {
      * Skip the first `n` TimeEntries.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TimeEntries.
+     */
     distinct?: TimeEntryScalarFieldEnum | TimeEntryScalarFieldEnum[]
   }
 
@@ -13846,6 +14042,11 @@ export namespace Prisma {
      * Skip the first `n` AthleteReports.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AthleteReports.
+     */
     distinct?: AthleteReportScalarFieldEnum | AthleteReportScalarFieldEnum[]
   }
 
@@ -14997,6 +15198,11 @@ export namespace Prisma {
      * Skip the first `n` Macrocycles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Macrocycles.
+     */
     distinct?: MacrocycleScalarFieldEnum | MacrocycleScalarFieldEnum[]
   }
 
@@ -16153,6 +16359,11 @@ export namespace Prisma {
      * Skip the first `n` Mesocycles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Mesocycles.
+     */
     distinct?: MesocycleScalarFieldEnum | MesocycleScalarFieldEnum[]
   }
 
@@ -17309,6 +17520,11 @@ export namespace Prisma {
      * Skip the first `n` Microcycles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Microcycles.
+     */
     distinct?: MicrocycleScalarFieldEnum | MicrocycleScalarFieldEnum[]
   }
 
@@ -18463,6 +18679,11 @@ export namespace Prisma {
      * Skip the first `n` SessionGoals.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of SessionGoals.
+     */
     distinct?: SessionGoalScalarFieldEnum | SessionGoalScalarFieldEnum[]
   }
 
@@ -19585,6 +19806,11 @@ export namespace Prisma {
      * Skip the first `n` Objectives.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Objectives.
+     */
     distinct?: ObjectiveScalarFieldEnum | ObjectiveScalarFieldEnum[]
   }
 
@@ -20629,6 +20855,11 @@ export namespace Prisma {
      * Skip the first `n` Drills.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Drills.
+     */
     distinct?: DrillScalarFieldEnum | DrillScalarFieldEnum[]
   }
 
@@ -21051,6 +21282,7 @@ export namespace Prisma {
     updatedAt?: boolean
     teams?: boolean | Echelon$teamsArgs<ExtArgs>
     competitions?: boolean | Echelon$competitionsArgs<ExtArgs>
+    equipments?: boolean | Echelon$equipmentsArgs<ExtArgs>
     _count?: boolean | EchelonCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["echelon"]>
 
@@ -21091,6 +21323,7 @@ export namespace Prisma {
   export type EchelonInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     teams?: boolean | Echelon$teamsArgs<ExtArgs>
     competitions?: boolean | Echelon$competitionsArgs<ExtArgs>
+    equipments?: boolean | Echelon$equipmentsArgs<ExtArgs>
     _count?: boolean | EchelonCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type EchelonIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -21101,6 +21334,7 @@ export namespace Prisma {
     objects: {
       teams: Prisma.$TeamPayload<ExtArgs>[]
       competitions: Prisma.$CompetitionPayload<ExtArgs>[]
+      equipments: Prisma.$EquipmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -21507,6 +21741,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     teams<T extends Echelon$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Echelon$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     competitions<T extends Echelon$competitionsArgs<ExtArgs> = {}>(args?: Subset<T, Echelon$competitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    equipments<T extends Echelon$equipmentsArgs<ExtArgs> = {}>(args?: Subset<T, Echelon$equipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21740,6 +21975,11 @@ export namespace Prisma {
      * Skip the first `n` Echelons.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Echelons.
+     */
     distinct?: EchelonScalarFieldEnum | EchelonScalarFieldEnum[]
   }
 
@@ -21980,6 +22220,30 @@ export namespace Prisma {
   }
 
   /**
+   * Echelon.equipments
+   */
+  export type Echelon$equipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Equipment
+     */
+    select?: EquipmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Equipment
+     */
+    omit?: EquipmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EquipmentInclude<ExtArgs> | null
+    where?: EquipmentWhereInput
+    orderBy?: EquipmentOrderByWithRelationInput | EquipmentOrderByWithRelationInput[]
+    cursor?: EquipmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EquipmentScalarFieldEnum | EquipmentScalarFieldEnum[]
+  }
+
+  /**
    * Echelon without action
    */
   export type EchelonDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22025,7 +22289,6 @@ export namespace Prisma {
     image: string | null
     backgroundColor: string | null
     foregroundColor: string | null
-    season: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -22037,7 +22300,6 @@ export namespace Prisma {
     image: string | null
     backgroundColor: string | null
     foregroundColor: string | null
-    season: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -22049,7 +22311,6 @@ export namespace Prisma {
     image: number
     backgroundColor: number
     foregroundColor: number
-    season: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -22071,7 +22332,6 @@ export namespace Prisma {
     image?: true
     backgroundColor?: true
     foregroundColor?: true
-    season?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -22083,7 +22343,6 @@ export namespace Prisma {
     image?: true
     backgroundColor?: true
     foregroundColor?: true
-    season?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -22095,7 +22354,6 @@ export namespace Prisma {
     image?: true
     backgroundColor?: true
     foregroundColor?: true
-    season?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -22194,7 +22452,6 @@ export namespace Prisma {
     image: string | null
     backgroundColor: string | null
     foregroundColor: string | null
-    season: string | null
     createdAt: Date
     updatedAt: Date
     _count: ClubCountAggregateOutputType | null
@@ -22225,7 +22482,6 @@ export namespace Prisma {
     image?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
-    season?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accounts?: boolean | Club$accountsArgs<ExtArgs>
@@ -22245,7 +22501,6 @@ export namespace Prisma {
     image?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
-    season?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["club"]>
@@ -22257,7 +22512,6 @@ export namespace Prisma {
     image?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
-    season?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["club"]>
@@ -22269,12 +22523,11 @@ export namespace Prisma {
     image?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
-    season?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortName" | "image" | "backgroundColor" | "foregroundColor" | "season" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
+  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortName" | "image" | "backgroundColor" | "foregroundColor" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
   export type ClubInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | Club$accountsArgs<ExtArgs>
     athletes?: boolean | Club$athletesArgs<ExtArgs>
@@ -22306,7 +22559,6 @@ export namespace Prisma {
       image: string | null
       backgroundColor: string | null
       foregroundColor: string | null
-      season: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["club"]>
@@ -22745,7 +22997,6 @@ export namespace Prisma {
     readonly image: FieldRef<"Club", 'String'>
     readonly backgroundColor: FieldRef<"Club", 'String'>
     readonly foregroundColor: FieldRef<"Club", 'String'>
-    readonly season: FieldRef<"Club", 'String'>
     readonly createdAt: FieldRef<"Club", 'DateTime'>
     readonly updatedAt: FieldRef<"Club", 'DateTime'>
   }
@@ -22944,6 +23195,11 @@ export namespace Prisma {
      * Skip the first `n` Clubs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Clubs.
+     */
     distinct?: ClubScalarFieldEnum | ClubScalarFieldEnum[]
   }
 
@@ -23319,6 +23575,1115 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ClubInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Season
+   */
+
+  export type AggregateSeason = {
+    _count: SeasonCountAggregateOutputType | null
+    _avg: SeasonAvgAggregateOutputType | null
+    _sum: SeasonSumAggregateOutputType | null
+    _min: SeasonMinAggregateOutputType | null
+    _max: SeasonMaxAggregateOutputType | null
+  }
+
+  export type SeasonAvgAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SeasonSumAggregateOutputType = {
+    id: number | null
+  }
+
+  export type SeasonMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    startDate: Date | null
+    endDate: Date | null
+    isCurrent: boolean | null
+  }
+
+  export type SeasonMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    startDate: Date | null
+    endDate: Date | null
+    isCurrent: boolean | null
+  }
+
+  export type SeasonCountAggregateOutputType = {
+    id: number
+    name: number
+    startDate: number
+    endDate: number
+    isCurrent: number
+    _all: number
+  }
+
+
+  export type SeasonAvgAggregateInputType = {
+    id?: true
+  }
+
+  export type SeasonSumAggregateInputType = {
+    id?: true
+  }
+
+  export type SeasonMinAggregateInputType = {
+    id?: true
+    name?: true
+    startDate?: true
+    endDate?: true
+    isCurrent?: true
+  }
+
+  export type SeasonMaxAggregateInputType = {
+    id?: true
+    name?: true
+    startDate?: true
+    endDate?: true
+    isCurrent?: true
+  }
+
+  export type SeasonCountAggregateInputType = {
+    id?: true
+    name?: true
+    startDate?: true
+    endDate?: true
+    isCurrent?: true
+    _all?: true
+  }
+
+  export type SeasonAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Season to aggregate.
+     */
+    where?: SeasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Seasons to fetch.
+     */
+    orderBy?: SeasonOrderByWithRelationInput | SeasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: SeasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Seasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Seasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Seasons
+    **/
+    _count?: true | SeasonCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: SeasonAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: SeasonSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: SeasonMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: SeasonMaxAggregateInputType
+  }
+
+  export type GetSeasonAggregateType<T extends SeasonAggregateArgs> = {
+        [P in keyof T & keyof AggregateSeason]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateSeason[P]>
+      : GetScalarType<T[P], AggregateSeason[P]>
+  }
+
+
+
+
+  export type SeasonGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SeasonWhereInput
+    orderBy?: SeasonOrderByWithAggregationInput | SeasonOrderByWithAggregationInput[]
+    by: SeasonScalarFieldEnum[] | SeasonScalarFieldEnum
+    having?: SeasonScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: SeasonCountAggregateInputType | true
+    _avg?: SeasonAvgAggregateInputType
+    _sum?: SeasonSumAggregateInputType
+    _min?: SeasonMinAggregateInputType
+    _max?: SeasonMaxAggregateInputType
+  }
+
+  export type SeasonGroupByOutputType = {
+    id: number
+    name: string
+    startDate: Date
+    endDate: Date
+    isCurrent: boolean
+    _count: SeasonCountAggregateOutputType | null
+    _avg: SeasonAvgAggregateOutputType | null
+    _sum: SeasonSumAggregateOutputType | null
+    _min: SeasonMinAggregateOutputType | null
+    _max: SeasonMaxAggregateOutputType | null
+  }
+
+  type GetSeasonGroupByPayload<T extends SeasonGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<SeasonGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof SeasonGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], SeasonGroupByOutputType[P]>
+            : GetScalarType<T[P], SeasonGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type SeasonSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isCurrent?: boolean
+    equipments?: boolean | Season$equipmentsArgs<ExtArgs>
+    _count?: boolean | SeasonCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["season"]>
+
+  export type SeasonSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isCurrent?: boolean
+  }, ExtArgs["result"]["season"]>
+
+  export type SeasonSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isCurrent?: boolean
+  }, ExtArgs["result"]["season"]>
+
+  export type SeasonSelectScalar = {
+    id?: boolean
+    name?: boolean
+    startDate?: boolean
+    endDate?: boolean
+    isCurrent?: boolean
+  }
+
+  export type SeasonOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "startDate" | "endDate" | "isCurrent", ExtArgs["result"]["season"]>
+  export type SeasonInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    equipments?: boolean | Season$equipmentsArgs<ExtArgs>
+    _count?: boolean | SeasonCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type SeasonIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type SeasonIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $SeasonPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Season"
+    objects: {
+      equipments: Prisma.$EquipmentPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      startDate: Date
+      endDate: Date
+      isCurrent: boolean
+    }, ExtArgs["result"]["season"]>
+    composites: {}
+  }
+
+  type SeasonGetPayload<S extends boolean | null | undefined | SeasonDefaultArgs> = $Result.GetResult<Prisma.$SeasonPayload, S>
+
+  type SeasonCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<SeasonFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: SeasonCountAggregateInputType | true
+    }
+
+  export interface SeasonDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Season'], meta: { name: 'Season' } }
+    /**
+     * Find zero or one Season that matches the filter.
+     * @param {SeasonFindUniqueArgs} args - Arguments to find a Season
+     * @example
+     * // Get one Season
+     * const season = await prisma.season.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends SeasonFindUniqueArgs>(args: SelectSubset<T, SeasonFindUniqueArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Season that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {SeasonFindUniqueOrThrowArgs} args - Arguments to find a Season
+     * @example
+     * // Get one Season
+     * const season = await prisma.season.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends SeasonFindUniqueOrThrowArgs>(args: SelectSubset<T, SeasonFindUniqueOrThrowArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Season that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonFindFirstArgs} args - Arguments to find a Season
+     * @example
+     * // Get one Season
+     * const season = await prisma.season.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends SeasonFindFirstArgs>(args?: SelectSubset<T, SeasonFindFirstArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Season that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonFindFirstOrThrowArgs} args - Arguments to find a Season
+     * @example
+     * // Get one Season
+     * const season = await prisma.season.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends SeasonFindFirstOrThrowArgs>(args?: SelectSubset<T, SeasonFindFirstOrThrowArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Seasons that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Seasons
+     * const seasons = await prisma.season.findMany()
+     * 
+     * // Get first 10 Seasons
+     * const seasons = await prisma.season.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const seasonWithIdOnly = await prisma.season.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends SeasonFindManyArgs>(args?: SelectSubset<T, SeasonFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Season.
+     * @param {SeasonCreateArgs} args - Arguments to create a Season.
+     * @example
+     * // Create one Season
+     * const Season = await prisma.season.create({
+     *   data: {
+     *     // ... data to create a Season
+     *   }
+     * })
+     * 
+     */
+    create<T extends SeasonCreateArgs>(args: SelectSubset<T, SeasonCreateArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Seasons.
+     * @param {SeasonCreateManyArgs} args - Arguments to create many Seasons.
+     * @example
+     * // Create many Seasons
+     * const season = await prisma.season.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends SeasonCreateManyArgs>(args?: SelectSubset<T, SeasonCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Seasons and returns the data saved in the database.
+     * @param {SeasonCreateManyAndReturnArgs} args - Arguments to create many Seasons.
+     * @example
+     * // Create many Seasons
+     * const season = await prisma.season.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Seasons and only return the `id`
+     * const seasonWithIdOnly = await prisma.season.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends SeasonCreateManyAndReturnArgs>(args?: SelectSubset<T, SeasonCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Season.
+     * @param {SeasonDeleteArgs} args - Arguments to delete one Season.
+     * @example
+     * // Delete one Season
+     * const Season = await prisma.season.delete({
+     *   where: {
+     *     // ... filter to delete one Season
+     *   }
+     * })
+     * 
+     */
+    delete<T extends SeasonDeleteArgs>(args: SelectSubset<T, SeasonDeleteArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Season.
+     * @param {SeasonUpdateArgs} args - Arguments to update one Season.
+     * @example
+     * // Update one Season
+     * const season = await prisma.season.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends SeasonUpdateArgs>(args: SelectSubset<T, SeasonUpdateArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Seasons.
+     * @param {SeasonDeleteManyArgs} args - Arguments to filter Seasons to delete.
+     * @example
+     * // Delete a few Seasons
+     * const { count } = await prisma.season.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends SeasonDeleteManyArgs>(args?: SelectSubset<T, SeasonDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Seasons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Seasons
+     * const season = await prisma.season.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends SeasonUpdateManyArgs>(args: SelectSubset<T, SeasonUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Seasons and returns the data updated in the database.
+     * @param {SeasonUpdateManyAndReturnArgs} args - Arguments to update many Seasons.
+     * @example
+     * // Update many Seasons
+     * const season = await prisma.season.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Seasons and only return the `id`
+     * const seasonWithIdOnly = await prisma.season.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends SeasonUpdateManyAndReturnArgs>(args: SelectSubset<T, SeasonUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Season.
+     * @param {SeasonUpsertArgs} args - Arguments to update or create a Season.
+     * @example
+     * // Update or create a Season
+     * const season = await prisma.season.upsert({
+     *   create: {
+     *     // ... data to create a Season
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Season we want to update
+     *   }
+     * })
+     */
+    upsert<T extends SeasonUpsertArgs>(args: SelectSubset<T, SeasonUpsertArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Seasons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonCountArgs} args - Arguments to filter Seasons to count.
+     * @example
+     * // Count the number of Seasons
+     * const count = await prisma.season.count({
+     *   where: {
+     *     // ... the filter for the Seasons we want to count
+     *   }
+     * })
+    **/
+    count<T extends SeasonCountArgs>(
+      args?: Subset<T, SeasonCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], SeasonCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Season.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends SeasonAggregateArgs>(args: Subset<T, SeasonAggregateArgs>): Prisma.PrismaPromise<GetSeasonAggregateType<T>>
+
+    /**
+     * Group by Season.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {SeasonGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends SeasonGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: SeasonGroupByArgs['orderBy'] }
+        : { orderBy?: SeasonGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, SeasonGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetSeasonGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Season model
+   */
+  readonly fields: SeasonFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Season.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__SeasonClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    equipments<T extends Season$equipmentsArgs<ExtArgs> = {}>(args?: Subset<T, Season$equipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Season model
+   */
+  interface SeasonFieldRefs {
+    readonly id: FieldRef<"Season", 'Int'>
+    readonly name: FieldRef<"Season", 'String'>
+    readonly startDate: FieldRef<"Season", 'DateTime'>
+    readonly endDate: FieldRef<"Season", 'DateTime'>
+    readonly isCurrent: FieldRef<"Season", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Season findUnique
+   */
+  export type SeasonFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Season to fetch.
+     */
+    where: SeasonWhereUniqueInput
+  }
+
+  /**
+   * Season findUniqueOrThrow
+   */
+  export type SeasonFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Season to fetch.
+     */
+    where: SeasonWhereUniqueInput
+  }
+
+  /**
+   * Season findFirst
+   */
+  export type SeasonFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Season to fetch.
+     */
+    where?: SeasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Seasons to fetch.
+     */
+    orderBy?: SeasonOrderByWithRelationInput | SeasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Seasons.
+     */
+    cursor?: SeasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Seasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Seasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Seasons.
+     */
+    distinct?: SeasonScalarFieldEnum | SeasonScalarFieldEnum[]
+  }
+
+  /**
+   * Season findFirstOrThrow
+   */
+  export type SeasonFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Season to fetch.
+     */
+    where?: SeasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Seasons to fetch.
+     */
+    orderBy?: SeasonOrderByWithRelationInput | SeasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Seasons.
+     */
+    cursor?: SeasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Seasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Seasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Seasons.
+     */
+    distinct?: SeasonScalarFieldEnum | SeasonScalarFieldEnum[]
+  }
+
+  /**
+   * Season findMany
+   */
+  export type SeasonFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter, which Seasons to fetch.
+     */
+    where?: SeasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Seasons to fetch.
+     */
+    orderBy?: SeasonOrderByWithRelationInput | SeasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Seasons.
+     */
+    cursor?: SeasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Seasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Seasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Seasons.
+     */
+    distinct?: SeasonScalarFieldEnum | SeasonScalarFieldEnum[]
+  }
+
+  /**
+   * Season create
+   */
+  export type SeasonCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Season.
+     */
+    data: XOR<SeasonCreateInput, SeasonUncheckedCreateInput>
+  }
+
+  /**
+   * Season createMany
+   */
+  export type SeasonCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Seasons.
+     */
+    data: SeasonCreateManyInput | SeasonCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Season createManyAndReturn
+   */
+  export type SeasonCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * The data used to create many Seasons.
+     */
+    data: SeasonCreateManyInput | SeasonCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Season update
+   */
+  export type SeasonUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Season.
+     */
+    data: XOR<SeasonUpdateInput, SeasonUncheckedUpdateInput>
+    /**
+     * Choose, which Season to update.
+     */
+    where: SeasonWhereUniqueInput
+  }
+
+  /**
+   * Season updateMany
+   */
+  export type SeasonUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Seasons.
+     */
+    data: XOR<SeasonUpdateManyMutationInput, SeasonUncheckedUpdateManyInput>
+    /**
+     * Filter which Seasons to update
+     */
+    where?: SeasonWhereInput
+    /**
+     * Limit how many Seasons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Season updateManyAndReturn
+   */
+  export type SeasonUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * The data used to update Seasons.
+     */
+    data: XOR<SeasonUpdateManyMutationInput, SeasonUncheckedUpdateManyInput>
+    /**
+     * Filter which Seasons to update
+     */
+    where?: SeasonWhereInput
+    /**
+     * Limit how many Seasons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Season upsert
+   */
+  export type SeasonUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Season to update in case it exists.
+     */
+    where: SeasonWhereUniqueInput
+    /**
+     * In case the Season found by the `where` argument doesn't exist, create a new Season with this data.
+     */
+    create: XOR<SeasonCreateInput, SeasonUncheckedCreateInput>
+    /**
+     * In case the Season was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<SeasonUpdateInput, SeasonUncheckedUpdateInput>
+  }
+
+  /**
+   * Season delete
+   */
+  export type SeasonDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
+    /**
+     * Filter which Season to delete.
+     */
+    where: SeasonWhereUniqueInput
+  }
+
+  /**
+   * Season deleteMany
+   */
+  export type SeasonDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Seasons to delete
+     */
+    where?: SeasonWhereInput
+    /**
+     * Limit how many Seasons to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Season.equipments
+   */
+  export type Season$equipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Equipment
+     */
+    select?: EquipmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Equipment
+     */
+    omit?: EquipmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EquipmentInclude<ExtArgs> | null
+    where?: EquipmentWhereInput
+    orderBy?: EquipmentOrderByWithRelationInput | EquipmentOrderByWithRelationInput[]
+    cursor?: EquipmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: EquipmentScalarFieldEnum | EquipmentScalarFieldEnum[]
+  }
+
+  /**
+   * Season without action
+   */
+  export type SeasonDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Season
+     */
+    select?: SeasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Season
+     */
+    omit?: SeasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: SeasonInclude<ExtArgs> | null
   }
 
 
@@ -24244,6 +25609,11 @@ export namespace Prisma {
      * Skip the first `n` Venues.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Venues.
+     */
     distinct?: VenueScalarFieldEnum | VenueScalarFieldEnum[]
   }
 
@@ -25407,6 +26777,11 @@ export namespace Prisma {
      * Skip the first `n` AccountClubs.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountClubs.
+     */
     distinct?: AccountClubScalarFieldEnum | AccountClubScalarFieldEnum[]
   }
 
@@ -26501,6 +27876,11 @@ export namespace Prisma {
      * Skip the first `n` AccountClubRoles.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AccountClubRoles.
+     */
     distinct?: AccountClubRoleScalarFieldEnum | AccountClubRoleScalarFieldEnum[]
   }
 
@@ -27645,6 +29025,11 @@ export namespace Prisma {
      * Skip the first `n` Teams.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Teams.
+     */
     distinct?: TeamScalarFieldEnum | TeamScalarFieldEnum[]
   }
 
@@ -28775,6 +30160,11 @@ export namespace Prisma {
      * Skip the first `n` TeamAthletes.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TeamAthletes.
+     */
     distinct?: TeamAthleteScalarFieldEnum | TeamAthleteScalarFieldEnum[]
   }
 
@@ -29924,6 +31314,11 @@ export namespace Prisma {
      * Skip the first `n` Competitions.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Competitions.
+     */
     distinct?: CompetitionScalarFieldEnum | CompetitionScalarFieldEnum[]
   }
 
@@ -31091,6 +32486,11 @@ export namespace Prisma {
      * Skip the first `n` CompetitionSeries.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of CompetitionSeries.
+     */
     distinct?: CompetitionSerieScalarFieldEnum | CompetitionSerieScalarFieldEnum[]
   }
 
@@ -32206,6 +33606,11 @@ export namespace Prisma {
      * Skip the first `n` AthletePreferredNumbers.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AthletePreferredNumbers.
+     */
     distinct?: AthletePreferredNumberScalarFieldEnum | AthletePreferredNumberScalarFieldEnum[]
   }
 
@@ -32439,18 +33844,24 @@ export namespace Prisma {
   export type EquipmentAvgAggregateOutputType = {
     id: number | null
     clubId: number | null
+    seasonId: number | null
+    echelonId: number | null
     number: number | null
   }
 
   export type EquipmentSumAggregateOutputType = {
     id: number | null
     clubId: number | null
+    seasonId: number | null
+    echelonId: number | null
     number: number | null
   }
 
   export type EquipmentMinAggregateOutputType = {
     id: number | null
     clubId: number | null
+    seasonId: number | null
+    echelonId: number | null
     color: string | null
     number: number | null
     size: $Enums.Size | null
@@ -32461,6 +33872,8 @@ export namespace Prisma {
   export type EquipmentMaxAggregateOutputType = {
     id: number | null
     clubId: number | null
+    seasonId: number | null
+    echelonId: number | null
     color: string | null
     number: number | null
     size: $Enums.Size | null
@@ -32471,6 +33884,8 @@ export namespace Prisma {
   export type EquipmentCountAggregateOutputType = {
     id: number
     clubId: number
+    seasonId: number
+    echelonId: number
     color: number
     number: number
     size: number
@@ -32483,18 +33898,24 @@ export namespace Prisma {
   export type EquipmentAvgAggregateInputType = {
     id?: true
     clubId?: true
+    seasonId?: true
+    echelonId?: true
     number?: true
   }
 
   export type EquipmentSumAggregateInputType = {
     id?: true
     clubId?: true
+    seasonId?: true
+    echelonId?: true
     number?: true
   }
 
   export type EquipmentMinAggregateInputType = {
     id?: true
     clubId?: true
+    seasonId?: true
+    echelonId?: true
     color?: true
     number?: true
     size?: true
@@ -32505,6 +33926,8 @@ export namespace Prisma {
   export type EquipmentMaxAggregateInputType = {
     id?: true
     clubId?: true
+    seasonId?: true
+    echelonId?: true
     color?: true
     number?: true
     size?: true
@@ -32515,6 +33938,8 @@ export namespace Prisma {
   export type EquipmentCountAggregateInputType = {
     id?: true
     clubId?: true
+    seasonId?: true
+    echelonId?: true
     color?: true
     number?: true
     size?: true
@@ -32612,6 +34037,8 @@ export namespace Prisma {
   export type EquipmentGroupByOutputType = {
     id: number
     clubId: number
+    seasonId: number
+    echelonId: number
     color: string
     number: number
     size: $Enums.Size
@@ -32641,12 +34068,16 @@ export namespace Prisma {
   export type EquipmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clubId?: boolean
+    seasonId?: boolean
+    echelonId?: boolean
     color?: boolean
     number?: boolean
     size?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | SeasonDefaultArgs<ExtArgs>
+    echelon?: boolean | EchelonDefaultArgs<ExtArgs>
     gameEquipments?: boolean | Equipment$gameEquipmentsArgs<ExtArgs>
     _count?: boolean | EquipmentCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["equipment"]>
@@ -32654,28 +34085,38 @@ export namespace Prisma {
   export type EquipmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clubId?: boolean
+    seasonId?: boolean
+    echelonId?: boolean
     color?: boolean
     number?: boolean
     size?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | SeasonDefaultArgs<ExtArgs>
+    echelon?: boolean | EchelonDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["equipment"]>
 
   export type EquipmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     clubId?: boolean
+    seasonId?: boolean
+    echelonId?: boolean
     color?: boolean
     number?: boolean
     size?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | SeasonDefaultArgs<ExtArgs>
+    echelon?: boolean | EchelonDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["equipment"]>
 
   export type EquipmentSelectScalar = {
     id?: boolean
     clubId?: boolean
+    seasonId?: boolean
+    echelonId?: boolean
     color?: boolean
     number?: boolean
     size?: boolean
@@ -32683,28 +34124,38 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type EquipmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "color" | "number" | "size" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>
+  export type EquipmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "seasonId" | "echelonId" | "color" | "number" | "size" | "createdAt" | "updatedAt", ExtArgs["result"]["equipment"]>
   export type EquipmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | SeasonDefaultArgs<ExtArgs>
+    echelon?: boolean | EchelonDefaultArgs<ExtArgs>
     gameEquipments?: boolean | Equipment$gameEquipmentsArgs<ExtArgs>
     _count?: boolean | EquipmentCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type EquipmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | SeasonDefaultArgs<ExtArgs>
+    echelon?: boolean | EchelonDefaultArgs<ExtArgs>
   }
   export type EquipmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    season?: boolean | SeasonDefaultArgs<ExtArgs>
+    echelon?: boolean | EchelonDefaultArgs<ExtArgs>
   }
 
   export type $EquipmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Equipment"
     objects: {
       club: Prisma.$ClubPayload<ExtArgs>
+      season: Prisma.$SeasonPayload<ExtArgs>
+      echelon: Prisma.$EchelonPayload<ExtArgs>
       gameEquipments: Prisma.$GameEquipmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       clubId: number
+      seasonId: number
+      echelonId: number
       color: string
       number: number
       size: $Enums.Size
@@ -33105,6 +34556,8 @@ export namespace Prisma {
   export interface Prisma__EquipmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    season<T extends SeasonDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SeasonDefaultArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    echelon<T extends EchelonDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EchelonDefaultArgs<ExtArgs>>): Prisma__EchelonClient<$Result.GetResult<Prisma.$EchelonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     gameEquipments<T extends Equipment$gameEquipmentsArgs<ExtArgs> = {}>(args?: Subset<T, Equipment$gameEquipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameEquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -33137,6 +34590,8 @@ export namespace Prisma {
   interface EquipmentFieldRefs {
     readonly id: FieldRef<"Equipment", 'Int'>
     readonly clubId: FieldRef<"Equipment", 'Int'>
+    readonly seasonId: FieldRef<"Equipment", 'Int'>
+    readonly echelonId: FieldRef<"Equipment", 'Int'>
     readonly color: FieldRef<"Equipment", 'String'>
     readonly number: FieldRef<"Equipment", 'Int'>
     readonly size: FieldRef<"Equipment", 'Size'>
@@ -33338,6 +34793,11 @@ export namespace Prisma {
      * Skip the first `n` Equipment.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Equipment.
+     */
     distinct?: EquipmentScalarFieldEnum | EquipmentScalarFieldEnum[]
   }
 
@@ -34469,6 +35929,11 @@ export namespace Prisma {
      * Skip the first `n` GameEquipments.
      */
     skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GameEquipments.
+     */
     distinct?: GameEquipmentScalarFieldEnum | GameEquipmentScalarFieldEnum[]
   }
 
@@ -34783,7 +36248,9 @@ export namespace Prisma {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     defaultClubId: 'defaultClubId',
-    role: 'role'
+    role: 'role',
+    resetToken: 'resetToken',
+    resetTokenExpiry: 'resetTokenExpiry'
   };
 
   export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
@@ -34936,12 +36403,22 @@ export namespace Prisma {
     image: 'image',
     backgroundColor: 'backgroundColor',
     foregroundColor: 'foregroundColor',
-    season: 'season',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
+
+
+  export const SeasonScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    startDate: 'startDate',
+    endDate: 'endDate',
+    isCurrent: 'isCurrent'
+  };
+
+  export type SeasonScalarFieldEnum = (typeof SeasonScalarFieldEnum)[keyof typeof SeasonScalarFieldEnum]
 
 
   export const VenueScalarFieldEnum: {
@@ -35037,6 +36514,8 @@ export namespace Prisma {
   export const EquipmentScalarFieldEnum: {
     id: 'id',
     clubId: 'clubId',
+    seasonId: 'seasonId',
+    echelonId: 'echelonId',
     color: 'color',
     number: 'number',
     size: 'size',
@@ -35700,6 +37179,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Account"> | Date | string
     defaultClubId?: IntFilter<"Account"> | number
     role?: EnumPlatformRoleFilter<"Account"> | $Enums.PlatformRole
+    resetToken?: StringNullableFilter<"Account"> | string | null
+    resetTokenExpiry?: DateTimeNullableFilter<"Account"> | Date | string | null
     clubs?: AccountClubListRelationFilter
   }
 
@@ -35713,12 +37194,15 @@ export namespace Prisma {
     updatedAt?: SortOrder
     defaultClubId?: SortOrder
     role?: SortOrder
+    resetToken?: SortOrderInput | SortOrder
+    resetTokenExpiry?: SortOrderInput | SortOrder
     clubs?: AccountClubOrderByRelationAggregateInput
   }
 
   export type AccountWhereUniqueInput = Prisma.AtLeast<{
     id?: number
     email?: string
+    resetToken?: string
     AND?: AccountWhereInput | AccountWhereInput[]
     OR?: AccountWhereInput[]
     NOT?: AccountWhereInput | AccountWhereInput[]
@@ -35729,8 +37213,9 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Account"> | Date | string
     defaultClubId?: IntFilter<"Account"> | number
     role?: EnumPlatformRoleFilter<"Account"> | $Enums.PlatformRole
+    resetTokenExpiry?: DateTimeNullableFilter<"Account"> | Date | string | null
     clubs?: AccountClubListRelationFilter
-  }, "id" | "email">
+  }, "id" | "email" | "resetToken">
 
   export type AccountOrderByWithAggregationInput = {
     id?: SortOrder
@@ -35742,6 +37227,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     defaultClubId?: SortOrder
     role?: SortOrder
+    resetToken?: SortOrderInput | SortOrder
+    resetTokenExpiry?: SortOrderInput | SortOrder
     _count?: AccountCountOrderByAggregateInput
     _avg?: AccountAvgOrderByAggregateInput
     _max?: AccountMaxOrderByAggregateInput
@@ -35762,6 +37249,8 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
     defaultClubId?: IntWithAggregatesFilter<"Account"> | number
     role?: EnumPlatformRoleWithAggregatesFilter<"Account"> | $Enums.PlatformRole
+    resetToken?: StringNullableWithAggregatesFilter<"Account"> | string | null
+    resetTokenExpiry?: DateTimeNullableWithAggregatesFilter<"Account"> | Date | string | null
   }
 
   export type StatisticWhereInput = {
@@ -36446,6 +37935,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Echelon"> | Date | string
     teams?: TeamListRelationFilter
     competitions?: CompetitionListRelationFilter
+    equipments?: EquipmentListRelationFilter
   }
 
   export type EchelonOrderByWithRelationInput = {
@@ -36459,6 +37949,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     teams?: TeamOrderByRelationAggregateInput
     competitions?: CompetitionOrderByRelationAggregateInput
+    equipments?: EquipmentOrderByRelationAggregateInput
   }
 
   export type EchelonWhereUniqueInput = Prisma.AtLeast<{
@@ -36475,6 +37966,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Echelon"> | Date | string
     teams?: TeamListRelationFilter
     competitions?: CompetitionListRelationFilter
+    equipments?: EquipmentListRelationFilter
   }, "id">
 
   export type EchelonOrderByWithAggregationInput = {
@@ -36517,7 +38009,6 @@ export namespace Prisma {
     image?: StringNullableFilter<"Club"> | string | null
     backgroundColor?: StringNullableFilter<"Club"> | string | null
     foregroundColor?: StringNullableFilter<"Club"> | string | null
-    season?: StringNullableFilter<"Club"> | string | null
     createdAt?: DateTimeFilter<"Club"> | Date | string
     updatedAt?: DateTimeFilter<"Club"> | Date | string
     accounts?: AccountClubListRelationFilter
@@ -36536,7 +38027,6 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     backgroundColor?: SortOrderInput | SortOrder
     foregroundColor?: SortOrderInput | SortOrder
-    season?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accounts?: AccountClubOrderByRelationAggregateInput
@@ -36558,7 +38048,6 @@ export namespace Prisma {
     image?: StringNullableFilter<"Club"> | string | null
     backgroundColor?: StringNullableFilter<"Club"> | string | null
     foregroundColor?: StringNullableFilter<"Club"> | string | null
-    season?: StringNullableFilter<"Club"> | string | null
     createdAt?: DateTimeFilter<"Club"> | Date | string
     updatedAt?: DateTimeFilter<"Club"> | Date | string
     accounts?: AccountClubListRelationFilter
@@ -36577,7 +38066,6 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     backgroundColor?: SortOrderInput | SortOrder
     foregroundColor?: SortOrderInput | SortOrder
-    season?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ClubCountOrderByAggregateInput
@@ -36597,9 +38085,65 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"Club"> | string | null
     backgroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
     foregroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
-    season?: StringNullableWithAggregatesFilter<"Club"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
+  }
+
+  export type SeasonWhereInput = {
+    AND?: SeasonWhereInput | SeasonWhereInput[]
+    OR?: SeasonWhereInput[]
+    NOT?: SeasonWhereInput | SeasonWhereInput[]
+    id?: IntFilter<"Season"> | number
+    name?: StringFilter<"Season"> | string
+    startDate?: DateTimeFilter<"Season"> | Date | string
+    endDate?: DateTimeFilter<"Season"> | Date | string
+    isCurrent?: BoolFilter<"Season"> | boolean
+    equipments?: EquipmentListRelationFilter
+  }
+
+  export type SeasonOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isCurrent?: SortOrder
+    equipments?: EquipmentOrderByRelationAggregateInput
+  }
+
+  export type SeasonWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    name?: string
+    AND?: SeasonWhereInput | SeasonWhereInput[]
+    OR?: SeasonWhereInput[]
+    NOT?: SeasonWhereInput | SeasonWhereInput[]
+    startDate?: DateTimeFilter<"Season"> | Date | string
+    endDate?: DateTimeFilter<"Season"> | Date | string
+    isCurrent?: BoolFilter<"Season"> | boolean
+    equipments?: EquipmentListRelationFilter
+  }, "id" | "name">
+
+  export type SeasonOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isCurrent?: SortOrder
+    _count?: SeasonCountOrderByAggregateInput
+    _avg?: SeasonAvgOrderByAggregateInput
+    _max?: SeasonMaxOrderByAggregateInput
+    _min?: SeasonMinOrderByAggregateInput
+    _sum?: SeasonSumOrderByAggregateInput
+  }
+
+  export type SeasonScalarWhereWithAggregatesInput = {
+    AND?: SeasonScalarWhereWithAggregatesInput | SeasonScalarWhereWithAggregatesInput[]
+    OR?: SeasonScalarWhereWithAggregatesInput[]
+    NOT?: SeasonScalarWhereWithAggregatesInput | SeasonScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Season"> | number
+    name?: StringWithAggregatesFilter<"Season"> | string
+    startDate?: DateTimeWithAggregatesFilter<"Season"> | Date | string
+    endDate?: DateTimeWithAggregatesFilter<"Season"> | Date | string
+    isCurrent?: BoolWithAggregatesFilter<"Season"> | boolean
   }
 
   export type VenueWhereInput = {
@@ -37110,24 +38654,32 @@ export namespace Prisma {
     NOT?: EquipmentWhereInput | EquipmentWhereInput[]
     id?: IntFilter<"Equipment"> | number
     clubId?: IntFilter<"Equipment"> | number
+    seasonId?: IntFilter<"Equipment"> | number
+    echelonId?: IntFilter<"Equipment"> | number
     color?: StringFilter<"Equipment"> | string
     number?: IntFilter<"Equipment"> | number
     size?: EnumSizeFilter<"Equipment"> | $Enums.Size
     createdAt?: DateTimeFilter<"Equipment"> | Date | string
     updatedAt?: DateTimeFilter<"Equipment"> | Date | string
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    season?: XOR<SeasonScalarRelationFilter, SeasonWhereInput>
+    echelon?: XOR<EchelonScalarRelationFilter, EchelonWhereInput>
     gameEquipments?: GameEquipmentListRelationFilter
   }
 
   export type EquipmentOrderByWithRelationInput = {
     id?: SortOrder
     clubId?: SortOrder
+    seasonId?: SortOrder
+    echelonId?: SortOrder
     color?: SortOrder
     number?: SortOrder
     size?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     club?: ClubOrderByWithRelationInput
+    season?: SeasonOrderByWithRelationInput
+    echelon?: EchelonOrderByWithRelationInput
     gameEquipments?: GameEquipmentOrderByRelationAggregateInput
   }
 
@@ -37137,18 +38689,24 @@ export namespace Prisma {
     OR?: EquipmentWhereInput[]
     NOT?: EquipmentWhereInput | EquipmentWhereInput[]
     clubId?: IntFilter<"Equipment"> | number
+    seasonId?: IntFilter<"Equipment"> | number
+    echelonId?: IntFilter<"Equipment"> | number
     color?: StringFilter<"Equipment"> | string
     number?: IntFilter<"Equipment"> | number
     size?: EnumSizeFilter<"Equipment"> | $Enums.Size
     createdAt?: DateTimeFilter<"Equipment"> | Date | string
     updatedAt?: DateTimeFilter<"Equipment"> | Date | string
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    season?: XOR<SeasonScalarRelationFilter, SeasonWhereInput>
+    echelon?: XOR<EchelonScalarRelationFilter, EchelonWhereInput>
     gameEquipments?: GameEquipmentListRelationFilter
   }, "id">
 
   export type EquipmentOrderByWithAggregationInput = {
     id?: SortOrder
     clubId?: SortOrder
+    seasonId?: SortOrder
+    echelonId?: SortOrder
     color?: SortOrder
     number?: SortOrder
     size?: SortOrder
@@ -37167,6 +38725,8 @@ export namespace Prisma {
     NOT?: EquipmentScalarWhereWithAggregatesInput | EquipmentScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Equipment"> | number
     clubId?: IntWithAggregatesFilter<"Equipment"> | number
+    seasonId?: IntWithAggregatesFilter<"Equipment"> | number
+    echelonId?: IntWithAggregatesFilter<"Equipment"> | number
     color?: StringWithAggregatesFilter<"Equipment"> | string
     number?: IntWithAggregatesFilter<"Equipment"> | number
     size?: EnumSizeWithAggregatesFilter<"Equipment"> | $Enums.Size
@@ -37199,7 +38759,7 @@ export namespace Prisma {
 
   export type GameEquipmentWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    gameId_athleteId_equipmentId?: GameEquipmentGameIdAthleteIdEquipmentIdCompoundUniqueInput
+    gameId_athleteId?: GameEquipmentGameIdAthleteIdCompoundUniqueInput
     AND?: GameEquipmentWhereInput | GameEquipmentWhereInput[]
     OR?: GameEquipmentWhereInput[]
     NOT?: GameEquipmentWhereInput | GameEquipmentWhereInput[]
@@ -37209,7 +38769,7 @@ export namespace Prisma {
     game?: XOR<GameScalarRelationFilter, GameWhereInput>
     athlete?: XOR<AthleteScalarRelationFilter, AthleteWhereInput>
     equipment?: XOR<EquipmentScalarRelationFilter, EquipmentWhereInput>
-  }, "id" | "gameId_athleteId_equipmentId">
+  }, "id" | "gameId_athleteId">
 
   export type GameEquipmentOrderByWithAggregationInput = {
     id?: SortOrder
@@ -37715,6 +39275,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     defaultClubId?: number
     role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
     clubs?: AccountClubCreateNestedManyWithoutAccountInput
   }
 
@@ -37728,6 +39290,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     defaultClubId?: number
     role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
     clubs?: AccountClubUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -37740,6 +39304,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     defaultClubId?: IntFieldUpdateOperationsInput | number
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     clubs?: AccountClubUpdateManyWithoutAccountNestedInput
   }
 
@@ -37753,6 +39319,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     defaultClubId?: IntFieldUpdateOperationsInput | number
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     clubs?: AccountClubUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -37766,6 +39334,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     defaultClubId?: number
     role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
   }
 
   export type AccountUpdateManyMutationInput = {
@@ -37777,6 +39347,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     defaultClubId?: IntFieldUpdateOperationsInput | number
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AccountUncheckedUpdateManyInput = {
@@ -37789,6 +39361,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     defaultClubId?: IntFieldUpdateOperationsInput | number
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type StatisticCreateInput = {
@@ -38467,6 +40041,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teams?: TeamCreateNestedManyWithoutEchelonInput
     competitions?: CompetitionCreateNestedManyWithoutEchelonInput
+    equipments?: EquipmentCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUncheckedCreateInput = {
@@ -38480,6 +40055,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teams?: TeamUncheckedCreateNestedManyWithoutEchelonInput
     competitions?: CompetitionUncheckedCreateNestedManyWithoutEchelonInput
+    equipments?: EquipmentUncheckedCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUpdateInput = {
@@ -38492,6 +40068,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamUpdateManyWithoutEchelonNestedInput
     competitions?: CompetitionUpdateManyWithoutEchelonNestedInput
+    equipments?: EquipmentUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonUncheckedUpdateInput = {
@@ -38505,6 +40082,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamUncheckedUpdateManyWithoutEchelonNestedInput
     competitions?: CompetitionUncheckedUpdateManyWithoutEchelonNestedInput
+    equipments?: EquipmentUncheckedUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonCreateManyInput = {
@@ -38545,7 +40123,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -38564,7 +40141,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -38582,7 +40158,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -38601,7 +40176,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -38620,7 +40194,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -38631,7 +40204,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -38643,9 +40215,65 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SeasonCreateInput = {
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    isCurrent?: boolean
+    equipments?: EquipmentCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonUncheckedCreateInput = {
+    id?: number
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    isCurrent?: boolean
+    equipments?: EquipmentUncheckedCreateNestedManyWithoutSeasonInput
+  }
+
+  export type SeasonUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
+    equipments?: EquipmentUpdateManyWithoutSeasonNestedInput
+  }
+
+  export type SeasonUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
+    equipments?: EquipmentUncheckedUpdateManyWithoutSeasonNestedInput
+  }
+
+  export type SeasonCreateManyInput = {
+    id?: number
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    isCurrent?: boolean
+  }
+
+  export type SeasonUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SeasonUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type VenueCreateInput = {
@@ -39110,12 +40738,16 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutEquipmentsInput
+    season: SeasonCreateNestedOneWithoutEquipmentsInput
+    echelon: EchelonCreateNestedOneWithoutEquipmentsInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentInput
   }
 
   export type EquipmentUncheckedCreateInput = {
     id?: number
     clubId: number
+    seasonId: number
+    echelonId: number
     color: string
     number: number
     size: $Enums.Size
@@ -39131,12 +40763,16 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutEquipmentsNestedInput
+    season?: SeasonUpdateOneRequiredWithoutEquipmentsNestedInput
+    echelon?: EchelonUpdateOneRequiredWithoutEquipmentsNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentNestedInput
   }
 
   export type EquipmentUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     clubId?: IntFieldUpdateOperationsInput | number
+    seasonId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
@@ -39148,6 +40784,8 @@ export namespace Prisma {
   export type EquipmentCreateManyInput = {
     id?: number
     clubId: number
+    seasonId: number
+    echelonId: number
     color: string
     number: number
     size: $Enums.Size
@@ -39166,6 +40804,8 @@ export namespace Prisma {
   export type EquipmentUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     clubId?: IntFieldUpdateOperationsInput | number
+    seasonId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
@@ -39865,6 +41505,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     defaultClubId?: SortOrder
     role?: SortOrder
+    resetToken?: SortOrder
+    resetTokenExpiry?: SortOrder
   }
 
   export type AccountAvgOrderByAggregateInput = {
@@ -39882,6 +41524,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     defaultClubId?: SortOrder
     role?: SortOrder
+    resetToken?: SortOrder
+    resetTokenExpiry?: SortOrder
   }
 
   export type AccountMinOrderByAggregateInput = {
@@ -39894,6 +41538,8 @@ export namespace Prisma {
     updatedAt?: SortOrder
     defaultClubId?: SortOrder
     role?: SortOrder
+    resetToken?: SortOrder
+    resetTokenExpiry?: SortOrder
   }
 
   export type AccountSumOrderByAggregateInput = {
@@ -40448,11 +42094,21 @@ export namespace Prisma {
     none?: CompetitionWhereInput
   }
 
+  export type EquipmentListRelationFilter = {
+    every?: EquipmentWhereInput
+    some?: EquipmentWhereInput
+    none?: EquipmentWhereInput
+  }
+
   export type TeamOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type CompetitionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type EquipmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -40523,21 +42179,11 @@ export namespace Prisma {
     none?: MacrocycleWhereInput
   }
 
-  export type EquipmentListRelationFilter = {
-    every?: EquipmentWhereInput
-    some?: EquipmentWhereInput
-    none?: EquipmentWhereInput
-  }
-
   export type AthleteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type MacrocycleOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type EquipmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -40548,7 +42194,6 @@ export namespace Prisma {
     image?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
-    season?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -40564,7 +42209,6 @@ export namespace Prisma {
     image?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
-    season?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -40576,12 +42220,43 @@ export namespace Prisma {
     image?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
-    season?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ClubSumOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SeasonCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isCurrent?: SortOrder
+  }
+
+  export type SeasonAvgOrderByAggregateInput = {
+    id?: SortOrder
+  }
+
+  export type SeasonMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isCurrent?: SortOrder
+  }
+
+  export type SeasonMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    startDate?: SortOrder
+    endDate?: SortOrder
+    isCurrent?: SortOrder
+  }
+
+  export type SeasonSumOrderByAggregateInput = {
     id?: SortOrder
   }
 
@@ -40990,9 +42665,16 @@ export namespace Prisma {
     not?: NestedEnumSizeFilter<$PrismaModel> | $Enums.Size
   }
 
+  export type SeasonScalarRelationFilter = {
+    is?: SeasonWhereInput
+    isNot?: SeasonWhereInput
+  }
+
   export type EquipmentCountOrderByAggregateInput = {
     id?: SortOrder
     clubId?: SortOrder
+    seasonId?: SortOrder
+    echelonId?: SortOrder
     color?: SortOrder
     number?: SortOrder
     size?: SortOrder
@@ -41003,12 +42685,16 @@ export namespace Prisma {
   export type EquipmentAvgOrderByAggregateInput = {
     id?: SortOrder
     clubId?: SortOrder
+    seasonId?: SortOrder
+    echelonId?: SortOrder
     number?: SortOrder
   }
 
   export type EquipmentMaxOrderByAggregateInput = {
     id?: SortOrder
     clubId?: SortOrder
+    seasonId?: SortOrder
+    echelonId?: SortOrder
     color?: SortOrder
     number?: SortOrder
     size?: SortOrder
@@ -41019,6 +42705,8 @@ export namespace Prisma {
   export type EquipmentMinOrderByAggregateInput = {
     id?: SortOrder
     clubId?: SortOrder
+    seasonId?: SortOrder
+    echelonId?: SortOrder
     color?: SortOrder
     number?: SortOrder
     size?: SortOrder
@@ -41029,6 +42717,8 @@ export namespace Prisma {
   export type EquipmentSumOrderByAggregateInput = {
     id?: SortOrder
     clubId?: SortOrder
+    seasonId?: SortOrder
+    echelonId?: SortOrder
     number?: SortOrder
   }
 
@@ -41047,10 +42737,9 @@ export namespace Prisma {
     isNot?: EquipmentWhereInput
   }
 
-  export type GameEquipmentGameIdAthleteIdEquipmentIdCompoundUniqueInput = {
+  export type GameEquipmentGameIdAthleteIdCompoundUniqueInput = {
     gameId: number
     athleteId: number
-    equipmentId: number
   }
 
   export type GameEquipmentCountOrderByAggregateInput = {
@@ -42302,6 +43991,13 @@ export namespace Prisma {
     connect?: CompetitionWhereUniqueInput | CompetitionWhereUniqueInput[]
   }
 
+  export type EquipmentCreateNestedManyWithoutEchelonInput = {
+    create?: XOR<EquipmentCreateWithoutEchelonInput, EquipmentUncheckedCreateWithoutEchelonInput> | EquipmentCreateWithoutEchelonInput[] | EquipmentUncheckedCreateWithoutEchelonInput[]
+    connectOrCreate?: EquipmentCreateOrConnectWithoutEchelonInput | EquipmentCreateOrConnectWithoutEchelonInput[]
+    createMany?: EquipmentCreateManyEchelonInputEnvelope
+    connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+  }
+
   export type TeamUncheckedCreateNestedManyWithoutEchelonInput = {
     create?: XOR<TeamCreateWithoutEchelonInput, TeamUncheckedCreateWithoutEchelonInput> | TeamCreateWithoutEchelonInput[] | TeamUncheckedCreateWithoutEchelonInput[]
     connectOrCreate?: TeamCreateOrConnectWithoutEchelonInput | TeamCreateOrConnectWithoutEchelonInput[]
@@ -42314,6 +44010,13 @@ export namespace Prisma {
     connectOrCreate?: CompetitionCreateOrConnectWithoutEchelonInput | CompetitionCreateOrConnectWithoutEchelonInput[]
     createMany?: CompetitionCreateManyEchelonInputEnvelope
     connect?: CompetitionWhereUniqueInput | CompetitionWhereUniqueInput[]
+  }
+
+  export type EquipmentUncheckedCreateNestedManyWithoutEchelonInput = {
+    create?: XOR<EquipmentCreateWithoutEchelonInput, EquipmentUncheckedCreateWithoutEchelonInput> | EquipmentCreateWithoutEchelonInput[] | EquipmentUncheckedCreateWithoutEchelonInput[]
+    connectOrCreate?: EquipmentCreateOrConnectWithoutEchelonInput | EquipmentCreateOrConnectWithoutEchelonInput[]
+    createMany?: EquipmentCreateManyEchelonInputEnvelope
+    connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
   }
 
   export type EnumGenderFieldUpdateOperationsInput = {
@@ -42348,6 +44051,20 @@ export namespace Prisma {
     deleteMany?: CompetitionScalarWhereInput | CompetitionScalarWhereInput[]
   }
 
+  export type EquipmentUpdateManyWithoutEchelonNestedInput = {
+    create?: XOR<EquipmentCreateWithoutEchelonInput, EquipmentUncheckedCreateWithoutEchelonInput> | EquipmentCreateWithoutEchelonInput[] | EquipmentUncheckedCreateWithoutEchelonInput[]
+    connectOrCreate?: EquipmentCreateOrConnectWithoutEchelonInput | EquipmentCreateOrConnectWithoutEchelonInput[]
+    upsert?: EquipmentUpsertWithWhereUniqueWithoutEchelonInput | EquipmentUpsertWithWhereUniqueWithoutEchelonInput[]
+    createMany?: EquipmentCreateManyEchelonInputEnvelope
+    set?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    disconnect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    delete?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    update?: EquipmentUpdateWithWhereUniqueWithoutEchelonInput | EquipmentUpdateWithWhereUniqueWithoutEchelonInput[]
+    updateMany?: EquipmentUpdateManyWithWhereWithoutEchelonInput | EquipmentUpdateManyWithWhereWithoutEchelonInput[]
+    deleteMany?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
+  }
+
   export type TeamUncheckedUpdateManyWithoutEchelonNestedInput = {
     create?: XOR<TeamCreateWithoutEchelonInput, TeamUncheckedCreateWithoutEchelonInput> | TeamCreateWithoutEchelonInput[] | TeamUncheckedCreateWithoutEchelonInput[]
     connectOrCreate?: TeamCreateOrConnectWithoutEchelonInput | TeamCreateOrConnectWithoutEchelonInput[]
@@ -42374,6 +44091,20 @@ export namespace Prisma {
     update?: CompetitionUpdateWithWhereUniqueWithoutEchelonInput | CompetitionUpdateWithWhereUniqueWithoutEchelonInput[]
     updateMany?: CompetitionUpdateManyWithWhereWithoutEchelonInput | CompetitionUpdateManyWithWhereWithoutEchelonInput[]
     deleteMany?: CompetitionScalarWhereInput | CompetitionScalarWhereInput[]
+  }
+
+  export type EquipmentUncheckedUpdateManyWithoutEchelonNestedInput = {
+    create?: XOR<EquipmentCreateWithoutEchelonInput, EquipmentUncheckedCreateWithoutEchelonInput> | EquipmentCreateWithoutEchelonInput[] | EquipmentUncheckedCreateWithoutEchelonInput[]
+    connectOrCreate?: EquipmentCreateOrConnectWithoutEchelonInput | EquipmentCreateOrConnectWithoutEchelonInput[]
+    upsert?: EquipmentUpsertWithWhereUniqueWithoutEchelonInput | EquipmentUpsertWithWhereUniqueWithoutEchelonInput[]
+    createMany?: EquipmentCreateManyEchelonInputEnvelope
+    set?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    disconnect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    delete?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    update?: EquipmentUpdateWithWhereUniqueWithoutEchelonInput | EquipmentUpdateWithWhereUniqueWithoutEchelonInput[]
+    updateMany?: EquipmentUpdateManyWithWhereWithoutEchelonInput | EquipmentUpdateManyWithWhereWithoutEchelonInput[]
+    deleteMany?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
   }
 
   export type AccountClubCreateNestedManyWithoutClubInput = {
@@ -42667,6 +44398,48 @@ export namespace Prisma {
     connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
     update?: EquipmentUpdateWithWhereUniqueWithoutClubInput | EquipmentUpdateWithWhereUniqueWithoutClubInput[]
     updateMany?: EquipmentUpdateManyWithWhereWithoutClubInput | EquipmentUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
+  }
+
+  export type EquipmentCreateNestedManyWithoutSeasonInput = {
+    create?: XOR<EquipmentCreateWithoutSeasonInput, EquipmentUncheckedCreateWithoutSeasonInput> | EquipmentCreateWithoutSeasonInput[] | EquipmentUncheckedCreateWithoutSeasonInput[]
+    connectOrCreate?: EquipmentCreateOrConnectWithoutSeasonInput | EquipmentCreateOrConnectWithoutSeasonInput[]
+    createMany?: EquipmentCreateManySeasonInputEnvelope
+    connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+  }
+
+  export type EquipmentUncheckedCreateNestedManyWithoutSeasonInput = {
+    create?: XOR<EquipmentCreateWithoutSeasonInput, EquipmentUncheckedCreateWithoutSeasonInput> | EquipmentCreateWithoutSeasonInput[] | EquipmentUncheckedCreateWithoutSeasonInput[]
+    connectOrCreate?: EquipmentCreateOrConnectWithoutSeasonInput | EquipmentCreateOrConnectWithoutSeasonInput[]
+    createMany?: EquipmentCreateManySeasonInputEnvelope
+    connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+  }
+
+  export type EquipmentUpdateManyWithoutSeasonNestedInput = {
+    create?: XOR<EquipmentCreateWithoutSeasonInput, EquipmentUncheckedCreateWithoutSeasonInput> | EquipmentCreateWithoutSeasonInput[] | EquipmentUncheckedCreateWithoutSeasonInput[]
+    connectOrCreate?: EquipmentCreateOrConnectWithoutSeasonInput | EquipmentCreateOrConnectWithoutSeasonInput[]
+    upsert?: EquipmentUpsertWithWhereUniqueWithoutSeasonInput | EquipmentUpsertWithWhereUniqueWithoutSeasonInput[]
+    createMany?: EquipmentCreateManySeasonInputEnvelope
+    set?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    disconnect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    delete?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    update?: EquipmentUpdateWithWhereUniqueWithoutSeasonInput | EquipmentUpdateWithWhereUniqueWithoutSeasonInput[]
+    updateMany?: EquipmentUpdateManyWithWhereWithoutSeasonInput | EquipmentUpdateManyWithWhereWithoutSeasonInput[]
+    deleteMany?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
+  }
+
+  export type EquipmentUncheckedUpdateManyWithoutSeasonNestedInput = {
+    create?: XOR<EquipmentCreateWithoutSeasonInput, EquipmentUncheckedCreateWithoutSeasonInput> | EquipmentCreateWithoutSeasonInput[] | EquipmentUncheckedCreateWithoutSeasonInput[]
+    connectOrCreate?: EquipmentCreateOrConnectWithoutSeasonInput | EquipmentCreateOrConnectWithoutSeasonInput[]
+    upsert?: EquipmentUpsertWithWhereUniqueWithoutSeasonInput | EquipmentUpsertWithWhereUniqueWithoutSeasonInput[]
+    createMany?: EquipmentCreateManySeasonInputEnvelope
+    set?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    disconnect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    delete?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+    update?: EquipmentUpdateWithWhereUniqueWithoutSeasonInput | EquipmentUpdateWithWhereUniqueWithoutSeasonInput[]
+    updateMany?: EquipmentUpdateManyWithWhereWithoutSeasonInput | EquipmentUpdateManyWithWhereWithoutSeasonInput[]
     deleteMany?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
   }
 
@@ -43150,6 +44923,18 @@ export namespace Prisma {
     connect?: ClubWhereUniqueInput
   }
 
+  export type SeasonCreateNestedOneWithoutEquipmentsInput = {
+    create?: XOR<SeasonCreateWithoutEquipmentsInput, SeasonUncheckedCreateWithoutEquipmentsInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutEquipmentsInput
+    connect?: SeasonWhereUniqueInput
+  }
+
+  export type EchelonCreateNestedOneWithoutEquipmentsInput = {
+    create?: XOR<EchelonCreateWithoutEquipmentsInput, EchelonUncheckedCreateWithoutEquipmentsInput>
+    connectOrCreate?: EchelonCreateOrConnectWithoutEquipmentsInput
+    connect?: EchelonWhereUniqueInput
+  }
+
   export type GameEquipmentCreateNestedManyWithoutEquipmentInput = {
     create?: XOR<GameEquipmentCreateWithoutEquipmentInput, GameEquipmentUncheckedCreateWithoutEquipmentInput> | GameEquipmentCreateWithoutEquipmentInput[] | GameEquipmentUncheckedCreateWithoutEquipmentInput[]
     connectOrCreate?: GameEquipmentCreateOrConnectWithoutEquipmentInput | GameEquipmentCreateOrConnectWithoutEquipmentInput[]
@@ -43174,6 +44959,22 @@ export namespace Prisma {
     upsert?: ClubUpsertWithoutEquipmentsInput
     connect?: ClubWhereUniqueInput
     update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutEquipmentsInput, ClubUpdateWithoutEquipmentsInput>, ClubUncheckedUpdateWithoutEquipmentsInput>
+  }
+
+  export type SeasonUpdateOneRequiredWithoutEquipmentsNestedInput = {
+    create?: XOR<SeasonCreateWithoutEquipmentsInput, SeasonUncheckedCreateWithoutEquipmentsInput>
+    connectOrCreate?: SeasonCreateOrConnectWithoutEquipmentsInput
+    upsert?: SeasonUpsertWithoutEquipmentsInput
+    connect?: SeasonWhereUniqueInput
+    update?: XOR<XOR<SeasonUpdateToOneWithWhereWithoutEquipmentsInput, SeasonUpdateWithoutEquipmentsInput>, SeasonUncheckedUpdateWithoutEquipmentsInput>
+  }
+
+  export type EchelonUpdateOneRequiredWithoutEquipmentsNestedInput = {
+    create?: XOR<EchelonCreateWithoutEquipmentsInput, EchelonUncheckedCreateWithoutEquipmentsInput>
+    connectOrCreate?: EchelonCreateOrConnectWithoutEquipmentsInput
+    upsert?: EchelonUpsertWithoutEquipmentsInput
+    connect?: EchelonWhereUniqueInput
+    update?: XOR<XOR<EchelonUpdateToOneWithWhereWithoutEquipmentsInput, EchelonUpdateWithoutEquipmentsInput>, EchelonUncheckedUpdateWithoutEquipmentsInput>
   }
 
   export type GameEquipmentUpdateManyWithoutEquipmentNestedInput = {
@@ -43602,7 +45403,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -43620,7 +45420,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -43876,7 +45675,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -43894,7 +45692,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -44368,7 +46165,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -44386,7 +46182,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -44728,7 +46523,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -44746,7 +46540,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -46060,7 +47853,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -46078,7 +47870,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -46140,7 +47931,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -46158,7 +47948,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -46672,6 +48461,39 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type EquipmentCreateWithoutEchelonInput = {
+    color: string
+    number: number
+    size: $Enums.Size
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutEquipmentsInput
+    season: SeasonCreateNestedOneWithoutEquipmentsInput
+    gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentInput
+  }
+
+  export type EquipmentUncheckedCreateWithoutEchelonInput = {
+    id?: number
+    clubId: number
+    seasonId: number
+    color: string
+    number: number
+    size: $Enums.Size
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
+  }
+
+  export type EquipmentCreateOrConnectWithoutEchelonInput = {
+    where: EquipmentWhereUniqueInput
+    create: XOR<EquipmentCreateWithoutEchelonInput, EquipmentUncheckedCreateWithoutEchelonInput>
+  }
+
+  export type EquipmentCreateManyEchelonInputEnvelope = {
+    data: EquipmentCreateManyEchelonInput | EquipmentCreateManyEchelonInput[]
+    skipDuplicates?: boolean
+  }
+
   export type TeamUpsertWithWhereUniqueWithoutEchelonInput = {
     where: TeamWhereUniqueInput
     update: XOR<TeamUpdateWithoutEchelonInput, TeamUncheckedUpdateWithoutEchelonInput>
@@ -46729,6 +48551,37 @@ export namespace Prisma {
     fpbCompetitionId?: IntNullableFilter<"Competition"> | number | null
     createdAt?: DateTimeFilter<"Competition"> | Date | string
     updatedAt?: DateTimeFilter<"Competition"> | Date | string
+  }
+
+  export type EquipmentUpsertWithWhereUniqueWithoutEchelonInput = {
+    where: EquipmentWhereUniqueInput
+    update: XOR<EquipmentUpdateWithoutEchelonInput, EquipmentUncheckedUpdateWithoutEchelonInput>
+    create: XOR<EquipmentCreateWithoutEchelonInput, EquipmentUncheckedCreateWithoutEchelonInput>
+  }
+
+  export type EquipmentUpdateWithWhereUniqueWithoutEchelonInput = {
+    where: EquipmentWhereUniqueInput
+    data: XOR<EquipmentUpdateWithoutEchelonInput, EquipmentUncheckedUpdateWithoutEchelonInput>
+  }
+
+  export type EquipmentUpdateManyWithWhereWithoutEchelonInput = {
+    where: EquipmentScalarWhereInput
+    data: XOR<EquipmentUpdateManyMutationInput, EquipmentUncheckedUpdateManyWithoutEchelonInput>
+  }
+
+  export type EquipmentScalarWhereInput = {
+    AND?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
+    OR?: EquipmentScalarWhereInput[]
+    NOT?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
+    id?: IntFilter<"Equipment"> | number
+    clubId?: IntFilter<"Equipment"> | number
+    seasonId?: IntFilter<"Equipment"> | number
+    echelonId?: IntFilter<"Equipment"> | number
+    color?: StringFilter<"Equipment"> | string
+    number?: IntFilter<"Equipment"> | number
+    size?: EnumSizeFilter<"Equipment"> | $Enums.Size
+    createdAt?: DateTimeFilter<"Equipment"> | Date | string
+    updatedAt?: DateTimeFilter<"Equipment"> | Date | string
   }
 
   export type AccountClubCreateWithoutClubInput = {
@@ -46971,11 +48824,15 @@ export namespace Prisma {
     size: $Enums.Size
     createdAt?: Date | string
     updatedAt?: Date | string
+    season: SeasonCreateNestedOneWithoutEquipmentsInput
+    echelon: EchelonCreateNestedOneWithoutEquipmentsInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentInput
   }
 
   export type EquipmentUncheckedCreateWithoutClubInput = {
     id?: number
+    seasonId: number
+    echelonId: number
     color: string
     number: number
     size: $Enums.Size
@@ -47137,17 +48994,53 @@ export namespace Prisma {
     data: XOR<EquipmentUpdateManyMutationInput, EquipmentUncheckedUpdateManyWithoutClubInput>
   }
 
-  export type EquipmentScalarWhereInput = {
-    AND?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
-    OR?: EquipmentScalarWhereInput[]
-    NOT?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
-    id?: IntFilter<"Equipment"> | number
-    clubId?: IntFilter<"Equipment"> | number
-    color?: StringFilter<"Equipment"> | string
-    number?: IntFilter<"Equipment"> | number
-    size?: EnumSizeFilter<"Equipment"> | $Enums.Size
-    createdAt?: DateTimeFilter<"Equipment"> | Date | string
-    updatedAt?: DateTimeFilter<"Equipment"> | Date | string
+  export type EquipmentCreateWithoutSeasonInput = {
+    color: string
+    number: number
+    size: $Enums.Size
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutEquipmentsInput
+    echelon: EchelonCreateNestedOneWithoutEquipmentsInput
+    gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentInput
+  }
+
+  export type EquipmentUncheckedCreateWithoutSeasonInput = {
+    id?: number
+    clubId: number
+    echelonId: number
+    color: string
+    number: number
+    size: $Enums.Size
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutEquipmentInput
+  }
+
+  export type EquipmentCreateOrConnectWithoutSeasonInput = {
+    where: EquipmentWhereUniqueInput
+    create: XOR<EquipmentCreateWithoutSeasonInput, EquipmentUncheckedCreateWithoutSeasonInput>
+  }
+
+  export type EquipmentCreateManySeasonInputEnvelope = {
+    data: EquipmentCreateManySeasonInput | EquipmentCreateManySeasonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type EquipmentUpsertWithWhereUniqueWithoutSeasonInput = {
+    where: EquipmentWhereUniqueInput
+    update: XOR<EquipmentUpdateWithoutSeasonInput, EquipmentUncheckedUpdateWithoutSeasonInput>
+    create: XOR<EquipmentCreateWithoutSeasonInput, EquipmentUncheckedCreateWithoutSeasonInput>
+  }
+
+  export type EquipmentUpdateWithWhereUniqueWithoutSeasonInput = {
+    where: EquipmentWhereUniqueInput
+    data: XOR<EquipmentUpdateWithoutSeasonInput, EquipmentUncheckedUpdateWithoutSeasonInput>
+  }
+
+  export type EquipmentUpdateManyWithWhereWithoutSeasonInput = {
+    where: EquipmentScalarWhereInput
+    data: XOR<EquipmentUpdateManyMutationInput, EquipmentUncheckedUpdateManyWithoutSeasonInput>
   }
 
   export type OpponentCreateWithoutVenuesInput = {
@@ -47184,7 +49077,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -47202,7 +49094,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -47338,7 +49229,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -47356,7 +49246,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -47392,6 +49281,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     defaultClubId?: number
     role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
   }
 
   export type AccountUncheckedCreateWithoutClubsInput = {
@@ -47404,6 +49295,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     defaultClubId?: number
     role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
   }
 
   export type AccountCreateOrConnectWithoutClubsInput = {
@@ -47417,7 +49310,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: AthleteCreateNestedManyWithoutClubInput
@@ -47435,7 +49327,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
@@ -47490,6 +49381,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     defaultClubId?: IntFieldUpdateOperationsInput | number
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AccountUncheckedUpdateWithoutClubsInput = {
@@ -47502,6 +49395,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     defaultClubId?: IntFieldUpdateOperationsInput | number
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ClubUpsertWithoutAccountsInput = {
@@ -47521,7 +49416,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: AthleteUpdateManyWithoutClubNestedInput
@@ -47539,7 +49433,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
@@ -47623,7 +49516,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -47641,7 +49533,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -47666,6 +49557,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     competitions?: CompetitionCreateNestedManyWithoutEchelonInput
+    equipments?: EquipmentCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUncheckedCreateWithoutTeamsInput = {
@@ -47678,6 +49570,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     competitions?: CompetitionUncheckedCreateNestedManyWithoutEchelonInput
+    equipments?: EquipmentUncheckedCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonCreateOrConnectWithoutTeamsInput = {
@@ -47790,7 +49683,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -47808,7 +49700,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -47839,6 +49730,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     competitions?: CompetitionUpdateManyWithoutEchelonNestedInput
+    equipments?: EquipmentUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonUncheckedUpdateWithoutTeamsInput = {
@@ -47851,6 +49743,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     competitions?: CompetitionUncheckedUpdateManyWithoutEchelonNestedInput
+    equipments?: EquipmentUncheckedUpdateManyWithoutEchelonNestedInput
   }
 
   export type TeamAthleteUpsertWithWhereUniqueWithoutTeamInput = {
@@ -48054,6 +49947,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teams?: TeamCreateNestedManyWithoutEchelonInput
+    equipments?: EquipmentCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUncheckedCreateWithoutCompetitionsInput = {
@@ -48066,6 +49960,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teams?: TeamUncheckedCreateNestedManyWithoutEchelonInput
+    equipments?: EquipmentUncheckedCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonCreateOrConnectWithoutCompetitionsInput = {
@@ -48189,6 +50084,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamUpdateManyWithoutEchelonNestedInput
+    equipments?: EquipmentUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonUncheckedUpdateWithoutCompetitionsInput = {
@@ -48201,6 +50097,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamUncheckedUpdateManyWithoutEchelonNestedInput
+    equipments?: EquipmentUncheckedUpdateManyWithoutEchelonNestedInput
   }
 
   export type CompetitionSerieUpsertWithWhereUniqueWithoutCompetitionInput = {
@@ -48502,7 +50399,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -48520,7 +50416,6 @@ export namespace Prisma {
     image?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
-    season?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -48534,6 +50429,56 @@ export namespace Prisma {
   export type ClubCreateOrConnectWithoutEquipmentsInput = {
     where: ClubWhereUniqueInput
     create: XOR<ClubCreateWithoutEquipmentsInput, ClubUncheckedCreateWithoutEquipmentsInput>
+  }
+
+  export type SeasonCreateWithoutEquipmentsInput = {
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    isCurrent?: boolean
+  }
+
+  export type SeasonUncheckedCreateWithoutEquipmentsInput = {
+    id?: number
+    name: string
+    startDate: Date | string
+    endDate: Date | string
+    isCurrent?: boolean
+  }
+
+  export type SeasonCreateOrConnectWithoutEquipmentsInput = {
+    where: SeasonWhereUniqueInput
+    create: XOR<SeasonCreateWithoutEquipmentsInput, SeasonUncheckedCreateWithoutEquipmentsInput>
+  }
+
+  export type EchelonCreateWithoutEquipmentsInput = {
+    minAge: number
+    maxAge?: number | null
+    name: string
+    description?: string | null
+    gender: $Enums.Gender
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamCreateNestedManyWithoutEchelonInput
+    competitions?: CompetitionCreateNestedManyWithoutEchelonInput
+  }
+
+  export type EchelonUncheckedCreateWithoutEquipmentsInput = {
+    id?: number
+    minAge: number
+    maxAge?: number | null
+    name: string
+    description?: string | null
+    gender: $Enums.Gender
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamUncheckedCreateNestedManyWithoutEchelonInput
+    competitions?: CompetitionUncheckedCreateNestedManyWithoutEchelonInput
+  }
+
+  export type EchelonCreateOrConnectWithoutEquipmentsInput = {
+    where: EchelonWhereUniqueInput
+    create: XOR<EchelonCreateWithoutEquipmentsInput, EchelonUncheckedCreateWithoutEquipmentsInput>
   }
 
   export type GameEquipmentCreateWithoutEquipmentInput = {
@@ -48574,7 +50519,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -48592,7 +50536,6 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
-    season?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -48601,6 +50544,68 @@ export namespace Prisma {
     macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+  }
+
+  export type SeasonUpsertWithoutEquipmentsInput = {
+    update: XOR<SeasonUpdateWithoutEquipmentsInput, SeasonUncheckedUpdateWithoutEquipmentsInput>
+    create: XOR<SeasonCreateWithoutEquipmentsInput, SeasonUncheckedCreateWithoutEquipmentsInput>
+    where?: SeasonWhereInput
+  }
+
+  export type SeasonUpdateToOneWithWhereWithoutEquipmentsInput = {
+    where?: SeasonWhereInput
+    data: XOR<SeasonUpdateWithoutEquipmentsInput, SeasonUncheckedUpdateWithoutEquipmentsInput>
+  }
+
+  export type SeasonUpdateWithoutEquipmentsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type SeasonUncheckedUpdateWithoutEquipmentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    isCurrent?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type EchelonUpsertWithoutEquipmentsInput = {
+    update: XOR<EchelonUpdateWithoutEquipmentsInput, EchelonUncheckedUpdateWithoutEquipmentsInput>
+    create: XOR<EchelonCreateWithoutEquipmentsInput, EchelonUncheckedCreateWithoutEquipmentsInput>
+    where?: EchelonWhereInput
+  }
+
+  export type EchelonUpdateToOneWithWhereWithoutEquipmentsInput = {
+    where?: EchelonWhereInput
+    data: XOR<EchelonUpdateWithoutEquipmentsInput, EchelonUncheckedUpdateWithoutEquipmentsInput>
+  }
+
+  export type EchelonUpdateWithoutEquipmentsInput = {
+    minAge?: IntFieldUpdateOperationsInput | number
+    maxAge?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamUpdateManyWithoutEchelonNestedInput
+    competitions?: CompetitionUpdateManyWithoutEchelonNestedInput
+  }
+
+  export type EchelonUncheckedUpdateWithoutEquipmentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    minAge?: IntFieldUpdateOperationsInput | number
+    maxAge?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamUncheckedUpdateManyWithoutEchelonNestedInput
+    competitions?: CompetitionUncheckedUpdateManyWithoutEchelonNestedInput
   }
 
   export type GameEquipmentUpsertWithWhereUniqueWithoutEquipmentInput = {
@@ -48738,11 +50743,15 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutEquipmentsInput
+    season: SeasonCreateNestedOneWithoutEquipmentsInput
+    echelon: EchelonCreateNestedOneWithoutEquipmentsInput
   }
 
   export type EquipmentUncheckedCreateWithoutGameEquipmentsInput = {
     id?: number
     clubId: number
+    seasonId: number
+    echelonId: number
     color: string
     number: number
     size: $Enums.Size
@@ -48897,11 +50906,15 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutEquipmentsNestedInput
+    season?: SeasonUpdateOneRequiredWithoutEquipmentsNestedInput
+    echelon?: EchelonUpdateOneRequiredWithoutEquipmentsNestedInput
   }
 
   export type EquipmentUncheckedUpdateWithoutGameEquipmentsInput = {
     id?: IntFieldUpdateOperationsInput | number
     clubId?: IntFieldUpdateOperationsInput | number
+    seasonId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
@@ -49746,6 +51759,17 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type EquipmentCreateManyEchelonInput = {
+    id?: number
+    clubId: number
+    seasonId: number
+    color: string
+    number: number
+    size: $Enums.Size
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type TeamUpdateWithoutEchelonInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
@@ -49805,6 +51829,40 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     fpbCompetitionId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EquipmentUpdateWithoutEchelonInput = {
+    color?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutEquipmentsNestedInput
+    season?: SeasonUpdateOneRequiredWithoutEquipmentsNestedInput
+    gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentNestedInput
+  }
+
+  export type EquipmentUncheckedUpdateWithoutEchelonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    seasonId?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
+  }
+
+  export type EquipmentUncheckedUpdateManyWithoutEchelonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    seasonId?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49882,6 +51940,8 @@ export namespace Prisma {
 
   export type EquipmentCreateManyClubInput = {
     id?: number
+    seasonId: number
+    echelonId: number
     color: string
     number: number
     size: $Enums.Size
@@ -50140,11 +52200,15 @@ export namespace Prisma {
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    season?: SeasonUpdateOneRequiredWithoutEquipmentsNestedInput
+    echelon?: EchelonUpdateOneRequiredWithoutEquipmentsNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentNestedInput
   }
 
   export type EquipmentUncheckedUpdateWithoutClubInput = {
     id?: IntFieldUpdateOperationsInput | number
+    seasonId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
@@ -50155,6 +52219,53 @@ export namespace Prisma {
 
   export type EquipmentUncheckedUpdateManyWithoutClubInput = {
     id?: IntFieldUpdateOperationsInput | number
+    seasonId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type EquipmentCreateManySeasonInput = {
+    id?: number
+    clubId: number
+    echelonId: number
+    color: string
+    number: number
+    size: $Enums.Size
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type EquipmentUpdateWithoutSeasonInput = {
+    color?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutEquipmentsNestedInput
+    echelon?: EchelonUpdateOneRequiredWithoutEquipmentsNestedInput
+    gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentNestedInput
+  }
+
+  export type EquipmentUncheckedUpdateWithoutSeasonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
+    number?: IntFieldUpdateOperationsInput | number
+    size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutEquipmentNestedInput
+  }
+
+  export type EquipmentUncheckedUpdateManyWithoutSeasonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size

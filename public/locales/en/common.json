@@ -1,4 +1,6 @@
 {
+  "loading": "Loading",
+  "unknownTeam": "Unknown team",
   "echelonsManagement": "Echelons Management",
   "name": "Name",
   "minAge": "Minimum Age",
@@ -77,7 +79,10 @@
   "opponentDeleteConfirmation": "Are you sure you want to delete the opponent {{name}}?",
   "opponentDeleteSuccess": "Opponent {{name}} deleted successfully.",
 
-  "games": "Games",
+  "games": "games",
+  "noGamesFound": "No games found",
+  "noCompetition": "No Competition",
+  "noSeries": "No Series",
   "gamesList": "List of all games",
   "gamesFetchedSorted": "Fetched and sorted games",
   "gamesFetchErrorLog": "Error occurred while fetching games",

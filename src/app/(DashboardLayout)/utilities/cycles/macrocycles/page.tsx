@@ -20,30 +20,30 @@ import PageContainer from '@/app/(DashboardLayout)/components/container/PageCont
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
 import { MacrocycleInterface } from '@/types/cycles/types';
+import { log } from '@/lib/logger';
+import { useMessage } from '@/hooks/useMessage';
 
 const MacroCyclesList = (): ReactElement => {
   const [macroCycles, setMacroCycles] = useState<MacrocycleInterface[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const { message: error, setTimedMessage: setError } = useMessage(5000);
+  const { message: success, setTimedMessage: setSuccess } = useMessage(5000);
   const router = useRouter();
 
-  // Fetch the list of macro cycles from the API
   useEffect(() => {
     async function fetchMacroCycles(): Promise<void> {
       try {
-        const response = await fetch('/api/cycles/macrocycles'); // Fetching macro cycles from the API
+        const response = await fetch('/api/cycles/macrocycles');
         const data: MacrocycleInterface[] = await response.json();
         setMacroCycles(data);
       } catch (err) {
-        console.error(err);
+        log.error('Error fetching macro cycles:', err);
         setError('Failed to fetch macro cycles.');
       }
     }
 
     fetchMacroCycles();
-  }, []);
+  }, [setError]);
 
-  // Handle macro cycle deletion
   const handleDelete = async (id: number): Promise<void> => {
     const confirmed = window.confirm(`Are you sure you want to delete MacroCycle ID ${id}?`);
     if (!confirmed) return;
@@ -56,21 +56,12 @@ const MacroCyclesList = (): ReactElement => {
       if (response.ok) {
         setSuccess(`MacroCycle ID ${id} deleted successfully.`);
         setMacroCycles((prevCycles) => prevCycles.filter((cycle) => cycle.id !== id));
-        setTimeout(() => {
-          setSuccess(null);
-        }, 5000);
       } else {
         setError('Failed to delete macro cycle.');
-        setTimeout(() => {
-          setError(null);
-        }, 5000);
       }
     } catch (err) {
-      console.error('Error deleting macro cycle:', err);
+      log.error('Error deleting macro cycle:', err);
       setError('An error occurred while deleting the macro cycle.');
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
     }
   };
 

@@ -1,5 +1,5 @@
 import { AthletePreferredNumberInterface } from '../athletePreferredNumber/type';
-import { Size } from '../game/types';
+import { SizeEnum } from '../game/types';
 
 export interface AthleteInterface {
   id: number | null;
@@ -11,7 +11,7 @@ export interface AthleteInterface {
   idType?: IdTypeEnum | undefined;
   active: boolean;
   clubId?: number;
-  shirtSize: Size;
+  shirtSize: SizeEnum;
 
   preferredNumbers?: AthletePreferredNumberInterface[];
 }

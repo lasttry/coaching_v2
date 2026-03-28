@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { ClubInterface } from '@/types/club/types';
 import { validateClubSettings } from './assets/validateClub';
+import { log } from '@/lib/logger';
 
 // GET: Fetch all clubs
 export async function GET(): Promise<NextResponse> {
@@ -18,7 +19,7 @@ export async function GET(): Promise<NextResponse> {
 
     return NextResponse.json(clubs, { status: 200 });
   } catch (error) {
-    console.error('Error fetching clubs:', error);
+    log.error('Error fetching clubs:', error);
     return NextResponse.json({ error: 'Error fetching clubs.' }, { status: 500 });
   }
 }
@@ -65,7 +66,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(newClub, { status: 201 });
   } catch (error) {
-    console.error('Error creating club:', error);
+    log.error('Error creating club:', error);
     return NextResponse.json({ error: 'Failed to create club' }, { status: 500 });
   }
 }

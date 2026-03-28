@@ -13,10 +13,13 @@ import {
   Stack,
   Chip,
   Avatar,
+  Alert,
+  Snackbar,
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { OpponentInterface } from '@/types/game/types';
+import { log } from '@/lib/logger';
 
 const initialOpponent: OpponentInterface = {
   name: '',
@@ -28,6 +31,7 @@ const initialOpponent: OpponentInterface = {
 
 export default function OpponentManagement(): React.JSX.Element {
   const [opponents, setOpponents] = useState<OpponentInterface[]>([]);
+  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingOpponent, setEditingOpponent] = useState<OpponentInterface | null>(null);
   const [formOpponent, setFormOpponent] = useState<OpponentInterface>(initialOpponent);
@@ -35,12 +39,23 @@ export default function OpponentManagement(): React.JSX.Element {
 
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | undefined>(undefined);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchOpponents = async (): Promise<void> => {
-      const res = await fetch('/api/opponents');
-      const data = await res.json();
-      setOpponents(data);
+      try {
+        const res = await fetch('/api/opponents');
+        if (!res.ok) {
+          throw new Error('Failed to fetch opponents');
+        }
+        const data = await res.json();
+        setOpponents(data);
+      } catch (err) {
+        log.error('Error fetching opponents:', err);
+        setErrorMessage('Failed to load opponents.');
+      } finally {
+        setLoading(false);
+      }
     };
     fetchOpponents();
   }, []);
@@ -88,7 +103,8 @@ export default function OpponentManagement(): React.JSX.Element {
       setNewVenue('');
       setEditingOpponent(null);
     } catch (err) {
-      console.error('Error saving opponent:', err);
+      log.error('Error saving opponent:', err);
+      setErrorMessage('Failed to save opponent.');
     }
   };
 
@@ -119,8 +135,8 @@ export default function OpponentManagement(): React.JSX.Element {
       setDeleteConfirmOpen(false);
       setDeleteId(undefined);
     } catch (err) {
-      console.error('❌ Error deleting opponent:', err);
-      alert('Failed to delete opponent.');
+      log.error('Error deleting opponent:', err);
+      setErrorMessage('Failed to delete opponent.');
     }
   };
 
@@ -171,6 +187,16 @@ export default function OpponentManagement(): React.JSX.Element {
 
   return (
     <Box>
+      <Snackbar
+        open={!!errorMessage}
+        autoHideDuration={5000}
+        onClose={() => setErrorMessage(null)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={() => setErrorMessage(null)} severity="error" sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="h5">Opponent Management</Typography>
         <Button
@@ -191,7 +217,8 @@ export default function OpponentManagement(): React.JSX.Element {
         <DataGrid
           rows={opponents}
           columns={columns}
-          getRowId={(row) => row.id!} // needed because OpponentInterface uses id
+          loading={loading}
+          getRowId={(row) => row.id!}
           pageSizeOptions={[5, 10, 25]}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
@@ -319,7 +346,7 @@ export default function OpponentManagement(): React.JSX.Element {
                   onDelete={() =>
                     setFormOpponent({
                       ...formOpponent,
-                      venues: formOpponent.venues!.filter((_, idx) => idx !== i),
+                      venues: (formOpponent.venues ?? []).filter((_, idx) => idx !== i),
                     })
                   }
                   sx={{ m: 0.5 }}

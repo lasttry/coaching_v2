@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { parseAndValidateId } from '@/utils/validateId';
+import { log } from '@/lib/logger';
 
 interface TimeEntryInput {
   id?: number;
@@ -37,7 +38,7 @@ export async function GET(
 
     return NextResponse.json(statistics, { status: 200 });
   } catch (error) {
-    console.error(error);
+    log.error('Error fetching statistics:', error);
     return NextResponse.json(
       { error: 'An error occurred while fetching statistics' },
       { status: 500 }
@@ -79,7 +80,7 @@ export async function POST(
 
     return NextResponse.json({ message: 'Time entries added successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error adding time entries:', error);
+    log.error('Error adding time entries:', error);
     return NextResponse.json({ error: 'Failed to add time entries' }, { status: 500 });
   }
 }
@@ -125,7 +126,7 @@ export async function PUT(
 
     return NextResponse.json({ message: 'Time entries updated successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error updating time entries:', error);
+    log.error('Error updating time entries:', error);
     return NextResponse.json({ error: 'Failed to update time entries' }, { status: 500 });
   }
 }

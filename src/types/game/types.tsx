@@ -64,8 +64,15 @@ export interface ObjectiveInterface {
   updatedAt?: Date; // Timestamp when the objective was last updated
 }
 
-export type ObjectiveType = $Enums.ObjectiveType
+export type ObjectiveType = $Enums.ObjectiveType;
 export type Size = $Enums.Size;
+export enum SizeEnum {
+  S = 'S',
+  M = 'M',
+  L = 'L',
+  XL = 'XL',
+  XXL = 'XXL',
+}
 
 export interface GameAthleteInterface {
   athleteId: number | null;

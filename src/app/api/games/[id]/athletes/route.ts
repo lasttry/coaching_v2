@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: string }>;
 
@@ -17,7 +18,7 @@ export async function GET(req: Request, segmentData: { params: Params }): Promis
         gameId: id,
       },
       include: {
-        athlete: true, // Include the related athletes information
+        athlete: true,
       },
     });
 
@@ -27,7 +28,7 @@ export async function GET(req: Request, segmentData: { params: Params }): Promis
 
     return NextResponse.json(athletes, { status: 200 });
   } catch (error) {
-    console.error('Error fetching athletes:', error);
+    log.error('Error fetching athletes:', error);
     return NextResponse.json(
       { error: 'An error occurred while fetching athletes' },
       { status: 500 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: string }>;
 
@@ -96,7 +97,7 @@ export async function GET(
 
     return NextResponse.json(resultArray, { status: 200 });
   } catch (error) {
-    console.error('Error fetching time entries or calculating playtime:', error);
+    log.error('Error fetching time entries or calculating playtime:', error);
     return NextResponse.json({ error: 'Failed to calculate time entries' }, { status: 500 });
   }
 }

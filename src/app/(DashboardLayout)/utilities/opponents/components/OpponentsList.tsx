@@ -114,7 +114,7 @@ const OpponentListComponent: React.FC<OpponentListProps> = ({
         <DialogActions>
           <Button onClick={() => setDeleteConfirm(null)}>{t('cancel')}</Button>
           <Button
-            onClick={() => deleteConfirm && handleDelete(deleteConfirm.id!)}
+            onClick={() => deleteConfirm?.id !== undefined && handleDelete(deleteConfirm.id)}
             color="error"
             variant="contained"
           >
@@ -125,106 +125,115 @@ const OpponentListComponent: React.FC<OpponentListProps> = ({
 
       <DashboardCard title={t('opponents')}>
         {opponents &&
-          opponents.map((opponent) => {
-            const isEditing = editMode[opponent.id!];
-            const edited = editedOpponents[opponent.id!];
+          opponents
+            .filter((o) => o.id !== undefined)
+            .map((opponent) => {
+              const opponentId = opponent.id as number;
+              const isEditing = editMode[opponentId];
+              const edited = editedOpponents[opponentId];
 
-            return (
-              <Accordion
-                key={opponent.id}
-                expanded={expandedId === opponent.id}
-                onChange={(_, expanded) => setExpandedId(expanded ? opponent.id : null)}
-              >
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Grid container spacing={2} alignItems="center" sx={{ width: '100%' }}>
-                    <Grid size={2}>
-                      <Box
-                        component="img"
-                        src={opponent.image}
-                        alt={opponent.name}
-                        sx={{ width: 32, height: 32, objectFit: 'contain', borderRadius: 1, ml: 2 }}
-                      />
-                    </Grid>
-                    <Grid size={5}>
-                      <Typography>{opponent.name}</Typography>
-                    </Grid>
-                    <Grid size={3}>
-                      <Typography>{opponent.shortName}</Typography>
-                    </Grid>
-                    <Grid size={2} sx={{ ml: 'auto' }}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'flex-end',
-                          alignItems: 'center',
-                          gap: 0.1,
-                        }}
-                      >
-                        {isEditing ? (
-                          <IconButton
-                            component="span"
-                            size="small"
-                            color="success"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleSave(opponent.id!);
-                            }}
-                          >
-                            <SaveIcon />
-                          </IconButton>
-                        ) : (
-                          <IconButton
-                            component="span"
-                            size="small"
-                            color="primary"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditToggle(opponent.id!);
-                            }}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        )}
-                        <IconButton
-                          component="span"
-                          size="small"
-                          color="error"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setDeleteConfirm(opponent);
+              return (
+                <Accordion
+                  key={opponent.id}
+                  expanded={expandedId === opponent.id}
+                  onChange={(_, expanded) => setExpandedId(expanded ? opponent.id : null)}
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Grid container spacing={2} alignItems="center" sx={{ width: '100%' }}>
+                      <Grid size={2}>
+                        <Box
+                          component="img"
+                          src={opponent.image}
+                          alt={opponent.name}
+                          sx={{
+                            width: 32,
+                            height: 32,
+                            objectFit: 'contain',
+                            borderRadius: 1,
+                            ml: 2,
+                          }}
+                        />
+                      </Grid>
+                      <Grid size={5}>
+                        <Typography>{opponent.name}</Typography>
+                      </Grid>
+                      <Grid size={3}>
+                        <Typography>{opponent.shortName}</Typography>
+                      </Grid>
+                      <Grid size={2} sx={{ ml: 'auto' }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
+                            gap: 0.1,
                           }}
                         >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Grid container spacing={2} alignItems="center">
-                    {isEditing ? (
-                      <OpponentComponent
-                        opponent={edited}
-                        setOpponent={(updated) =>
-                          setEditedOpponents((prev) => ({
-                            ...prev,
-                            [Number(opponent.id)]: updated as OpponentInterface,
-                          }))
-                        }
-                      />
-                    ) : (
-                      <Grid size={{ xs: 12 }}>
-                        <Typography variant="body2">
-                          {t('venues')}:{' '}
-                          {opponent.venues?.map((v) => v.name).join(', ') || t('noVenues')}
-                        </Typography>
+                          {isEditing ? (
+                            <IconButton
+                              component="span"
+                              size="small"
+                              color="success"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSave(opponentId);
+                              }}
+                            >
+                              <SaveIcon />
+                            </IconButton>
+                          ) : (
+                            <IconButton
+                              component="span"
+                              size="small"
+                              color="primary"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditToggle(opponentId);
+                              }}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          )}
+                          <IconButton
+                            component="span"
+                            size="small"
+                            color="error"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setDeleteConfirm(opponent);
+                            }}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
                       </Grid>
-                    )}
-                  </Grid>
-                </AccordionDetails>
-              </Accordion>
-            );
-          })}
+                    </Grid>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Grid container spacing={2} alignItems="center">
+                      {isEditing ? (
+                        <OpponentComponent
+                          opponent={edited}
+                          setOpponent={(updated) =>
+                            setEditedOpponents((prev) => ({
+                              ...prev,
+                              [opponentId]: updated as OpponentInterface,
+                            }))
+                          }
+                        />
+                      ) : (
+                        <Grid size={{ xs: 12 }}>
+                          <Typography variant="body2">
+                            {t('venues')}:{' '}
+                            {opponent.venues?.map((v) => v.name).join(', ') || t('noVenues')}
+                          </Typography>
+                        </Grid>
+                      )}
+                    </Grid>
+                  </AccordionDetails>
+                </Accordion>
+              );
+            })}
       </DashboardCard>
     </>
   );

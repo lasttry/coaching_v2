@@ -17,32 +17,32 @@ import PageContainer from '@/app/(DashboardLayout)/components/container/PageCont
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
 import { MacrocycleInterface } from '@/types/cycles/types';
+import { log } from '@/lib/logger';
+import { useMessage } from '@/hooks/useMessage';
 
 const MesoCyclesList = (): ReactElement => {
   const [macroCycles, setMacroCycles] = useState<MacrocycleInterface[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const { message: error, setTimedMessage: setError } = useMessage(5000);
+  const { message: success, setTimedMessage: setSuccess } = useMessage(5000);
 
-  // Fetch the list of macro cycles with meso cycles from the API
   useEffect(() => {
     async function fetchMacroCycles(): Promise<void> {
       try {
-        const response = await fetch('/api/cycles/macrocycles'); // Fetching macro cycles with meso cycles
+        const response = await fetch('/api/cycles/macrocycles');
         if (!response.ok) {
           throw new Error(`Failed to fetch cycles. Status: ${response.status}`);
         }
         const data: MacrocycleInterface[] = await response.json();
         setMacroCycles(data);
       } catch (err) {
-        console.error(err);
+        log.error('Error fetching cycles:', err);
         setError('Failed to fetch cycles.');
       }
     }
 
     fetchMacroCycles();
-  }, []);
+  }, [setError]);
 
-  // Handle mesocycle deletion
   const handleDelete = async (id: number): Promise<void> => {
     const confirmed = window.confirm(`Are you sure you want to delete MesoCycle ID ${id}?`);
     if (!confirmed) return;
@@ -59,15 +59,12 @@ const MesoCyclesList = (): ReactElement => {
             mesocycles: macro.mesocycles.filter((meso) => meso.id !== id),
           }))
         );
-        setTimeout(() => setSuccess(null), 5000);
       } else {
         setError('Failed to delete mesocycle.');
-        setTimeout(() => setError(null), 5000);
       }
     } catch (err) {
-      console.error('Error deleting mesocycle:', err);
+      log.error('Error deleting mesocycle:', err);
       setError('An error occurred while deleting the mesocycle.');
-      setTimeout(() => setError(null), 5000);
     }
   };
 

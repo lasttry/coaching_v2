@@ -32,7 +32,7 @@ export async function GET(
     isNaN(Number(session.user.selectedClubId))
   ) {
     log.error('games/[id]/route.ts>GET: session invalid or club not selected');
-    return NextResponse.json({ status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const params = await segmentData.params;
@@ -55,6 +55,7 @@ export async function GET(
       club: true,
       competition: true,
       competitionSerie: true,
+      gameEquipments: true,
     },
   };
   const game = await prisma.game.findUnique(payload);
@@ -74,7 +75,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     isNaN(Number(session.user.selectedClubId))
   ) {
     log.error('games/[id]/route.ts>PUT: session invalid or club not selected');
-    return NextResponse.json({ status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const params = await segmentData.params;
@@ -135,9 +136,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         }),
         ...(data.gameAthletes && {
           gameAthletes: {
-            deleteMany: {
-              gameId: gameId,
-            },
+            deleteMany: {},
             create: (data.gameAthletes || [])
               .filter((athlete: GameAthleteInterface) => athlete.athlete?.id !== null)
               .map((athlete: GameAthleteInterface) => ({
@@ -162,6 +161,17 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         ...(data.image4 !== undefined && {
           image4: data.image4 ? await resizeBase64Image(data.image4) : null,
         }),
+        gameEquipments: {
+          deleteMany: {},
+          createMany: {
+            data: (data.gameEquipments ?? []).map(
+              (ge: { athleteId: number; equipmentId: number }) => ({
+                athleteId: ge.athleteId,
+                equipmentId: ge.equipmentId,
+              })
+            ),
+          },
+        },
       },
       include: {
         opponent: true, // Include opponent team details in the response
@@ -178,6 +188,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
           },
         },
         venue: true,
+        gameEquipments: true,
       },
     };
 
@@ -200,12 +211,33 @@ export async function DELETE(
   request: Request,
   segmentData: { params: Params }
 ): Promise<NextResponse> {
+  const session = await auth();
+  if (
+    !session?.user ||
+    !session.user.selectedClubId ||
+    isNaN(Number(session.user.selectedClubId))
+  ) {
+    log.error('games/[id]/route.ts>DELETE: session invalid or club not selected');
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const params = await segmentData.params;
   const gameId = parseAndValidateId(params.id, 'game');
   if (gameId instanceof NextResponse) return gameId;
 
   try {
-    // Delete the game
+    // Verify the game belongs to the user's club before deleting
+    const game = await prisma.game.findFirst({
+      where: {
+        id: Number(gameId),
+        clubId: Number(session.user.selectedClubId),
+      },
+    });
+
+    if (!game) {
+      return NextResponse.json({ error: 'Game not found or unauthorized' }, { status: 404 });
+    }
+
     await prisma.game.delete({
       where: { id: Number(gameId) },
     });
@@ -213,9 +245,8 @@ export async function DELETE(
     return NextResponse.json({ message: 'Game deleted successfully' }, { status: 200 });
   } catch (error) {
     if (error instanceof Error) {
-      console.error('Error deleting game:', error.message);
+      log.error('Error deleting game:', error.message);
       if (error.message.includes('P2003')) {
-        // Handle foreign key constraint errors
         return NextResponse.json(
           { error: 'Unable to delete game due to related records.' },
           { status: 409 }

@@ -5,7 +5,6 @@ import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';
 import { PlatformRole } from '@prisma/client';
 import { validatePassword } from './password';
-import { mapClubToInterface } from '@/types/club/types';
 import { Session } from 'next-auth';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -20,22 +19,24 @@ export default {
       },
       authorize: async (credentials) => {
         if (!credentials?.email || !credentials.password) {
-          log.error('Missing credentials');
-          throw new Error('Credentials are required');
+          log.warn('Login attempt with missing credentials');
+          return null;
         }
+
+        const email = String(credentials.email);
+        const password = String(credentials.password);
+
+        if (!emailRegex.test(email)) {
+          log.warn('Login attempt with invalid email format');
+          return null;
+        }
+
+        if (password.length < 8) {
+          log.warn('Login attempt with password too short');
+          return null;
+        }
+
         try {
-          const email = String(credentials.email);
-          const password = String(credentials.password);
-
-          if (!emailRegex.test(email)) {
-            log.warn(`Invalid email format: ${email}`);
-            throw new Error('Invalid email format');
-          }
-          if (password.length < 8) {
-            log.warn('Password is too short');
-            throw new Error('Password must be at least 8 characters long');
-          }
-
           const user = await prisma.account.findUnique({
             where: { email },
             include: {
@@ -49,42 +50,37 @@ export default {
           });
 
           if (!user) {
-            log.error('User not found for email:', { email });
-            throw new Error('User not found');
+            log.warn('Login failed: user not found');
+            return null;
           }
 
           const isPasswordValid = await validatePassword(password, user.password);
           if (!isPasswordValid) {
-            log.error('Invalid password for email:', { email });
-            throw new Error('Invalid password');
+            log.warn('Login failed: invalid password');
+            return null;
           }
+
           const selectedClubRelation = user.clubs.find((c) => c.clubId === user.defaultClubId);
-
           if (!selectedClubRelation || !selectedClubRelation.club) {
-            log.error(
-              `Default club (ID: ${user.defaultClubId}) not found or not included for user ${user.email}`
-            );
-            throw new Error('Default club configuration error');
+            log.warn('Login failed: default club not configured');
+            return null;
           }
 
-          const selectedClub = mapClubToInterface(selectedClubRelation.club);
+          const currentSeason = await prisma.season.findFirst({
+            where: { isCurrent: true },
+            orderBy: { startDate: 'desc' },
+          });
 
-          const userobj = {
+          return {
             id: String(user.id),
             name: user.name,
             email: user.email,
             selectedClubId: user.defaultClubId,
-            selectedSeason: selectedClub.season || '',
-            club: selectedClub,
+            selectedSeasonId: currentSeason?.id,
             role: user.role,
           };
-          return userobj;
-        } catch (error: unknown) {
-          if (error instanceof Error) {
-            log.error(`Error during user authorization: ${error.message}`, { error });
-          } else {
-            log.error('Unknown error during user authorization', { error });
-          }
+        } catch (error) {
+          log.error('Unexpected error during login:', error);
           return null;
         }
       },
@@ -115,12 +111,12 @@ export default {
         token.email = user.email ?? '';
         token.role = user.role;
         token.selectedClubId = user.selectedClubId;
-        token.club = user.club;
+        token.selectedSeasonId = user.selectedSeasonId;
       }
 
       if (trigger === 'update' && session?.user) {
         token.selectedClubId = session.user.selectedClubId;
-        token.club = session.user.club;
+        token.selectedSeasonId = session.user.selectedSeasonId;
       }
 
       return token;
@@ -131,8 +127,8 @@ export default {
         name: token.name ?? null,
         email: token.email ?? '',
         selectedClubId: token.selectedClubId,
+        selectedSeasonId: token.selectedSeasonId,
         role: token.role as PlatformRole,
-        club: token.club ?? undefined,
       };
       return session;
     },

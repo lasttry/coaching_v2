@@ -28,6 +28,8 @@ import {
   MacrocycleInterface,
   SessionGoalInterface,
 } from '@/types/cycles/types';
+import { log } from '@/lib/logger';
+import { useMessage } from '@/hooks/useMessage';
 
 const MicrocyclesList = (): ReactElement => {
   const [data, setData] = useState<
@@ -39,8 +41,8 @@ const MicrocyclesList = (): ReactElement => {
       }[];
     }[]
   >([]);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const { message: error, setTimedMessage: setError } = useMessage(5000);
+  const { message: success, setTimedMessage: setSuccess } = useMessage(5000);
   const router = useRouter();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsData, setDetailsData] = useState<SessionGoalInterface[] | null>(null);
@@ -59,7 +61,7 @@ const MicrocyclesList = (): ReactElement => {
       }
       setDetailsOpen(true);
     } catch (err) {
-      console.error('Error fetching details:', err);
+      log.error('Error fetching details:', err);
     }
   };
 
@@ -122,9 +124,8 @@ const MicrocyclesList = (): ReactElement => {
           const macrocycle = microcycle.mesocycle?.macrocycle;
           const mesocycle = microcycle.mesocycle;
 
-          // Ensure both macrocycle and mesocycle exist
           if (!macrocycle || !mesocycle) {
-            console.warn('Skipping microcycle due to missing macrocycle or mesocycle:', microcycle);
+            log.warn('Skipping microcycle due to missing macrocycle or mesocycle:', microcycle);
             return acc;
           }
 
@@ -161,15 +162,15 @@ const MicrocyclesList = (): ReactElement => {
           })),
         }));
 
-        setData(groupedArray); // Update state with grouped and sorted data
+        setData(groupedArray);
       } catch (err) {
-        console.error('Error fetching microcycles:', err);
+        log.error('Error fetching microcycles:', err);
         setError('Failed to fetch microcycles.');
       }
     }
 
     fetchMicrocycles();
-  }, []);
+  }, [setError]);
 
   // Handle microcycle deletion
   const handleDelete = async (id: number): Promise<void> => {
@@ -192,21 +193,12 @@ const MicrocyclesList = (): ReactElement => {
             })),
           }))
         );
-        setTimeout(() => {
-          setSuccess(null);
-        }, 5000);
       } else {
         setError('Failed to delete microcycle.');
-        setTimeout(() => {
-          setError(null);
-        }, 5000);
       }
     } catch (err) {
-      console.error('Error deleting microcycle:', err);
+      log.error('Error deleting microcycle:', err);
       setError('An error occurred while deleting the microcycle.');
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
     }
   };
 

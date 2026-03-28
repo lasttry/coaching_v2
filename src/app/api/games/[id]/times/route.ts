@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { parseAndValidateId } from '@/utils/validateId';
+import { log } from '@/lib/logger';
 
 interface TimeEntry {
   id: number;
@@ -33,7 +34,7 @@ export async function GET(
 
     return NextResponse.json(timeEntries, { status: 200 });
   } catch (error) {
-    console.error('Error fetching time entries:', error);
+    log.error('Error fetching time entries:', error);
     return NextResponse.json({ error: 'Failed to fetch time entries' }, { status: 500 });
   }
 }
@@ -69,7 +70,7 @@ export async function POST(
 
     return NextResponse.json({ message: 'Time entries added successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error adding time entries:', error);
+    log.error('Error adding time entries:', error);
     return NextResponse.json({ error: 'Failed to add time entries' }, { status: 500 });
   }
 }
@@ -120,7 +121,7 @@ export async function PUT(
 
     return NextResponse.json({ message: 'Time entries processed successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error processing time entries:', error);
+    log.error('Error processing time entries:', error);
     return NextResponse.json({ error: 'Failed to process time entries' }, { status: 500 });
   }
 }
@@ -143,7 +144,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Time entry deleted successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error deleting time entry:', error);
+    log.error('Error deleting time entry:', error);
     return NextResponse.json({ error: 'Failed to delete time entry' }, { status: 500 });
   }
 }

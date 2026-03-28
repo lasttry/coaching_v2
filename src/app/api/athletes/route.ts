@@ -11,7 +11,11 @@ export async function GET(req: Request): Promise<NextResponse> {
   await i18next.changeLanguage(lng);
 
   try {
-    const athletes = await prisma.athlete.findMany();
+    const athletes = await prisma.athlete.findMany({
+      include: {
+        preferredNumbers: true, // 👈 includes all related venues
+      },
+    });
     if (!athletes || athletes.length === 0) {
       return NextResponse.json({ error: i18next.t('noAthletesFound') }, { status: 404 });
     }

@@ -7,6 +7,7 @@ import {
   IconUsersGroup,
   IconTrophy,
   type TablerIcon,
+  IconShirtSport,
 } from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
@@ -92,12 +93,7 @@ const MenuItemsComponent = (): MenuItem[] => {
       icon: IconUsersGroup,
       href: '/utilities/teams',
     },
-    {
-      id: uniqueId(),
-      title: t('Club'),
-      icon: IconTypography,
-      href: '/utilities/club',
-    },
+
     {
       id: uniqueId(),
       title: t('Echelons'),
@@ -110,9 +106,24 @@ const MenuItemsComponent = (): MenuItem[] => {
       icon: IconTrophy,
       href: '/utilities/competitions',
     },
+    {
+      id: uniqueId(),
+      title: t('Equipments'),
+      icon: IconShirtSport,
+      href: '/utilities/equipments',
+    },
     { navlabel: true, subheader: t('Configurations') },
     {
       id: uniqueId(),
+      title: t('Club'),
+      icon: IconTypography,
+      href: '/utilities/club',
+    },
+    {
+      id: uniqueId(),
+      title: t('Seasons'),
+      icon: IconTypography,
+      href: '/utilities/seasons',
     },
   ];
 

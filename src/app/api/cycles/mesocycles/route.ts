@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 // GET: List all mesocycles
 export async function GET(): Promise<NextResponse> {
@@ -13,7 +14,7 @@ export async function GET(): Promise<NextResponse> {
 
     return NextResponse.json(mesocycles);
   } catch (error) {
-    console.error(error);
+    log.error('Error fetching mesocycles:', error);
     return NextResponse.json({ error: 'Failed to fetch mesocycles' }, { status: 500 });
   }
 }
@@ -45,7 +46,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(newMesocycle, { status: 201 });
   } catch (error) {
-    console.error(error);
+    log.error('Error creating mesocycle:', error);
     return NextResponse.json({ error: 'Failed to create mesocycle' }, { status: 500 });
   }
 }

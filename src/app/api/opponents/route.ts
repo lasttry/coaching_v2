@@ -1,7 +1,14 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
+import { auth } from '@/lib/auth';
 
 export async function POST(request: Request): Promise<NextResponse> {
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const data = await request.json();
 
@@ -10,6 +17,8 @@ export async function POST(request: Request): Promise<NextResponse> {
         name: data.name,
         shortName: data.shortName,
         image: data.image ?? null,
+        fpbClubId: data.fpbClubId ?? null,
+        fpbTeamId: data.fpbTeamId ?? null,
         createdAt: new Date(),
         updatedAt: new Date(),
         venues: {
@@ -26,12 +35,17 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(newOpponent, { status: 201 });
   } catch (error) {
-    console.error('Error creating opponent:', error);
+    log.error('Error creating opponent:', error);
     return NextResponse.json({ error: 'Error creating opponent' }, { status: 500 });
   }
 }
 
 export async function GET(): Promise<NextResponse> {
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const opponents = await prisma.opponent.findMany({
       include: {
@@ -41,7 +55,7 @@ export async function GET(): Promise<NextResponse> {
 
     return NextResponse.json(opponents);
   } catch (error) {
-    console.error('Error fetching opponents:', error);
+    log.error('Error fetching opponents:', error);
     return NextResponse.json({ error: 'Error fetching opponents' }, { status: 500 });
   }
 }

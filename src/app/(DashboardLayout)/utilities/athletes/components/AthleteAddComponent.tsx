@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { TextField, Button, Grid, Select, MenuItem, SelectChangeEvent } from '@mui/material';
-import { AthleteInterface, Size } from '@/types/game/types';
+import { SizeEnum } from '@/types/game/types';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
+import { AthleteInterface } from '@/types/athlete/type';
+import { AthletePreferredNumberInterface } from '@/types/athletePreferredNumber/type';
 
 interface AthleteAddProps {
   newAthlete: AthleteInterface;
@@ -24,10 +26,11 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
 }) => {
   const { t } = useTranslation();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
 
   const validate = (
     field: keyof AthleteInterface,
-    value: string | number | boolean | undefined | null
+    value: string | number | boolean | undefined | null | AthletePreferredNumberInterface[]
   ): string => {
     setErrorMessage('');
     setSuccessMessage('');
@@ -72,6 +75,85 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
       setNewAthlete((prev) => ({ ...prev, [field]: value }));
     };
 
+  const handlePreferredNumberChange = (index: number, value: string): void => {
+    const numericValue = Number(value);
+    if (Number.isNaN(numericValue)) return;
+
+    setNewAthlete((prev) => {
+      const current = prev.preferredNumbers ?? [];
+      const updated = current.map((p, i) =>
+        i === index
+          ? {
+              ...p,
+              number: numericValue,
+            }
+          : p
+      );
+      return { ...prev, preferredNumbers: updated };
+    });
+  };
+
+  const handleAddPreferredNumber = (): void => {
+    setNewAthlete((prev) => {
+      const current = prev.preferredNumbers ?? [];
+      const nextPreference =
+        current.length === 0 ? 1 : Math.max(...current.map((p) => p.preference ?? 0)) + 1;
+
+      const newPreferred: AthletePreferredNumberInterface = {
+        id: 0,
+        athleteId: prev.id ?? 0,
+        number: 0,
+        preference: nextPreference,
+      };
+
+      return {
+        ...prev,
+        preferredNumbers: [...current, newPreferred],
+      };
+    });
+  };
+
+  const handleRemovePreferredNumber = (index: number): void => {
+    setNewAthlete((prev) => {
+      const current = prev.preferredNumbers ?? [];
+      const updated = current.filter((_, i) => i !== index);
+      return { ...prev, preferredNumbers: updated };
+    });
+  };
+
+  const handleDragStart = (index: number) => () => {
+    setDragIndex(index);
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>): void => {
+    event.preventDefault();
+  };
+
+  const handleDrop =
+    (index: number) =>
+    (event: React.DragEvent<HTMLDivElement>): void => {
+      event.preventDefault();
+      if (dragIndex === null || dragIndex === index) return;
+
+      setNewAthlete((prev) => {
+        const current = prev.preferredNumbers ?? [];
+        if (dragIndex! < 0 || dragIndex! >= current.length) return prev;
+
+        const reordered = [...current];
+        const [moved] = reordered.splice(dragIndex!, 1);
+        reordered.splice(index, 0, moved);
+
+        const withPreferences = reordered.map((p, i) => ({
+          ...p,
+          preference: i + 1,
+        }));
+
+        return { ...prev, preferredNumbers: withPreferences };
+      });
+
+      setDragIndex(null);
+    };
+
   const handleSave = (): void => {
     if (!validateAll()) return;
     if (onAddAthlete) onAddAthlete();
@@ -85,7 +167,8 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
       birthdate: '',
       fpbNumber: null,
       active: true,
-      shirtSize: Size.S,
+      shirtSize: SizeEnum.S,
+      preferredNumbers: [],
     });
     setErrors({});
   };
@@ -143,13 +226,66 @@ const AthleteAddComponent: React.FC<AthleteAddProps> = ({
               displayEmpty
             >
               <MenuItem value="">{t('selectSize')}</MenuItem>
-              {['S', 'M', 'L', 'XL', 'XXL'].map((shirtSize) => (
-                <MenuItem key={shirtSize} value={shirtSize}>
-                  {shirtSize}
+              {Object.values(SizeEnum).map((s) => (
+                <MenuItem key={s} value={s}>
+                  {s}
                 </MenuItem>
               ))}
             </Select>
           </Grid>
+
+          {/* Preferred numbers section with drag-and-drop ordering */}
+          <Grid size={{ xs: 12, sm: 12 }}>
+            <Grid container spacing={1} alignItems="center">
+              <Grid size={{ xs: 12 }} sx={{ mb: 1 }}>
+                <strong>{t('preferredNumbers')}</strong>
+              </Grid>
+
+              {(newAthlete.preferredNumbers ?? []).map((p, index) => (
+                <Grid
+                  key={`${p.id}-${index}`}
+                  container
+                  spacing={1}
+                  alignItems="center"
+                  sx={{ mb: 0.5, cursor: 'grab' }}
+                  draggable
+                  onDragStart={handleDragStart(index)}
+                  onDragOver={handleDragOver}
+                  onDrop={handleDrop(index)}
+                >
+                  <Grid size={{ xs: 1, sm: 1 }}>
+                    <span>{index + 1}.</span>
+                  </Grid>
+                  <Grid size={{ xs: 3, sm: 2 }}>
+                    <TextField
+                      label={t('preferredNumber')}
+                      type="number"
+                      fullWidth
+                      size="small"
+                      value={p.number ?? ''}
+                      onChange={(e) => handlePreferredNumberChange(index, e.target.value)}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 3, sm: 2 }}>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleRemovePreferredNumber(index)}
+                    >
+                      {t('remove')}
+                    </Button>
+                  </Grid>
+                </Grid>
+              ))}
+
+              <Grid size={{ xs: 12 }}>
+                <Button variant="outlined" onClick={handleAddPreferredNumber}>
+                  {t('addPreferredNumber')}
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+
           <Grid size={{ xs: 6, sm: 6 }} sx={{ display: 'flex', justifyContent: 'center' }}>
             <Button variant="contained" onClick={handleSave}>
               {t('add')}

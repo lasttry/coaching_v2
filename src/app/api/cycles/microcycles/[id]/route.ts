@@ -44,7 +44,7 @@ export async function GET(
 
     return NextResponse.json(microcycle);
   } catch (error) {
-    console.error('Error fetching microcycle:', error);
+    log.error('Error fetching microcycle:', error);
     return NextResponse.json({ error: 'Failed to fetch microcycle' }, { status: 500 });
   }
 }

@@ -22,6 +22,7 @@ import {
   MesocycleInterface,
   SessionGoalInterface,
 } from '@/types/cycles/types';
+import { log } from '@/lib/logger';
 import React from 'react';
 
 type Params = Promise<{ id: string }>;
@@ -63,7 +64,7 @@ const ManageMicrocyclePage = (props: { params: Params }): ReactElement => {
           setSelectedMacrocycle(data.mesocycle?.macrocycle?.id || null);
         }
       } catch (err) {
-        console.error(err);
+        log.error('Error loading microcycle data:', err);
         setError('Failed to load data.');
       }
     }
@@ -80,7 +81,7 @@ const ManageMicrocyclePage = (props: { params: Params }): ReactElement => {
         const data: MesocycleInterface[] = await response.json();
         setMesocycles(data);
       } catch (err) {
-        console.error(err);
+        log.error('Error loading mesocycles:', err);
         setError('Failed to load mesocycles.');
       }
     }
@@ -107,7 +108,7 @@ const ManageMicrocyclePage = (props: { params: Params }): ReactElement => {
         setError('Failed to save microcycle.');
       }
     } catch (err) {
-      console.error(err);
+      log.error('Error saving microcycle:', err);
       setError('An error occurred while saving the microcycle.');
     }
   };

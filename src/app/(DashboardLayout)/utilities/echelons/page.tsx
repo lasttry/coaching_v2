@@ -9,8 +9,6 @@ import EchelonAddComponent from './components/EchelonAdd';
 import EchelonListComponent from './components/EchelonList';
 import { useMessage } from '@/hooks/useMessage';
 
-export const dynamic = 'force-dynamic';
-
 const EchelonsPage: React.FC = () => {
   const { t } = useTranslation();
   const [echelons, setEchelons] = useState<Record<string, EchelonInterface[]>>({});
@@ -34,12 +32,10 @@ const EchelonsPage: React.FC = () => {
     const data = await response.json();
     if (!response.ok) {
       setErrorMessage(data.error || 'Error getting echelons.');
-      console.error('❌ Fetch failed:', data.error);
+      log.error('Fetch echelons failed:', data.error);
       return;
     }
     setEchelons(groupedAndSortedEchelons(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    console.error('done,..,.');
   }, []);
 
   const groupedAndSortedEchelons = (
@@ -62,7 +58,6 @@ const EchelonsPage: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log('useEffect');
     fetchEchelons();
   }, [fetchEchelons]);
 
@@ -141,6 +136,32 @@ const EchelonsPage: React.FC = () => {
 
   const handleDeleteEchelon = async (id: number | null): Promise<void> => {
     if (!id) return;
+
+    try {
+      const response = await fetch(`/api/echelons/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || t('deleteError'));
+      }
+
+      setEchelons((prev) => {
+        const updated: Record<string, EchelonInterface[]> = {};
+        Object.keys(prev).forEach((gender) => {
+          const filtered = prev[gender].filter((echelon) => echelon.id !== id);
+          if (filtered.length > 0) {
+            updated[gender] = filtered;
+          }
+        });
+        return updated;
+      });
+      setSuccessMessage(t('deleteSuccess'));
+    } catch (err) {
+      log.error('Error deleting echelon:', err);
+      setErrorMessage(t('deleteError'));
+    }
   };
   return (
     <Box sx={{ padding: 2 }}>

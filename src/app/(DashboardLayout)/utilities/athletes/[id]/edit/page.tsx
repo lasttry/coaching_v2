@@ -1,10 +1,11 @@
 'use client';
-import React, { ReactElement } from 'react';
-import { use } from 'react';
-import { useState, useEffect } from 'react';
+import React, { ReactElement, useRef, useEffect, use } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer'; // Corrected import path
+import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import { TextField, Button, Box, Stack, Typography } from '@mui/material';
+import { log } from '@/lib/logger';
+import { useMessage } from '@/hooks/useMessage';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
@@ -26,12 +27,21 @@ const EditAthlete = (props: { params: Params }): ReactElement => {
   const { t } = useTranslation();
 
   const params = use(props.params);
-  const [form, setForm] = useState<Athlete | null>(null); // Initialize form as null until data is fetched
+  const [form, setForm] = useState<Athlete | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { message: error, setTimedMessage: setError, setMessage } = useMessage(5000);
   const [success, setSuccess] = useState<string | null>(null);
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({}); // For handling input errors
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const router = useRouter();
+  const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimeoutRef.current) {
+        clearTimeout(redirectTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Convert ISO date to "yyyy-MM-dd"
   const formatDate = (dateString: string): string => {
@@ -47,15 +57,15 @@ const EditAthlete = (props: { params: Params }): ReactElement => {
         data.birthdate = formatDate(data.birthdate); // Format the birthdate for the input field
         setForm(data);
       } catch (err) {
-        console.error(err);
-        setError(t('failedFetchAthleteData'));
+        log.error('Error fetching athlete:', err);
+        setMessage(t('failedFetchAthleteData'));
       } finally {
         setLoading(false);
       }
     }
 
     fetchAthlete();
-  }, [params.id, t]);
+  }, [params.id, t, setMessage]);
 
   // Handle input change and reset field error on change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -122,23 +132,16 @@ const EditAthlete = (props: { params: Params }): ReactElement => {
 
       if (response.ok) {
         setSuccess('Athlete updated successfully.');
-        setError(null);
-        setTimeout(() => {
-          router.push('/utilities/athletes'); // Redirect to the list page after 2 seconds
+        redirectTimeoutRef.current = setTimeout(() => {
+          router.push('/utilities/athletes');
         }, 2000);
       } else {
         const errorData = await response.json();
         setError(errorData.error || 'Failed to update athlete.');
-        setTimeout(() => {
-          setError(null);
-        }, 5000);
       }
     } catch (err) {
-      console.error('Error updating athlete:', err);
+      log.error('Error updating athlete:', err);
       setError('An unknown error occurred.');
-      setTimeout(() => {
-        setError(null);
-      }, 5000);
     }
   };
 

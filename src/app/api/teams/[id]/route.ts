@@ -17,7 +17,15 @@ export async function GET(
       include: {
         club: true,
         echelon: true,
-        athletes: { include: { athlete: true } },
+        athletes: {
+          include: {
+            athlete: {
+              include: {
+                preferredNumbers: true, // <-- FALTAVA ISTO
+              },
+            },
+          },
+        },
       },
     });
 

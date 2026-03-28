@@ -1,5 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 import { signOut } from 'next-auth/react';
+import { log } from '@/lib/logger';
 import {
   Avatar,
   Box,
@@ -37,11 +38,9 @@ const Profile = (): ReactElement => {
         if (response.ok) {
           const data: AccountInterface = await response.json();
           if (data.image) setPhotoPreview(`${data.image}`);
-        } else {
-          await response.json();
         }
       } catch (error) {
-        console.error('Error fetching settings:', error);
+        log.error('Error fetching profile:', error);
       }
     };
 

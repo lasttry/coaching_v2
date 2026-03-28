@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { log } from '@/lib/logger';
 import {
   Box,
   Button,
@@ -36,6 +37,7 @@ export default function TeamsPage(): React.JSX.Element {
   const [teams, setTeams] = useState<TeamInterface[]>([]);
   const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
   const [athletes, setAthletes] = useState<AthleteInterface[]>([]);
+  const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [formTeam, setFormTeam] = useState<Partial<TeamInterface>>({
     name: '',
@@ -72,7 +74,9 @@ export default function TeamsPage(): React.JSX.Element {
         setEchelons(echelons);
         setAthletes(athletes);
       } catch (err) {
-        console.error(err);
+        log.error('Error loading teams data:', err);
+      } finally {
+        if (active) setLoading(false);
       }
     };
 
@@ -214,6 +218,7 @@ export default function TeamsPage(): React.JSX.Element {
         <DataGrid
           rows={teams}
           columns={teamColumns}
+          loading={loading}
           getRowId={(row) => Number(row.id)}
           pageSizeOptions={[5, 10]}
           initialState={{

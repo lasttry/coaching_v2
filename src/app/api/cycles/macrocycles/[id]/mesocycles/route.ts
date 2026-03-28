@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: string }>;
 
@@ -27,7 +28,7 @@ export async function GET(
 
     return NextResponse.json(mesocycles, { status: 200 });
   } catch (error) {
-    console.error('Error fetching mesocycles:', error);
+    log.error('Error fetching mesocycles:', error);
     return NextResponse.json({ error: 'Failed to fetch mesocycles.' }, { status: 500 });
   }
 }

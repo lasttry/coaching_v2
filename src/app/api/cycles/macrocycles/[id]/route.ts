@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: string }>;
 
@@ -23,7 +24,7 @@ export async function GET(request: Request, { params }: { params: Params }): Pro
 
     return NextResponse.json(macrocycle);
   } catch (error) {
-    console.error(error);
+    log.error('Error fetching macrocycle:', error);
     return NextResponse.json({ error: 'Failed to fetch macrocycle' }, { status: 500 });
   }
 }
@@ -53,7 +54,7 @@ export async function PUT(request: Request, { params }: { params: Params }): Pro
 
     return NextResponse.json(updatedMacrocycle);
   } catch (error) {
-    console.error(error);
+    log.error('Error updating macrocycle:', error);
     return NextResponse.json({ error: 'Failed to update macrocycle' }, { status: 500 });
   }
 }
@@ -76,7 +77,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Macrocycle deleted successfully' });
   } catch (error) {
-    console.error(error);
+    log.error('Error deleting macrocycle:', error);
     return NextResponse.json({ error: 'Failed to delete macrocycle' }, { status: 500 });
   }
 }

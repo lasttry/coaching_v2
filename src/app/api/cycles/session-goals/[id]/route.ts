@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: string }>;
 
@@ -23,7 +24,7 @@ export async function GET(request: Request, { params }: { params: Params }): Pro
 
     return NextResponse.json(sessionGoal);
   } catch (error) {
-    console.error(error);
+    log.error('Error fetching session goal:', error);
     return NextResponse.json({ error: 'Failed to fetch session goal' }, { status: 500 });
   }
 }
@@ -52,7 +53,7 @@ export async function PUT(request: Request, { params }: { params: Params }): Pro
 
     return NextResponse.json(updatedSessionGoal);
   } catch (error) {
-    console.error(error);
+    log.error('Error updating session goal:', error);
     return NextResponse.json({ error: 'Failed to update session goal' }, { status: 500 });
   }
 }
@@ -75,7 +76,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Session goal deleted successfully' });
   } catch (error) {
-    console.error(error);
+    log.error('Error deleting session goal:', error);
     return NextResponse.json({ error: 'Failed to delete session goal' }, { status: 500 });
   }
 }

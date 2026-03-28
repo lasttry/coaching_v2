@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { log } from '@/lib/logger';
 
 type Params = Promise<{ id: string }>;
 
@@ -112,7 +113,7 @@ export async function POST(
 
     return NextResponse.json({ message: 'Reports processed successfully' }, { status: 200 });
   } catch (error) {
-    console.error('Error processing reports:', error);
-    return NextResponse.json({ error: `Failed to process reports: ${error}` }, { status: 500 });
+    log.error('Error processing reports:', error);
+    return NextResponse.json({ error: 'Failed to process reports' }, { status: 500 });
   }
 }

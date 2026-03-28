@@ -417,7 +417,7 @@ const generateTopRight = async (
   doc.setFontSize(20);
   doc.text(club?.name, startX, startY);
   doc.setFontSize(14);
-  doc.text(club?.season as string, startX, startY + 10);
+  //doc.text(game?.season as string, startX, startY + 10);
 
   const imageSource = bannerImage || club?.image;
 
@@ -425,7 +425,7 @@ const generateTopRight = async (
     try {
       doc.addImage(imageSource, 'PNG', startX + 55, startY - padding, bannerWidth, bannerHeight);
     } catch (err) {
-      console.warn('⚠️ Erro ao carregar imagem do clube:', err);
+      log.warn('Error loading club image:', err);
     }
   }
 
@@ -543,7 +543,11 @@ const generateBottomLeft = async (
               standings.find((row) => row.fpbTeamId === game.opponent?.fpbTeamId) ?? standings[0];
 
             doc.setFontSize(10);
-            doc.text('Classificação FPB (fase regular)', startX, afterLatestResultsY + 6);
+            doc.text(
+              `Classificação FPB (${game.competitionSerie?.name})`,
+              startX,
+              afterLatestResultsY + 6
+            );
 
             autoTable(doc, {
               startY: afterLatestResultsY + 8,
@@ -588,7 +592,7 @@ const generateBottomLeft = async (
     if (!game.opponent) {
       doc.text('Adversário não definido', startX, startY);
     } else if (!game.opponent?.fpbTeamId) {
-      doc.text('FBP do adversário não definido', startX, startY);
+      doc.text('FPB do adversário não definido', startX, startY);
     }
   }
 };
@@ -602,12 +606,9 @@ const generateBottomRight = async (
   doc.setFontSize(12);
   doc.text('Notas', startX, startY);
 
-  const wrappedText = doc.splitTextToSize(
-    game.notes ?? '',
-    doc.internal.pageSize.width / 2 - padding * 2
-  );
-  doc.setFontSize(9);
-  doc.text(wrappedText, startX, startY + 6);
+  const wrappedText = doc.splitTextToSize(game.notes ?? '', doc.internal.pageSize.width - 40);
+  doc.setFontSize(7);
+  doc.text(wrappedText, startX - 5, startY + 6);
 
   // Render game images (2x2 grid)
   const imageSizeWidth = 43;
@@ -617,7 +618,7 @@ const generateBottomRight = async (
   const images = [game.image1, game.image2, game.image3, game.image4];
 
   let imgX = startX;
-  let imgY = startY + 10;
+  let imgY = startY + 6 + wrappedText.length * 3;
 
   images.forEach((img, index) => {
     if (img) {
@@ -629,7 +630,7 @@ const generateBottomRight = async (
       }
     }
 
-    imgX += imageSizeHeigth + imageGap;
+    imgX += imageSizeWidth + imageGap;
 
     if ((index + 1) % 2 === 0) {
       imgX = startX;
@@ -769,8 +770,8 @@ export const generateStatisticsPDF = (game: GameInterface): void => {
     body: statisticsAthletesTableBody(game),
     theme: 'grid',
     headStyles: {
-      fillColor: `backgroundColor`, // Background color (RGB)
-      textColor: `foregroundColor`, // Foreground text color (white)
+      fillColor: game.club?.backgroundColor, // Background color (RGB)
+      textColor: game.club?.foregroundColor, // Foreground text color (white)
       fontStyle: 'bold', // Optional: make the header text bold
     },
     bodyStyles: {

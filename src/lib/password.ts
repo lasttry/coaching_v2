@@ -1,4 +1,5 @@
 import { TextEncoder } from 'util';
+import { log } from './logger';
 
 /**
  * Helper to encode a string as Uint8Array
@@ -76,7 +77,7 @@ export async function validatePassword(
 ): Promise<boolean> {
   const parsedPassword = parseHashedPassword(storedPassword);
   if (!parsedPassword) {
-    console.error('Stored password format is invalid');
+    log.error('Stored password format is invalid');
     return false;
   }
   const hashedPassword = await hashPassword(clearPassword, parsedPassword.salt);

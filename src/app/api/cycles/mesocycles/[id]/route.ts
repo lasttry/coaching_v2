@@ -27,7 +27,7 @@ export async function GET(request: Request, { params }: { params: Params }): Pro
 
     return NextResponse.json(mesocycle);
   } catch (error) {
-    console.error(error);
+    log.error('Error fetching mesocycle:', error);
     return NextResponse.json({ error: 'Failed to fetch mesocycle' }, { status: 500 });
   }
 }
@@ -82,7 +82,7 @@ export async function DELETE(
 
     return NextResponse.json({ message: 'Mesocycle deleted successfully' });
   } catch (error) {
-    console.error(error);
+    log.error('Error deleting mesocycle:', error);
     return NextResponse.json({ error: 'Failed to delete mesocycle' }, { status: 500 });
   }
 }

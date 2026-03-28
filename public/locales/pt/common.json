@@ -1,4 +1,5 @@
 {
+  "loading": "A carregar",
   "echelonsManagement": "Gestão de Escalões",
   "name": "Nome",
   "minAge": "Idade Mínima",
@@ -55,6 +56,7 @@
 
   "team": "equipa",
   "Team": "Equipa",
+  "unknownTeam": "Equipa desconhecida",
   "Teams": "Equipas",
   "teams": "equipas",
   "failedFetchTeams": "Falha ao obter equipas",
@@ -91,6 +93,9 @@
 
   "Games": "Jogos",
   "games": "jogos",
+  "noGamesFound": "Nenhum jogo encontrado",
+  "noCompetition": "Sem Competição",
+  "noSeries": "Sem Série",
   "gamesList": "Lista de todos os jogos",
   "gamesFetchedSorted": "Jogos obtidos e ordenados",
   "gamesFetchErrorLog": "Ocorreu um erro ao obter jogos",
@@ -183,5 +188,73 @@
   "number": "Número",
 
   "Venue": "Pavilhão",
-  "venue": "pavilhão"
+  "venue": "pavilhão",
+
+  "Add": "Adicionar",
+  "Edit": "Editar",
+
+  "manageAccounts": "Gerir contas",
+  "addAccountByEmail": "Adicionar conta por email",
+  "addAccount": "Adicionar conta",
+  "linkedAccounts": "Contas ligadas",
+  "email": "Email",
+
+  "seasonsManagement": "Gestão das Épocas",
+  "addSeason": "Adicionar Época",
+  "start": "Início",
+  "end": "Fim",
+  "current": "Actual",
+
+  "fetchAccountsError": "Falha ao obter as contas do clube",
+  "fetchAccountsNetworkError": "Erro ao obter as contas: {{error}}",
+  "fetchAutocompleteError": "Falha ao obter contas para autocomplete",
+  "fetchAutocompleteNetworkError": "Erro ao obter contas para autocomplete: {{error}}",
+
+  "addAccountFailedWithReason": "Falha ao adicionar a conta ao clube: {{reason}}",
+  "addAccountFailed": "Falha ao adicionar a conta ao clube",
+  "addAccountNetworkError": "Erro ao adicionar a conta ao clube: {{error}}",
+
+  "updateRoleFailed": "Falha ao atualizar o perfil",
+  "updateRoleNetworkError": "Erro ao atualizar o perfil: {{error}}",
+
+  "removeAccountFailedWithReason": "Erro ao remover a conta do clube: {{reason}}",
+  "removeAccountFailed": "Falha ao remover a conta do clube",
+  "removeAccountNetworkError": "Erro ao remover a conta do clube: {{error}}",
+
+  "Equipments": "Equipamentos",
+  "equipment": {
+    "managementTitle": "Gestão de Equipamentos",
+    "add": "Adicionar Equipamento",
+    "edit": "Editar Equipamento",
+
+    "color": "Cor",
+    "number": "Número",
+    "size": "Tamanho",
+
+    "loading": "A carregar equipamentos...",
+    "emptyList": "Nenhum equipamento encontrado.",
+    "unknownColor": "Cor desconhecida",
+
+    "formRequiredFields": "Todos os campos são obrigatórios.",
+    "invalidNumber": "O número introduzido é inválido.",
+
+    "missingClubOrSeason": "Clube ou época não definidos.",
+    "fetchError": "Erro ao carregar equipamentos.",
+    "fetchNetworkError": "Erro de rede ao carregar equipamentos.",
+
+    "createError": "Erro ao criar equipamento.",
+    "createNetworkError": "Erro de rede ao criar equipamento.",
+    "createSuccess": "Equipamento criado com sucesso.",
+
+    "updateError": "Erro ao atualizar equipamento.",
+    "updateNetworkError": "Erro de rede ao atualizar equipamento.",
+    "updateSuccess": "Equipamento atualizado com sucesso.",
+
+    "deleteError": "Erro ao apagar equipamento.",
+    "deleteNetworkError": "Erro de rede ao apagar equipamento.",
+    "deleteSuccess": "Equipamento apagado com sucesso.",
+
+    "confirmDeleteTitle": "Confirmar eliminação",
+    "confirmDeleteMessage": "Tem a certeza que pretende eliminar este equipamento?"
+  }
 }
