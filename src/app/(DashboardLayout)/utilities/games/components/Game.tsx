@@ -13,7 +13,21 @@ import {
   FormControlLabel,
   Checkbox,
   Box,
+  Paper,
+  Chip,
+  IconButton,
+  Tooltip,
+  Divider,
+  Avatar,
 } from '@mui/material';
+import {
+  CheckCircle as CheckCircleIcon,
+  RadioButtonUnchecked as UncheckedIcon,
+  SelectAll as SelectAllIcon,
+  Deselect as DeselectIcon,
+  Add as AddIcon,
+  Delete as DeleteIcon,
+} from '@mui/icons-material';
 import { Grid } from '@mui/material';
 import {
   GameAthleteInterface,
@@ -867,10 +881,11 @@ const GameComponent: React.FC<GameProps> = ({
         </Box>
       </Grid>
 
-      <Grid size={{ xs: 12, sm: 6 }}>
+      {/* Row 1: Game Number, Date/Time */}
+      <Grid size={{ xs: 12, sm: 3 }}>
         <TextField
           fullWidth
-          label={t('number')}
+          label={t('gameNumber')}
           value={game.number ?? ''}
           onChange={handleChange('number')}
           error={!!validationErrors['number']}
@@ -878,8 +893,7 @@ const GameComponent: React.FC<GameProps> = ({
           type="number"
         />
       </Grid>
-
-      <Grid size={{ xs: 12, sm: 6 }}>
+      <Grid size={{ xs: 12, sm: 5 }}>
         <TextField
           fullWidth
           label={t('date')}
@@ -895,47 +909,31 @@ const GameComponent: React.FC<GameProps> = ({
           slotProps={{ inputLabel: { shrink: true } }}
         />
       </Grid>
-
-      <Grid size={{ xs: 12, sm: 6 }}>
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={game.away}
-              onChange={(e) => handleCheckboxChange('away', e.target.checked)}
-            />
+      <Grid size={{ xs: 12, sm: 4 }}>
+        <TextField
+          fullWidth
+          type="number"
+          label={t('opponentResultsCount')}
+          value={game.opponentResultsCount ?? 5}
+          onChange={(e) =>
+            setGame((prev) => ({
+              ...prev,
+              opponentResultsCount: Number(e.target.value) || 5,
+            }))
           }
-          label={t('away')}
+          inputProps={{ min: 0, max: 20 }}
+          helperText={t('opponentResultsCountHelper')}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 6 }}>
-        <FormControl fullWidth>
-          <InputLabel>{t('venue')}</InputLabel>
-          <Select
-            value={game.venueId ?? ''}
-            onChange={(e) =>
-              setGame((prev) => ({
-                ...prev,
-                venueId: Number(e.target.value),
-              }))
-            }
-            label={t('venue')}
-          >
-            {venues.map((venue) => (
-              <MenuItem key={venue.id} value={Number(venue.id)}>
-                {venue.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Grid>
 
+      {/* Row 2: Competition, Series */}
       <Grid size={{ xs: 12, sm: 6 }}>
         <FormControl fullWidth error={!!validationErrors['competition']}>
-          <InputLabel>{t('competition')}</InputLabel>
+          <InputLabel>{t('Competition')}</InputLabel>
           <Select
             value={game.competitionId === undefined ? '' : String(game.competitionId)}
             onChange={handleSelectChange('competition')}
-            label={t('competition')}
+            label={t('Competition')}
           >
             <MenuItem value="">{t('selectCompetition')}</MenuItem>
             {competitions.map((comp) => (
@@ -978,9 +976,11 @@ const GameComponent: React.FC<GameProps> = ({
           )}
         </FormControl>
       </Grid>
+
+      {/* Row 3: Team (Home), Opponent */}
       <Grid size={{ xs: 12, sm: 6 }}>
         <FormControl fullWidth>
-          <InputLabel>{t('team')}</InputLabel>
+          <InputLabel>{t('Team')}</InputLabel>
           <Select
             value={game.teamId ?? ''}
             onChange={(e) =>
@@ -991,7 +991,7 @@ const GameComponent: React.FC<GameProps> = ({
                 gameAthletes: [],
               }))
             }
-            label={t('team')}
+            label={t('Team')}
             disabled={!selectedCompetition}
           >
             <MenuItem value="">{t('selectTeam')}</MenuItem>
@@ -1008,22 +1008,9 @@ const GameComponent: React.FC<GameProps> = ({
           )}
         </FormControl>
       </Grid>
-      <Grid size={{ xs: 12 }}>
-        <TextField
-          fullWidth
-          label={t('notes')}
-          value={game.notes ?? ''}
-          onChange={handleChange('notes')}
-          error={!!validationErrors['notes']}
-          helperText={validationErrors['notes']}
-          multiline
-          rows={4}
-        />
-      </Grid>
-
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <FormControl fullWidth error={!!validationErrors['opponentId']}>
-          <InputLabel>{t('opponent')}</InputLabel>
+          <InputLabel>{t('Opponent')}</InputLabel>
           <Select
             value={game.opponentId ?? ''}
             onChange={(e) =>
@@ -1033,7 +1020,7 @@ const GameComponent: React.FC<GameProps> = ({
                 opponent: opponents.find((opponent) => opponent.id === Number(e.target.value)),
               }))
             }
-            label={t('opponent')}
+            label={t('Opponent')}
             renderValue={(selected) => {
               const opponent = opponents.find((o) => o.id === Number(selected));
               return opponent ? opponent.name : '';
@@ -1041,22 +1028,18 @@ const GameComponent: React.FC<GameProps> = ({
           >
             {opponents.map((opponent) => (
               <MenuItem key={opponent.id} value={opponent.id}>
-                <Grid container alignItems="center" spacing={1}>
-                  <Grid>
-                    {opponent.image && (
-                      <img
-                        src={opponent.image}
-                        alt={opponent.name}
-                        width={30}
-                        height={30}
-                        style={{ borderRadius: '50%' }}
-                      />
-                    )}
-                  </Grid>
-                  <Grid>
-                    <Typography>{opponent.name}</Typography>
-                  </Grid>
-                </Grid>
+                <Box display="flex" alignItems="center" gap={1}>
+                  {opponent.image && (
+                    <img
+                      src={opponent.image}
+                      alt={opponent.name}
+                      width={24}
+                      height={24}
+                      style={{ borderRadius: '50%' }}
+                    />
+                  )}
+                  <Typography>{opponent.name}</Typography>
+                </Box>
               </MenuItem>
             ))}
           </Select>
@@ -1068,141 +1051,302 @@ const GameComponent: React.FC<GameProps> = ({
         </FormControl>
       </Grid>
 
+      {/* Row 4: Away, Venue */}
       <Grid size={{ xs: 12, sm: 3 }}>
-        <TextField
-          fullWidth
-          type="number"
-          label={t('opponentResultsCount')}
-          value={game.opponentResultsCount ?? 5}
-          onChange={(e) =>
-            setGame((prev) => ({
-              ...prev,
-              opponentResultsCount: Number(e.target.value) || 5,
-            }))
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={game.away}
+              onChange={(e) => handleCheckboxChange('away', e.target.checked)}
+            />
           }
-          inputProps={{ min: 0, max: 20 }}
-          helperText={t('opponentResultsCountHelper')}
+          label={t('away')}
         />
       </Grid>
-
-      <Grid size={{ xs: 12 }}>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          label={t('speech')}
-          value={game.speech ?? ''}
-          onChange={(e) =>
-            setGame((prev) => ({
-              ...prev,
-              speech: e.target.value,
-            }))
-          }
-          helperText={t('speechHelper')}
-        />
-      </Grid>
-
-      <Box mt={2}>
-        <Box display="flex" alignItems="center" gap={2} mb={1}>
-          <Typography variant="h6">{t('Athletes')}</Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              fontWeight: 'bold',
-              color:
-                gameAthletes.filter((a) => a.selected).length >= 12 ? 'error.main' : 'primary.main',
-            }}
+      <Grid size={{ xs: 12, sm: 9 }}>
+        <FormControl fullWidth>
+          <InputLabel>{t('Venue')}</InputLabel>
+          <Select
+            value={game.venueId ?? ''}
+            onChange={(e) =>
+              setGame((prev) => ({
+                ...prev,
+                venueId: Number(e.target.value),
+              }))
+            }
+            label={t('Venue')}
           >
-            {gameAthletes.filter((a) => a.selected).length}/12
-          </Typography>
-        </Box>
-        {gameAthletes.map((athlete) => {
-          const assignment = sourceGameEquipments.find((ge) => ge.athleteId === athlete.athleteId);
-          const assignedEquipment = assignment
-            ? equipments.find((eq) => eq.id === assignment.equipmentId)
-            : undefined;
+            {venues.map((venue) => (
+              <MenuItem key={venue.id} value={Number(venue.id)}>
+                {venue.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Grid>
 
-          return (
-            <Grid container key={athlete.athleteId} spacing={2} alignItems="center" sx={{ mb: 1 }}>
-              <Grid size={1}>
-                <Checkbox
-                  checked={athlete.selected ?? false}
-                  disabled={
-                    !athlete.selected && gameAthletes.filter((a) => a.selected).length >= 12
-                  }
-                  onChange={(e) =>
-                    handleAthleteFieldChange(athlete.athleteId, 'selected', e.target.checked)
-                  }
-                />
-              </Grid>
-              <Grid size={3}>
-                <Typography>{athlete.athlete?.name}</Typography>
-              </Grid>
-              <Grid size={2}>
-                <TextField
-                  label="Number"
-                  value={athlete.number}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (/^$|^0$|^00$|^[1-9]$|^[1-9][0-9]$/.test(value)) {
-                      handleAthleteFieldChange(athlete.athleteId, 'number', value);
-                    }
-                  }}
-                  inputProps={{ maxLength: 2 }}
-                  disabled={!athlete.selected}
-                />
-              </Grid>
-              {[1, 2, 3, 4].map((p) => (
-                <Grid size={1} key={p}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={athlete[`period${p}` as keyof GameAthleteInterface] as boolean}
-                        onChange={(e) =>
-                          handleAthleteFieldChange(
-                            athlete.athleteId,
-                            `period${p}` as keyof GameAthleteInterface,
-                            e.target.checked
-                          )
+      {/* Athletes Selection Section */}
+      <Paper elevation={2} sx={{ p: 2, mt: 3 }}>
+        {/* Header with count and actions */}
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Box display="flex" alignItems="center" gap={2}>
+            <Typography variant="h6">{t('Athletes')}</Typography>
+            <Chip
+              label={`${gameAthletes.filter((a) => a.selected).length}/12`}
+              color={gameAthletes.filter((a) => a.selected).length >= 12 ? 'error' : 'primary'}
+              size="small"
+            />
+            {gameAthletes.filter((a) => a.selected).length >= 12 && (
+              <Typography variant="body2" color="success.main" sx={{ fontWeight: 500 }}>
+                {t('convocationFull')}
+              </Typography>
+            )}
+          </Box>
+          <Box display="flex" gap={1}>
+            <Tooltip title={t('selectAll')}>
+              <span>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  startIcon={<SelectAllIcon />}
+                  disabled={gameAthletes.filter((a) => a.selected).length >= 12}
+                  onClick={() => {
+                    const selectedCount = gameAthletes.filter((a) => a.selected).length;
+                    const remaining = 12 - selectedCount;
+                    let added = 0;
+                    setGameAthletes((prev) =>
+                      prev.map((a) => {
+                        if (!a.selected && added < remaining) {
+                          added++;
+                          return { ...a, selected: true };
                         }
-                        disabled={!athlete.selected}
-                      />
-                    }
-                    label={`P${p}`}
-                  />
-                </Grid>
-              ))}
-              <Grid size={2}>
-                {assignedEquipment ? (
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Box
+                        return a;
+                      })
+                    );
+                  }}
+                >
+                  {t('selectAll')}
+                </Button>
+              </span>
+            </Tooltip>
+            <Tooltip title={t('deselectAll')}>
+              <Button
+                size="small"
+                variant="outlined"
+                color="secondary"
+                startIcon={<DeselectIcon />}
+                onClick={() => {
+                  setGameAthletes((prev) =>
+                    prev.map((a) => ({
+                      ...a,
+                      selected: false,
+                      number: '0',
+                      period1: false,
+                      period2: false,
+                      period3: false,
+                      period4: false,
+                    }))
+                  );
+                  setGame((prev) => ({ ...prev, gameEquipments: [] }));
+                }}
+              >
+                {t('deselectAll')}
+              </Button>
+            </Tooltip>
+          </Box>
+        </Box>
+
+        <Divider sx={{ mb: 2 }} />
+
+        {/* Selected Athletes - sorted by birthdate (oldest first) then alphabetically */}
+        {gameAthletes.filter((a) => a.selected).length > 0 && (
+          <Box mb={3}>
+            <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+              {t('selectedAthletes')} ({gameAthletes.filter((a) => a.selected).length})
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              {gameAthletes
+                .filter((a) => a.selected)
+                .sort((a, b) => {
+                  const dateA = a.athlete?.birthdate ? new Date(a.athlete.birthdate).getTime() : 0;
+                  const dateB = b.athlete?.birthdate ? new Date(b.athlete.birthdate).getTime() : 0;
+                  if (dateA !== dateB) return dateA - dateB;
+                  return (a.athlete?.name || '').localeCompare(b.athlete?.name || '');
+                })
+                .map((athlete) => {
+                  const assignment = sourceGameEquipments.find(
+                    (ge) => ge.athleteId === athlete.athleteId
+                  );
+                  const assignedEquipment = assignment
+                    ? equipments.find((eq) => eq.id === assignment.equipmentId)
+                    : undefined;
+
+                  return (
+                    <Paper
+                      key={athlete.athleteId}
+                      variant="outlined"
                       sx={{
-                        width: 16,
-                        height: 16,
-                        backgroundColor:
-                          assignedEquipment.colorHex ||
-                          assignedEquipment.equipmentColor?.colorHex ||
-                          '#000000',
-                        borderRadius: '3px',
-                        border: '1px solid #ccc',
-                        flexShrink: 0,
+                        p: 1.5,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 2,
+                        backgroundColor: 'action.selected',
+                        '&:hover': { backgroundColor: 'action.hover' },
                       }}
-                    />
-                    <Typography variant="body2">
-                      {assignedEquipment.color || assignedEquipment.equipmentColor?.color} #
-                      {assignedEquipment.number} ({assignedEquipment.size})
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    {t('equipment.notAssigned')}
-                  </Typography>
-                )}
-              </Grid>
-            </Grid>
-          );
-        })}
-      </Box>
+                    >
+                      {/* Remove button */}
+                      <Tooltip title={t('remove')}>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          onClick={() =>
+                            handleAthleteFieldChange(athlete.athleteId, 'selected', false)
+                          }
+                        >
+                          <CheckCircleIcon />
+                        </IconButton>
+                      </Tooltip>
+
+                      {/* Avatar with number */}
+                      <Avatar
+                        sx={{
+                          width: 36,
+                          height: 36,
+                          bgcolor: 'primary.main',
+                          fontSize: '0.9rem',
+                        }}
+                      >
+                        {athlete.number || '?'}
+                      </Avatar>
+
+                      {/* Name */}
+                      <Typography sx={{ minWidth: 150, fontWeight: 500 }}>
+                        {athlete.athlete?.name}
+                      </Typography>
+
+                      {/* Number input */}
+                      <TextField
+                        size="small"
+                        label="#"
+                        value={athlete.number}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (/^$|^0$|^00$|^[1-9]$|^[1-9][0-9]$/.test(value)) {
+                            handleAthleteFieldChange(athlete.athleteId, 'number', value);
+                          }
+                        }}
+                        inputProps={{ maxLength: 2 }}
+                        sx={{ width: 60 }}
+                      />
+
+                      {/* Period chips */}
+                      <Box display="flex" gap={0.5}>
+                        {[1, 2, 3, 4].map((p) => (
+                          <Chip
+                            key={p}
+                            label={`P${p}`}
+                            size="small"
+                            color={
+                              athlete[`period${p}` as keyof GameAthleteInterface]
+                                ? 'primary'
+                                : 'default'
+                            }
+                            variant={
+                              athlete[`period${p}` as keyof GameAthleteInterface]
+                                ? 'filled'
+                                : 'outlined'
+                            }
+                            onClick={() =>
+                              handleAthleteFieldChange(
+                                athlete.athleteId,
+                                `period${p}` as keyof GameAthleteInterface,
+                                !athlete[`period${p}` as keyof GameAthleteInterface]
+                              )
+                            }
+                            sx={{ cursor: 'pointer' }}
+                          />
+                        ))}
+                      </Box>
+
+                      {/* Equipment */}
+                      <Box sx={{ ml: 'auto' }}>
+                        {assignedEquipment ? (
+                          <Chip
+                            size="small"
+                            icon={
+                              <Box
+                                sx={{
+                                  width: 12,
+                                  height: 12,
+                                  backgroundColor:
+                                    assignedEquipment.colorHex ||
+                                    assignedEquipment.equipmentColor?.colorHex ||
+                                    '#000000',
+                                  borderRadius: '2px',
+                                  ml: 0.5,
+                                }}
+                              />
+                            }
+                            label={`#${assignedEquipment.number} (${assignedEquipment.size})`}
+                          />
+                        ) : (
+                          <Typography variant="caption" color="text.secondary">
+                            {t('equipment.notAssigned')}
+                          </Typography>
+                        )}
+                      </Box>
+                    </Paper>
+                  );
+                })}
+            </Box>
+          </Box>
+        )}
+
+        {/* Available Athletes - sorted by birthdate (oldest first) then alphabetically */}
+        {gameAthletes.filter((a) => !a.selected).length > 0 && (
+          <Box>
+            <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
+              {t('availableAthletes')} ({gameAthletes.filter((a) => !a.selected).length})
+            </Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {gameAthletes
+                .filter((a) => !a.selected)
+                .sort((a, b) => {
+                  const dateA = a.athlete?.birthdate ? new Date(a.athlete.birthdate).getTime() : 0;
+                  const dateB = b.athlete?.birthdate ? new Date(b.athlete.birthdate).getTime() : 0;
+                  if (dateA !== dateB) return dateA - dateB;
+                  return (a.athlete?.name || '').localeCompare(b.athlete?.name || '');
+                })
+                .map((athlete) => (
+                  <Chip
+                    key={athlete.athleteId}
+                    icon={<UncheckedIcon />}
+                    label={athlete.athlete?.name}
+                    variant="outlined"
+                    disabled={gameAthletes.filter((a) => a.selected).length >= 12}
+                    onClick={() => {
+                      if (gameAthletes.filter((a) => a.selected).length < 12) {
+                        handleAthleteFieldChange(athlete.athleteId, 'selected', true);
+                      }
+                    }}
+                    sx={{
+                      cursor:
+                        gameAthletes.filter((a) => a.selected).length >= 12
+                          ? 'not-allowed'
+                          : 'pointer',
+                      '&:hover': {
+                        backgroundColor:
+                          gameAthletes.filter((a) => a.selected).length >= 12
+                            ? undefined
+                            : 'action.hover',
+                      },
+                    }}
+                  />
+                ))}
+            </Box>
+          </Box>
+        )}
+      </Paper>
 
       <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
         <Typography variant="h6">{t('equipment.title')}</Typography>
@@ -1265,52 +1409,138 @@ const GameComponent: React.FC<GameProps> = ({
           </Grid>
         </Grid>
       </Grid>
+      {/* Notes & Speech Section */}
       <Grid size={{ xs: 12 }}>
-        <Typography variant="h6">Images</Typography>
+        <Divider sx={{ my: 2 }} />
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          {t('notes')}
+        </Typography>
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <TextField
+          fullWidth
+          label={t('notes')}
+          value={game.notes ?? ''}
+          onChange={handleChange('notes')}
+          error={!!validationErrors['notes']}
+          helperText={validationErrors['notes']}
+          multiline
+          rows={3}
+        />
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <TextField
+          fullWidth
+          multiline
+          rows={3}
+          label={t('speech')}
+          value={game.speech ?? ''}
+          onChange={(e) =>
+            setGame((prev) => ({
+              ...prev,
+              speech: e.target.value,
+            }))
+          }
+          helperText={t('speechHelper')}
+        />
+      </Grid>
 
-        {[1, 2, 3, 4].map((idx) => {
-          const imageKey = `image${idx}` as keyof GameInterface;
-          return (
-            <Box key={idx} sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Button variant="outlined" component="label">
-                Upload image {idx}
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={(e) => {
-                    const file = e.target.files?.[0];
-                    if (!file) return;
-
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      setGame((prev) => ({
-                        ...prev,
-                        [imageKey]: reader.result as string,
-                      }));
-                    };
-                    reader.readAsDataURL(file);
-                  }}
-                />
-              </Button>
-
-              {game[imageKey] && (
-                <img
-                  src={(game[imageKey] as string) || ''}
-                  alt={`image ${idx}`}
-                  width={128}
-                  height={90}
-                  style={{
-                    marginLeft: '10px',
-                    objectFit: 'cover',
-                    borderRadius: '4px',
-                    border: '1px solid #ccc',
-                  }}
-                />
-              )}
-            </Box>
-          );
-        })}
+      {/* Images Section */}
+      <Grid size={{ xs: 12 }}>
+        <Divider sx={{ my: 2 }} />
+        <Typography variant="h6" sx={{ mb: 2 }}>
+          {t('images')}
+        </Typography>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 2,
+          }}
+        >
+          {[1, 2, 3, 4].map((idx) => {
+            const imageKey = `image${idx}` as keyof GameInterface;
+            const hasImage = !!game[imageKey];
+            return (
+              <Paper
+                key={idx}
+                variant="outlined"
+                sx={{
+                  aspectRatio: '4/3',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  backgroundColor: hasImage ? 'transparent' : 'action.hover',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                  },
+                }}
+              >
+                {hasImage ? (
+                  <>
+                    <img
+                      src={(game[imageKey] as string) || ''}
+                      alt={`image ${idx}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                    <IconButton
+                      size="small"
+                      sx={{
+                        position: 'absolute',
+                        top: 4,
+                        right: 4,
+                        backgroundColor: 'rgba(255,255,255,0.9)',
+                        '&:hover': { backgroundColor: 'error.light', color: 'white' },
+                      }}
+                      onClick={() => setGame((prev) => ({ ...prev, [imageKey]: null }))}
+                    >
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </>
+                ) : (
+                  <Button component="label" sx={{ width: '100%', height: '100%' }}>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        color: 'text.secondary',
+                      }}
+                    >
+                      <AddIcon sx={{ fontSize: 32, mb: 0.5 }} />
+                      <Typography variant="caption">{t('imageUpload')}</Typography>
+                    </Box>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setGame((prev) => ({
+                            ...prev,
+                            [imageKey]: reader.result as string,
+                          }));
+                        };
+                        reader.readAsDataURL(file);
+                      }}
+                    />
+                  </Button>
+                )}
+              </Paper>
+            );
+          })}
+        </Box>
       </Grid>
       <Grid size={{ xs: 12 }} sx={{ display: 'flex', justifyContent: 'center' }}>
         <Button variant="contained" onClick={handleUpdateInfos}>

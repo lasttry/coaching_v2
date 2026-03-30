@@ -1,3 +1,26 @@
+/**
+ * TEMPLATE: Simple CRUD Page
+ *
+ * This template demonstrates the standard pattern for simple entity management pages.
+ * Copy this file and replace the placeholders to create a new page.
+ *
+ * Features:
+ * - DataGrid for listing with sorting, pagination, and filtering
+ * - Dialog for create/edit operations
+ * - Confirmation dialog for delete
+ * - Snackbar notifications for success/error messages
+ * - Full i18n support
+ * - Memoized columns and callbacks for performance
+ *
+ * Placeholders to replace:
+ * - EntityInterface: Your entity type interface
+ * - Entity/entity: Entity name (e.g., Echelon/echelon, Opponent/opponent)
+ * - /api/entities: Your API endpoint
+ * - initialEntity: Default values for new entity
+ * - Form fields in the dialog
+ * - DataGrid columns
+ */
+
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
@@ -13,96 +36,118 @@ import {
   IconButton,
   Alert,
   Snackbar,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  // Add more MUI components as needed:
+  // FormControl, InputLabel, Select, MenuItem, Chip, Avatar, Stack
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
-import { EchelonInterface } from '@/types/echelons/types';
-import { Gender } from '@prisma/client';
 import { log } from '@/lib/logger';
 
-const initialEchelon: EchelonInterface = {
+// ============================================================================
+// TYPES
+// ============================================================================
+
+interface EntityInterface {
+  id?: number | null;
+  name: string;
+  // Add your entity fields here
+}
+
+// ============================================================================
+// CONSTANTS
+// ============================================================================
+
+const initialEntity: EntityInterface = {
   id: null,
   name: '',
-  description: '',
-  minAge: null,
-  maxAge: null,
-  gender: null,
+  // Set default values for your fields
 };
 
-export default function EchelonsPage(): React.JSX.Element {
+// ============================================================================
+// COMPONENT
+// ============================================================================
+
+export default function EntitiesPage(): React.JSX.Element {
   const { t } = useTranslation();
 
-  // State
-  const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
+  // --------------------------------------------------------------------------
+  // STATE
+  // --------------------------------------------------------------------------
+
+  const [entities, setEntities] = useState<EntityInterface[]>([]);
   const [loading, setLoading] = useState(true);
-  const [genderFilter, setGenderFilter] = useState<Gender | ''>('');
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingEchelon, setEditingEchelon] = useState<EchelonInterface | null>(null);
-  const [formData, setFormData] = useState<EchelonInterface>(initialEchelon);
+  const [editingEntity, setEditingEntity] = useState<EntityInterface | null>(null);
+  const [formData, setFormData] = useState<EntityInterface>(initialEntity);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Fetch data
+  // --------------------------------------------------------------------------
+  // DATA FETCHING
+  // --------------------------------------------------------------------------
+
   useEffect(() => {
-    const fetchEchelons = async (): Promise<void> => {
+    const fetchEntities = async (): Promise<void> => {
       try {
-        const res = await fetch('/api/echelons');
-        if (!res.ok) throw new Error('Failed to fetch echelons');
+        const res = await fetch('/api/entities');
+        if (!res.ok) throw new Error('Failed to fetch');
         const data = await res.json();
-        setEchelons(data);
+        setEntities(data);
       } catch (err) {
-        log.error('Error fetching echelons:', err);
-        setErrorMessage(t('failedFetchEchelons'));
+        log.error('Error fetching entities:', err);
+        setErrorMessage(t('fetchError'));
       } finally {
         setLoading(false);
       }
     };
-    fetchEchelons();
+    fetchEntities();
   }, [t]);
 
-  // Handlers
-  const handleOpenDialog = useCallback((echelon?: EchelonInterface): void => {
-    if (echelon) {
-      setEditingEchelon(echelon);
-      setFormData(echelon);
+  // --------------------------------------------------------------------------
+  // HANDLERS
+  // --------------------------------------------------------------------------
+
+  const handleOpenDialog = useCallback((entity?: EntityInterface): void => {
+    if (entity) {
+      setEditingEntity(entity);
+      setFormData(entity);
     } else {
-      setEditingEchelon(null);
-      setFormData(initialEchelon);
+      setEditingEntity(null);
+      setFormData(initialEntity);
     }
     setDialogOpen(true);
   }, []);
 
   const handleCloseDialog = useCallback((): void => {
     setDialogOpen(false);
-    setEditingEchelon(null);
-    setFormData(initialEchelon);
+    setEditingEntity(null);
+    setFormData(initialEntity);
   }, []);
 
   const handleSave = async (): Promise<void> => {
-    if (!formData.name?.trim() || !formData.minAge || !formData.gender) {
+    // Validation
+    if (!formData.name?.trim()) {
       setErrorMessage(t('missingFields'));
       return;
     }
 
     try {
       let res: Response;
-      if (editingEchelon?.id) {
-        res = await fetch(`/api/echelons/${editingEchelon.id}`, {
+      if (editingEntity?.id) {
+        // UPDATE
+        res = await fetch(`/api/entities/${editingEntity.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
         });
       } else {
-        res = await fetch('/api/echelons', {
+        // CREATE
+        res = await fetch('/api/entities', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData),
@@ -110,9 +155,10 @@ export default function EchelonsPage(): React.JSX.Element {
       }
 
       if (!res.ok) throw new Error(await res.text());
-      const saved: EchelonInterface = await res.json();
+      const saved: EntityInterface = await res.json();
 
-      setEchelons((prev) => {
+      // Update state
+      setEntities((prev) => {
         const exists = prev.some((e) => e.id === saved.id);
         if (exists) {
           return prev.map((e) => (e.id === saved.id ? saved : e));
@@ -120,13 +166,11 @@ export default function EchelonsPage(): React.JSX.Element {
         return [...prev, saved];
       });
 
-      setSuccessMessage(
-        t('echelonSuccess', { status: editingEchelon ? t('updated') : t('created') })
-      );
+      setSuccessMessage(editingEntity ? t('updated') : t('created'));
       handleCloseDialog();
     } catch (err) {
-      log.error('Error saving echelon:', err);
-      setErrorMessage(t('echelonFailed', { status: editingEchelon ? t('update') : t('create') }));
+      log.error('Error saving entity:', err);
+      setErrorMessage(t('saveError'));
     }
   };
 
@@ -136,44 +180,40 @@ export default function EchelonsPage(): React.JSX.Element {
     setDeleteConfirmOpen(true);
   }, []);
 
-  // Filtered echelons based on gender filter
-  const filteredEchelons = useMemo(() => {
-    if (genderFilter === '') {
-      return echelons;
-    }
-    return echelons.filter((e) => e.gender === genderFilter);
-  }, [echelons, genderFilter]);
-
   const handleDelete = async (): Promise<void> => {
     if (!deleteId) return;
 
     try {
-      const res = await fetch(`/api/echelons/${deleteId}`, { method: 'DELETE' });
+      const res = await fetch(`/api/entities/${deleteId}`, { method: 'DELETE' });
       if (!res.ok) throw new Error(await res.text());
 
-      setEchelons((prev) => prev.filter((e) => e.id !== deleteId));
-      setSuccessMessage(t('echelonSuccess', { status: t('deleted') }));
+      setEntities((prev) => prev.filter((e) => e.id !== deleteId));
+      setSuccessMessage(t('deleted'));
       setDeleteConfirmOpen(false);
       setDeleteId(null);
     } catch (err) {
-      log.error('Error deleting echelon:', err);
-      setErrorMessage(t('echelonFailed', { status: t('delete') }));
+      log.error('Error deleting entity:', err);
+      setErrorMessage(t('deleteError'));
     }
   };
 
-  // DataGrid columns
+  // --------------------------------------------------------------------------
+  // DATAGRID COLUMNS
+  // --------------------------------------------------------------------------
+
   const columns: GridColDef[] = useMemo(
     () => [
+      // Define your columns here
       { field: 'name', headerName: t('name'), flex: 1 },
-      { field: 'minAge', headerName: t('minAge'), width: 100 },
-      { field: 'maxAge', headerName: t('maxAge'), width: 100 },
-      {
-        field: 'gender',
-        headerName: t('gender'),
-        width: 120,
-        valueGetter: (value: string) => t(value || 'unknown'),
-      },
-      { field: 'description', headerName: t('description'), flex: 1 },
+      // Example with custom renderer:
+      // {
+      //   field: 'image',
+      //   headerName: t('logo'),
+      //   width: 80,
+      //   sortable: false,
+      //   renderCell: (params) => <Avatar src={params.value as string} />,
+      // },
+      // Actions column (always last)
       {
         field: 'actions',
         headerName: t('actions'),
@@ -182,7 +222,7 @@ export default function EchelonsPage(): React.JSX.Element {
         filterable: false,
         renderCell: (params) => (
           <>
-            <IconButton onClick={() => handleOpenDialog(params.row as EchelonInterface)}>
+            <IconButton onClick={() => handleOpenDialog(params.row as EntityInterface)}>
               <EditIcon />
             </IconButton>
             <IconButton color="error" onClick={() => confirmDelete(params.row.id)}>
@@ -195,9 +235,13 @@ export default function EchelonsPage(): React.JSX.Element {
     [t, handleOpenDialog, confirmDelete]
   );
 
+  // --------------------------------------------------------------------------
+  // RENDER
+  // --------------------------------------------------------------------------
+
   return (
     <Box>
-      {/* Notifications */}
+      {/* Error Notification */}
       <Snackbar
         open={!!errorMessage}
         autoHideDuration={5000}
@@ -208,6 +252,8 @@ export default function EchelonsPage(): React.JSX.Element {
           {errorMessage}
         </Alert>
       </Snackbar>
+
+      {/* Success Notification */}
       <Snackbar
         open={!!successMessage}
         autoHideDuration={3000}
@@ -219,37 +265,18 @@ export default function EchelonsPage(): React.JSX.Element {
         </Alert>
       </Snackbar>
 
-      {/* Header */}
+      {/* Page Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h5">{t('echelonsManagement')}</Typography>
+        <Typography variant="h5">{t('entitiesManagement')}</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenDialog()}>
-          {t('addNewEchelon')}
+          {t('addEntity')}
         </Button>
-      </Box>
-
-      {/* Gender Filter */}
-      <Box sx={{ mb: 2 }}>
-        <TextField
-          select
-          size="small"
-          label={t('gender')}
-          value={genderFilter}
-          onChange={(e) => setGenderFilter(e.target.value as Gender | '')}
-          sx={{ minWidth: 200 }}
-        >
-          <MenuItem value="">{t('all')}</MenuItem>
-          {Object.entries(Gender).map(([key, value]) => (
-            <MenuItem key={key} value={value}>
-              {t(key)}
-            </MenuItem>
-          ))}
-        </TextField>
       </Box>
 
       {/* DataGrid */}
       <Box sx={{ height: 500, width: '100%' }}>
         <DataGrid
-          rows={filteredEchelons}
+          rows={entities}
           columns={columns}
           loading={loading}
           getRowId={(row) => row.id!}
@@ -257,16 +284,17 @@ export default function EchelonsPage(): React.JSX.Element {
           localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
           initialState={{
             pagination: { paginationModel: { pageSize: 10 } },
-            sorting: { sortModel: [{ field: 'minAge', sort: 'asc' }] },
+            sorting: { sortModel: [{ field: 'name', sort: 'asc' }] },
           }}
         />
       </Box>
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} fullWidth maxWidth="sm">
-        <DialogTitle>{editingEchelon ? t('updateEchelon') : t('createEchelon')}</DialogTitle>
+        <DialogTitle>{editingEntity ? t('editEntity') : t('addEntity')}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+            {/* Add your form fields here */}
             <TextField
               label={t('name')}
               value={formData.name}
@@ -274,47 +302,7 @@ export default function EchelonsPage(): React.JSX.Element {
               required
               fullWidth
             />
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <TextField
-                label={t('minAge')}
-                type="number"
-                value={formData.minAge ?? ''}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    minAge: e.target.value === '' ? null : Number(e.target.value),
-                  })
-                }
-                required
-                fullWidth
-              />
-              <TextField
-                label={t('maxAge')}
-                type="number"
-                value={formData.maxAge ?? ''}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    maxAge: e.target.value === '' ? null : Number(e.target.value),
-                  })
-                }
-                fullWidth
-              />
-            </Box>
-            <FormControl fullWidth required>
-              <InputLabel>{t('gender')}</InputLabel>
-              <Select
-                value={formData.gender ?? ''}
-                label={t('gender')}
-                onChange={(e) => setFormData({ ...formData, gender: e.target.value as Gender })}
-              >
-                {Object.entries(Gender).map(([key, value]) => (
-                  <MenuItem key={key} value={value}>
-                    {t(key)}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {/* Example of optional field:
             <TextField
               label={t('description')}
               value={formData.description ?? ''}
@@ -323,6 +311,7 @@ export default function EchelonsPage(): React.JSX.Element {
               rows={2}
               fullWidth
             />
+            */}
           </Box>
         </DialogContent>
         <DialogActions>

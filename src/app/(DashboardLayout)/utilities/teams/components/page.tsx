@@ -30,8 +30,11 @@ import { TeamInterface } from '@/types/teams/types';
 import { EchelonInterface } from '@/types/echelons/types';
 import { SelectChangeEvent } from '@mui/material/Select';
 import { useMessage } from '@/hooks/useMessage';
+import { useTranslation } from 'react-i18next';
+import '@/lib/i18n.client';
 
 const TeamsPage = (): ReactElement => {
+  const { t } = useTranslation();
   const { data: session } = useSession();
 
   const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
@@ -176,8 +179,12 @@ const TeamsPage = (): ReactElement => {
               }}
             >
               <Typography variant="h6">{team.name}</Typography>
-              <Typography variant="body2">Type: {team.type}</Typography>
-              <Typography variant="body2">Echelon: {team.echelon?.name}</Typography>
+              <Typography variant="body2">
+                {t('type')}: {team.type}
+              </Typography>
+              <Typography variant="body2">
+                {t('Echelon')}: {team.echelon?.name}
+              </Typography>
             </Box>
           </Grid>
         ))}
@@ -185,16 +192,18 @@ const TeamsPage = (): ReactElement => {
 
       {/* Add Team Dialog */}
       <Button variant="contained" onClick={() => setDialogOpen(true)} sx={{ mt: 3 }}>
-        Add Team
+        {t('add')} {t('Team')}
       </Button>
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
-        <DialogTitle>Add New Team</DialogTitle>
+        <DialogTitle>
+          {t('add')} {t('Team')}
+        </DialogTitle>
         <DialogContent>
           {/* Team Name */}
           <TextField
             fullWidth
             margin="dense"
-            label="Team Name"
+            label={t('name')}
             name="name"
             value={form.name}
             onChange={handleFormChange}
@@ -202,38 +211,38 @@ const TeamsPage = (): ReactElement => {
 
           {/* Team Type */}
           <FormControl fullWidth margin="dense">
-            <InputLabel>Type</InputLabel>
+            <InputLabel>{t('type')}</InputLabel>
             <Select name="type" value={form.type} onChange={handleFormChange} displayEmpty>
-              <MenuItem value="A">Team A</MenuItem>
-              <MenuItem value="B">Team B</MenuItem>
-              <MenuItem value="OTHER">Other</MenuItem>
+              <MenuItem value="A">{t('teamA')}</MenuItem>
+              <MenuItem value="B">{t('teamB')}</MenuItem>
+              <MenuItem value="OTHER">{t('other')}</MenuItem>
             </Select>
           </FormControl>
 
           {/* Echelon Dropdown */}
           <FormControl fullWidth margin="dense">
-            <InputLabel>Echelon</InputLabel>
+            <InputLabel>{t('Echelon')}</InputLabel>
             <Select
               name="echelonId"
-              value={form.echelonId || ''} // Ensure value is a string or number, not null
+              value={form.echelonId || ''}
               onChange={handleFormChange}
               displayEmpty
             >
               <MenuItem value="">
-                <em>None</em> {/* Placeholder for unselected state */}
+                <em>{t('none')}</em>
               </MenuItem>
               {echelons.map((echelon) => (
                 <MenuItem key={echelon.id ?? 0} value={echelon.id ?? ''}>
-                  {echelon.name} (Max Age: {echelon.maxAge})
+                  {echelon.name} ({t('maxAge')}: {echelon.maxAge})
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={() => setDialogOpen(false)}>{t('Cancel')}</Button>
           <Button variant="contained" onClick={handleCreateTeam}>
-            Save
+            {t('Save')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -242,14 +251,14 @@ const TeamsPage = (): ReactElement => {
       {selectedTeam && (
         <>
           <Typography variant="h5" mt={4}>
-            Add Athletes to {selectedTeam.name}
+            {t('addAthletesTo')} {selectedTeam.name}
           </Typography>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Birthdate</TableCell>
-                <TableCell>Actions</TableCell>
+                <TableCell>{t('name')}</TableCell>
+                <TableCell>{t('birthdate')}</TableCell>
+                <TableCell>{t('actions')}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -263,7 +272,7 @@ const TeamsPage = (): ReactElement => {
                       onClick={() => handleAddAthlete(athlete.id)}
                       disabled={selectedTeam.athletes.some((a) => a.athleteId === athlete.id)}
                     >
-                      Add
+                      {t('Add')}
                     </Button>
                   </TableCell>
                 </TableRow>

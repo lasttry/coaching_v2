@@ -8,6 +8,9 @@ import {
   IconTrophy,
   type TablerIcon,
   IconShirtSport,
+  IconSwords,
+  IconBuildingCommunity,
+  IconRefresh,
 } from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
@@ -29,18 +32,13 @@ type MenuItem = {
   icon?: TablerIcon;
   href?: string;
   onClick?: () => void;
+  children?: MenuItem[];
 };
 
 const MenuItemsComponent = (): MenuItem[] => {
   const { t } = useTranslation();
 
   const menuItems: MenuItem[] = [
-    {
-      id: uniqueId(),
-      title: t('tests'),
-      icon: IconBallBasketball,
-      href: '/utilities/test',
-    },
     { navlabel: true, subheader: t('Games') },
     {
       id: uniqueId(),
@@ -48,25 +46,13 @@ const MenuItemsComponent = (): MenuItem[] => {
       icon: IconBallBasketball,
       href: '/utilities/games',
     },
+    {
+      id: uniqueId(),
+      title: t('Opponents'),
+      icon: IconSwords,
+      href: '/utilities/opponents',
+    },
     { navlabel: true, subheader: t('Practices') },
-    {
-      id: uniqueId(),
-      title: t('Microciclos'),
-      icon: IconBallBasketball,
-      href: '/utilities/cycles/microcycles',
-    },
-    {
-      id: uniqueId(),
-      title: t('Mesociclos'),
-      icon: IconBallBasketball,
-      href: '/utilities/cycles/mesocycles',
-    },
-    {
-      id: uniqueId(),
-      title: t('Macrociclos'),
-      icon: IconBallBasketball,
-      href: '/utilities/cycles/macrocycles',
-    },
     {
       id: uniqueId(),
       title: t('Drills'),
@@ -74,7 +60,32 @@ const MenuItemsComponent = (): MenuItem[] => {
       href: '',
       onClick: openDrillsPage,
     },
-    { navlabel: true, subheader: t('Settings') },
+    {
+      id: uniqueId(),
+      title: t('Cycles'),
+      icon: IconRefresh,
+      children: [
+        {
+          id: uniqueId(),
+          title: t('Microciclos'),
+          icon: IconBallBasketball,
+          href: '/utilities/cycles/microcycles',
+        },
+        {
+          id: uniqueId(),
+          title: t('Mesociclos'),
+          icon: IconBallBasketball,
+          href: '/utilities/cycles/mesocycles',
+        },
+        {
+          id: uniqueId(),
+          title: t('Macrociclos'),
+          icon: IconBallBasketball,
+          href: '/utilities/cycles/macrocycles',
+        },
+      ],
+    },
+    { navlabel: true, subheader: t('Club') },
     {
       id: uniqueId(),
       title: t('Athletes'),
@@ -83,17 +94,17 @@ const MenuItemsComponent = (): MenuItem[] => {
     },
     {
       id: uniqueId(),
-      title: t('Opponents'),
-      icon: IconUsersGroup,
-      href: '/utilities/opponents',
-    },
-    {
-      id: uniqueId(),
       title: t('Teams'),
       icon: IconUsersGroup,
       href: '/utilities/teams',
     },
-
+    {
+      id: uniqueId(),
+      title: t('Equipments'),
+      icon: IconShirtSport,
+      href: '/utilities/equipments',
+    },
+    { navlabel: true, subheader: t('Settings') },
     {
       id: uniqueId(),
       title: t('Echelons'),
@@ -106,17 +117,11 @@ const MenuItemsComponent = (): MenuItem[] => {
       icon: IconTrophy,
       href: '/utilities/competitions',
     },
-    {
-      id: uniqueId(),
-      title: t('Equipments'),
-      icon: IconShirtSport,
-      href: '/utilities/equipments',
-    },
     { navlabel: true, subheader: t('Configurations') },
     {
       id: uniqueId(),
-      title: t('Club'),
-      icon: IconTypography,
+      title: t('ClubSettings'),
+      icon: IconBuildingCommunity,
       href: '/utilities/club',
     },
     {

@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { Box, List } from '@mui/material';
 import NavItem from './NavItem';
 import NavGroup from './NavGroup/NavGroup';
+import NavCollapse from './NavCollapse';
 
 type SidebarItemsProps = {
   toggleMobileSidebar?: () => void;
@@ -17,12 +18,10 @@ const SidebarItems = ({ toggleMobileSidebar }: SidebarItemsProps): ReactElement 
     <Box sx={{ px: '20px' }}>
       <List sx={{ pt: 0 }} className="sidebarNav" component="div">
         {MenuItemsComponent().map((item) => {
-          // {/********SubHeader**********/}
           if (item.subheader) {
             return <NavGroup item={item} key={item.subheader} />;
-
-            // {/********If Sub Menu**********/}
-            /* eslint no-else-return: "off" */
+          } else if (item.children && item.children.length > 0) {
+            return <NavCollapse item={item} key={item.id} pathDirect={pathDirect ?? ''} />;
           } else {
             return (
               <NavItem
@@ -30,7 +29,7 @@ const SidebarItems = ({ toggleMobileSidebar }: SidebarItemsProps): ReactElement 
                 key={item.id}
                 pathDirect={pathDirect ?? ''}
                 onClick={(e) => {
-                  e.preventDefault(); // optional: depends on your need
+                  e.preventDefault();
                   toggleMobileSidebar?.();
                 }}
               />

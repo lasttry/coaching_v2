@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -17,9 +17,12 @@ import {
   Snackbar,
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { ptBR } from '@mui/x-data-grid/locales';
 import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { OpponentInterface } from '@/types/opponent/types';
 import { log } from '@/lib/logger';
+import { useTranslation } from 'react-i18next';
+import '@/lib/i18n.client';
 
 const initialOpponent: OpponentInterface = {
   name: '',
@@ -30,6 +33,7 @@ const initialOpponent: OpponentInterface = {
 };
 
 export default function OpponentManagement(): React.JSX.Element {
+  const { t } = useTranslation();
   const [opponents, setOpponents] = useState<OpponentInterface[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -108,16 +112,16 @@ export default function OpponentManagement(): React.JSX.Element {
     }
   };
 
-  const handleEdit = (opponent: OpponentInterface): void => {
+  const handleEdit = useCallback((opponent: OpponentInterface): void => {
     setEditingOpponent(opponent);
     setFormOpponent(opponent);
     setDialogOpen(true);
-  };
+  }, []);
 
-  const confirmDelete = (id?: number): void => {
+  const confirmDelete = useCallback((id?: number): void => {
     setDeleteId(id);
     setDeleteConfirmOpen(true);
-  };
+  }, []);
 
   const handleDelete = async (): Promise<void> => {
     if (!deleteId) return;
@@ -141,49 +145,52 @@ export default function OpponentManagement(): React.JSX.Element {
   };
 
   // Define DataGrid columns
-  const columns: GridColDef[] = [
-    {
-      field: 'image',
-      headerName: 'Logo',
-      renderCell: (params) => <Avatar src={params.value as string} variant="rounded" />,
-      width: 80,
-      sortable: false,
-    },
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'shortName', headerName: 'Short', width: 120 },
-    { field: 'fpbClubId', headerName: 'Club Id', flex: 1 },
-    { field: 'fpbTeamId', headerName: 'Team Id', flex: 1 },
-    {
-      field: 'venues',
-      headerName: 'Venues',
-      flex: 2,
-      renderCell: (params) => (
-        <Box>
-          {(params.value as { name: string }[] | undefined)?.map((v, i) => (
-            <Chip key={i} label={v.name} size="small" sx={{ mr: 0.5 }} />
-          ))}
-        </Box>
-      ),
-      sortable: false,
-    },
-    {
-      field: 'actions',
-      headerName: 'Actions',
-      width: 120,
-      renderCell: (params) => (
-        <>
-          <IconButton onClick={() => handleEdit(params.row as OpponentInterface)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton color="error" onClick={() => confirmDelete(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ),
-      sortable: false,
-      filterable: false,
-    },
-  ];
+  const columns: GridColDef[] = useMemo(
+    () => [
+      {
+        field: 'image',
+        headerName: t('logo'),
+        renderCell: (params) => <Avatar src={params.value as string} variant="rounded" />,
+        width: 80,
+        sortable: false,
+      },
+      { field: 'name', headerName: t('name'), flex: 1 },
+      { field: 'shortName', headerName: t('shortName'), width: 120 },
+      { field: 'fpbClubId', headerName: t('fpbClubId'), flex: 1 },
+      { field: 'fpbTeamId', headerName: t('fpbTeamId'), flex: 1 },
+      {
+        field: 'venues',
+        headerName: t('venues'),
+        flex: 2,
+        renderCell: (params) => (
+          <Box>
+            {(params.value as { name: string }[] | undefined)?.map((v, i) => (
+              <Chip key={i} label={v.name} size="small" sx={{ mr: 0.5 }} />
+            ))}
+          </Box>
+        ),
+        sortable: false,
+      },
+      {
+        field: 'actions',
+        headerName: t('actions'),
+        width: 120,
+        renderCell: (params) => (
+          <>
+            <IconButton onClick={() => handleEdit(params.row as OpponentInterface)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton color="error" onClick={() => confirmDelete(params.row.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </>
+        ),
+        sortable: false,
+        filterable: false,
+      },
+    ],
+    [handleEdit, confirmDelete, t]
+  );
 
   return (
     <Box>
@@ -198,7 +205,7 @@ export default function OpponentManagement(): React.JSX.Element {
         </Alert>
       </Snackbar>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h5">Opponent Management</Typography>
+        <Typography variant="h5">{t('opponentsManagement')}</Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
@@ -208,7 +215,7 @@ export default function OpponentManagement(): React.JSX.Element {
             setDialogOpen(true);
           }}
         >
-          Add Opponent
+          {t('opponentAdd')}
         </Button>
       </Box>
 
@@ -220,6 +227,7 @@ export default function OpponentManagement(): React.JSX.Element {
           loading={loading}
           getRowId={(row) => row.id!}
           pageSizeOptions={[5, 10, 25]}
+          localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
           initialState={{
             pagination: { paginationModel: { pageSize: 5 } },
             sorting: { sortModel: [{ field: 'name', sort: 'asc' }] },
@@ -229,7 +237,7 @@ export default function OpponentManagement(): React.JSX.Element {
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="sm">
-        <DialogTitle>{editingOpponent ? 'Edit Opponent' : 'Add Opponent'}</DialogTitle>
+        <DialogTitle>{editingOpponent ? t('opponentEdit') : t('opponentAdd')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} mt={1}>
             {/* Upload Image */}
@@ -247,16 +255,16 @@ export default function OpponentManagement(): React.JSX.Element {
                     color="secondary"
                     onClick={() => setFormOpponent({ ...formOpponent, image: undefined })}
                   >
-                    Remove Image
+                    {t('imageRemove')}
                   </Button>
                 </>
               ) : (
                 <>
                   <Typography variant="body2" sx={{ mb: 1 }}>
-                    No image selected
+                    {t('imageNotSelected')}
                   </Typography>
                   <Button variant="outlined" component="label">
-                    Upload Image
+                    {t('imageUpload')}
                     <input
                       type="file"
                       accept="image/*"
@@ -279,13 +287,13 @@ export default function OpponentManagement(): React.JSX.Element {
 
             {/* Name and Short Name */}
             <TextField
-              label="Name"
+              label={t('name')}
               value={formOpponent.name}
               onChange={(e) => setFormOpponent({ ...formOpponent, name: e.target.value })}
               required
             />
             <TextField
-              label="Short Name"
+              label={t('shortName')}
               value={formOpponent.shortName}
               onChange={(e) => setFormOpponent({ ...formOpponent, shortName: e.target.value })}
               required
@@ -293,7 +301,7 @@ export default function OpponentManagement(): React.JSX.Element {
             />
 
             <TextField
-              label="FPB Club ID"
+              label={t('fpbClubId')}
               type="number"
               value={formOpponent.fpbClubId ?? ''}
               onChange={(e) =>
@@ -306,7 +314,7 @@ export default function OpponentManagement(): React.JSX.Element {
             />
 
             <TextField
-              label="FPB Team ID"
+              label={t('fpbTeamId')}
               type="number"
               value={formOpponent.fpbTeamId ?? ''}
               onChange={(e) =>
@@ -321,7 +329,7 @@ export default function OpponentManagement(): React.JSX.Element {
             {/* Venues */}
             <Stack direction="row" spacing={1} alignItems="center">
               <TextField
-                label="Add Venue"
+                label={t('addVenue')}
                 value={newVenue}
                 onChange={(e) => setNewVenue(e.target.value)}
               />
@@ -335,7 +343,7 @@ export default function OpponentManagement(): React.JSX.Element {
                   setNewVenue('');
                 }}
               >
-                Add
+                {t('Add')}
               </Button>
             </Stack>
             <Box>
@@ -356,23 +364,23 @@ export default function OpponentManagement(): React.JSX.Element {
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
+          <Button onClick={() => setDialogOpen(false)}>{t('Cancel')}</Button>
           <Button variant="contained" onClick={handleSave}>
-            Save
+            {t('Save')}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Delete confirm dialog */}
       <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
-        <DialogTitle>Confirm delete</DialogTitle>
+        <DialogTitle>{t('confirmDelete')}</DialogTitle>
         <DialogContent>
-          <Typography>Are you sure you want to delete this opponent?</Typography>
+          <Typography>{t('deleteConfirmationMessage')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteConfirmOpen(false)}>Cancel</Button>
+          <Button onClick={() => setDeleteConfirmOpen(false)}>{t('Cancel')}</Button>
           <Button color="error" variant="contained" onClick={handleDelete}>
-            Delete
+            {t('Delete')}
           </Button>
         </DialogActions>
       </Dialog>
