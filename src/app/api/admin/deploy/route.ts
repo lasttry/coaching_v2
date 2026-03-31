@@ -23,7 +23,16 @@ export async function POST(): Promise<NextResponse> {
     const appDir = process.env.APP_DIR || '/var/www/coaching';
     const steps: { step: string; output: string; success: boolean }[] = [];
 
-    // Step 1: Git pull
+    // Step 1: Reset local changes (package-lock.json often differs between environments)
+    try {
+      await execAsync(`cd ${appDir} && git checkout package-lock.json`);
+      steps.push({ step: 'Reset Local Changes', output: 'OK', success: true });
+    } catch (error) {
+      // Not critical if this fails, continue with pull
+      steps.push({ step: 'Reset Local Changes', output: 'Skipped (no changes)', success: true });
+    }
+
+    // Step 2: Git pull
     try {
       const { stdout: gitOutput } = await execAsync(`cd ${appDir} && git pull origin main`);
       steps.push({ step: 'Git Pull', output: gitOutput, success: true });
