@@ -663,7 +663,11 @@ const GameComponent: React.FC<GameProps> = ({
       return;
     }
 
-    const availableForColor = equipments.filter((eq) => eq.color === selectedEquipmentColor);
+    // Filter equipments by color (case-insensitive comparison)
+    const selectedColorLower = selectedEquipmentColor.toLowerCase().trim();
+    const availableForColor = equipments.filter(
+      (eq) => eq.color?.toLowerCase().trim() === selectedColorLower
+    );
     if (!availableForColor.length) {
       setErrorMessage(t('equipment.noEquipmentForColor'));
       return;
@@ -675,74 +679,93 @@ const GameComponent: React.FC<GameProps> = ({
       return;
     }
 
-    // First pass: try to assign by preferred numbers (ascending preference)
+    // Sort selected athletes by shirt size (smallest first) to ensure fair distribution
+    const sortedAthletes = [...selectedAthletes].sort(
+      (a, b) => sizeRank(a.athlete?.shirtSize) - sizeRank(b.athlete?.shirtSize)
+    );
+
     const usedEquipmentIds = new Set<number>();
     const assignments: GameEquipmentInterface[] = [];
     const athleteAssigned: Record<number, boolean> = {};
     const athleteNumberAssignments: Record<number, number> = {};
 
-    selectedAthletes.forEach((athlete) => {
-      const preferredNumbers = athlete.athlete?.preferredNumbers;
-      let assigned = false;
-      if (Array.isArray(preferredNumbers) && preferredNumbers.length > 0) {
-        // Find preferred number for the selected color
-        const preferredForColor = preferredNumbers.find((p) => p.color === selectedEquipmentColor);
-        if (preferredForColor) {
-          for (const eq of availableForColor) {
-            if (!eq.id) {
-              continue;
-            }
-            if (
-              eq.number === preferredForColor.number &&
-              sizeRank(eq.size) >= sizeRank(athlete.athlete?.shirtSize) &&
-              !usedEquipmentIds.has(eq.id)
-            ) {
-              if (!athlete.athleteId) {
-                continue;
-              }
-              assignments.push({
-                gameId: game.id ?? 0,
-                athleteId: athlete.athleteId,
-                equipmentId: eq.id,
-              });
-              usedEquipmentIds.add(eq.id);
-              athleteAssigned[athlete.athleteId] = true;
-              athleteNumberAssignments[athlete.athleteId] = eq.number;
-              assigned = true;
-              break;
-            }
-          }
-        }
-      }
+    // Sort available equipment by size (smallest first) then by number
+    const sortedEquipments = [...availableForColor].sort((a, b) => {
+      const sizeCompare = sizeRank(a.size) - sizeRank(b.size);
+      if (sizeCompare !== 0) return sizeCompare;
+      return a.number - b.number;
     });
 
-    // Second pass: assign to remaining selected athletes by size
-    // Get athletes still not assigned, sort by shirt size smallest to largest
-    const remainingAthletes = selectedAthletes
-      .filter((athlete) => !athleteAssigned[Number(athlete.athleteId)])
-      .sort((a, b) => sizeRank(a.athlete?.shirtSize) - sizeRank(b.athlete?.shirtSize));
-    // Get available equipments of color not yet assigned, sort by size smallest to largest
-    const remainingEquipments = availableForColor
-      .filter((eq) => !usedEquipmentIds.has(eq.id))
-      .sort((a, b) => sizeRank(a.size) - sizeRank(b.size));
+    // FIRST PASS: Assign athletes with preferred numbers for this color
+    // Process by athlete size order to ensure smaller athletes get priority
+    for (const athlete of sortedAthletes) {
+      const preferredNumbers = athlete.athlete?.preferredNumbers;
+      if (!Array.isArray(preferredNumbers) || preferredNumbers.length === 0) {
+        continue;
+      }
 
-    for (const athlete of remainingAthletes) {
-      // Find first equipment at least as big as athlete's shirt size
-      const eq = remainingEquipments.find(
-        (e) => sizeRank(e.size) >= sizeRank(athlete.athlete?.shirtSize)
+      // Find preferred number for selected color (case-insensitive)
+      const preferredForColor = preferredNumbers.find(
+        (p) => p.color?.toLowerCase().trim() === selectedColorLower
       );
-      if (eq) {
+
+      if (!preferredForColor) {
+        continue;
+      }
+
+      // Find equipment with the preferred number (ignore size for preferred numbers)
+      const matchingEquipment = sortedEquipments.find(
+        (eq) => eq.id && eq.number === preferredForColor.number && !usedEquipmentIds.has(eq.id)
+      );
+
+      if (matchingEquipment && matchingEquipment.id && athlete.athleteId) {
         assignments.push({
           gameId: game.id ?? 0,
-          athleteId: Number(athlete.athleteId),
-          equipmentId: eq.id,
+          athleteId: athlete.athleteId,
+          equipmentId: matchingEquipment.id,
         });
-        usedEquipmentIds.add(eq.id);
-        athleteNumberAssignments[Number(athlete.athleteId)] = eq.number;
-        // Remove from remainingEquipments
-        const idx = remainingEquipments.findIndex((e) => e.id === eq.id);
-        if (idx !== -1) remainingEquipments.splice(idx, 1);
-        athleteAssigned[Number(athlete.athleteId)] = true;
+        usedEquipmentIds.add(matchingEquipment.id);
+        athleteAssigned[athlete.athleteId] = true;
+        athleteNumberAssignments[athlete.athleteId] = matchingEquipment.number;
+        log.debug(`Assigned preferred #${matchingEquipment.number} to ${athlete.athlete?.name}`);
+      }
+    }
+
+    // SECOND PASS: Assign remaining athletes by size (smallest athletes first)
+    const remainingAthletes = sortedAthletes.filter(
+      (athlete) => !athleteAssigned[Number(athlete.athleteId)]
+    );
+
+    // Get remaining equipment sorted by size then number
+    const remainingEquipments = sortedEquipments.filter(
+      (eq) => eq.id && !usedEquipmentIds.has(eq.id)
+    );
+
+    for (const athlete of remainingAthletes) {
+      if (!athlete.athleteId) continue;
+
+      // Find first equipment that fits (size >= athlete's size)
+      const equipmentIndex = remainingEquipments.findIndex(
+        (eq) => sizeRank(eq.size) >= sizeRank(athlete.athlete?.shirtSize)
+      );
+
+      if (equipmentIndex !== -1) {
+        const eq = remainingEquipments[equipmentIndex];
+        if (eq.id) {
+          assignments.push({
+            gameId: game.id ?? 0,
+            athleteId: athlete.athleteId,
+            equipmentId: eq.id,
+          });
+          usedEquipmentIds.add(eq.id);
+          athleteAssigned[athlete.athleteId] = true;
+          athleteNumberAssignments[athlete.athleteId] = eq.number;
+          // Remove from remaining
+          remainingEquipments.splice(equipmentIndex, 1);
+          log.debug(
+            `Assigned #${eq.number} (${eq.size}) to ${athlete.athlete?.name} (size: ${athlete.athlete?.shirtSize})`
+          );
+        }
       }
     }
 
