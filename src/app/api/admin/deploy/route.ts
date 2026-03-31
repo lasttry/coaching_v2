@@ -25,16 +25,26 @@ export async function POST(): Promise<NextResponse> {
 
     // Step 1: Reset local changes (package-lock.json often differs between environments)
     try {
-      await execAsync(`cd ${appDir} && git checkout package-lock.json`);
-      steps.push({ step: 'Reset Local Changes', output: 'OK', success: true });
+      const { stdout: resetOutput } = await execAsync(`cd ${appDir} && git reset --hard HEAD`);
+      steps.push({ step: 'Reset Local Changes', output: resetOutput, success: true });
     } catch (error) {
-      // Not critical if this fails, continue with pull
-      steps.push({ step: 'Reset Local Changes', output: 'Skipped (no changes)', success: true });
+      const err = error as { stderr?: string; message?: string };
+      steps.push({
+        step: 'Reset Local Changes',
+        output: err.stderr || err.message || 'Unknown error',
+        success: false,
+      });
+      return NextResponse.json(
+        { success: false, steps, error: 'Git reset failed' },
+        { status: 500 }
+      );
     }
 
-    // Step 2: Git pull
+    // Step 2: Git pull (--no-rebase to avoid issues with local changes)
     try {
-      const { stdout: gitOutput } = await execAsync(`cd ${appDir} && git pull origin main`);
+      const { stdout: gitOutput } = await execAsync(
+        `cd ${appDir} && git pull --no-rebase origin main`
+      );
       steps.push({ step: 'Git Pull', output: gitOutput, success: true });
     } catch (error) {
       const err = error as { stderr?: string; message?: string };
