@@ -11,6 +11,7 @@ import {
   IconSwords,
   IconBuildingCommunity,
   IconRefresh,
+  IconRocket,
 } from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
@@ -129,6 +130,12 @@ const MenuItemsComponent = (): MenuItem[] => {
       title: t('Seasons'),
       icon: IconTypography,
       href: '/utilities/seasons',
+    },
+    {
+      id: uniqueId(),
+      title: t('Deploy'),
+      icon: IconRocket,
+      href: '/utilities/admin/deploy',
     },
   ];
 
