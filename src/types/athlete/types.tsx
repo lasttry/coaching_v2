@@ -12,6 +12,7 @@ export interface AthleteInterface {
   active: boolean;
   clubId?: number;
   shirtSize: Size;
+  photo?: string | null;
 
   preferredNumbers?: AthletePreferredNumberInterface[];
 }

@@ -12,11 +12,14 @@ import {
   ListItemText,
 } from '@mui/material';
 import Link from 'next/link';
-import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
+import { IconLanguage, IconListCheck, IconMail, IconUser } from '@tabler/icons-react';
 import { useSession } from 'next-auth/react';
 import { AccountInterface } from '@/types/accounts/types';
+import { useTranslation } from 'react-i18next';
+import '@/lib/i18n.client';
 
 const Profile = (): ReactElement => {
+  const { t, i18n } = useTranslation();
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [anchorEl2, setAnchorEl2] = useState<null | HTMLElement>(null);
 
@@ -27,6 +30,10 @@ const Profile = (): ReactElement => {
   };
   const handleClose2 = (): void => {
     setAnchorEl2(null);
+  };
+  const handleLanguageChange = async (language: 'pt' | 'en'): Promise<void> => {
+    await i18n.changeLanguage(language);
+    localStorage.setItem('lng', language);
   };
 
   useEffect(() => {
@@ -90,40 +97,58 @@ const Profile = (): ReactElement => {
       >
         <MenuItem>
           <ListItemText>
-            {session ? `${session.user.name} (${session.user.role})` : 'Loading...'}
+            {session ? `${session.user.name} (${session.user.role})` : t('loading')}
           </ListItemText>
         </MenuItem>
         <MenuItem>
-          <ListItemText>{`Selected Club Id: ${session?.user?.selectedClubId}`}</ListItemText>
+          <ListItemText>{`${t('selectedClubId')}: ${session?.user?.selectedClubId ?? '-'}`}</ListItemText>
+        </MenuItem>
+        <MenuItem disabled>
+          <ListItemIcon>
+            <IconLanguage width={20} />
+          </ListItemIcon>
+          <ListItemText>{`${t('currentLanguage')}: ${i18n.language?.startsWith('pt') ? 'Português' : 'English'}`}</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => void handleLanguageChange('pt')}>
+          <ListItemIcon>
+            <IconLanguage width={20} />
+          </ListItemIcon>
+          <ListItemText>{t('languagePortuguese')}</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={() => void handleLanguageChange('en')}>
+          <ListItemIcon>
+            <IconLanguage width={20} />
+          </ListItemIcon>
+          <ListItemText>{t('languageEnglish')}</ListItemText>
         </MenuItem>
         <Link href="/utilities/profile" passHref>
           <MenuItem>
             <ListItemIcon>
               <IconUser width={20} />
             </ListItemIcon>
-            <ListItemText>My Profile</ListItemText>
+            <ListItemText>{t('myProfile')}</ListItemText>
           </MenuItem>
         </Link>
         <MenuItem>
           <ListItemIcon>
             <IconMail width={20} />
           </ListItemIcon>
-          <ListItemText>My Account</ListItemText>
+          <ListItemText>{t('myAccount')}</ListItemText>
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <IconListCheck width={20} />
           </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
+          <ListItemText>{t('myTasks')}</ListItemText>
         </MenuItem>
-        <Box mt={1} py={1} px={2}>
+        <Box sx={{ mt: 1, py: 1, px: 2 }}>
           <Button
             onClick={() => signOut()} // Redirect to login after logout
             variant="outlined"
             color="primary"
             fullWidth
           >
-            Logout
+            {t('logout')}
           </Button>
         </Box>
       </Menu>

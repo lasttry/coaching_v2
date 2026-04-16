@@ -160,6 +160,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         idNumber: data.idNumber ? Number(data.idNumber) : null,
         shirtSize: data.shirtSize,
         idType: data.idType || null,
+        photo: data.photo !== undefined ? data.photo : undefined,
         active: data.active ?? true, // Handle the `active` field if provided
         updatedAt: new Date(), // Automatically set the updatedAt field
         preferredNumbers: {

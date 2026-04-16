@@ -2,7 +2,7 @@
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { Box, Typography, Button, Paper } from '@mui/material';
-import { ErrorOutline as ErrorIcon } from '@mui/icons-material';
+import { Error as ErrorIcon } from '@mui/icons-material';
 import { log } from '@/lib/logger';
 
 interface Props {

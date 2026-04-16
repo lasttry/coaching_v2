@@ -35,17 +35,19 @@ const Sidebar = ({
           anchor="left"
           open={isSidebarOpen}
           variant="permanent"
-          PaperProps={{
-            sx: {
-              boxShadow: '0 9px 17.5px rgb(0,0,0,0.05)',
-              width: sidebarWidth,
-              boxSizing: 'border-box',
-              borderRight: 0,
-              top: 20,
-              left: 20,
-              bottom: 20,
-              borderRadius: '13px',
-              height: 'calc(100% - 40px)',
+          slotProps={{
+            paper: {
+              sx: {
+                boxShadow: '0 9px 17.5px rgb(0,0,0,0.05)',
+                width: sidebarWidth,
+                boxSizing: 'border-box',
+                borderRight: 0,
+                top: 20,
+                left: 20,
+                bottom: 20,
+                borderRadius: '13px',
+                height: 'calc(100% - 40px)',
+              },
             },
           }}
         >
@@ -60,7 +62,7 @@ const Sidebar = ({
             {/* ------------------------------------------- */}
             {/* Logo */}
             {/* ------------------------------------------- */}
-            <Box px={3}>
+            <Box sx={{ px: 3 }}>
               <Logo />
             </Box>
             <Box>
@@ -81,17 +83,19 @@ const Sidebar = ({
       open={isMobileSidebarOpen}
       onClose={onSidebarClose}
       variant="temporary"
-      PaperProps={{
-        sx: {
-          width: sidebarWidth,
-          boxShadow: (theme) => theme.shadows[8],
+      slotProps={{
+        paper: {
+          sx: {
+            width: sidebarWidth,
+            boxShadow: (theme) => theme.shadows[8],
+          },
         },
       }}
     >
       {/* ------------------------------------------- */}
       {/* Logo */}
       {/* ------------------------------------------- */}
-      <Box px={2}>
+      <Box sx={{ px: 2 }}>
         <Logo />
       </Box>
       {/* ------------------------------------------- */}

@@ -132,6 +132,7 @@ exports.Prisma.AthleteScalarFieldEnum = {
   idType: 'idType',
   active: 'active',
   shirtSize: 'shirtSize',
+  photo: 'photo',
   clubId: 'clubId'
 };
 
@@ -312,6 +313,7 @@ exports.Prisma.ClubScalarFieldEnum = {
   name: 'name',
   shortName: 'shortName',
   image: 'image',
+  federationLogo: 'federationLogo',
   backgroundColor: 'backgroundColor',
   foregroundColor: 'foregroundColor',
   createdAt: 'createdAt',
@@ -363,6 +365,27 @@ exports.Prisma.TeamAthleteScalarFieldEnum = {
   id: 'id',
   teamId: 'teamId',
   athleteId: 'athleteId'
+};
+
+exports.Prisma.StaffScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  birthdate: 'birthdate',
+  tptdNumber: 'tptdNumber',
+  fpbLicense: 'fpbLicense',
+  grade: 'grade',
+  role: 'role',
+  active: 'active',
+  clubId: 'clubId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.TeamStaffScalarFieldEnum = {
+  id: 'id',
+  teamId: 'teamId',
+  staffId: 'staffId',
+  isPrimary: 'isPrimary'
 };
 
 exports.Prisma.CompetitionScalarFieldEnum = {
@@ -481,6 +504,24 @@ exports.TeamType = exports.$Enums.TeamType = {
   C: 'C'
 };
 
+exports.CoachGrade = exports.$Enums.CoachGrade = {
+  GRADE_1: 'GRADE_1',
+  GRADE_2: 'GRADE_2',
+  GRADE_3: 'GRADE_3',
+  GRADE_4: 'GRADE_4',
+  TRAINEE: 'TRAINEE'
+};
+
+exports.StaffRole = exports.$Enums.StaffRole = {
+  HEAD_COACH: 'HEAD_COACH',
+  ASSISTANT_COACH: 'ASSISTANT_COACH',
+  DIRECTOR: 'DIRECTOR',
+  TEAM_MANAGER: 'TEAM_MANAGER',
+  PHYSIOTHERAPIST: 'PHYSIOTHERAPIST',
+  STATISTICIAN: 'STATISTICIAN',
+  OTHER: 'OTHER'
+};
+
 exports.Prisma.ModelName = {
   Athlete: 'Athlete',
   GameAthlete: 'GameAthlete',
@@ -504,6 +545,8 @@ exports.Prisma.ModelName = {
   AccountClubRole: 'AccountClubRole',
   Team: 'Team',
   TeamAthlete: 'TeamAthlete',
+  Staff: 'Staff',
+  TeamStaff: 'TeamStaff',
   Competition: 'Competition',
   CompetitionSerie: 'CompetitionSerie',
   AthletePreferredNumber: 'AthletePreferredNumber',

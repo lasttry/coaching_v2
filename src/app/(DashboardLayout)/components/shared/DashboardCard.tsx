@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Card, CardContent, Typography, Stack, Box } from '@mui/material';
+import { Card, CardContent, Typography, Box } from '@mui/material';
 import { ReactNode } from 'react';
 
 type Props = {
@@ -37,12 +37,15 @@ const DashboardCard = ({
       ) : (
         <CardContent sx={{ p: '30px' }}>
           {title ? (
-            <Stack
-              direction="row"
-              spacing={2}
-              justifyContent="space-between"
-              alignItems={'center'}
-              mb={3}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 2,
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 3,
+              }}
             >
               <Box>
                 {title ? <Typography variant="h5">{title}</Typography> : ''}
@@ -56,7 +59,7 @@ const DashboardCard = ({
                 )}
               </Box>
               {action}
-            </Stack>
+            </Box>
           ) : null}
 
           {children}

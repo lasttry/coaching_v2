@@ -38,7 +38,8 @@ import dayjs from 'dayjs';
 import { GameInterface } from '@/types/game/types';
 import { log } from '@/lib/logger';
 import GameComponent from './components/Game';
-import { generatePDF } from '@/app/utilities/pdf/pdfUtils';
+import { generatePDF, generateRegistrationPDF } from '@/app/utilities/pdf/pdfUtils';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 interface GroupedGames {
   [competitionName: string]: {
@@ -392,6 +393,15 @@ const GamesPage: React.FC = () => {
                                       }
                                     >
                                       <PictureAsPdfIcon fontSize="small" />
+                                    </IconButton>
+                                    <IconButton
+                                      size="small"
+                                      color="secondary"
+                                      title={t('registrationSheet')}
+                                      onClick={() => generateRegistrationPDF(game)}
+                                      disabled={!game.teamId}
+                                    >
+                                      <AssignmentIcon fontSize="small" />
                                     </IconButton>
                                     <IconButton
                                       size="small"

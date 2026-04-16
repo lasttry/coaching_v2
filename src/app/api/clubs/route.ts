@@ -52,6 +52,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         name: clubData.name,
         shortName: clubData.shortName,
         image: clubData.image,
+        federationLogo: clubData.federationLogo,
         backgroundColor: clubData.backgroundColor,
         foregroundColor: clubData.foregroundColor,
         ...(venues &&

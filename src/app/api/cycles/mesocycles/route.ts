@@ -25,22 +25,61 @@ export async function POST(request: Request): Promise<NextResponse> {
     const data = await request.json();
 
     // Validate required fields
-    const { name, number, startDate, endDate, notes, macrocycleId } = data;
+    const { name, startDate, endDate, notes, macrocycleId } = data;
     if (!startDate || !endDate || !macrocycleId) {
       return NextResponse.json(
         { error: 'Start date, end date, and macrocycle ID are required' },
         { status: 400 }
       );
     }
+    const macrocycleIdNumber = Number(macrocycleId);
+    const parsedStartDate = new Date(startDate);
+    const parsedEndDate = new Date(endDate);
+
+    const macrocycle = await prisma.macrocycle.findUnique({
+      where: { id: macrocycleIdNumber },
+      select: { startDate: true, endDate: true },
+    });
+    if (!macrocycle) {
+      return NextResponse.json({ error: 'Macrocycle not found' }, { status: 404 });
+    }
+    if (
+      parsedStartDate < macrocycle.startDate ||
+      parsedStartDate > macrocycle.endDate ||
+      parsedEndDate < macrocycle.startDate ||
+      parsedEndDate > macrocycle.endDate
+    ) {
+      return NextResponse.json(
+        { error: 'Mesocycle dates must be within macrocycle date range' },
+        { status: 400 }
+      );
+    }
+    if (parsedEndDate < parsedStartDate) {
+      return NextResponse.json({ error: 'End date must be after start date' }, { status: 400 });
+    }
+
+    const lastMesocycle = await prisma.mesocycle.findFirst({
+      where: {
+        macrocycleId: macrocycleIdNumber,
+        number: { not: null },
+      },
+      orderBy: {
+        number: 'desc',
+      },
+      select: {
+        number: true,
+      },
+    });
+    const nextNumber = (lastMesocycle?.number ?? 0) + 1;
 
     const newMesocycle = await prisma.mesocycle.create({
       data: {
         name,
-        number: Number(number),
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
+        number: nextNumber,
+        startDate: parsedStartDate,
+        endDate: parsedEndDate,
         notes,
-        macrocycleId,
+        macrocycleId: macrocycleIdNumber,
       },
     });
 

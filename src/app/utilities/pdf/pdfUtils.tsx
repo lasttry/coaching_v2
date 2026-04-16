@@ -7,6 +7,8 @@ import { ClubInterface } from '@/types/club/types';
 import { log } from '@/lib/logger';
 
 import { scienceGothicRegular } from './fonts/ScienceGothic-Regular';
+import arialNormal from './fonts/Arial-normal';
+import arialBold from './fonts/Arial-bold';
 import { FpbResultInterface } from '@/types/fpb/result/types';
 import { FpbStandingInterface } from '@/types/fpb/standing/types';
 import { FpbGameOfficialInterface } from '@/types/fpb/gameOfficial/types';
@@ -1097,4 +1099,497 @@ export const generateStatisticsPDF = (game: GameInterface): void => {
 
   doc.save(`Folha_de_Estatisticas_${game.id}.pdf`);
   return;
+};
+
+// Types for registration PDF
+interface RegistrationAthlete {
+  id: number;
+  name: string;
+  birthdate: string | Date | null;
+  fpbNumber: number | null;
+  number: string | null;
+  photo: string | null;
+}
+
+interface RegistrationStaff {
+  id: number;
+  name: string;
+  birthdate: string | Date | null;
+  tptdNumber: number | null;
+  fpbLicense: number | null;
+  grade: string | null;
+  role: string;
+  isPrimary: boolean;
+}
+
+interface RegistrationTeam {
+  id: number;
+  name: string;
+  type: string | null;
+  echelon: {
+    id: number;
+    name: string;
+    gender: string;
+  };
+  club: {
+    id: number;
+    name: string;
+    shortName: string | null;
+    image: string | null;
+    federationLogo: string | null;
+    backgroundColor: string | null;
+    foregroundColor: string | null;
+  };
+}
+
+interface RegistrationData {
+  team: RegistrationTeam;
+  athletes: RegistrationAthlete[];
+  staff: RegistrationStaff[];
+}
+
+const STAFF_ROLE_LABELS_PDF: Record<string, string> = {
+  HEAD_COACH: 'Treinador Principal',
+  ASSISTANT_COACH: 'Treinador Adjunto',
+  DIRECTOR: 'Diretor',
+  TEAM_MANAGER: 'Delegado',
+  PHYSIOTHERAPIST: 'Fisioterapeuta',
+  STATISTICIAN: 'Estatístico',
+  OTHER: 'Outro',
+};
+
+const COACH_GRADE_LABELS_PDF: Record<string, string> = {
+  GRADE_1: 'Grau 1',
+  GRADE_2: 'Grau 2',
+  GRADE_3: 'Grau 3',
+  GRADE_4: 'Grau 4',
+  TRAINEE: 'Estagiário',
+};
+
+const STAFF_FUNCTION_PDF: Record<string, string> = {
+  HEAD_COACH: 'PRI',
+  ASSISTANT_COACH: 'ADJ',
+  DIRECTOR: 'Director',
+  TEAM_MANAGER: 'Seccionista',
+  PHYSIOTHERAPIST: 'Fisioterapeuta',
+  STATISTICIAN: 'Estatístico',
+  OTHER: 'Outro',
+};
+
+// Generate FPB-style registration PDF for a game
+export const generateRegistrationPDF = async (game: GameInterface): Promise<void> => {
+  try {
+    if (!game.teamId) {
+      throw new Error('Game has no team assigned');
+    }
+
+    // Fetch registration data
+    const res = await fetch(`/api/teams/${game.teamId}/registration`);
+    if (!res.ok) throw new Error('Failed to fetch registration data');
+    const data: RegistrationData = await res.json();
+
+    const { team, athletes, staff } = data;
+    const club = team.club;
+
+    const doc = new jsPDF() as jsPDFWithAutoTable;
+
+    // Add Arial fonts
+    doc.addFileToVFS('Arial.ttf', arialNormal);
+    doc.addFont('Arial.ttf', 'Arial', 'normal');
+    doc.addFileToVFS('Arial-Bold.ttf', arialBold);
+    doc.addFont('Arial-Bold.ttf', 'Arial', 'bold');
+
+    // Use Arial font
+    const font = 'Arial';
+    doc.setFont(font, 'normal');
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 10;
+
+    // FPB colors - dark blue header like FPB official documents
+    const headerBgColor: [number, number, number] = [255, 255, 255];
+    const headerTextColor: [number, number, number] = [0, 0, 0]; // White text
+    const subHeaderTextColor: [number, number, number] = [32, 64, 108]; // Black
+    const borderColor: [number, number, number] = [197, 197, 197]; // Black
+    const textColor: [number, number, number] = [0, 0, 0]; // Black
+    const tableHeaderBgColor: [number, number, number] = [230, 230, 230]; // Light gray for table headers
+
+    // Competition and series info
+    const competitionName = game.competition?.name || 'Competição';
+    const serieName = game.competitionSerie?.name || '';
+    const titleLine = serieName ? `${competitionName} - ${serieName}` : competitionName;
+
+    // Teams info
+    const homeTeam = game.away ? game.opponent?.name || 'Adversário' : club.shortName || club.name;
+    const awayTeam = game.away ? club.shortName || club.name : game.opponent?.name || 'Adversário';
+    const gameInfoLine = `Jogo: ${game.number || ''} - ${homeTeam} vs ${awayTeam}`;
+    const dateLine = game.date ? dayjs(game.date).format('YYYY-MMM-DD HH:mm') : '';
+
+    // ============ PAGE 1: JOGADORES ============
+    let yPos = margin;
+
+    // Header table with dark blue background (like FPB document)
+    const headerHeight = 25;
+    const logoWidth = 20;
+    const logoMargin = 3;
+
+    // Draw header background
+    doc.setFillColor(headerBgColor[0], headerBgColor[1], headerBgColor[2]);
+    doc.rect(margin, yPos, pageWidth - margin * 2, headerHeight, 'F');
+
+    // Draw border around header
+    doc.setDrawColor(borderColor[0], borderColor[1], borderColor[2]);
+    doc.setLineWidth(0.5);
+    doc.rect(margin, yPos, pageWidth - margin * 2, headerHeight, 'S');
+
+    // Add federation logo if available
+    const textStartX = margin + logoWidth + logoMargin * 2;
+    if (club.federationLogo) {
+      try {
+        doc.addImage(
+          club.federationLogo,
+          'PNG',
+          margin + logoMargin,
+          yPos + logoMargin,
+          logoWidth,
+          headerHeight - logoMargin * 2
+        );
+      } catch (e) {
+        console.warn('Failed to add federation logo:', e);
+      }
+    }
+
+    // Title text (white on dark blue background)
+    doc.setTextColor(headerTextColor[0], headerTextColor[1], headerTextColor[2]);
+    doc.setFontSize(13);
+    doc.setFont(font, 'bold');
+    const textCenterX = textStartX + (pageWidth - margin - textStartX) / 2;
+    doc.text(titleLine, textCenterX, yPos + 7, { align: 'center' });
+
+    // Game info line
+    doc.setTextColor(subHeaderTextColor[0], subHeaderTextColor[1], subHeaderTextColor[2]);
+    doc.setFontSize(11);
+    doc.setFont(font, 'normal');
+    doc.text(gameInfoLine, textCenterX, yPos + 13, { align: 'center' });
+
+    // Date line
+    doc.setFontSize(13);
+    doc.setFont(font, 'bold');
+    doc.text(dateLine, textCenterX, yPos + 19, { align: 'center' });
+
+    // Reset text color
+    doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+
+    yPos += headerHeight + 3;
+
+    // Disclaimer text
+    doc.setFontSize(7);
+    doc.setFont(font, 'italic');
+    const disclaimer =
+      'Esta listagem não se sobrepõe, nem dispensa a consulta e aplicação, dos Regulamentos da FPB relevantes, nomeadamente o Regulamento de Provas, o Regulamento de Inscrições e Transferências e o Regulamento de Disciplina';
+    const disclaimerLines = doc.splitTextToSize(disclaimer, pageWidth - margin * 2);
+    doc.text(disclaimerLines, pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += disclaimerLines.length * 3 + 3;
+
+    // Club name (bold, larger)
+    doc.setFontSize(12);
+    doc.setFont(font, 'bold');
+    doc.text(club.name, margin, yPos);
+
+    yPos += 6;
+
+    // JOGADORES section title
+    doc.setFontSize(10);
+    doc.setFont(font, 'bold');
+    doc.text('JOGADORES', margin, yPos);
+    yPos += 3;
+
+    // Athletes table - FPB style with photo column
+    const athleteRows = athletes.map((athlete, index) => {
+      const rowNum = String(index + 1);
+      // Check if athlete might be captain (number 12)
+      const isCaptain = athlete.number === '12';
+      return [
+        rowNum + (isCaptain ? ' CAP' : ''),
+        '', // Foto placeholder - empty cell for photo
+        toCamelCaseName(athlete.name),
+        athlete.birthdate ? dayjs(athlete.birthdate).format('DD-MMM-YYYY') : '',
+        '', // Sem FBP column
+        athlete.fpbNumber ? String(athlete.fpbNumber) : '',
+        'X', // NR. Final checkbox
+      ];
+    });
+
+    autoTable(doc, {
+      startY: yPos,
+      margin: { left: margin, right: margin, bottom: 25 },
+      head: [['#', 'Foto', 'Nome', 'Data Nasc.', 'Sem FBP*', 'Licença', 'NR. Final']],
+      body: athleteRows,
+      theme: 'grid',
+      styles: {
+        font: font,
+        fontSize: 8,
+        cellPadding: 2,
+        lineColor: borderColor,
+        lineWidth: 0.3,
+        valign: 'middle',
+        textColor: textColor,
+      },
+      headStyles: {
+        fillColor: tableHeaderBgColor,
+        textColor: textColor,
+        fontStyle: 'bold',
+        halign: 'center',
+        fontSize: 8,
+        lineWidth: 0.3,
+        lineColor: borderColor,
+      },
+      columnStyles: {
+        0: { cellWidth: 15, halign: 'center' }, // # with CAP
+        1: { cellWidth: 18, halign: 'center', minCellHeight: 15 }, // Foto - taller for image
+        2: { cellWidth: 50 }, // Nome
+        3: { cellWidth: 28, halign: 'center' }, // Data Nasc
+        4: { cellWidth: 28, halign: 'center' }, // Sem FBP
+        5: { cellWidth: 22, halign: 'center' }, // Licença
+        6: { cellWidth: 20, halign: 'center' }, // NR. Final
+      },
+      didDrawCell: (data) => {
+        // Draw photo in photo cell
+        if (data.column.index === 1 && data.section === 'body') {
+          const { x, y, width, height } = data.cell;
+          const athleteIndex = data.row.index;
+          const athlete = athletes[athleteIndex];
+
+          if (athlete?.photo) {
+            try {
+              // Add photo image
+              const imgWidth = width - 4;
+              const imgHeight = height - 4;
+              doc.addImage(athlete.photo, 'JPEG', x + 2, y + 2, imgWidth, imgHeight);
+            } catch {
+              // If image fails, draw placeholder border
+              doc.setDrawColor(...borderColor);
+              doc.setLineWidth(0.1);
+              doc.rect(x + 2, y + 2, width - 4, height - 4);
+            }
+          } else {
+            // Draw border for photo placeholder
+            doc.setDrawColor(...borderColor);
+            doc.setLineWidth(0.1);
+            doc.rect(x + 2, y + 2, width - 4, height - 4);
+          }
+        }
+      },
+    });
+
+    // Footer note with yellow background
+    const afterAthletesY = doc.lastAutoTable?.finalY ?? yPos + 50;
+    const noteText = '* Sem Formação Basquetebolística Portuguesa (Inclui Equiparados FBP)';
+    const noteY = afterAthletesY + 3;
+    const noteHeight = 5;
+
+    // Yellow background spanning full width
+    doc.setFillColor(255, 255, 0); // Yellow
+    doc.rect(10, noteY - 3, pageWidth - 30, noteHeight, 'F');
+
+    // Text
+    doc.setFontSize(7);
+    doc.setFont(font, 'italic');
+    doc.setTextColor(0, 0, 0);
+    doc.text(noteText, margin, noteY);
+
+    // ============ PAGE 2: TREINADORES ============
+    doc.addPage();
+    yPos = margin;
+
+    // Title
+    doc.setFontSize(11);
+    doc.setFont(font, 'bold');
+    doc.text(titleLine, pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 5;
+
+    // Game info
+    doc.setFontSize(10);
+    doc.text(gameInfoLine, pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 5;
+
+    // Date
+    doc.setFontSize(9);
+    doc.setFont(font, 'normal');
+    doc.text(dateLine, pageWidth / 2, yPos, { align: 'center' });
+
+    yPos += 8;
+
+    // Club name
+    doc.setFontSize(12);
+    doc.setFont(font, 'bold');
+    doc.text(club.name, margin, yPos);
+    yPos += 6;
+
+    // Separate coaches from other staff
+    const coaches = staff.filter((s) => ['HEAD_COACH', 'ASSISTANT_COACH'].includes(s.role));
+    const otherStaff = staff.filter((s) => !['HEAD_COACH', 'ASSISTANT_COACH'].includes(s.role));
+
+    // TREINADORES section
+    doc.setFontSize(10);
+    doc.setFont(font, 'bold');
+    doc.text('TREINADORES', margin, yPos);
+    yPos += 3;
+
+    if (coaches.length > 0) {
+      const coachRows = coaches.map((s, index) => {
+        const isPri = s.role === 'HEAD_COACH' || s.isPrimary;
+        const isAdj = s.role === 'ASSISTANT_COACH' && !s.isPrimary;
+        return [
+          String(index + 1),
+          toCamelCaseName(s.name),
+          s.birthdate ? dayjs(s.birthdate).format('DD-MMM-YYYY') : '',
+          s.tptdNumber ? String(s.tptdNumber) : '',
+          s.grade ? COACH_GRADE_LABELS_PDF[s.grade] || '' : '',
+          `${isPri ? 'PRI' : 'ADJ'} - ${team.echelon.name}`,
+          s.fpbLicense ? String(s.fpbLicense) : '',
+          isPri ? 'X' : '',
+          isAdj ? 'X' : '',
+        ];
+      });
+
+      autoTable(doc, {
+        startY: yPos,
+        margin: { left: margin, right: margin, bottom: 25 },
+        head: [
+          [
+            '#',
+            'Nome',
+            'Data Nasc.',
+            'TPTD',
+            'Grau\nFormação',
+            'Competição /\nFunção',
+            'Carteira',
+            'PRI',
+            'ADJ',
+          ],
+        ],
+        body: coachRows,
+        theme: 'grid',
+        styles: {
+          font: font,
+          fontSize: 8,
+          cellPadding: 2,
+          lineColor: borderColor,
+          lineWidth: 0.3,
+          valign: 'middle',
+          textColor: textColor,
+        },
+        headStyles: {
+          fillColor: tableHeaderBgColor,
+          textColor: textColor,
+          fontStyle: 'bold',
+          halign: 'center',
+          fontSize: 7,
+          lineWidth: 0.3,
+          lineColor: borderColor,
+        },
+        columnStyles: {
+          0: { cellWidth: 10, halign: 'center' },
+          1: { cellWidth: 42 },
+          2: { cellWidth: 24, halign: 'center' },
+          3: { cellWidth: 18, halign: 'center' },
+          4: { cellWidth: 22, halign: 'center' },
+          5: { cellWidth: 32, halign: 'center' },
+          6: { cellWidth: 18, halign: 'center' },
+          7: { cellWidth: 12, halign: 'center' },
+          8: { cellWidth: 12, halign: 'center' },
+        },
+      });
+
+      yPos = doc.lastAutoTable?.finalY ?? yPos + 30;
+      yPos += 8;
+    }
+
+    // ENQUADRAMENTO HUMANO section
+    if (otherStaff.length > 0) {
+      doc.setFontSize(10);
+      doc.setFont(font, 'bold');
+      doc.text('ENQUADRAMENTO HUMANO', margin, yPos);
+      yPos += 3;
+
+      const otherRows = otherStaff.map((s, index) => [
+        String(index + 1),
+        toCamelCaseName(s.name),
+        s.birthdate ? dayjs(s.birthdate).format('DD-MMM-YYYY') : '',
+        s.fpbLicense ? String(s.fpbLicense) : '',
+        STAFF_FUNCTION_PDF[s.role] || s.role,
+        'X',
+      ]);
+
+      autoTable(doc, {
+        startY: yPos,
+        margin: { left: margin, right: margin, bottom: 25 },
+        head: [['#', 'Nome', 'Data Nasc.', 'Licença', 'Função', 'SEL']],
+        body: otherRows,
+        theme: 'grid',
+        styles: {
+          font: font,
+          fontSize: 8,
+          cellPadding: 2,
+          lineColor: borderColor,
+          lineWidth: 0.3,
+          valign: 'middle',
+          textColor: textColor,
+        },
+        headStyles: {
+          fillColor: tableHeaderBgColor,
+          textColor: textColor,
+          fontStyle: 'bold',
+          halign: 'center',
+          fontSize: 8,
+          lineWidth: 0.3,
+          lineColor: borderColor,
+        },
+        columnStyles: {
+          0: { cellWidth: 12, halign: 'center' },
+          1: { cellWidth: 55 },
+          2: { cellWidth: 28, halign: 'center' },
+          3: { cellWidth: 25, halign: 'center' },
+          4: { cellWidth: 35, halign: 'center' },
+          5: { cellWidth: 15, halign: 'center' },
+        },
+      });
+    }
+
+    // Add footer to all pages
+    const totalPages = doc.getNumberOfPages();
+    const createdText = `Criado pelo SAv2 em ${dayjs().format('DD-MMM-YYYY HH:mm')}`;
+    const footerY = pageHeight - 8;
+
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+
+      // Line before footer (full width)
+      doc.setDrawColor(0, 0, 0);
+      doc.setLineWidth(0.3);
+      doc.line(12, footerY - 4, pageWidth - 12, footerY - 4);
+
+      doc.setFontSize(8);
+      doc.setFont(font, 'normal');
+      doc.setTextColor(...textColor);
+
+      // Left: "Criado pelo SAv2 em..."
+      doc.text(createdText, margin + 12, footerY);
+
+      // Right: "Página X"
+      doc.text(`Página ${i}`, pageWidth - margin - 12, footerY, { align: 'right' });
+    }
+
+    // Save
+    const fileName = `${team.echelon.name} - ${game.number || 'jogo'}.pdf`;
+    doc.save(fileName);
+  } catch (error) {
+    log.error('Error generating registration PDF:', error);
+    throw error;
+  }
 };

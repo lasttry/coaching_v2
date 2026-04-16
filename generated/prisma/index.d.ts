@@ -124,6 +124,16 @@ export type Team = $Result.DefaultSelection<Prisma.$TeamPayload>
  */
 export type TeamAthlete = $Result.DefaultSelection<Prisma.$TeamAthletePayload>
 /**
+ * Model Staff
+ * 
+ */
+export type Staff = $Result.DefaultSelection<Prisma.$StaffPayload>
+/**
+ * Model TeamStaff
+ * 
+ */
+export type TeamStaff = $Result.DefaultSelection<Prisma.$TeamStaffPayload>
+/**
  * Model Competition
  * 
  */
@@ -189,6 +199,30 @@ export const Role: {
 export type Role = (typeof Role)[keyof typeof Role]
 
 
+export const StaffRole: {
+  HEAD_COACH: 'HEAD_COACH',
+  ASSISTANT_COACH: 'ASSISTANT_COACH',
+  DIRECTOR: 'DIRECTOR',
+  TEAM_MANAGER: 'TEAM_MANAGER',
+  PHYSIOTHERAPIST: 'PHYSIOTHERAPIST',
+  STATISTICIAN: 'STATISTICIAN',
+  OTHER: 'OTHER'
+};
+
+export type StaffRole = (typeof StaffRole)[keyof typeof StaffRole]
+
+
+export const CoachGrade: {
+  GRADE_1: 'GRADE_1',
+  GRADE_2: 'GRADE_2',
+  GRADE_3: 'GRADE_3',
+  GRADE_4: 'GRADE_4',
+  TRAINEE: 'TRAINEE'
+};
+
+export type CoachGrade = (typeof CoachGrade)[keyof typeof CoachGrade]
+
+
 export const PlatformRole: {
   ADMIN: 'ADMIN',
   USER: 'USER',
@@ -239,6 +273,14 @@ export const ObjectiveType: typeof $Enums.ObjectiveType
 export type Role = $Enums.Role
 
 export const Role: typeof $Enums.Role
+
+export type StaffRole = $Enums.StaffRole
+
+export const StaffRole: typeof $Enums.StaffRole
+
+export type CoachGrade = $Enums.CoachGrade
+
+export const CoachGrade: typeof $Enums.CoachGrade
 
 export type PlatformRole = $Enums.PlatformRole
 
@@ -596,6 +638,26 @@ export class PrismaClient<
     * ```
     */
   get teamAthlete(): Prisma.TeamAthleteDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.staff`: Exposes CRUD operations for the **Staff** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Staff
+    * const staff = await prisma.staff.findMany()
+    * ```
+    */
+  get staff(): Prisma.StaffDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.teamStaff`: Exposes CRUD operations for the **TeamStaff** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more TeamStaffs
+    * const teamStaffs = await prisma.teamStaff.findMany()
+    * ```
+    */
+  get teamStaff(): Prisma.TeamStaffDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.competition`: Exposes CRUD operations for the **Competition** model.
@@ -1112,6 +1174,8 @@ export namespace Prisma {
     AccountClubRole: 'AccountClubRole',
     Team: 'Team',
     TeamAthlete: 'TeamAthlete',
+    Staff: 'Staff',
+    TeamStaff: 'TeamStaff',
     Competition: 'Competition',
     CompetitionSerie: 'CompetitionSerie',
     AthletePreferredNumber: 'AthletePreferredNumber',
@@ -1133,7 +1197,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "athlete" | "gameAthlete" | "game" | "opponent" | "account" | "statistic" | "timeEntry" | "athleteReport" | "macrocycle" | "mesocycle" | "microcycle" | "sessionGoal" | "objective" | "drill" | "echelon" | "club" | "season" | "venue" | "accountClub" | "accountClubRole" | "team" | "teamAthlete" | "competition" | "competitionSerie" | "athletePreferredNumber" | "equipmentColor" | "equipment" | "gameEquipment"
+      modelProps: "athlete" | "gameAthlete" | "game" | "opponent" | "account" | "statistic" | "timeEntry" | "athleteReport" | "macrocycle" | "mesocycle" | "microcycle" | "sessionGoal" | "objective" | "drill" | "echelon" | "club" | "season" | "venue" | "accountClub" | "accountClubRole" | "team" | "teamAthlete" | "staff" | "teamStaff" | "competition" | "competitionSerie" | "athletePreferredNumber" | "equipmentColor" | "equipment" | "gameEquipment"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2765,6 +2829,154 @@ export namespace Prisma {
           }
         }
       }
+      Staff: {
+        payload: Prisma.$StaffPayload<ExtArgs>
+        fields: Prisma.StaffFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.StaffFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.StaffFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>
+          }
+          findFirst: {
+            args: Prisma.StaffFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.StaffFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>
+          }
+          findMany: {
+            args: Prisma.StaffFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>[]
+          }
+          create: {
+            args: Prisma.StaffCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>
+          }
+          createMany: {
+            args: Prisma.StaffCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.StaffCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>[]
+          }
+          delete: {
+            args: Prisma.StaffDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>
+          }
+          update: {
+            args: Prisma.StaffUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>
+          }
+          deleteMany: {
+            args: Prisma.StaffDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.StaffUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.StaffUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>[]
+          }
+          upsert: {
+            args: Prisma.StaffUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$StaffPayload>
+          }
+          aggregate: {
+            args: Prisma.StaffAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateStaff>
+          }
+          groupBy: {
+            args: Prisma.StaffGroupByArgs<ExtArgs>
+            result: $Utils.Optional<StaffGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.StaffCountArgs<ExtArgs>
+            result: $Utils.Optional<StaffCountAggregateOutputType> | number
+          }
+        }
+      }
+      TeamStaff: {
+        payload: Prisma.$TeamStaffPayload<ExtArgs>
+        fields: Prisma.TeamStaffFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.TeamStaffFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.TeamStaffFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>
+          }
+          findFirst: {
+            args: Prisma.TeamStaffFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.TeamStaffFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>
+          }
+          findMany: {
+            args: Prisma.TeamStaffFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>[]
+          }
+          create: {
+            args: Prisma.TeamStaffCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>
+          }
+          createMany: {
+            args: Prisma.TeamStaffCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.TeamStaffCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>[]
+          }
+          delete: {
+            args: Prisma.TeamStaffDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>
+          }
+          update: {
+            args: Prisma.TeamStaffUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>
+          }
+          deleteMany: {
+            args: Prisma.TeamStaffDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.TeamStaffUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.TeamStaffUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>[]
+          }
+          upsert: {
+            args: Prisma.TeamStaffUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$TeamStaffPayload>
+          }
+          aggregate: {
+            args: Prisma.TeamStaffAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateTeamStaff>
+          }
+          groupBy: {
+            args: Prisma.TeamStaffGroupByArgs<ExtArgs>
+            result: $Utils.Optional<TeamStaffGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.TeamStaffCountArgs<ExtArgs>
+            result: $Utils.Optional<TeamStaffCountAggregateOutputType> | number
+          }
+        }
+      }
       Competition: {
         payload: Prisma.$CompetitionPayload<ExtArgs>
         fields: Prisma.CompetitionFieldRefs
@@ -3339,6 +3551,8 @@ export namespace Prisma {
     accountClubRole?: AccountClubRoleOmit
     team?: TeamOmit
     teamAthlete?: TeamAthleteOmit
+    staff?: StaffOmit
+    teamStaff?: TeamStaffOmit
     competition?: CompetitionOmit
     competitionSerie?: CompetitionSerieOmit
     athletePreferredNumber?: AthletePreferredNumberOmit
@@ -3815,6 +4029,7 @@ export namespace Prisma {
     teams: number
     venues: number
     equipmentColors: number
+    staff: number
   }
 
   export type ClubCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3825,6 +4040,7 @@ export namespace Prisma {
     teams?: boolean | ClubCountOutputTypeCountTeamsArgs
     venues?: boolean | ClubCountOutputTypeCountVenuesArgs
     equipmentColors?: boolean | ClubCountOutputTypeCountEquipmentColorsArgs
+    staff?: boolean | ClubCountOutputTypeCountStaffArgs
   }
 
   // Custom InputTypes
@@ -3885,6 +4101,13 @@ export namespace Prisma {
    */
   export type ClubCountOutputTypeCountEquipmentColorsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EquipmentColorWhereInput
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountStaffArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StaffWhereInput
   }
 
 
@@ -3987,11 +4210,13 @@ export namespace Prisma {
 
   export type TeamCountOutputType = {
     athletes: number
+    staff: number
     games: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     athletes?: boolean | TeamCountOutputTypeCountAthletesArgs
+    staff?: boolean | TeamCountOutputTypeCountStaffArgs
     games?: boolean | TeamCountOutputTypeCountGamesArgs
   }
 
@@ -4016,8 +4241,46 @@ export namespace Prisma {
   /**
    * TeamCountOutputType without action
    */
+  export type TeamCountOutputTypeCountStaffArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamStaffWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
   export type TeamCountOutputTypeCountGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GameWhereInput
+  }
+
+
+  /**
+   * Count Type StaffCountOutputType
+   */
+
+  export type StaffCountOutputType = {
+    teams: number
+  }
+
+  export type StaffCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    teams?: boolean | StaffCountOutputTypeCountTeamsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * StaffCountOutputType without action
+   */
+  export type StaffCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the StaffCountOutputType
+     */
+    select?: StaffCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * StaffCountOutputType without action
+   */
+  export type StaffCountOutputTypeCountTeamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamStaffWhereInput
   }
 
 
@@ -4196,6 +4459,7 @@ export namespace Prisma {
     idType: $Enums.IdType | null
     active: boolean | null
     shirtSize: $Enums.Size | null
+    photo: string | null
     clubId: number | null
   }
 
@@ -4211,6 +4475,7 @@ export namespace Prisma {
     idType: $Enums.IdType | null
     active: boolean | null
     shirtSize: $Enums.Size | null
+    photo: string | null
     clubId: number | null
   }
 
@@ -4226,6 +4491,7 @@ export namespace Prisma {
     idType: number
     active: number
     shirtSize: number
+    photo: number
     clubId: number
     _all: number
   }
@@ -4257,6 +4523,7 @@ export namespace Prisma {
     idType?: true
     active?: true
     shirtSize?: true
+    photo?: true
     clubId?: true
   }
 
@@ -4272,6 +4539,7 @@ export namespace Prisma {
     idType?: true
     active?: true
     shirtSize?: true
+    photo?: true
     clubId?: true
   }
 
@@ -4287,6 +4555,7 @@ export namespace Prisma {
     idType?: true
     active?: true
     shirtSize?: true
+    photo?: true
     clubId?: true
     _all?: true
   }
@@ -4389,6 +4658,7 @@ export namespace Prisma {
     idType: $Enums.IdType | null
     active: boolean
     shirtSize: $Enums.Size | null
+    photo: string | null
     clubId: number
     _count: AthleteCountAggregateOutputType | null
     _avg: AthleteAvgAggregateOutputType | null
@@ -4423,6 +4693,7 @@ export namespace Prisma {
     idType?: boolean
     active?: boolean
     shirtSize?: boolean
+    photo?: boolean
     clubId?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
     athleteReports?: boolean | Athlete$athleteReportsArgs<ExtArgs>
@@ -4448,6 +4719,7 @@ export namespace Prisma {
     idType?: boolean
     active?: boolean
     shirtSize?: boolean
+    photo?: boolean
     clubId?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["athlete"]>
@@ -4464,6 +4736,7 @@ export namespace Prisma {
     idType?: boolean
     active?: boolean
     shirtSize?: boolean
+    photo?: boolean
     clubId?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["athlete"]>
@@ -4480,10 +4753,11 @@ export namespace Prisma {
     idType?: boolean
     active?: boolean
     shirtSize?: boolean
+    photo?: boolean
     clubId?: boolean
   }
 
-  export type AthleteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "number" | "name" | "birthdate" | "fpbNumber" | "idNumber" | "idType" | "active" | "shirtSize" | "clubId", ExtArgs["result"]["athlete"]>
+  export type AthleteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "number" | "name" | "birthdate" | "fpbNumber" | "idNumber" | "idType" | "active" | "shirtSize" | "photo" | "clubId", ExtArgs["result"]["athlete"]>
   export type AthleteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
     athleteReports?: boolean | Athlete$athleteReportsArgs<ExtArgs>
@@ -4528,6 +4802,7 @@ export namespace Prisma {
       idType: $Enums.IdType | null
       active: boolean
       shirtSize: $Enums.Size | null
+      photo: string | null
       clubId: number
     }, ExtArgs["result"]["athlete"]>
     composites: {}
@@ -4972,6 +5247,7 @@ export namespace Prisma {
     readonly idType: FieldRef<"Athlete", 'IdType'>
     readonly active: FieldRef<"Athlete", 'Boolean'>
     readonly shirtSize: FieldRef<"Athlete", 'Size'>
+    readonly photo: FieldRef<"Athlete", 'String'>
     readonly clubId: FieldRef<"Athlete", 'Int'>
   }
     
@@ -22439,6 +22715,7 @@ export namespace Prisma {
     name: string | null
     shortName: string | null
     image: string | null
+    federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
     createdAt: Date | null
@@ -22450,6 +22727,7 @@ export namespace Prisma {
     name: string | null
     shortName: string | null
     image: string | null
+    federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
     createdAt: Date | null
@@ -22461,6 +22739,7 @@ export namespace Prisma {
     name: number
     shortName: number
     image: number
+    federationLogo: number
     backgroundColor: number
     foregroundColor: number
     createdAt: number
@@ -22482,6 +22761,7 @@ export namespace Prisma {
     name?: true
     shortName?: true
     image?: true
+    federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
     createdAt?: true
@@ -22493,6 +22773,7 @@ export namespace Prisma {
     name?: true
     shortName?: true
     image?: true
+    federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
     createdAt?: true
@@ -22504,6 +22785,7 @@ export namespace Prisma {
     name?: true
     shortName?: true
     image?: true
+    federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
     createdAt?: true
@@ -22602,6 +22884,7 @@ export namespace Prisma {
     name: string
     shortName: string | null
     image: string | null
+    federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
     createdAt: Date
@@ -22632,6 +22915,7 @@ export namespace Prisma {
     name?: boolean
     shortName?: boolean
     image?: boolean
+    federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
     createdAt?: boolean
@@ -22643,6 +22927,7 @@ export namespace Prisma {
     teams?: boolean | Club$teamsArgs<ExtArgs>
     venues?: boolean | Club$venuesArgs<ExtArgs>
     equipmentColors?: boolean | Club$equipmentColorsArgs<ExtArgs>
+    staff?: boolean | Club$staffArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["club"]>
 
@@ -22651,6 +22936,7 @@ export namespace Prisma {
     name?: boolean
     shortName?: boolean
     image?: boolean
+    federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
     createdAt?: boolean
@@ -22662,6 +22948,7 @@ export namespace Prisma {
     name?: boolean
     shortName?: boolean
     image?: boolean
+    federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
     createdAt?: boolean
@@ -22673,13 +22960,14 @@ export namespace Prisma {
     name?: boolean
     shortName?: boolean
     image?: boolean
+    federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortName" | "image" | "backgroundColor" | "foregroundColor" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
+  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortName" | "image" | "federationLogo" | "backgroundColor" | "foregroundColor" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
   export type ClubInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | Club$accountsArgs<ExtArgs>
     athletes?: boolean | Club$athletesArgs<ExtArgs>
@@ -22688,6 +22976,7 @@ export namespace Prisma {
     teams?: boolean | Club$teamsArgs<ExtArgs>
     venues?: boolean | Club$venuesArgs<ExtArgs>
     equipmentColors?: boolean | Club$equipmentColorsArgs<ExtArgs>
+    staff?: boolean | Club$staffArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClubIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -22703,12 +22992,14 @@ export namespace Prisma {
       teams: Prisma.$TeamPayload<ExtArgs>[]
       venues: Prisma.$VenuePayload<ExtArgs>[]
       equipmentColors: Prisma.$EquipmentColorPayload<ExtArgs>[]
+      staff: Prisma.$StaffPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string
       shortName: string | null
       image: string | null
+      federationLogo: string | null
       backgroundColor: string | null
       foregroundColor: string | null
       createdAt: Date
@@ -23114,6 +23405,7 @@ export namespace Prisma {
     teams<T extends Club$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Club$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     venues<T extends Club$venuesArgs<ExtArgs> = {}>(args?: Subset<T, Club$venuesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VenuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     equipmentColors<T extends Club$equipmentColorsArgs<ExtArgs> = {}>(args?: Subset<T, Club$equipmentColorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipmentColorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    staff<T extends Club$staffArgs<ExtArgs> = {}>(args?: Subset<T, Club$staffArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23147,6 +23439,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Club", 'String'>
     readonly shortName: FieldRef<"Club", 'String'>
     readonly image: FieldRef<"Club", 'String'>
+    readonly federationLogo: FieldRef<"Club", 'String'>
     readonly backgroundColor: FieldRef<"Club", 'String'>
     readonly foregroundColor: FieldRef<"Club", 'String'>
     readonly createdAt: FieldRef<"Club", 'DateTime'>
@@ -23709,6 +24002,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EquipmentColorScalarFieldEnum | EquipmentColorScalarFieldEnum[]
+  }
+
+  /**
+   * Club.staff
+   */
+  export type Club$staffArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    where?: StaffWhereInput
+    orderBy?: StaffOrderByWithRelationInput | StaffOrderByWithRelationInput[]
+    cursor?: StaffWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StaffScalarFieldEnum | StaffScalarFieldEnum[]
   }
 
   /**
@@ -28476,6 +28793,7 @@ export namespace Prisma {
     club?: boolean | ClubDefaultArgs<ExtArgs>
     echelon?: boolean | EchelonDefaultArgs<ExtArgs>
     athletes?: boolean | Team$athletesArgs<ExtArgs>
+    staff?: boolean | Team$staffArgs<ExtArgs>
     games?: boolean | Team$gamesArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
@@ -28519,6 +28837,7 @@ export namespace Prisma {
     club?: boolean | ClubDefaultArgs<ExtArgs>
     echelon?: boolean | EchelonDefaultArgs<ExtArgs>
     athletes?: boolean | Team$athletesArgs<ExtArgs>
+    staff?: boolean | Team$staffArgs<ExtArgs>
     games?: boolean | Team$gamesArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -28537,6 +28856,7 @@ export namespace Prisma {
       club: Prisma.$ClubPayload<ExtArgs>
       echelon: Prisma.$EchelonPayload<ExtArgs>
       athletes: Prisma.$TeamAthletePayload<ExtArgs>[]
+      staff: Prisma.$TeamStaffPayload<ExtArgs>[]
       games: Prisma.$GamePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -28944,6 +29264,7 @@ export namespace Prisma {
     club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     echelon<T extends EchelonDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EchelonDefaultArgs<ExtArgs>>): Prisma__EchelonClient<$Result.GetResult<Prisma.$EchelonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     athletes<T extends Team$athletesArgs<ExtArgs> = {}>(args?: Subset<T, Team$athletesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamAthletePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    staff<T extends Team$staffArgs<ExtArgs> = {}>(args?: Subset<T, Team$staffArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     games<T extends Team$gamesArgs<ExtArgs> = {}>(args?: Subset<T, Team$gamesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -29403,6 +29724,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TeamAthleteScalarFieldEnum | TeamAthleteScalarFieldEnum[]
+  }
+
+  /**
+   * Team.staff
+   */
+  export type Team$staffArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    where?: TeamStaffWhereInput
+    orderBy?: TeamStaffOrderByWithRelationInput | TeamStaffOrderByWithRelationInput[]
+    cursor?: TeamStaffWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TeamStaffScalarFieldEnum | TeamStaffScalarFieldEnum[]
   }
 
   /**
@@ -30532,6 +30877,2323 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: TeamAthleteInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Staff
+   */
+
+  export type AggregateStaff = {
+    _count: StaffCountAggregateOutputType | null
+    _avg: StaffAvgAggregateOutputType | null
+    _sum: StaffSumAggregateOutputType | null
+    _min: StaffMinAggregateOutputType | null
+    _max: StaffMaxAggregateOutputType | null
+  }
+
+  export type StaffAvgAggregateOutputType = {
+    id: number | null
+    tptdNumber: number | null
+    fpbLicense: number | null
+    clubId: number | null
+  }
+
+  export type StaffSumAggregateOutputType = {
+    id: number | null
+    tptdNumber: number | null
+    fpbLicense: number | null
+    clubId: number | null
+  }
+
+  export type StaffMinAggregateOutputType = {
+    id: number | null
+    name: string | null
+    birthdate: Date | null
+    tptdNumber: number | null
+    fpbLicense: number | null
+    grade: $Enums.CoachGrade | null
+    role: $Enums.StaffRole | null
+    active: boolean | null
+    clubId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StaffMaxAggregateOutputType = {
+    id: number | null
+    name: string | null
+    birthdate: Date | null
+    tptdNumber: number | null
+    fpbLicense: number | null
+    grade: $Enums.CoachGrade | null
+    role: $Enums.StaffRole | null
+    active: boolean | null
+    clubId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type StaffCountAggregateOutputType = {
+    id: number
+    name: number
+    birthdate: number
+    tptdNumber: number
+    fpbLicense: number
+    grade: number
+    role: number
+    active: number
+    clubId: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type StaffAvgAggregateInputType = {
+    id?: true
+    tptdNumber?: true
+    fpbLicense?: true
+    clubId?: true
+  }
+
+  export type StaffSumAggregateInputType = {
+    id?: true
+    tptdNumber?: true
+    fpbLicense?: true
+    clubId?: true
+  }
+
+  export type StaffMinAggregateInputType = {
+    id?: true
+    name?: true
+    birthdate?: true
+    tptdNumber?: true
+    fpbLicense?: true
+    grade?: true
+    role?: true
+    active?: true
+    clubId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StaffMaxAggregateInputType = {
+    id?: true
+    name?: true
+    birthdate?: true
+    tptdNumber?: true
+    fpbLicense?: true
+    grade?: true
+    role?: true
+    active?: true
+    clubId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type StaffCountAggregateInputType = {
+    id?: true
+    name?: true
+    birthdate?: true
+    tptdNumber?: true
+    fpbLicense?: true
+    grade?: true
+    role?: true
+    active?: true
+    clubId?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type StaffAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Staff to aggregate.
+     */
+    where?: StaffWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Staff to fetch.
+     */
+    orderBy?: StaffOrderByWithRelationInput | StaffOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: StaffWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Staff from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Staff.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Staff
+    **/
+    _count?: true | StaffCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: StaffAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: StaffSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: StaffMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: StaffMaxAggregateInputType
+  }
+
+  export type GetStaffAggregateType<T extends StaffAggregateArgs> = {
+        [P in keyof T & keyof AggregateStaff]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateStaff[P]>
+      : GetScalarType<T[P], AggregateStaff[P]>
+  }
+
+
+
+
+  export type StaffGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StaffWhereInput
+    orderBy?: StaffOrderByWithAggregationInput | StaffOrderByWithAggregationInput[]
+    by: StaffScalarFieldEnum[] | StaffScalarFieldEnum
+    having?: StaffScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: StaffCountAggregateInputType | true
+    _avg?: StaffAvgAggregateInputType
+    _sum?: StaffSumAggregateInputType
+    _min?: StaffMinAggregateInputType
+    _max?: StaffMaxAggregateInputType
+  }
+
+  export type StaffGroupByOutputType = {
+    id: number
+    name: string
+    birthdate: Date | null
+    tptdNumber: number | null
+    fpbLicense: number | null
+    grade: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active: boolean
+    clubId: number
+    createdAt: Date
+    updatedAt: Date
+    _count: StaffCountAggregateOutputType | null
+    _avg: StaffAvgAggregateOutputType | null
+    _sum: StaffSumAggregateOutputType | null
+    _min: StaffMinAggregateOutputType | null
+    _max: StaffMaxAggregateOutputType | null
+  }
+
+  type GetStaffGroupByPayload<T extends StaffGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<StaffGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof StaffGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], StaffGroupByOutputType[P]>
+            : GetScalarType<T[P], StaffGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type StaffSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    birthdate?: boolean
+    tptdNumber?: boolean
+    fpbLicense?: boolean
+    grade?: boolean
+    role?: boolean
+    active?: boolean
+    clubId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    teams?: boolean | Staff$teamsArgs<ExtArgs>
+    _count?: boolean | StaffCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["staff"]>
+
+  export type StaffSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    birthdate?: boolean
+    tptdNumber?: boolean
+    fpbLicense?: boolean
+    grade?: boolean
+    role?: boolean
+    active?: boolean
+    clubId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["staff"]>
+
+  export type StaffSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    name?: boolean
+    birthdate?: boolean
+    tptdNumber?: boolean
+    fpbLicense?: boolean
+    grade?: boolean
+    role?: boolean
+    active?: boolean
+    clubId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["staff"]>
+
+  export type StaffSelectScalar = {
+    id?: boolean
+    name?: boolean
+    birthdate?: boolean
+    tptdNumber?: boolean
+    fpbLicense?: boolean
+    grade?: boolean
+    role?: boolean
+    active?: boolean
+    clubId?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type StaffOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "birthdate" | "tptdNumber" | "fpbLicense" | "grade" | "role" | "active" | "clubId" | "createdAt" | "updatedAt", ExtArgs["result"]["staff"]>
+  export type StaffInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    teams?: boolean | Staff$teamsArgs<ExtArgs>
+    _count?: boolean | StaffCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type StaffIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type StaffIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+
+  export type $StaffPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Staff"
+    objects: {
+      club: Prisma.$ClubPayload<ExtArgs>
+      teams: Prisma.$TeamStaffPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      name: string
+      birthdate: Date | null
+      tptdNumber: number | null
+      fpbLicense: number | null
+      grade: $Enums.CoachGrade | null
+      role: $Enums.StaffRole
+      active: boolean
+      clubId: number
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["staff"]>
+    composites: {}
+  }
+
+  type StaffGetPayload<S extends boolean | null | undefined | StaffDefaultArgs> = $Result.GetResult<Prisma.$StaffPayload, S>
+
+  type StaffCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<StaffFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: StaffCountAggregateInputType | true
+    }
+
+  export interface StaffDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Staff'], meta: { name: 'Staff' } }
+    /**
+     * Find zero or one Staff that matches the filter.
+     * @param {StaffFindUniqueArgs} args - Arguments to find a Staff
+     * @example
+     * // Get one Staff
+     * const staff = await prisma.staff.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends StaffFindUniqueArgs>(args: SelectSubset<T, StaffFindUniqueArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Staff that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {StaffFindUniqueOrThrowArgs} args - Arguments to find a Staff
+     * @example
+     * // Get one Staff
+     * const staff = await prisma.staff.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends StaffFindUniqueOrThrowArgs>(args: SelectSubset<T, StaffFindUniqueOrThrowArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Staff that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffFindFirstArgs} args - Arguments to find a Staff
+     * @example
+     * // Get one Staff
+     * const staff = await prisma.staff.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends StaffFindFirstArgs>(args?: SelectSubset<T, StaffFindFirstArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Staff that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffFindFirstOrThrowArgs} args - Arguments to find a Staff
+     * @example
+     * // Get one Staff
+     * const staff = await prisma.staff.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends StaffFindFirstOrThrowArgs>(args?: SelectSubset<T, StaffFindFirstOrThrowArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Staff that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Staff
+     * const staff = await prisma.staff.findMany()
+     * 
+     * // Get first 10 Staff
+     * const staff = await prisma.staff.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const staffWithIdOnly = await prisma.staff.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends StaffFindManyArgs>(args?: SelectSubset<T, StaffFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Staff.
+     * @param {StaffCreateArgs} args - Arguments to create a Staff.
+     * @example
+     * // Create one Staff
+     * const Staff = await prisma.staff.create({
+     *   data: {
+     *     // ... data to create a Staff
+     *   }
+     * })
+     * 
+     */
+    create<T extends StaffCreateArgs>(args: SelectSubset<T, StaffCreateArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Staff.
+     * @param {StaffCreateManyArgs} args - Arguments to create many Staff.
+     * @example
+     * // Create many Staff
+     * const staff = await prisma.staff.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends StaffCreateManyArgs>(args?: SelectSubset<T, StaffCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Staff and returns the data saved in the database.
+     * @param {StaffCreateManyAndReturnArgs} args - Arguments to create many Staff.
+     * @example
+     * // Create many Staff
+     * const staff = await prisma.staff.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Staff and only return the `id`
+     * const staffWithIdOnly = await prisma.staff.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends StaffCreateManyAndReturnArgs>(args?: SelectSubset<T, StaffCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Staff.
+     * @param {StaffDeleteArgs} args - Arguments to delete one Staff.
+     * @example
+     * // Delete one Staff
+     * const Staff = await prisma.staff.delete({
+     *   where: {
+     *     // ... filter to delete one Staff
+     *   }
+     * })
+     * 
+     */
+    delete<T extends StaffDeleteArgs>(args: SelectSubset<T, StaffDeleteArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Staff.
+     * @param {StaffUpdateArgs} args - Arguments to update one Staff.
+     * @example
+     * // Update one Staff
+     * const staff = await prisma.staff.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends StaffUpdateArgs>(args: SelectSubset<T, StaffUpdateArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Staff.
+     * @param {StaffDeleteManyArgs} args - Arguments to filter Staff to delete.
+     * @example
+     * // Delete a few Staff
+     * const { count } = await prisma.staff.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends StaffDeleteManyArgs>(args?: SelectSubset<T, StaffDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Staff.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Staff
+     * const staff = await prisma.staff.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends StaffUpdateManyArgs>(args: SelectSubset<T, StaffUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Staff and returns the data updated in the database.
+     * @param {StaffUpdateManyAndReturnArgs} args - Arguments to update many Staff.
+     * @example
+     * // Update many Staff
+     * const staff = await prisma.staff.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Staff and only return the `id`
+     * const staffWithIdOnly = await prisma.staff.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends StaffUpdateManyAndReturnArgs>(args: SelectSubset<T, StaffUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Staff.
+     * @param {StaffUpsertArgs} args - Arguments to update or create a Staff.
+     * @example
+     * // Update or create a Staff
+     * const staff = await prisma.staff.upsert({
+     *   create: {
+     *     // ... data to create a Staff
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Staff we want to update
+     *   }
+     * })
+     */
+    upsert<T extends StaffUpsertArgs>(args: SelectSubset<T, StaffUpsertArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Staff.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffCountArgs} args - Arguments to filter Staff to count.
+     * @example
+     * // Count the number of Staff
+     * const count = await prisma.staff.count({
+     *   where: {
+     *     // ... the filter for the Staff we want to count
+     *   }
+     * })
+    **/
+    count<T extends StaffCountArgs>(
+      args?: Subset<T, StaffCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], StaffCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Staff.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends StaffAggregateArgs>(args: Subset<T, StaffAggregateArgs>): Prisma.PrismaPromise<GetStaffAggregateType<T>>
+
+    /**
+     * Group by Staff.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {StaffGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends StaffGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: StaffGroupByArgs['orderBy'] }
+        : { orderBy?: StaffGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, StaffGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetStaffGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Staff model
+   */
+  readonly fields: StaffFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Staff.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__StaffClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    teams<T extends Staff$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Staff$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Staff model
+   */
+  interface StaffFieldRefs {
+    readonly id: FieldRef<"Staff", 'Int'>
+    readonly name: FieldRef<"Staff", 'String'>
+    readonly birthdate: FieldRef<"Staff", 'DateTime'>
+    readonly tptdNumber: FieldRef<"Staff", 'Int'>
+    readonly fpbLicense: FieldRef<"Staff", 'Int'>
+    readonly grade: FieldRef<"Staff", 'CoachGrade'>
+    readonly role: FieldRef<"Staff", 'StaffRole'>
+    readonly active: FieldRef<"Staff", 'Boolean'>
+    readonly clubId: FieldRef<"Staff", 'Int'>
+    readonly createdAt: FieldRef<"Staff", 'DateTime'>
+    readonly updatedAt: FieldRef<"Staff", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Staff findUnique
+   */
+  export type StaffFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * Filter, which Staff to fetch.
+     */
+    where: StaffWhereUniqueInput
+  }
+
+  /**
+   * Staff findUniqueOrThrow
+   */
+  export type StaffFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * Filter, which Staff to fetch.
+     */
+    where: StaffWhereUniqueInput
+  }
+
+  /**
+   * Staff findFirst
+   */
+  export type StaffFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * Filter, which Staff to fetch.
+     */
+    where?: StaffWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Staff to fetch.
+     */
+    orderBy?: StaffOrderByWithRelationInput | StaffOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Staff.
+     */
+    cursor?: StaffWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Staff from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Staff.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Staff.
+     */
+    distinct?: StaffScalarFieldEnum | StaffScalarFieldEnum[]
+  }
+
+  /**
+   * Staff findFirstOrThrow
+   */
+  export type StaffFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * Filter, which Staff to fetch.
+     */
+    where?: StaffWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Staff to fetch.
+     */
+    orderBy?: StaffOrderByWithRelationInput | StaffOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Staff.
+     */
+    cursor?: StaffWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Staff from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Staff.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Staff.
+     */
+    distinct?: StaffScalarFieldEnum | StaffScalarFieldEnum[]
+  }
+
+  /**
+   * Staff findMany
+   */
+  export type StaffFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * Filter, which Staff to fetch.
+     */
+    where?: StaffWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Staff to fetch.
+     */
+    orderBy?: StaffOrderByWithRelationInput | StaffOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Staff.
+     */
+    cursor?: StaffWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Staff from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Staff.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Staff.
+     */
+    distinct?: StaffScalarFieldEnum | StaffScalarFieldEnum[]
+  }
+
+  /**
+   * Staff create
+   */
+  export type StaffCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Staff.
+     */
+    data: XOR<StaffCreateInput, StaffUncheckedCreateInput>
+  }
+
+  /**
+   * Staff createMany
+   */
+  export type StaffCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Staff.
+     */
+    data: StaffCreateManyInput | StaffCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Staff createManyAndReturn
+   */
+  export type StaffCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * The data used to create many Staff.
+     */
+    data: StaffCreateManyInput | StaffCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Staff update
+   */
+  export type StaffUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Staff.
+     */
+    data: XOR<StaffUpdateInput, StaffUncheckedUpdateInput>
+    /**
+     * Choose, which Staff to update.
+     */
+    where: StaffWhereUniqueInput
+  }
+
+  /**
+   * Staff updateMany
+   */
+  export type StaffUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Staff.
+     */
+    data: XOR<StaffUpdateManyMutationInput, StaffUncheckedUpdateManyInput>
+    /**
+     * Filter which Staff to update
+     */
+    where?: StaffWhereInput
+    /**
+     * Limit how many Staff to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Staff updateManyAndReturn
+   */
+  export type StaffUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * The data used to update Staff.
+     */
+    data: XOR<StaffUpdateManyMutationInput, StaffUncheckedUpdateManyInput>
+    /**
+     * Filter which Staff to update
+     */
+    where?: StaffWhereInput
+    /**
+     * Limit how many Staff to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Staff upsert
+   */
+  export type StaffUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Staff to update in case it exists.
+     */
+    where: StaffWhereUniqueInput
+    /**
+     * In case the Staff found by the `where` argument doesn't exist, create a new Staff with this data.
+     */
+    create: XOR<StaffCreateInput, StaffUncheckedCreateInput>
+    /**
+     * In case the Staff was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<StaffUpdateInput, StaffUncheckedUpdateInput>
+  }
+
+  /**
+   * Staff delete
+   */
+  export type StaffDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    /**
+     * Filter which Staff to delete.
+     */
+    where: StaffWhereUniqueInput
+  }
+
+  /**
+   * Staff deleteMany
+   */
+  export type StaffDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Staff to delete
+     */
+    where?: StaffWhereInput
+    /**
+     * Limit how many Staff to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Staff.teams
+   */
+  export type Staff$teamsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    where?: TeamStaffWhereInput
+    orderBy?: TeamStaffOrderByWithRelationInput | TeamStaffOrderByWithRelationInput[]
+    cursor?: TeamStaffWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: TeamStaffScalarFieldEnum | TeamStaffScalarFieldEnum[]
+  }
+
+  /**
+   * Staff without action
+   */
+  export type StaffDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model TeamStaff
+   */
+
+  export type AggregateTeamStaff = {
+    _count: TeamStaffCountAggregateOutputType | null
+    _avg: TeamStaffAvgAggregateOutputType | null
+    _sum: TeamStaffSumAggregateOutputType | null
+    _min: TeamStaffMinAggregateOutputType | null
+    _max: TeamStaffMaxAggregateOutputType | null
+  }
+
+  export type TeamStaffAvgAggregateOutputType = {
+    id: number | null
+    teamId: number | null
+    staffId: number | null
+  }
+
+  export type TeamStaffSumAggregateOutputType = {
+    id: number | null
+    teamId: number | null
+    staffId: number | null
+  }
+
+  export type TeamStaffMinAggregateOutputType = {
+    id: number | null
+    teamId: number | null
+    staffId: number | null
+    isPrimary: boolean | null
+  }
+
+  export type TeamStaffMaxAggregateOutputType = {
+    id: number | null
+    teamId: number | null
+    staffId: number | null
+    isPrimary: boolean | null
+  }
+
+  export type TeamStaffCountAggregateOutputType = {
+    id: number
+    teamId: number
+    staffId: number
+    isPrimary: number
+    _all: number
+  }
+
+
+  export type TeamStaffAvgAggregateInputType = {
+    id?: true
+    teamId?: true
+    staffId?: true
+  }
+
+  export type TeamStaffSumAggregateInputType = {
+    id?: true
+    teamId?: true
+    staffId?: true
+  }
+
+  export type TeamStaffMinAggregateInputType = {
+    id?: true
+    teamId?: true
+    staffId?: true
+    isPrimary?: true
+  }
+
+  export type TeamStaffMaxAggregateInputType = {
+    id?: true
+    teamId?: true
+    staffId?: true
+    isPrimary?: true
+  }
+
+  export type TeamStaffCountAggregateInputType = {
+    id?: true
+    teamId?: true
+    staffId?: true
+    isPrimary?: true
+    _all?: true
+  }
+
+  export type TeamStaffAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TeamStaff to aggregate.
+     */
+    where?: TeamStaffWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamStaffs to fetch.
+     */
+    orderBy?: TeamStaffOrderByWithRelationInput | TeamStaffOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: TeamStaffWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamStaffs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamStaffs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned TeamStaffs
+    **/
+    _count?: true | TeamStaffCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: TeamStaffAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: TeamStaffSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: TeamStaffMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: TeamStaffMaxAggregateInputType
+  }
+
+  export type GetTeamStaffAggregateType<T extends TeamStaffAggregateArgs> = {
+        [P in keyof T & keyof AggregateTeamStaff]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateTeamStaff[P]>
+      : GetScalarType<T[P], AggregateTeamStaff[P]>
+  }
+
+
+
+
+  export type TeamStaffGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: TeamStaffWhereInput
+    orderBy?: TeamStaffOrderByWithAggregationInput | TeamStaffOrderByWithAggregationInput[]
+    by: TeamStaffScalarFieldEnum[] | TeamStaffScalarFieldEnum
+    having?: TeamStaffScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: TeamStaffCountAggregateInputType | true
+    _avg?: TeamStaffAvgAggregateInputType
+    _sum?: TeamStaffSumAggregateInputType
+    _min?: TeamStaffMinAggregateInputType
+    _max?: TeamStaffMaxAggregateInputType
+  }
+
+  export type TeamStaffGroupByOutputType = {
+    id: number
+    teamId: number
+    staffId: number
+    isPrimary: boolean
+    _count: TeamStaffCountAggregateOutputType | null
+    _avg: TeamStaffAvgAggregateOutputType | null
+    _sum: TeamStaffSumAggregateOutputType | null
+    _min: TeamStaffMinAggregateOutputType | null
+    _max: TeamStaffMaxAggregateOutputType | null
+  }
+
+  type GetTeamStaffGroupByPayload<T extends TeamStaffGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<TeamStaffGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof TeamStaffGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], TeamStaffGroupByOutputType[P]>
+            : GetScalarType<T[P], TeamStaffGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type TeamStaffSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    staffId?: boolean
+    isPrimary?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamStaff"]>
+
+  export type TeamStaffSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    staffId?: boolean
+    isPrimary?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamStaff"]>
+
+  export type TeamStaffSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    teamId?: boolean
+    staffId?: boolean
+    isPrimary?: boolean
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["teamStaff"]>
+
+  export type TeamStaffSelectScalar = {
+    id?: boolean
+    teamId?: boolean
+    staffId?: boolean
+    isPrimary?: boolean
+  }
+
+  export type TeamStaffOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "teamId" | "staffId" | "isPrimary", ExtArgs["result"]["teamStaff"]>
+  export type TeamStaffInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }
+  export type TeamStaffIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }
+  export type TeamStaffIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    staff?: boolean | StaffDefaultArgs<ExtArgs>
+  }
+
+  export type $TeamStaffPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "TeamStaff"
+    objects: {
+      team: Prisma.$TeamPayload<ExtArgs>
+      staff: Prisma.$StaffPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      teamId: number
+      staffId: number
+      isPrimary: boolean
+    }, ExtArgs["result"]["teamStaff"]>
+    composites: {}
+  }
+
+  type TeamStaffGetPayload<S extends boolean | null | undefined | TeamStaffDefaultArgs> = $Result.GetResult<Prisma.$TeamStaffPayload, S>
+
+  type TeamStaffCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<TeamStaffFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: TeamStaffCountAggregateInputType | true
+    }
+
+  export interface TeamStaffDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['TeamStaff'], meta: { name: 'TeamStaff' } }
+    /**
+     * Find zero or one TeamStaff that matches the filter.
+     * @param {TeamStaffFindUniqueArgs} args - Arguments to find a TeamStaff
+     * @example
+     * // Get one TeamStaff
+     * const teamStaff = await prisma.teamStaff.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends TeamStaffFindUniqueArgs>(args: SelectSubset<T, TeamStaffFindUniqueArgs<ExtArgs>>): Prisma__TeamStaffClient<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one TeamStaff that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {TeamStaffFindUniqueOrThrowArgs} args - Arguments to find a TeamStaff
+     * @example
+     * // Get one TeamStaff
+     * const teamStaff = await prisma.teamStaff.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends TeamStaffFindUniqueOrThrowArgs>(args: SelectSubset<T, TeamStaffFindUniqueOrThrowArgs<ExtArgs>>): Prisma__TeamStaffClient<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TeamStaff that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamStaffFindFirstArgs} args - Arguments to find a TeamStaff
+     * @example
+     * // Get one TeamStaff
+     * const teamStaff = await prisma.teamStaff.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends TeamStaffFindFirstArgs>(args?: SelectSubset<T, TeamStaffFindFirstArgs<ExtArgs>>): Prisma__TeamStaffClient<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first TeamStaff that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamStaffFindFirstOrThrowArgs} args - Arguments to find a TeamStaff
+     * @example
+     * // Get one TeamStaff
+     * const teamStaff = await prisma.teamStaff.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends TeamStaffFindFirstOrThrowArgs>(args?: SelectSubset<T, TeamStaffFindFirstOrThrowArgs<ExtArgs>>): Prisma__TeamStaffClient<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more TeamStaffs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamStaffFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all TeamStaffs
+     * const teamStaffs = await prisma.teamStaff.findMany()
+     * 
+     * // Get first 10 TeamStaffs
+     * const teamStaffs = await prisma.teamStaff.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const teamStaffWithIdOnly = await prisma.teamStaff.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends TeamStaffFindManyArgs>(args?: SelectSubset<T, TeamStaffFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a TeamStaff.
+     * @param {TeamStaffCreateArgs} args - Arguments to create a TeamStaff.
+     * @example
+     * // Create one TeamStaff
+     * const TeamStaff = await prisma.teamStaff.create({
+     *   data: {
+     *     // ... data to create a TeamStaff
+     *   }
+     * })
+     * 
+     */
+    create<T extends TeamStaffCreateArgs>(args: SelectSubset<T, TeamStaffCreateArgs<ExtArgs>>): Prisma__TeamStaffClient<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many TeamStaffs.
+     * @param {TeamStaffCreateManyArgs} args - Arguments to create many TeamStaffs.
+     * @example
+     * // Create many TeamStaffs
+     * const teamStaff = await prisma.teamStaff.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends TeamStaffCreateManyArgs>(args?: SelectSubset<T, TeamStaffCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many TeamStaffs and returns the data saved in the database.
+     * @param {TeamStaffCreateManyAndReturnArgs} args - Arguments to create many TeamStaffs.
+     * @example
+     * // Create many TeamStaffs
+     * const teamStaff = await prisma.teamStaff.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many TeamStaffs and only return the `id`
+     * const teamStaffWithIdOnly = await prisma.teamStaff.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends TeamStaffCreateManyAndReturnArgs>(args?: SelectSubset<T, TeamStaffCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a TeamStaff.
+     * @param {TeamStaffDeleteArgs} args - Arguments to delete one TeamStaff.
+     * @example
+     * // Delete one TeamStaff
+     * const TeamStaff = await prisma.teamStaff.delete({
+     *   where: {
+     *     // ... filter to delete one TeamStaff
+     *   }
+     * })
+     * 
+     */
+    delete<T extends TeamStaffDeleteArgs>(args: SelectSubset<T, TeamStaffDeleteArgs<ExtArgs>>): Prisma__TeamStaffClient<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one TeamStaff.
+     * @param {TeamStaffUpdateArgs} args - Arguments to update one TeamStaff.
+     * @example
+     * // Update one TeamStaff
+     * const teamStaff = await prisma.teamStaff.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends TeamStaffUpdateArgs>(args: SelectSubset<T, TeamStaffUpdateArgs<ExtArgs>>): Prisma__TeamStaffClient<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more TeamStaffs.
+     * @param {TeamStaffDeleteManyArgs} args - Arguments to filter TeamStaffs to delete.
+     * @example
+     * // Delete a few TeamStaffs
+     * const { count } = await prisma.teamStaff.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends TeamStaffDeleteManyArgs>(args?: SelectSubset<T, TeamStaffDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TeamStaffs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamStaffUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many TeamStaffs
+     * const teamStaff = await prisma.teamStaff.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends TeamStaffUpdateManyArgs>(args: SelectSubset<T, TeamStaffUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more TeamStaffs and returns the data updated in the database.
+     * @param {TeamStaffUpdateManyAndReturnArgs} args - Arguments to update many TeamStaffs.
+     * @example
+     * // Update many TeamStaffs
+     * const teamStaff = await prisma.teamStaff.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more TeamStaffs and only return the `id`
+     * const teamStaffWithIdOnly = await prisma.teamStaff.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends TeamStaffUpdateManyAndReturnArgs>(args: SelectSubset<T, TeamStaffUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one TeamStaff.
+     * @param {TeamStaffUpsertArgs} args - Arguments to update or create a TeamStaff.
+     * @example
+     * // Update or create a TeamStaff
+     * const teamStaff = await prisma.teamStaff.upsert({
+     *   create: {
+     *     // ... data to create a TeamStaff
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the TeamStaff we want to update
+     *   }
+     * })
+     */
+    upsert<T extends TeamStaffUpsertArgs>(args: SelectSubset<T, TeamStaffUpsertArgs<ExtArgs>>): Prisma__TeamStaffClient<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of TeamStaffs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamStaffCountArgs} args - Arguments to filter TeamStaffs to count.
+     * @example
+     * // Count the number of TeamStaffs
+     * const count = await prisma.teamStaff.count({
+     *   where: {
+     *     // ... the filter for the TeamStaffs we want to count
+     *   }
+     * })
+    **/
+    count<T extends TeamStaffCountArgs>(
+      args?: Subset<T, TeamStaffCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], TeamStaffCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a TeamStaff.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamStaffAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends TeamStaffAggregateArgs>(args: Subset<T, TeamStaffAggregateArgs>): Prisma.PrismaPromise<GetTeamStaffAggregateType<T>>
+
+    /**
+     * Group by TeamStaff.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {TeamStaffGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends TeamStaffGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: TeamStaffGroupByArgs['orderBy'] }
+        : { orderBy?: TeamStaffGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, TeamStaffGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetTeamStaffGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the TeamStaff model
+   */
+  readonly fields: TeamStaffFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for TeamStaff.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__TeamStaffClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    staff<T extends StaffDefaultArgs<ExtArgs> = {}>(args?: Subset<T, StaffDefaultArgs<ExtArgs>>): Prisma__StaffClient<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the TeamStaff model
+   */
+  interface TeamStaffFieldRefs {
+    readonly id: FieldRef<"TeamStaff", 'Int'>
+    readonly teamId: FieldRef<"TeamStaff", 'Int'>
+    readonly staffId: FieldRef<"TeamStaff", 'Int'>
+    readonly isPrimary: FieldRef<"TeamStaff", 'Boolean'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * TeamStaff findUnique
+   */
+  export type TeamStaffFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamStaff to fetch.
+     */
+    where: TeamStaffWhereUniqueInput
+  }
+
+  /**
+   * TeamStaff findUniqueOrThrow
+   */
+  export type TeamStaffFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamStaff to fetch.
+     */
+    where: TeamStaffWhereUniqueInput
+  }
+
+  /**
+   * TeamStaff findFirst
+   */
+  export type TeamStaffFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamStaff to fetch.
+     */
+    where?: TeamStaffWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamStaffs to fetch.
+     */
+    orderBy?: TeamStaffOrderByWithRelationInput | TeamStaffOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TeamStaffs.
+     */
+    cursor?: TeamStaffWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamStaffs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamStaffs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TeamStaffs.
+     */
+    distinct?: TeamStaffScalarFieldEnum | TeamStaffScalarFieldEnum[]
+  }
+
+  /**
+   * TeamStaff findFirstOrThrow
+   */
+  export type TeamStaffFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamStaff to fetch.
+     */
+    where?: TeamStaffWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamStaffs to fetch.
+     */
+    orderBy?: TeamStaffOrderByWithRelationInput | TeamStaffOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for TeamStaffs.
+     */
+    cursor?: TeamStaffWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamStaffs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamStaffs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TeamStaffs.
+     */
+    distinct?: TeamStaffScalarFieldEnum | TeamStaffScalarFieldEnum[]
+  }
+
+  /**
+   * TeamStaff findMany
+   */
+  export type TeamStaffFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * Filter, which TeamStaffs to fetch.
+     */
+    where?: TeamStaffWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of TeamStaffs to fetch.
+     */
+    orderBy?: TeamStaffOrderByWithRelationInput | TeamStaffOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing TeamStaffs.
+     */
+    cursor?: TeamStaffWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` TeamStaffs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` TeamStaffs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of TeamStaffs.
+     */
+    distinct?: TeamStaffScalarFieldEnum | TeamStaffScalarFieldEnum[]
+  }
+
+  /**
+   * TeamStaff create
+   */
+  export type TeamStaffCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * The data needed to create a TeamStaff.
+     */
+    data: XOR<TeamStaffCreateInput, TeamStaffUncheckedCreateInput>
+  }
+
+  /**
+   * TeamStaff createMany
+   */
+  export type TeamStaffCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many TeamStaffs.
+     */
+    data: TeamStaffCreateManyInput | TeamStaffCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * TeamStaff createManyAndReturn
+   */
+  export type TeamStaffCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * The data used to create many TeamStaffs.
+     */
+    data: TeamStaffCreateManyInput | TeamStaffCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TeamStaff update
+   */
+  export type TeamStaffUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * The data needed to update a TeamStaff.
+     */
+    data: XOR<TeamStaffUpdateInput, TeamStaffUncheckedUpdateInput>
+    /**
+     * Choose, which TeamStaff to update.
+     */
+    where: TeamStaffWhereUniqueInput
+  }
+
+  /**
+   * TeamStaff updateMany
+   */
+  export type TeamStaffUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update TeamStaffs.
+     */
+    data: XOR<TeamStaffUpdateManyMutationInput, TeamStaffUncheckedUpdateManyInput>
+    /**
+     * Filter which TeamStaffs to update
+     */
+    where?: TeamStaffWhereInput
+    /**
+     * Limit how many TeamStaffs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * TeamStaff updateManyAndReturn
+   */
+  export type TeamStaffUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * The data used to update TeamStaffs.
+     */
+    data: XOR<TeamStaffUpdateManyMutationInput, TeamStaffUncheckedUpdateManyInput>
+    /**
+     * Filter which TeamStaffs to update
+     */
+    where?: TeamStaffWhereInput
+    /**
+     * Limit how many TeamStaffs to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * TeamStaff upsert
+   */
+  export type TeamStaffUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * The filter to search for the TeamStaff to update in case it exists.
+     */
+    where: TeamStaffWhereUniqueInput
+    /**
+     * In case the TeamStaff found by the `where` argument doesn't exist, create a new TeamStaff with this data.
+     */
+    create: XOR<TeamStaffCreateInput, TeamStaffUncheckedCreateInput>
+    /**
+     * In case the TeamStaff was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<TeamStaffUpdateInput, TeamStaffUncheckedUpdateInput>
+  }
+
+  /**
+   * TeamStaff delete
+   */
+  export type TeamStaffDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
+    /**
+     * Filter which TeamStaff to delete.
+     */
+    where: TeamStaffWhereUniqueInput
+  }
+
+  /**
+   * TeamStaff deleteMany
+   */
+  export type TeamStaffDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which TeamStaffs to delete
+     */
+    where?: TeamStaffWhereInput
+    /**
+     * Limit how many TeamStaffs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * TeamStaff without action
+   */
+  export type TeamStaffDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the TeamStaff
+     */
+    select?: TeamStaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the TeamStaff
+     */
+    omit?: TeamStaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamStaffInclude<ExtArgs> | null
   }
 
 
@@ -37457,6 +40119,7 @@ export namespace Prisma {
     idType: 'idType',
     active: 'active',
     shirtSize: 'shirtSize',
+    photo: 'photo',
     clubId: 'clubId'
   };
 
@@ -37682,6 +40345,7 @@ export namespace Prisma {
     name: 'name',
     shortName: 'shortName',
     image: 'image',
+    federationLogo: 'federationLogo',
     backgroundColor: 'backgroundColor',
     foregroundColor: 'foregroundColor',
     createdAt: 'createdAt',
@@ -37754,6 +40418,33 @@ export namespace Prisma {
   };
 
   export type TeamAthleteScalarFieldEnum = (typeof TeamAthleteScalarFieldEnum)[keyof typeof TeamAthleteScalarFieldEnum]
+
+
+  export const StaffScalarFieldEnum: {
+    id: 'id',
+    name: 'name',
+    birthdate: 'birthdate',
+    tptdNumber: 'tptdNumber',
+    fpbLicense: 'fpbLicense',
+    grade: 'grade',
+    role: 'role',
+    active: 'active',
+    clubId: 'clubId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type StaffScalarFieldEnum = (typeof StaffScalarFieldEnum)[keyof typeof StaffScalarFieldEnum]
+
+
+  export const TeamStaffScalarFieldEnum: {
+    id: 'id',
+    teamId: 'teamId',
+    staffId: 'staffId',
+    isPrimary: 'isPrimary'
+  };
+
+  export type TeamStaffScalarFieldEnum = (typeof TeamStaffScalarFieldEnum)[keyof typeof TeamStaffScalarFieldEnum]
 
 
   export const CompetitionScalarFieldEnum: {
@@ -38005,6 +40696,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'CoachGrade'
+   */
+  export type EnumCoachGradeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CoachGrade'>
+    
+
+
+  /**
+   * Reference to a field of type 'CoachGrade[]'
+   */
+  export type ListEnumCoachGradeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CoachGrade[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'StaffRole'
+   */
+  export type EnumStaffRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StaffRole'>
+    
+
+
+  /**
+   * Reference to a field of type 'StaffRole[]'
+   */
+  export type ListEnumStaffRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StaffRole[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -38036,6 +40755,7 @@ export namespace Prisma {
     idType?: EnumIdTypeNullableFilter<"Athlete"> | $Enums.IdType | null
     active?: BoolFilter<"Athlete"> | boolean
     shirtSize?: EnumSizeNullableFilter<"Athlete"> | $Enums.Size | null
+    photo?: StringNullableFilter<"Athlete"> | string | null
     clubId?: IntFilter<"Athlete"> | number
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     athleteReports?: AthleteReportListRelationFilter
@@ -38060,6 +40780,7 @@ export namespace Prisma {
     idType?: SortOrderInput | SortOrder
     active?: SortOrder
     shirtSize?: SortOrderInput | SortOrder
+    photo?: SortOrderInput | SortOrder
     clubId?: SortOrder
     club?: ClubOrderByWithRelationInput
     athleteReports?: AthleteReportOrderByRelationAggregateInput
@@ -38087,6 +40808,7 @@ export namespace Prisma {
     idType?: EnumIdTypeNullableFilter<"Athlete"> | $Enums.IdType | null
     active?: BoolFilter<"Athlete"> | boolean
     shirtSize?: EnumSizeNullableFilter<"Athlete"> | $Enums.Size | null
+    photo?: StringNullableFilter<"Athlete"> | string | null
     clubId?: IntFilter<"Athlete"> | number
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     athleteReports?: AthleteReportListRelationFilter
@@ -38111,6 +40833,7 @@ export namespace Prisma {
     idType?: SortOrderInput | SortOrder
     active?: SortOrder
     shirtSize?: SortOrderInput | SortOrder
+    photo?: SortOrderInput | SortOrder
     clubId?: SortOrder
     _count?: AthleteCountOrderByAggregateInput
     _avg?: AthleteAvgOrderByAggregateInput
@@ -38134,6 +40857,7 @@ export namespace Prisma {
     idType?: EnumIdTypeNullableWithAggregatesFilter<"Athlete"> | $Enums.IdType | null
     active?: BoolWithAggregatesFilter<"Athlete"> | boolean
     shirtSize?: EnumSizeNullableWithAggregatesFilter<"Athlete"> | $Enums.Size | null
+    photo?: StringNullableWithAggregatesFilter<"Athlete"> | string | null
     clubId?: IntWithAggregatesFilter<"Athlete"> | number
   }
 
@@ -39309,6 +42033,7 @@ export namespace Prisma {
     name?: StringFilter<"Club"> | string
     shortName?: StringNullableFilter<"Club"> | string | null
     image?: StringNullableFilter<"Club"> | string | null
+    federationLogo?: StringNullableFilter<"Club"> | string | null
     backgroundColor?: StringNullableFilter<"Club"> | string | null
     foregroundColor?: StringNullableFilter<"Club"> | string | null
     createdAt?: DateTimeFilter<"Club"> | Date | string
@@ -39320,6 +42045,7 @@ export namespace Prisma {
     teams?: TeamListRelationFilter
     venues?: VenueListRelationFilter
     equipmentColors?: EquipmentColorListRelationFilter
+    staff?: StaffListRelationFilter
   }
 
   export type ClubOrderByWithRelationInput = {
@@ -39327,6 +42053,7 @@ export namespace Prisma {
     name?: SortOrder
     shortName?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    federationLogo?: SortOrderInput | SortOrder
     backgroundColor?: SortOrderInput | SortOrder
     foregroundColor?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -39338,6 +42065,7 @@ export namespace Prisma {
     teams?: TeamOrderByRelationAggregateInput
     venues?: VenueOrderByRelationAggregateInput
     equipmentColors?: EquipmentColorOrderByRelationAggregateInput
+    staff?: StaffOrderByRelationAggregateInput
   }
 
   export type ClubWhereUniqueInput = Prisma.AtLeast<{
@@ -39348,6 +42076,7 @@ export namespace Prisma {
     NOT?: ClubWhereInput | ClubWhereInput[]
     shortName?: StringNullableFilter<"Club"> | string | null
     image?: StringNullableFilter<"Club"> | string | null
+    federationLogo?: StringNullableFilter<"Club"> | string | null
     backgroundColor?: StringNullableFilter<"Club"> | string | null
     foregroundColor?: StringNullableFilter<"Club"> | string | null
     createdAt?: DateTimeFilter<"Club"> | Date | string
@@ -39359,6 +42088,7 @@ export namespace Prisma {
     teams?: TeamListRelationFilter
     venues?: VenueListRelationFilter
     equipmentColors?: EquipmentColorListRelationFilter
+    staff?: StaffListRelationFilter
   }, "id" | "name">
 
   export type ClubOrderByWithAggregationInput = {
@@ -39366,6 +42096,7 @@ export namespace Prisma {
     name?: SortOrder
     shortName?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
+    federationLogo?: SortOrderInput | SortOrder
     backgroundColor?: SortOrderInput | SortOrder
     foregroundColor?: SortOrderInput | SortOrder
     createdAt?: SortOrder
@@ -39385,6 +42116,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Club"> | string
     shortName?: StringNullableWithAggregatesFilter<"Club"> | string | null
     image?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    federationLogo?: StringNullableWithAggregatesFilter<"Club"> | string | null
     backgroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
     foregroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
@@ -39641,6 +42373,7 @@ export namespace Prisma {
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     echelon?: XOR<EchelonScalarRelationFilter, EchelonWhereInput>
     athletes?: TeamAthleteListRelationFilter
+    staff?: TeamStaffListRelationFilter
     games?: GameListRelationFilter
   }
 
@@ -39655,6 +42388,7 @@ export namespace Prisma {
     club?: ClubOrderByWithRelationInput
     echelon?: EchelonOrderByWithRelationInput
     athletes?: TeamAthleteOrderByRelationAggregateInput
+    staff?: TeamStaffOrderByRelationAggregateInput
     games?: GameOrderByRelationAggregateInput
   }
 
@@ -39672,6 +42406,7 @@ export namespace Prisma {
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     echelon?: XOR<EchelonScalarRelationFilter, EchelonWhereInput>
     athletes?: TeamAthleteListRelationFilter
+    staff?: TeamStaffListRelationFilter
     games?: GameListRelationFilter
   }, "id">
 
@@ -39752,6 +42487,152 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"TeamAthlete"> | number
     teamId?: IntWithAggregatesFilter<"TeamAthlete"> | number
     athleteId?: IntWithAggregatesFilter<"TeamAthlete"> | number
+  }
+
+  export type StaffWhereInput = {
+    AND?: StaffWhereInput | StaffWhereInput[]
+    OR?: StaffWhereInput[]
+    NOT?: StaffWhereInput | StaffWhereInput[]
+    id?: IntFilter<"Staff"> | number
+    name?: StringFilter<"Staff"> | string
+    birthdate?: DateTimeNullableFilter<"Staff"> | Date | string | null
+    tptdNumber?: IntNullableFilter<"Staff"> | number | null
+    fpbLicense?: IntNullableFilter<"Staff"> | number | null
+    grade?: EnumCoachGradeNullableFilter<"Staff"> | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
+    active?: BoolFilter<"Staff"> | boolean
+    clubId?: IntFilter<"Staff"> | number
+    createdAt?: DateTimeFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeFilter<"Staff"> | Date | string
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    teams?: TeamStaffListRelationFilter
+  }
+
+  export type StaffOrderByWithRelationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    birthdate?: SortOrderInput | SortOrder
+    tptdNumber?: SortOrderInput | SortOrder
+    fpbLicense?: SortOrderInput | SortOrder
+    grade?: SortOrderInput | SortOrder
+    role?: SortOrder
+    active?: SortOrder
+    clubId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    club?: ClubOrderByWithRelationInput
+    teams?: TeamStaffOrderByRelationAggregateInput
+  }
+
+  export type StaffWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: StaffWhereInput | StaffWhereInput[]
+    OR?: StaffWhereInput[]
+    NOT?: StaffWhereInput | StaffWhereInput[]
+    name?: StringFilter<"Staff"> | string
+    birthdate?: DateTimeNullableFilter<"Staff"> | Date | string | null
+    tptdNumber?: IntNullableFilter<"Staff"> | number | null
+    fpbLicense?: IntNullableFilter<"Staff"> | number | null
+    grade?: EnumCoachGradeNullableFilter<"Staff"> | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
+    active?: BoolFilter<"Staff"> | boolean
+    clubId?: IntFilter<"Staff"> | number
+    createdAt?: DateTimeFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeFilter<"Staff"> | Date | string
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    teams?: TeamStaffListRelationFilter
+  }, "id">
+
+  export type StaffOrderByWithAggregationInput = {
+    id?: SortOrder
+    name?: SortOrder
+    birthdate?: SortOrderInput | SortOrder
+    tptdNumber?: SortOrderInput | SortOrder
+    fpbLicense?: SortOrderInput | SortOrder
+    grade?: SortOrderInput | SortOrder
+    role?: SortOrder
+    active?: SortOrder
+    clubId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: StaffCountOrderByAggregateInput
+    _avg?: StaffAvgOrderByAggregateInput
+    _max?: StaffMaxOrderByAggregateInput
+    _min?: StaffMinOrderByAggregateInput
+    _sum?: StaffSumOrderByAggregateInput
+  }
+
+  export type StaffScalarWhereWithAggregatesInput = {
+    AND?: StaffScalarWhereWithAggregatesInput | StaffScalarWhereWithAggregatesInput[]
+    OR?: StaffScalarWhereWithAggregatesInput[]
+    NOT?: StaffScalarWhereWithAggregatesInput | StaffScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Staff"> | number
+    name?: StringWithAggregatesFilter<"Staff"> | string
+    birthdate?: DateTimeNullableWithAggregatesFilter<"Staff"> | Date | string | null
+    tptdNumber?: IntNullableWithAggregatesFilter<"Staff"> | number | null
+    fpbLicense?: IntNullableWithAggregatesFilter<"Staff"> | number | null
+    grade?: EnumCoachGradeNullableWithAggregatesFilter<"Staff"> | $Enums.CoachGrade | null
+    role?: EnumStaffRoleWithAggregatesFilter<"Staff"> | $Enums.StaffRole
+    active?: BoolWithAggregatesFilter<"Staff"> | boolean
+    clubId?: IntWithAggregatesFilter<"Staff"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
+  }
+
+  export type TeamStaffWhereInput = {
+    AND?: TeamStaffWhereInput | TeamStaffWhereInput[]
+    OR?: TeamStaffWhereInput[]
+    NOT?: TeamStaffWhereInput | TeamStaffWhereInput[]
+    id?: IntFilter<"TeamStaff"> | number
+    teamId?: IntFilter<"TeamStaff"> | number
+    staffId?: IntFilter<"TeamStaff"> | number
+    isPrimary?: BoolFilter<"TeamStaff"> | boolean
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    staff?: XOR<StaffScalarRelationFilter, StaffWhereInput>
+  }
+
+  export type TeamStaffOrderByWithRelationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    staffId?: SortOrder
+    isPrimary?: SortOrder
+    team?: TeamOrderByWithRelationInput
+    staff?: StaffOrderByWithRelationInput
+  }
+
+  export type TeamStaffWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    teamId_staffId?: TeamStaffTeamIdStaffIdCompoundUniqueInput
+    AND?: TeamStaffWhereInput | TeamStaffWhereInput[]
+    OR?: TeamStaffWhereInput[]
+    NOT?: TeamStaffWhereInput | TeamStaffWhereInput[]
+    teamId?: IntFilter<"TeamStaff"> | number
+    staffId?: IntFilter<"TeamStaff"> | number
+    isPrimary?: BoolFilter<"TeamStaff"> | boolean
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    staff?: XOR<StaffScalarRelationFilter, StaffWhereInput>
+  }, "id" | "teamId_staffId">
+
+  export type TeamStaffOrderByWithAggregationInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    staffId?: SortOrder
+    isPrimary?: SortOrder
+    _count?: TeamStaffCountOrderByAggregateInput
+    _avg?: TeamStaffAvgOrderByAggregateInput
+    _max?: TeamStaffMaxOrderByAggregateInput
+    _min?: TeamStaffMinOrderByAggregateInput
+    _sum?: TeamStaffSumOrderByAggregateInput
+  }
+
+  export type TeamStaffScalarWhereWithAggregatesInput = {
+    AND?: TeamStaffScalarWhereWithAggregatesInput | TeamStaffScalarWhereWithAggregatesInput[]
+    OR?: TeamStaffScalarWhereWithAggregatesInput[]
+    NOT?: TeamStaffScalarWhereWithAggregatesInput | TeamStaffScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"TeamStaff"> | number
+    teamId?: IntWithAggregatesFilter<"TeamStaff"> | number
+    staffId?: IntWithAggregatesFilter<"TeamStaff"> | number
+    isPrimary?: BoolWithAggregatesFilter<"TeamStaff"> | boolean
   }
 
   export type CompetitionWhereInput = {
@@ -40167,6 +43048,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
@@ -40190,6 +43072,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
@@ -40212,6 +43095,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
@@ -40235,6 +43119,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
@@ -40258,6 +43143,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
   }
 
@@ -40272,6 +43158,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AthleteUncheckedUpdateManyInput = {
@@ -40286,6 +43173,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
   }
 
@@ -41498,6 +44386,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -41509,6 +44398,7 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateInput = {
@@ -41516,6 +44406,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -41527,12 +44418,14 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41544,6 +44437,7 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateInput = {
@@ -41551,6 +44445,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41562,6 +44457,7 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type ClubCreateManyInput = {
@@ -41569,6 +44465,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -41579,6 +44476,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41590,6 +44488,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -41816,6 +44715,7 @@ export namespace Prisma {
     club: ClubCreateNestedOneWithoutTeamsInput
     echelon: EchelonCreateNestedOneWithoutTeamsInput
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
   }
 
@@ -41828,6 +44728,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -41839,6 +44740,7 @@ export namespace Prisma {
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
     echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
   }
 
@@ -41851,6 +44753,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -41917,6 +44820,148 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     teamId?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type StaffCreateInput = {
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutStaffInput
+    teams?: TeamStaffCreateNestedManyWithoutStaffInput
+  }
+
+  export type StaffUncheckedCreateInput = {
+    id?: number
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    clubId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamStaffUncheckedCreateNestedManyWithoutStaffInput
+  }
+
+  export type StaffUpdateInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutStaffNestedInput
+    teams?: TeamStaffUpdateManyWithoutStaffNestedInput
+  }
+
+  export type StaffUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamStaffUncheckedUpdateManyWithoutStaffNestedInput
+  }
+
+  export type StaffCreateManyInput = {
+    id?: number
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    clubId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StaffUpdateManyMutationInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StaffUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type TeamStaffCreateInput = {
+    isPrimary?: boolean
+    team: TeamCreateNestedOneWithoutStaffInput
+    staff: StaffCreateNestedOneWithoutTeamsInput
+  }
+
+  export type TeamStaffUncheckedCreateInput = {
+    id?: number
+    teamId: number
+    staffId: number
+    isPrimary?: boolean
+  }
+
+  export type TeamStaffUpdateInput = {
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    team?: TeamUpdateOneRequiredWithoutStaffNestedInput
+    staff?: StaffUpdateOneRequiredWithoutTeamsNestedInput
+  }
+
+  export type TeamStaffUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    staffId?: IntFieldUpdateOperationsInput | number
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TeamStaffCreateManyInput = {
+    id?: number
+    teamId: number
+    staffId: number
+    isPrimary?: boolean
+  }
+
+  export type TeamStaffUpdateManyMutationInput = {
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TeamStaffUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    staffId?: IntFieldUpdateOperationsInput | number
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CompetitionCreateInput = {
@@ -42475,6 +45520,7 @@ export namespace Prisma {
     idType?: SortOrder
     active?: SortOrder
     shirtSize?: SortOrder
+    photo?: SortOrder
     clubId?: SortOrder
   }
 
@@ -42497,6 +45543,7 @@ export namespace Prisma {
     idType?: SortOrder
     active?: SortOrder
     shirtSize?: SortOrder
+    photo?: SortOrder
     clubId?: SortOrder
   }
 
@@ -42512,6 +45559,7 @@ export namespace Prisma {
     idType?: SortOrder
     active?: SortOrder
     shirtSize?: SortOrder
+    photo?: SortOrder
     clubId?: SortOrder
   }
 
@@ -43620,6 +46668,12 @@ export namespace Prisma {
     none?: MacrocycleWhereInput
   }
 
+  export type StaffListRelationFilter = {
+    every?: StaffWhereInput
+    some?: StaffWhereInput
+    none?: StaffWhereInput
+  }
+
   export type AthleteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -43628,11 +46682,16 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type StaffOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ClubCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     shortName?: SortOrder
     image?: SortOrder
+    federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
     createdAt?: SortOrder
@@ -43648,6 +46707,7 @@ export namespace Prisma {
     name?: SortOrder
     shortName?: SortOrder
     image?: SortOrder
+    federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
     createdAt?: SortOrder
@@ -43659,6 +46719,7 @@ export namespace Prisma {
     name?: SortOrder
     shortName?: SortOrder
     image?: SortOrder
+    federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
     createdAt?: SortOrder
@@ -43868,6 +46929,16 @@ export namespace Prisma {
     isNot?: EchelonWhereInput
   }
 
+  export type TeamStaffListRelationFilter = {
+    every?: TeamStaffWhereInput
+    some?: TeamStaffWhereInput
+    none?: TeamStaffWhereInput
+  }
+
+  export type TeamStaffOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type TeamCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -43958,6 +47029,139 @@ export namespace Prisma {
     id?: SortOrder
     teamId?: SortOrder
     athleteId?: SortOrder
+  }
+
+  export type EnumCoachGradeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.CoachGrade | EnumCoachGradeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CoachGrade[] | ListEnumCoachGradeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CoachGrade[] | ListEnumCoachGradeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCoachGradeNullableFilter<$PrismaModel> | $Enums.CoachGrade | null
+  }
+
+  export type EnumStaffRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.StaffRole | EnumStaffRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumStaffRoleFilter<$PrismaModel> | $Enums.StaffRole
+  }
+
+  export type StaffCountOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    birthdate?: SortOrder
+    tptdNumber?: SortOrder
+    fpbLicense?: SortOrder
+    grade?: SortOrder
+    role?: SortOrder
+    active?: SortOrder
+    clubId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StaffAvgOrderByAggregateInput = {
+    id?: SortOrder
+    tptdNumber?: SortOrder
+    fpbLicense?: SortOrder
+    clubId?: SortOrder
+  }
+
+  export type StaffMaxOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    birthdate?: SortOrder
+    tptdNumber?: SortOrder
+    fpbLicense?: SortOrder
+    grade?: SortOrder
+    role?: SortOrder
+    active?: SortOrder
+    clubId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StaffMinOrderByAggregateInput = {
+    id?: SortOrder
+    name?: SortOrder
+    birthdate?: SortOrder
+    tptdNumber?: SortOrder
+    fpbLicense?: SortOrder
+    grade?: SortOrder
+    role?: SortOrder
+    active?: SortOrder
+    clubId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type StaffSumOrderByAggregateInput = {
+    id?: SortOrder
+    tptdNumber?: SortOrder
+    fpbLicense?: SortOrder
+    clubId?: SortOrder
+  }
+
+  export type EnumCoachGradeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CoachGrade | EnumCoachGradeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CoachGrade[] | ListEnumCoachGradeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CoachGrade[] | ListEnumCoachGradeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCoachGradeNullableWithAggregatesFilter<$PrismaModel> | $Enums.CoachGrade | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumCoachGradeNullableFilter<$PrismaModel>
+    _max?: NestedEnumCoachGradeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumStaffRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StaffRole | EnumStaffRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumStaffRoleWithAggregatesFilter<$PrismaModel> | $Enums.StaffRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStaffRoleFilter<$PrismaModel>
+    _max?: NestedEnumStaffRoleFilter<$PrismaModel>
+  }
+
+  export type StaffScalarRelationFilter = {
+    is?: StaffWhereInput
+    isNot?: StaffWhereInput
+  }
+
+  export type TeamStaffTeamIdStaffIdCompoundUniqueInput = {
+    teamId: number
+    staffId: number
+  }
+
+  export type TeamStaffCountOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    staffId?: SortOrder
+    isPrimary?: SortOrder
+  }
+
+  export type TeamStaffAvgOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    staffId?: SortOrder
+  }
+
+  export type TeamStaffMaxOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    staffId?: SortOrder
+    isPrimary?: SortOrder
+  }
+
+  export type TeamStaffMinOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    staffId?: SortOrder
+    isPrimary?: SortOrder
+  }
+
+  export type TeamStaffSumOrderByAggregateInput = {
+    id?: SortOrder
+    teamId?: SortOrder
+    staffId?: SortOrder
   }
 
   export type CompetitionSerieListRelationFilter = {
@@ -45651,6 +48855,13 @@ export namespace Prisma {
     connect?: EquipmentColorWhereUniqueInput | EquipmentColorWhereUniqueInput[]
   }
 
+  export type StaffCreateNestedManyWithoutClubInput = {
+    create?: XOR<StaffCreateWithoutClubInput, StaffUncheckedCreateWithoutClubInput> | StaffCreateWithoutClubInput[] | StaffUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: StaffCreateOrConnectWithoutClubInput | StaffCreateOrConnectWithoutClubInput[]
+    createMany?: StaffCreateManyClubInputEnvelope
+    connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+  }
+
   export type AccountClubUncheckedCreateNestedManyWithoutClubInput = {
     create?: XOR<AccountClubCreateWithoutClubInput, AccountClubUncheckedCreateWithoutClubInput> | AccountClubCreateWithoutClubInput[] | AccountClubUncheckedCreateWithoutClubInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutClubInput | AccountClubCreateOrConnectWithoutClubInput[]
@@ -45698,6 +48909,13 @@ export namespace Prisma {
     connectOrCreate?: EquipmentColorCreateOrConnectWithoutClubInput | EquipmentColorCreateOrConnectWithoutClubInput[]
     createMany?: EquipmentColorCreateManyClubInputEnvelope
     connect?: EquipmentColorWhereUniqueInput | EquipmentColorWhereUniqueInput[]
+  }
+
+  export type StaffUncheckedCreateNestedManyWithoutClubInput = {
+    create?: XOR<StaffCreateWithoutClubInput, StaffUncheckedCreateWithoutClubInput> | StaffCreateWithoutClubInput[] | StaffUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: StaffCreateOrConnectWithoutClubInput | StaffCreateOrConnectWithoutClubInput[]
+    createMany?: StaffCreateManyClubInputEnvelope
+    connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
   }
 
   export type AccountClubUpdateManyWithoutClubNestedInput = {
@@ -45798,6 +49016,20 @@ export namespace Prisma {
     deleteMany?: EquipmentColorScalarWhereInput | EquipmentColorScalarWhereInput[]
   }
 
+  export type StaffUpdateManyWithoutClubNestedInput = {
+    create?: XOR<StaffCreateWithoutClubInput, StaffUncheckedCreateWithoutClubInput> | StaffCreateWithoutClubInput[] | StaffUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: StaffCreateOrConnectWithoutClubInput | StaffCreateOrConnectWithoutClubInput[]
+    upsert?: StaffUpsertWithWhereUniqueWithoutClubInput | StaffUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: StaffCreateManyClubInputEnvelope
+    set?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    disconnect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    delete?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    update?: StaffUpdateWithWhereUniqueWithoutClubInput | StaffUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: StaffUpdateManyWithWhereWithoutClubInput | StaffUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: StaffScalarWhereInput | StaffScalarWhereInput[]
+  }
+
   export type AccountClubUncheckedUpdateManyWithoutClubNestedInput = {
     create?: XOR<AccountClubCreateWithoutClubInput, AccountClubUncheckedCreateWithoutClubInput> | AccountClubCreateWithoutClubInput[] | AccountClubUncheckedCreateWithoutClubInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutClubInput | AccountClubCreateOrConnectWithoutClubInput[]
@@ -45894,6 +49126,20 @@ export namespace Prisma {
     update?: EquipmentColorUpdateWithWhereUniqueWithoutClubInput | EquipmentColorUpdateWithWhereUniqueWithoutClubInput[]
     updateMany?: EquipmentColorUpdateManyWithWhereWithoutClubInput | EquipmentColorUpdateManyWithWhereWithoutClubInput[]
     deleteMany?: EquipmentColorScalarWhereInput | EquipmentColorScalarWhereInput[]
+  }
+
+  export type StaffUncheckedUpdateManyWithoutClubNestedInput = {
+    create?: XOR<StaffCreateWithoutClubInput, StaffUncheckedCreateWithoutClubInput> | StaffCreateWithoutClubInput[] | StaffUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: StaffCreateOrConnectWithoutClubInput | StaffCreateOrConnectWithoutClubInput[]
+    upsert?: StaffUpsertWithWhereUniqueWithoutClubInput | StaffUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: StaffCreateManyClubInputEnvelope
+    set?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    disconnect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    delete?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    update?: StaffUpdateWithWhereUniqueWithoutClubInput | StaffUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: StaffUpdateManyWithWhereWithoutClubInput | StaffUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: StaffScalarWhereInput | StaffScalarWhereInput[]
   }
 
   export type EquipmentColorCreateNestedManyWithoutSeasonInput = {
@@ -46119,6 +49365,13 @@ export namespace Prisma {
     connect?: TeamAthleteWhereUniqueInput | TeamAthleteWhereUniqueInput[]
   }
 
+  export type TeamStaffCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TeamStaffCreateWithoutTeamInput, TeamStaffUncheckedCreateWithoutTeamInput> | TeamStaffCreateWithoutTeamInput[] | TeamStaffUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamStaffCreateOrConnectWithoutTeamInput | TeamStaffCreateOrConnectWithoutTeamInput[]
+    createMany?: TeamStaffCreateManyTeamInputEnvelope
+    connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+  }
+
   export type GameCreateNestedManyWithoutTeamInput = {
     create?: XOR<GameCreateWithoutTeamInput, GameUncheckedCreateWithoutTeamInput> | GameCreateWithoutTeamInput[] | GameUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: GameCreateOrConnectWithoutTeamInput | GameCreateOrConnectWithoutTeamInput[]
@@ -46131,6 +49384,13 @@ export namespace Prisma {
     connectOrCreate?: TeamAthleteCreateOrConnectWithoutTeamInput | TeamAthleteCreateOrConnectWithoutTeamInput[]
     createMany?: TeamAthleteCreateManyTeamInputEnvelope
     connect?: TeamAthleteWhereUniqueInput | TeamAthleteWhereUniqueInput[]
+  }
+
+  export type TeamStaffUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<TeamStaffCreateWithoutTeamInput, TeamStaffUncheckedCreateWithoutTeamInput> | TeamStaffCreateWithoutTeamInput[] | TeamStaffUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamStaffCreateOrConnectWithoutTeamInput | TeamStaffCreateOrConnectWithoutTeamInput[]
+    createMany?: TeamStaffCreateManyTeamInputEnvelope
+    connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
   }
 
   export type GameUncheckedCreateNestedManyWithoutTeamInput = {
@@ -46174,6 +49434,20 @@ export namespace Prisma {
     deleteMany?: TeamAthleteScalarWhereInput | TeamAthleteScalarWhereInput[]
   }
 
+  export type TeamStaffUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TeamStaffCreateWithoutTeamInput, TeamStaffUncheckedCreateWithoutTeamInput> | TeamStaffCreateWithoutTeamInput[] | TeamStaffUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamStaffCreateOrConnectWithoutTeamInput | TeamStaffCreateOrConnectWithoutTeamInput[]
+    upsert?: TeamStaffUpsertWithWhereUniqueWithoutTeamInput | TeamStaffUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TeamStaffCreateManyTeamInputEnvelope
+    set?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    disconnect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    delete?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    update?: TeamStaffUpdateWithWhereUniqueWithoutTeamInput | TeamStaffUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TeamStaffUpdateManyWithWhereWithoutTeamInput | TeamStaffUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TeamStaffScalarWhereInput | TeamStaffScalarWhereInput[]
+  }
+
   export type GameUpdateManyWithoutTeamNestedInput = {
     create?: XOR<GameCreateWithoutTeamInput, GameUncheckedCreateWithoutTeamInput> | GameCreateWithoutTeamInput[] | GameUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: GameCreateOrConnectWithoutTeamInput | GameCreateOrConnectWithoutTeamInput[]
@@ -46200,6 +49474,20 @@ export namespace Prisma {
     update?: TeamAthleteUpdateWithWhereUniqueWithoutTeamInput | TeamAthleteUpdateWithWhereUniqueWithoutTeamInput[]
     updateMany?: TeamAthleteUpdateManyWithWhereWithoutTeamInput | TeamAthleteUpdateManyWithWhereWithoutTeamInput[]
     deleteMany?: TeamAthleteScalarWhereInput | TeamAthleteScalarWhereInput[]
+  }
+
+  export type TeamStaffUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<TeamStaffCreateWithoutTeamInput, TeamStaffUncheckedCreateWithoutTeamInput> | TeamStaffCreateWithoutTeamInput[] | TeamStaffUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: TeamStaffCreateOrConnectWithoutTeamInput | TeamStaffCreateOrConnectWithoutTeamInput[]
+    upsert?: TeamStaffUpsertWithWhereUniqueWithoutTeamInput | TeamStaffUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: TeamStaffCreateManyTeamInputEnvelope
+    set?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    disconnect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    delete?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    update?: TeamStaffUpdateWithWhereUniqueWithoutTeamInput | TeamStaffUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: TeamStaffUpdateManyWithWhereWithoutTeamInput | TeamStaffUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: TeamStaffScalarWhereInput | TeamStaffScalarWhereInput[]
   }
 
   export type GameUncheckedUpdateManyWithoutTeamNestedInput = {
@@ -46242,6 +49530,98 @@ export namespace Prisma {
     upsert?: AthleteUpsertWithoutTeamsInput
     connect?: AthleteWhereUniqueInput
     update?: XOR<XOR<AthleteUpdateToOneWithWhereWithoutTeamsInput, AthleteUpdateWithoutTeamsInput>, AthleteUncheckedUpdateWithoutTeamsInput>
+  }
+
+  export type ClubCreateNestedOneWithoutStaffInput = {
+    create?: XOR<ClubCreateWithoutStaffInput, ClubUncheckedCreateWithoutStaffInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutStaffInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type TeamStaffCreateNestedManyWithoutStaffInput = {
+    create?: XOR<TeamStaffCreateWithoutStaffInput, TeamStaffUncheckedCreateWithoutStaffInput> | TeamStaffCreateWithoutStaffInput[] | TeamStaffUncheckedCreateWithoutStaffInput[]
+    connectOrCreate?: TeamStaffCreateOrConnectWithoutStaffInput | TeamStaffCreateOrConnectWithoutStaffInput[]
+    createMany?: TeamStaffCreateManyStaffInputEnvelope
+    connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+  }
+
+  export type TeamStaffUncheckedCreateNestedManyWithoutStaffInput = {
+    create?: XOR<TeamStaffCreateWithoutStaffInput, TeamStaffUncheckedCreateWithoutStaffInput> | TeamStaffCreateWithoutStaffInput[] | TeamStaffUncheckedCreateWithoutStaffInput[]
+    connectOrCreate?: TeamStaffCreateOrConnectWithoutStaffInput | TeamStaffCreateOrConnectWithoutStaffInput[]
+    createMany?: TeamStaffCreateManyStaffInputEnvelope
+    connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+  }
+
+  export type NullableEnumCoachGradeFieldUpdateOperationsInput = {
+    set?: $Enums.CoachGrade | null
+  }
+
+  export type EnumStaffRoleFieldUpdateOperationsInput = {
+    set?: $Enums.StaffRole
+  }
+
+  export type ClubUpdateOneRequiredWithoutStaffNestedInput = {
+    create?: XOR<ClubCreateWithoutStaffInput, ClubUncheckedCreateWithoutStaffInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutStaffInput
+    upsert?: ClubUpsertWithoutStaffInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutStaffInput, ClubUpdateWithoutStaffInput>, ClubUncheckedUpdateWithoutStaffInput>
+  }
+
+  export type TeamStaffUpdateManyWithoutStaffNestedInput = {
+    create?: XOR<TeamStaffCreateWithoutStaffInput, TeamStaffUncheckedCreateWithoutStaffInput> | TeamStaffCreateWithoutStaffInput[] | TeamStaffUncheckedCreateWithoutStaffInput[]
+    connectOrCreate?: TeamStaffCreateOrConnectWithoutStaffInput | TeamStaffCreateOrConnectWithoutStaffInput[]
+    upsert?: TeamStaffUpsertWithWhereUniqueWithoutStaffInput | TeamStaffUpsertWithWhereUniqueWithoutStaffInput[]
+    createMany?: TeamStaffCreateManyStaffInputEnvelope
+    set?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    disconnect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    delete?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    update?: TeamStaffUpdateWithWhereUniqueWithoutStaffInput | TeamStaffUpdateWithWhereUniqueWithoutStaffInput[]
+    updateMany?: TeamStaffUpdateManyWithWhereWithoutStaffInput | TeamStaffUpdateManyWithWhereWithoutStaffInput[]
+    deleteMany?: TeamStaffScalarWhereInput | TeamStaffScalarWhereInput[]
+  }
+
+  export type TeamStaffUncheckedUpdateManyWithoutStaffNestedInput = {
+    create?: XOR<TeamStaffCreateWithoutStaffInput, TeamStaffUncheckedCreateWithoutStaffInput> | TeamStaffCreateWithoutStaffInput[] | TeamStaffUncheckedCreateWithoutStaffInput[]
+    connectOrCreate?: TeamStaffCreateOrConnectWithoutStaffInput | TeamStaffCreateOrConnectWithoutStaffInput[]
+    upsert?: TeamStaffUpsertWithWhereUniqueWithoutStaffInput | TeamStaffUpsertWithWhereUniqueWithoutStaffInput[]
+    createMany?: TeamStaffCreateManyStaffInputEnvelope
+    set?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    disconnect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    delete?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
+    update?: TeamStaffUpdateWithWhereUniqueWithoutStaffInput | TeamStaffUpdateWithWhereUniqueWithoutStaffInput[]
+    updateMany?: TeamStaffUpdateManyWithWhereWithoutStaffInput | TeamStaffUpdateManyWithWhereWithoutStaffInput[]
+    deleteMany?: TeamStaffScalarWhereInput | TeamStaffScalarWhereInput[]
+  }
+
+  export type TeamCreateNestedOneWithoutStaffInput = {
+    create?: XOR<TeamCreateWithoutStaffInput, TeamUncheckedCreateWithoutStaffInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutStaffInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type StaffCreateNestedOneWithoutTeamsInput = {
+    create?: XOR<StaffCreateWithoutTeamsInput, StaffUncheckedCreateWithoutTeamsInput>
+    connectOrCreate?: StaffCreateOrConnectWithoutTeamsInput
+    connect?: StaffWhereUniqueInput
+  }
+
+  export type TeamUpdateOneRequiredWithoutStaffNestedInput = {
+    create?: XOR<TeamCreateWithoutStaffInput, TeamUncheckedCreateWithoutStaffInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutStaffInput
+    upsert?: TeamUpsertWithoutStaffInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutStaffInput, TeamUpdateWithoutStaffInput>, TeamUncheckedUpdateWithoutStaffInput>
+  }
+
+  export type StaffUpdateOneRequiredWithoutTeamsNestedInput = {
+    create?: XOR<StaffCreateWithoutTeamsInput, StaffUncheckedCreateWithoutTeamsInput>
+    connectOrCreate?: StaffCreateOrConnectWithoutTeamsInput
+    upsert?: StaffUpsertWithoutTeamsInput
+    connect?: StaffWhereUniqueInput
+    update?: XOR<XOR<StaffUpdateToOneWithWhereWithoutTeamsInput, StaffUpdateWithoutTeamsInput>, StaffUncheckedUpdateWithoutTeamsInput>
   }
 
   export type EchelonCreateNestedOneWithoutCompetitionsInput = {
@@ -46931,6 +50311,40 @@ export namespace Prisma {
     _max?: NestedEnumTeamTypeNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumCoachGradeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.CoachGrade | EnumCoachGradeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CoachGrade[] | ListEnumCoachGradeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CoachGrade[] | ListEnumCoachGradeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCoachGradeNullableFilter<$PrismaModel> | $Enums.CoachGrade | null
+  }
+
+  export type NestedEnumStaffRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.StaffRole | EnumStaffRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumStaffRoleFilter<$PrismaModel> | $Enums.StaffRole
+  }
+
+  export type NestedEnumCoachGradeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CoachGrade | EnumCoachGradeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CoachGrade[] | ListEnumCoachGradeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CoachGrade[] | ListEnumCoachGradeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCoachGradeNullableWithAggregatesFilter<$PrismaModel> | $Enums.CoachGrade | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumCoachGradeNullableFilter<$PrismaModel>
+    _max?: NestedEnumCoachGradeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumStaffRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StaffRole | EnumStaffRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumStaffRoleWithAggregatesFilter<$PrismaModel> | $Enums.StaffRole
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumStaffRoleFilter<$PrismaModel>
+    _max?: NestedEnumStaffRoleFilter<$PrismaModel>
+  }
+
   export type NestedEnumSizeFilter<$PrismaModel = never> = {
     equals?: $Enums.Size | EnumSizeFieldRefInput<$PrismaModel>
     in?: $Enums.Size[] | ListEnumSizeFieldRefInput<$PrismaModel>
@@ -46952,6 +50366,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -46962,6 +50377,7 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutAthletesInput = {
@@ -46969,6 +50385,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -46979,6 +50396,7 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutAthletesInput = {
@@ -47224,6 +50642,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47234,6 +50653,7 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAthletesInput = {
@@ -47241,6 +50661,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -47251,6 +50672,7 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type AthleteReportUpsertWithWhereUniqueWithoutAthleteInput = {
@@ -47553,6 +50975,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
@@ -47575,6 +50998,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
@@ -47686,6 +51110,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
@@ -47708,6 +51133,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
@@ -47722,6 +51148,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -47732,6 +51159,7 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutGamesInput = {
@@ -47739,6 +51167,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -47749,6 +51178,7 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutGamesInput = {
@@ -47764,6 +51194,7 @@ export namespace Prisma {
     club: ClubCreateNestedOneWithoutTeamsInput
     echelon: EchelonCreateNestedOneWithoutTeamsInput
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutGamesInput = {
@@ -47775,6 +51206,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutGamesInput = {
@@ -48080,6 +51512,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48090,6 +51523,7 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutGamesInput = {
@@ -48097,6 +51531,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -48107,6 +51542,7 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type TeamUpsertWithoutGamesInput = {
@@ -48128,6 +51564,7 @@ export namespace Prisma {
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
     echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutGamesInput = {
@@ -48139,6 +51576,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CompetitionUpsertWithoutGamesInput = {
@@ -48613,6 +52051,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
@@ -48635,6 +52074,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
@@ -48740,6 +52180,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
@@ -48762,6 +52203,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
@@ -48857,6 +52299,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
@@ -48879,6 +52322,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
@@ -48984,6 +52428,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
@@ -49006,6 +52451,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
@@ -49101,6 +52547,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
     gameAthletes?: GameAthleteCreateNestedManyWithoutAthleteInput
@@ -49123,6 +52570,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
     gameAthletes?: GameAthleteUncheckedCreateNestedManyWithoutAthleteInput
@@ -49217,6 +52665,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     gameAthletes?: GameAthleteCreateNestedManyWithoutAthleteInput
@@ -49239,6 +52688,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     gameAthletes?: GameAthleteUncheckedCreateNestedManyWithoutAthleteInput
@@ -49276,6 +52726,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
     gameAthletes?: GameAthleteUpdateManyWithoutAthleteNestedInput
@@ -49298,6 +52749,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
     gameAthletes?: GameAthleteUncheckedUpdateManyWithoutAthleteNestedInput
@@ -49404,6 +52856,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     gameAthletes?: GameAthleteUpdateManyWithoutAthleteNestedInput
@@ -49426,6 +52879,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     gameAthletes?: GameAthleteUncheckedUpdateManyWithoutAthleteNestedInput
@@ -49440,6 +52894,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -49450,6 +52905,7 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutMacrocyclesInput = {
@@ -49457,6 +52913,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -49467,6 +52924,7 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutMacrocyclesInput = {
@@ -49518,6 +52976,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49528,6 +52987,7 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMacrocyclesInput = {
@@ -49535,6 +52995,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49545,6 +53006,7 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type MesocycleUpsertWithWhereUniqueWithoutMacrocycleInput = {
@@ -50001,6 +53463,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutTeamsInput
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
   }
 
@@ -50012,6 +53475,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -50212,6 +53676,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
     gameAthletes?: GameAthleteCreateNestedManyWithoutAthleteInput
@@ -50234,6 +53699,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
     gameAthletes?: GameAthleteUncheckedCreateNestedManyWithoutAthleteInput
@@ -50363,6 +53829,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     echelon: EchelonCreateNestedOneWithoutTeamsInput
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
   }
 
@@ -50374,6 +53841,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -50447,6 +53915,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StaffCreateWithoutClubInput = {
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamStaffCreateNestedManyWithoutStaffInput
+  }
+
+  export type StaffUncheckedCreateWithoutClubInput = {
+    id?: number
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamStaffUncheckedCreateNestedManyWithoutStaffInput
+  }
+
+  export type StaffCreateOrConnectWithoutClubInput = {
+    where: StaffWhereUniqueInput
+    create: XOR<StaffCreateWithoutClubInput, StaffUncheckedCreateWithoutClubInput>
+  }
+
+  export type StaffCreateManyClubInputEnvelope = {
+    data: StaffCreateManyClubInput | StaffCreateManyClubInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountClubUpsertWithWhereUniqueWithoutClubInput = {
     where: AccountClubWhereUniqueInput
     update: XOR<AccountClubUpdateWithoutClubInput, AccountClubUncheckedUpdateWithoutClubInput>
@@ -50494,6 +53999,7 @@ export namespace Prisma {
     idType?: EnumIdTypeNullableFilter<"Athlete"> | $Enums.IdType | null
     active?: BoolFilter<"Athlete"> | boolean
     shirtSize?: EnumSizeNullableFilter<"Athlete"> | $Enums.Size | null
+    photo?: StringNullableFilter<"Athlete"> | string | null
     clubId?: IntFilter<"Athlete"> | number
   }
 
@@ -50590,6 +54096,39 @@ export namespace Prisma {
     data: XOR<EquipmentColorUpdateManyMutationInput, EquipmentColorUncheckedUpdateManyWithoutClubInput>
   }
 
+  export type StaffUpsertWithWhereUniqueWithoutClubInput = {
+    where: StaffWhereUniqueInput
+    update: XOR<StaffUpdateWithoutClubInput, StaffUncheckedUpdateWithoutClubInput>
+    create: XOR<StaffCreateWithoutClubInput, StaffUncheckedCreateWithoutClubInput>
+  }
+
+  export type StaffUpdateWithWhereUniqueWithoutClubInput = {
+    where: StaffWhereUniqueInput
+    data: XOR<StaffUpdateWithoutClubInput, StaffUncheckedUpdateWithoutClubInput>
+  }
+
+  export type StaffUpdateManyWithWhereWithoutClubInput = {
+    where: StaffScalarWhereInput
+    data: XOR<StaffUpdateManyMutationInput, StaffUncheckedUpdateManyWithoutClubInput>
+  }
+
+  export type StaffScalarWhereInput = {
+    AND?: StaffScalarWhereInput | StaffScalarWhereInput[]
+    OR?: StaffScalarWhereInput[]
+    NOT?: StaffScalarWhereInput | StaffScalarWhereInput[]
+    id?: IntFilter<"Staff"> | number
+    name?: StringFilter<"Staff"> | string
+    birthdate?: DateTimeNullableFilter<"Staff"> | Date | string | null
+    tptdNumber?: IntNullableFilter<"Staff"> | number | null
+    fpbLicense?: IntNullableFilter<"Staff"> | number | null
+    grade?: EnumCoachGradeNullableFilter<"Staff"> | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
+    active?: BoolFilter<"Staff"> | boolean
+    clubId?: IntFilter<"Staff"> | number
+    createdAt?: DateTimeFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeFilter<"Staff"> | Date | string
+  }
+
   export type EquipmentColorCreateWithoutSeasonInput = {
     color: string
     colorHex?: string
@@ -50669,6 +54208,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -50679,6 +54219,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
     teams?: TeamCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutVenuesInput = {
@@ -50686,6 +54227,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -50696,6 +54238,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutVenuesInput = {
@@ -50825,6 +54368,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50835,6 +54379,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
     teams?: TeamUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutVenuesInput = {
@@ -50842,6 +54387,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -50852,6 +54398,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type GameUpsertWithWhereUniqueWithoutVenueInput = {
@@ -50906,6 +54453,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -50916,6 +54464,7 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutAccountsInput = {
@@ -50923,6 +54472,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -50933,6 +54483,7 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutAccountsInput = {
@@ -51012,6 +54563,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51022,6 +54574,7 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAccountsInput = {
@@ -51029,6 +54582,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51039,6 +54593,7 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type AccountClubRoleUpsertWithWhereUniqueWithoutAccountClubInput = {
@@ -51112,6 +54667,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -51122,6 +54678,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutTeamsInput = {
@@ -51129,6 +54686,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -51139,6 +54697,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutTeamsInput = {
@@ -51192,6 +54751,27 @@ export namespace Prisma {
 
   export type TeamAthleteCreateManyTeamInputEnvelope = {
     data: TeamAthleteCreateManyTeamInput | TeamAthleteCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type TeamStaffCreateWithoutTeamInput = {
+    isPrimary?: boolean
+    staff: StaffCreateNestedOneWithoutTeamsInput
+  }
+
+  export type TeamStaffUncheckedCreateWithoutTeamInput = {
+    id?: number
+    staffId: number
+    isPrimary?: boolean
+  }
+
+  export type TeamStaffCreateOrConnectWithoutTeamInput = {
+    where: TeamStaffWhereUniqueInput
+    create: XOR<TeamStaffCreateWithoutTeamInput, TeamStaffUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TeamStaffCreateManyTeamInputEnvelope = {
+    data: TeamStaffCreateManyTeamInput | TeamStaffCreateManyTeamInput[]
     skipDuplicates?: boolean
   }
 
@@ -51283,6 +54863,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51293,6 +54874,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTeamsInput = {
@@ -51300,6 +54882,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -51310,6 +54893,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type EchelonUpsertWithoutTeamsInput = {
@@ -51364,6 +54948,32 @@ export namespace Prisma {
     data: XOR<TeamAthleteUpdateManyMutationInput, TeamAthleteUncheckedUpdateManyWithoutTeamInput>
   }
 
+  export type TeamStaffUpsertWithWhereUniqueWithoutTeamInput = {
+    where: TeamStaffWhereUniqueInput
+    update: XOR<TeamStaffUpdateWithoutTeamInput, TeamStaffUncheckedUpdateWithoutTeamInput>
+    create: XOR<TeamStaffCreateWithoutTeamInput, TeamStaffUncheckedCreateWithoutTeamInput>
+  }
+
+  export type TeamStaffUpdateWithWhereUniqueWithoutTeamInput = {
+    where: TeamStaffWhereUniqueInput
+    data: XOR<TeamStaffUpdateWithoutTeamInput, TeamStaffUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type TeamStaffUpdateManyWithWhereWithoutTeamInput = {
+    where: TeamStaffScalarWhereInput
+    data: XOR<TeamStaffUpdateManyMutationInput, TeamStaffUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type TeamStaffScalarWhereInput = {
+    AND?: TeamStaffScalarWhereInput | TeamStaffScalarWhereInput[]
+    OR?: TeamStaffScalarWhereInput[]
+    NOT?: TeamStaffScalarWhereInput | TeamStaffScalarWhereInput[]
+    id?: IntFilter<"TeamStaff"> | number
+    teamId?: IntFilter<"TeamStaff"> | number
+    staffId?: IntFilter<"TeamStaff"> | number
+    isPrimary?: BoolFilter<"TeamStaff"> | boolean
+  }
+
   export type GameUpsertWithWhereUniqueWithoutTeamInput = {
     where: GameWhereUniqueInput
     update: XOR<GameUpdateWithoutTeamInput, GameUncheckedUpdateWithoutTeamInput>
@@ -51387,6 +54997,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutTeamsInput
     echelon: EchelonCreateNestedOneWithoutTeamsInput
+    staff?: TeamStaffCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
   }
 
@@ -51398,6 +55009,7 @@ export namespace Prisma {
     echelonId: number
     createdAt?: Date | string
     updatedAt?: Date | string
+    staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
   }
 
@@ -51417,6 +55029,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
@@ -51439,6 +55052,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
@@ -51472,6 +55086,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
     echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
+    staff?: TeamStaffUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
   }
 
@@ -51483,6 +55098,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -51508,6 +55124,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
@@ -51530,6 +55147,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
@@ -51538,6 +55156,265 @@ export namespace Prisma {
     timeEntries?: TimeEntryUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+  }
+
+  export type ClubCreateWithoutStaffInput = {
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubCreateNestedManyWithoutClubInput
+    athletes?: AthleteCreateNestedManyWithoutClubInput
+    games?: GameCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
+    teams?: TeamCreateNestedManyWithoutClubInput
+    venues?: VenueCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutStaffInput = {
+    id?: number
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
+    athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
+    games?: GameUncheckedCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
+    teams?: TeamUncheckedCreateNestedManyWithoutClubInput
+    venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutStaffInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutStaffInput, ClubUncheckedCreateWithoutStaffInput>
+  }
+
+  export type TeamStaffCreateWithoutStaffInput = {
+    isPrimary?: boolean
+    team: TeamCreateNestedOneWithoutStaffInput
+  }
+
+  export type TeamStaffUncheckedCreateWithoutStaffInput = {
+    id?: number
+    teamId: number
+    isPrimary?: boolean
+  }
+
+  export type TeamStaffCreateOrConnectWithoutStaffInput = {
+    where: TeamStaffWhereUniqueInput
+    create: XOR<TeamStaffCreateWithoutStaffInput, TeamStaffUncheckedCreateWithoutStaffInput>
+  }
+
+  export type TeamStaffCreateManyStaffInputEnvelope = {
+    data: TeamStaffCreateManyStaffInput | TeamStaffCreateManyStaffInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubUpsertWithoutStaffInput = {
+    update: XOR<ClubUpdateWithoutStaffInput, ClubUncheckedUpdateWithoutStaffInput>
+    create: XOR<ClubCreateWithoutStaffInput, ClubUncheckedCreateWithoutStaffInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutStaffInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutStaffInput, ClubUncheckedUpdateWithoutStaffInput>
+  }
+
+  export type ClubUpdateWithoutStaffInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUpdateManyWithoutClubNestedInput
+    games?: GameUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
+    teams?: TeamUpdateManyWithoutClubNestedInput
+    venues?: VenueUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutStaffInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
+    games?: GameUncheckedUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+  }
+
+  export type TeamStaffUpsertWithWhereUniqueWithoutStaffInput = {
+    where: TeamStaffWhereUniqueInput
+    update: XOR<TeamStaffUpdateWithoutStaffInput, TeamStaffUncheckedUpdateWithoutStaffInput>
+    create: XOR<TeamStaffCreateWithoutStaffInput, TeamStaffUncheckedCreateWithoutStaffInput>
+  }
+
+  export type TeamStaffUpdateWithWhereUniqueWithoutStaffInput = {
+    where: TeamStaffWhereUniqueInput
+    data: XOR<TeamStaffUpdateWithoutStaffInput, TeamStaffUncheckedUpdateWithoutStaffInput>
+  }
+
+  export type TeamStaffUpdateManyWithWhereWithoutStaffInput = {
+    where: TeamStaffScalarWhereInput
+    data: XOR<TeamStaffUpdateManyMutationInput, TeamStaffUncheckedUpdateManyWithoutStaffInput>
+  }
+
+  export type TeamCreateWithoutStaffInput = {
+    name: string
+    type?: $Enums.TeamType | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutTeamsInput
+    echelon: EchelonCreateNestedOneWithoutTeamsInput
+    athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
+    games?: GameCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutStaffInput = {
+    id?: number
+    name: string
+    type?: $Enums.TeamType | null
+    clubId: number
+    echelonId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
+    games?: GameUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutStaffInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutStaffInput, TeamUncheckedCreateWithoutStaffInput>
+  }
+
+  export type StaffCreateWithoutTeamsInput = {
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutStaffInput
+  }
+
+  export type StaffUncheckedCreateWithoutTeamsInput = {
+    id?: number
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    clubId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type StaffCreateOrConnectWithoutTeamsInput = {
+    where: StaffWhereUniqueInput
+    create: XOR<StaffCreateWithoutTeamsInput, StaffUncheckedCreateWithoutTeamsInput>
+  }
+
+  export type TeamUpsertWithoutStaffInput = {
+    update: XOR<TeamUpdateWithoutStaffInput, TeamUncheckedUpdateWithoutStaffInput>
+    create: XOR<TeamCreateWithoutStaffInput, TeamUncheckedCreateWithoutStaffInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutStaffInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutStaffInput, TeamUncheckedUpdateWithoutStaffInput>
+  }
+
+  export type TeamUpdateWithoutStaffInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
+    echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
+    athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
+    games?: GameUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutStaffInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    clubId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
+    games?: GameUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type StaffUpsertWithoutTeamsInput = {
+    update: XOR<StaffUpdateWithoutTeamsInput, StaffUncheckedUpdateWithoutTeamsInput>
+    create: XOR<StaffCreateWithoutTeamsInput, StaffUncheckedCreateWithoutTeamsInput>
+    where?: StaffWhereInput
+  }
+
+  export type StaffUpdateToOneWithWhereWithoutTeamsInput = {
+    where?: StaffWhereInput
+    data: XOR<StaffUpdateWithoutTeamsInput, StaffUncheckedUpdateWithoutTeamsInput>
+  }
+
+  export type StaffUpdateWithoutTeamsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutStaffNestedInput
+  }
+
+  export type StaffUncheckedUpdateWithoutTeamsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EchelonCreateWithoutCompetitionsInput = {
@@ -51912,6 +55789,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
@@ -51934,6 +55812,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
@@ -51971,6 +55850,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
@@ -51993,6 +55873,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
@@ -52007,6 +55888,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -52017,6 +55899,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
     teams?: TeamCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutEquipmentColorsInput = {
@@ -52024,6 +55907,7 @@ export namespace Prisma {
     name: string
     shortName?: string | null
     image?: string | null
+    federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
     createdAt?: Date | string
@@ -52034,6 +55918,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutEquipmentColorsInput = {
@@ -52133,6 +56018,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52143,6 +56029,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
     teams?: TeamUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutEquipmentColorsInput = {
@@ -52150,6 +56037,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     shortName?: NullableStringFieldUpdateOperationsInput | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -52160,6 +56048,7 @@ export namespace Prisma {
     macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type SeasonUpsertWithoutEquipmentColorsInput = {
@@ -52426,6 +56315,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     club: ClubCreateNestedOneWithoutAthletesInput
     athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
@@ -52448,6 +56338,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
     clubId: number
     athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
     reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
@@ -52581,6 +56472,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
@@ -52603,6 +56495,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
@@ -53503,6 +57396,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
   }
 
@@ -53514,6 +57408,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -53608,6 +57503,7 @@ export namespace Prisma {
     idType?: $Enums.IdType | null
     active?: boolean
     shirtSize?: $Enums.Size | null
+    photo?: string | null
   }
 
   export type GameCreateManyClubInput = {
@@ -53673,6 +57569,19 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type StaffCreateManyClubInput = {
+    id?: number
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
   export type AccountClubUpdateWithoutClubInput = {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneRequiredWithoutClubsNestedInput
@@ -53703,6 +57612,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
     gameAthletes?: GameAthleteUpdateManyWithoutAthleteNestedInput
@@ -53725,6 +57635,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
     athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
     reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
     gameAthletes?: GameAthleteUncheckedUpdateManyWithoutAthleteNestedInput
@@ -53747,6 +57658,7 @@ export namespace Prisma {
     idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
     active?: BoolFieldUpdateOperationsInput | boolean
     shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type GameUpdateWithoutClubInput = {
@@ -53873,6 +57785,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
   }
 
@@ -53884,6 +57797,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
   }
 
@@ -53951,6 +57865,46 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StaffUpdateWithoutClubInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamStaffUpdateManyWithoutStaffNestedInput
+  }
+
+  export type StaffUncheckedUpdateWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamStaffUncheckedUpdateManyWithoutStaffNestedInput
+  }
+
+  export type StaffUncheckedUpdateManyWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -54135,6 +58089,12 @@ export namespace Prisma {
     athleteId: number
   }
 
+  export type TeamStaffCreateManyTeamInput = {
+    id?: number
+    staffId: number
+    isPrimary?: boolean
+  }
+
   export type GameCreateManyTeamInput = {
     id?: number
     createdAt?: Date | string
@@ -54173,6 +58133,23 @@ export namespace Prisma {
   export type TeamAthleteUncheckedUpdateManyWithoutTeamInput = {
     id?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type TeamStaffUpdateWithoutTeamInput = {
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    staff?: StaffUpdateOneRequiredWithoutTeamsNestedInput
+  }
+
+  export type TeamStaffUncheckedUpdateWithoutTeamInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    staffId?: IntFieldUpdateOperationsInput | number
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TeamStaffUncheckedUpdateManyWithoutTeamInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    staffId?: IntFieldUpdateOperationsInput | number
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GameUpdateWithoutTeamInput = {
@@ -54262,6 +58239,29 @@ export namespace Prisma {
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
     image4?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type TeamStaffCreateManyStaffInput = {
+    id?: number
+    teamId: number
+    isPrimary?: boolean
+  }
+
+  export type TeamStaffUpdateWithoutStaffInput = {
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+    team?: TeamUpdateOneRequiredWithoutStaffNestedInput
+  }
+
+  export type TeamStaffUncheckedUpdateWithoutStaffInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type TeamStaffUncheckedUpdateManyWithoutStaffInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    isPrimary?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type CompetitionSerieCreateManyCompetitionInput = {

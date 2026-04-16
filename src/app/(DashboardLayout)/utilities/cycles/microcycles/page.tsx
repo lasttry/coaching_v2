@@ -2,10 +2,17 @@
 import React, { ReactElement } from 'react';
 import MicrocycleDetailsDialog from '@/app/(DashboardLayout)/components/shared/MicrocycleDetailsDialog';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import {
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
   Table,
   TableBody,
   TableCell,
@@ -18,10 +25,15 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useTranslation } from 'react-i18next';
+import '@/lib/i18n.client';
 
 import PageContainer from '@/app/(DashboardLayout)/components/container/PageContainer';
 import DashboardCard from '@/app/(DashboardLayout)/components/shared/DashboardCard';
 import dayjs from 'dayjs';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+import 'dayjs/locale/pt';
+import 'dayjs/locale/en';
 import {
   MicrocycleInterface,
   MesocycleInterface,
@@ -31,7 +43,10 @@ import {
 import { log } from '@/lib/logger';
 import { useMessage } from '@/hooks/useMessage';
 
+dayjs.extend(localizedFormat);
+
 const MicrocyclesList = (): ReactElement => {
+  const { t, i18n } = useTranslation();
   const [data, setData] = useState<
     {
       macrocycle: MacrocycleInterface;
@@ -43,7 +58,19 @@ const MicrocyclesList = (): ReactElement => {
   >([]);
   const { message: error, setTimedMessage: setError } = useMessage(5000);
   const { message: success, setTimedMessage: setSuccess } = useMessage(5000);
-  const router = useRouter();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedMicrocycle, setSelectedMicrocycle] = useState<MicrocycleInterface | null>(null);
+  const [selectedMacrocycleId, setSelectedMacrocycleId] = useState<string>('');
+  const [form, setForm] = useState({
+    mesocycleId: '',
+    number: '',
+    name: '',
+    startDate: '',
+    endDate: '',
+    notes: '',
+  });
+  const currentLocale = i18n.language?.startsWith('pt') ? 'pt' : 'en';
+  const formatDate = (date: Date): string => dayjs(date).locale(currentLocale).format('L');
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [detailsData, setDetailsData] = useState<SessionGoalInterface[] | null>(null);
   const [currentMacrocycle, setCurrentMacrocycle] = useState<MacrocycleInterface | null>(null);
@@ -202,6 +229,129 @@ const MicrocyclesList = (): ReactElement => {
     }
   };
 
+  const openAddOverlay = (): void => {
+    setSelectedMicrocycle(null);
+    setSelectedMacrocycleId('');
+    setForm({
+      mesocycleId: '',
+      number: '',
+      name: '',
+      startDate: '',
+      endDate: '',
+      notes: '',
+    });
+    setDialogOpen(true);
+  };
+
+  const openEditOverlay = (cycle: MicrocycleInterface): void => {
+    setSelectedMicrocycle(cycle);
+    const macrocycleId = String(cycle.mesocycle?.macrocycle?.id || '');
+    setSelectedMacrocycleId(macrocycleId);
+    setForm({
+      mesocycleId: String(cycle.mesocycle?.id || ''),
+      number: String(cycle.number || ''),
+      name: cycle.name || '',
+      startDate: dayjs(cycle.startDate).format('YYYY-MM-DD'),
+      endDate: dayjs(cycle.endDate).format('YYYY-MM-DD'),
+      notes: cycle.notes || '',
+    });
+    setDialogOpen(true);
+  };
+
+  const closeOverlay = (): void => {
+    setDialogOpen(false);
+    setSelectedMicrocycle(null);
+  };
+
+  const selectedMacroData = data.find(
+    (macro) => String(macro.macrocycle.id) === selectedMacrocycleId
+  );
+
+  const handleSave = async (): Promise<void> => {
+    if (!form.mesocycleId || !form.startDate || !form.endDate) {
+      setError(t('missingFields'));
+      return;
+    }
+
+    try {
+      const isEditing = Boolean(selectedMicrocycle?.id);
+      const payload = {
+        number: form.number ? Number(form.number) : null,
+        name: form.name,
+        startDate: new Date(form.startDate).toISOString(),
+        endDate: new Date(form.endDate).toISOString(),
+        notes: form.notes,
+        ...(isEditing
+          ? {
+              mesocycleId: Number(form.mesocycleId),
+              sessionGoals: selectedMicrocycle?.sessionGoals || [],
+            }
+          : {
+              mesocycle: { id: Number(form.mesocycleId) },
+              sessionGoals: [],
+            }),
+      };
+      const response = await fetch(
+        isEditing ? `/api/cycles/microcycles/${selectedMicrocycle?.id}` : '/api/cycles/microcycles',
+        {
+          method: isEditing ? 'PUT' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to save microcycle');
+      }
+
+      setSuccess(isEditing ? t('microcycleUpdatedSuccess') : t('microcycleCreatedSuccess'));
+      closeOverlay();
+
+      const refreshed = await fetch('/api/cycles/microcycles');
+      const microcycles: MicrocycleInterface[] = await refreshed.json();
+      const groupedData = microcycles.reduce<
+        Record<
+          number,
+          {
+            macrocycle: MacrocycleInterface;
+            mesocycles: Record<
+              number,
+              {
+                mesocycle: MesocycleInterface;
+                microcycles: MicrocycleInterface[];
+              }
+            >;
+          }
+        >
+      >((acc, microcycle) => {
+        const macrocycle = microcycle.mesocycle?.macrocycle;
+        const mesocycle = microcycle.mesocycle;
+        if (!macrocycle || !mesocycle) return acc;
+        if (!acc[macrocycle.id]) {
+          acc[macrocycle.id] = { macrocycle, mesocycles: {} };
+        }
+        if (!acc[macrocycle.id].mesocycles[mesocycle.id]) {
+          acc[macrocycle.id].mesocycles[mesocycle.id] = { mesocycle, microcycles: [] };
+        }
+        acc[macrocycle.id].mesocycles[mesocycle.id].microcycles.push(microcycle);
+        return acc;
+      }, {});
+      const groupedArray = Object.values(groupedData).map((macroGroup) => ({
+        ...macroGroup,
+        mesocycles: Object.values(macroGroup.mesocycles).map((mesoGroup) => ({
+          ...mesoGroup,
+          microcycles: mesoGroup.microcycles.sort(
+            (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+          ),
+        })),
+      }));
+      setData(groupedArray);
+    } catch (err) {
+      log.error('Error saving microcycle:', err);
+      setError(t('microcycleSaveFailed'));
+    }
+  };
+
   return (
     <div suppressHydrationWarning={true}>
       <MicrocycleDetailsDialog
@@ -216,11 +366,9 @@ const MicrocyclesList = (): ReactElement => {
         description="List of all microcycles grouped by Macrocycle and Mesocycle"
       >
         <h1>Microcycles</h1>
-        <Link href="/utilities/cycles/microcycles/manage/new">
-          <Button variant="contained" color="primary">
-            Add New Microcycle
-          </Button>
-        </Link>
+        <Button variant="contained" color="primary" onClick={openAddOverlay}>
+          {t('addNewMicrocycle')}
+        </Button>
 
         {/* Success/Error Messages */}
         {success ? (
@@ -241,8 +389,7 @@ const MicrocyclesList = (): ReactElement => {
               <Typography variant="h6">
                 Macrocycle:{' '}
                 {macro.macrocycle.name || `Macrocycle ${macro.macrocycle.number || 'N/A'}`} (
-                {dayjs(macro.macrocycle.startDate).format('YYYY-MM-DD')} to{' '}
-                {dayjs(macro.macrocycle.endDate).format('YYYY-MM-DD')})
+                {formatDate(macro.macrocycle.startDate)} to {formatDate(macro.macrocycle.endDate)})
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -252,8 +399,8 @@ const MicrocyclesList = (): ReactElement => {
                     <Typography variant="h6">
                       Mesocycle:{' '}
                       {meso.mesocycle.name || `Mesocycle ${meso.mesocycle.number || 'N/A'}`} (
-                      {dayjs(meso.mesocycle.startDate).format('YYYY-MM-DD')} to{' '}
-                      {dayjs(meso.mesocycle.endDate).format('YYYY-MM-DD')})
+                      {formatDate(meso.mesocycle.startDate as Date)} to{' '}
+                      {formatDate(meso.mesocycle.endDate as Date)})
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
@@ -302,9 +449,7 @@ const MicrocyclesList = (): ReactElement => {
                             <TableRow
                               key={cycle.id}
                               hover
-                              onClick={() =>
-                                router.push(`/utilities/cycles/microcycles/manage/${cycle.id}`)
-                              }
+                              onClick={() => openEditOverlay(cycle)}
                               sx={{ cursor: 'pointer' }}
                             >
                               <TableCell>
@@ -319,12 +464,12 @@ const MicrocyclesList = (): ReactElement => {
                               </TableCell>
                               <TableCell>
                                 <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
-                                  {dayjs(cycle.startDate).format('YYYY-MM-DD')}
+                                  {formatDate(cycle.startDate)}
                                 </Typography>
                               </TableCell>
                               <TableCell>
                                 <Typography sx={{ fontSize: '15px', fontWeight: '500' }}>
-                                  {dayjs(cycle.endDate).format('YYYY-MM-DD')}
+                                  {formatDate(cycle.endDate)}
                                 </Typography>
                               </TableCell>
                               <TableCell>
@@ -340,18 +485,16 @@ const MicrocyclesList = (): ReactElement => {
                               </TableCell>
                               <TableCell align="right">
                                 <Stack direction="row" spacing={2}>
-                                  <Link
-                                    href={`/utilities/cycles/microcycles/manage/${cycle.id}`}
-                                    passHref
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openEditOverlay(cycle);
+                                    }}
                                   >
-                                    <Button
-                                      variant="contained"
-                                      color="primary"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
-                                      Edit
-                                    </Button>
-                                  </Link>
+                                    Edit
+                                  </Button>
                                   <Button
                                     variant="contained"
                                     color="secondary"
@@ -386,6 +529,94 @@ const MicrocyclesList = (): ReactElement => {
           </Accordion>
         ))}
       </PageContainer>
+      <Dialog open={dialogOpen} onClose={closeOverlay} maxWidth="sm" fullWidth>
+        <DialogTitle>{selectedMicrocycle ? t('editMicrocycle') : t('addMicrocycle')}</DialogTitle>
+        <DialogContent>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+            <FormControl fullWidth required>
+              <InputLabel>{t('selectMacrocycle')}</InputLabel>
+              <Select
+                label={t('selectMacrocycle')}
+                value={selectedMacrocycleId}
+                onChange={(e) => {
+                  const value = String(e.target.value);
+                  setSelectedMacrocycleId(value);
+                  setForm((prev) => ({ ...prev, mesocycleId: '' }));
+                }}
+              >
+                {data.map((macro) => (
+                  <MenuItem key={macro.macrocycle.id} value={String(macro.macrocycle.id)}>
+                    {macro.macrocycle.name ||
+                      `${t('macrocycle')} ${macro.macrocycle.number || macro.macrocycle.id}`}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl fullWidth required>
+              <InputLabel>{t('selectMesocycle')}</InputLabel>
+              <Select
+                label={t('selectMesocycle')}
+                value={form.mesocycleId}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, mesocycleId: String(e.target.value) }))
+                }
+              >
+                {(selectedMacroData?.mesocycles || []).map((mesoGroup) => (
+                  <MenuItem key={mesoGroup.mesocycle.id} value={String(mesoGroup.mesocycle.id)}>
+                    {mesoGroup.mesocycle.name ||
+                      `${t('mesocycle')} ${mesoGroup.mesocycle.number || mesoGroup.mesocycle.id}`}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              label={t('number')}
+              type="number"
+              value={form.number}
+              onChange={(e) => setForm((prev) => ({ ...prev, number: e.target.value }))}
+              fullWidth
+            />
+            <TextField
+              label={t('name')}
+              value={form.name}
+              onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+              fullWidth
+            />
+            <TextField
+              label={t('start')}
+              type="date"
+              value={form.startDate}
+              onChange={(e) => setForm((prev) => ({ ...prev, startDate: e.target.value }))}
+              slotProps={{ inputLabel: { shrink: true } }}
+              fullWidth
+              required
+            />
+            <TextField
+              label={t('end')}
+              type="date"
+              value={form.endDate}
+              onChange={(e) => setForm((prev) => ({ ...prev, endDate: e.target.value }))}
+              slotProps={{ inputLabel: { shrink: true } }}
+              fullWidth
+              required
+            />
+            <TextField
+              label={t('notes')}
+              multiline
+              rows={3}
+              value={form.notes}
+              onChange={(e) => setForm((prev) => ({ ...prev, notes: e.target.value }))}
+              fullWidth
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={closeOverlay}>{t('Cancel')}</Button>
+          <Button variant="contained" onClick={handleSave}>
+            {t('Save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };

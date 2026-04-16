@@ -44,7 +44,7 @@ const ClubPage = (): ReactElement => {
         }
       } catch (error) {
         log.error('Failed to fetch clubs:', error);
-        setErrorMessage('Failed to load clubs');
+        setErrorMessage(t('fetchError'));
       } finally {
         setLoading(false);
       }
@@ -123,22 +123,22 @@ const ClubPage = (): ReactElement => {
             });
             if (!addUserResponse.ok) {
               const errorData = await addUserResponse.json();
-              setErrorMessage(`Failed to add user to the club with admin role: ${errorData.error}`);
+              setErrorMessage(`${t('clubAddUserFailed')}: ${errorData.error}`);
             } else {
-              setSuccessMessage('Club created with sucess.');
+              setSuccessMessage(t('clubCreatedSuccess'));
             }
             setSelectedClub(savedClub);
           } else {
             setClubs((prev) => prev.map((club) => (club.id === savedClub.id ? savedClub : club)));
             setSelectedClub(savedClub);
-            setSuccessMessage('Club saved.');
+            setSuccessMessage(t('clubSavedSuccess'));
           }
           setEditing(false);
         } else {
-          setErrorMessage('Failed to save the club');
+          setErrorMessage(t('clubSaveFailed'));
         }
       } catch (error) {
-        setErrorMessage(`Error saving the club: ${error}`);
+        setErrorMessage(`${t('clubSaveFailed')}: ${error}`);
       }
     }
   };
@@ -155,24 +155,24 @@ const ClubPage = (): ReactElement => {
       if (response.ok) {
         setClubs((prev) => prev.filter((club) => club.id !== selectedClub.id));
         setSelectedClub(null);
-        setSuccessMessage('Club was deleted with success');
+        setSuccessMessage(t('clubDeletedSuccess'));
       } else {
-        setErrorMessage('Failed to delete the club');
+        setErrorMessage(t('clubDeleteFailed'));
       }
     } catch (error) {
-      setErrorMessage(`Error deleting the club: ${error}`);
+      setErrorMessage(`${t('clubDeleteFailed')}: ${error}`);
     }
   };
 
   const sortedClubs = useMemo(() => clubs.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)), [clubs]);
 
   return (
-    <PageContainer title="Clubs Settings" description="You can configure your club">
+    <PageContainer title={t('ClubSettings')} description={t('ClubSettings')}>
       <Box sx={{ padding: 3 }}>
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="h6" fontWeight="bold">
-              Clubs
+              {t('Clubs')}
             </Typography>
           </AccordionSummary>
           <AccordionDetails>

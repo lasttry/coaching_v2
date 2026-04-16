@@ -42,17 +42,71 @@ export async function PUT(request: Request, { params }: { params: Params }): Pro
 
   try {
     const data = await request.json();
-    const { name, number, startDate, endDate, notes, macrocycleId } = data;
+    const { name, startDate, endDate, notes, macrocycleId } = data;
+    const mesocycleId = Number(id);
+    const macrocycleIdNumber = Number(macrocycleId);
+
+    const existingMesocycle = await prisma.mesocycle.findUnique({
+      where: { id: mesocycleId },
+      select: { macrocycleId: true, number: true },
+    });
+
+    if (!existingMesocycle) {
+      return NextResponse.json({ error: 'Mesocycle not found' }, { status: 404 });
+    }
+    const parsedStartDate = startDate ? new Date(startDate) : undefined;
+    const parsedEndDate = endDate ? new Date(endDate) : undefined;
+    const targetMacrocycleId = macrocycleIdNumber || existingMesocycle.macrocycleId;
+    const macrocycle = await prisma.macrocycle.findUnique({
+      where: { id: targetMacrocycleId },
+      select: { startDate: true, endDate: true },
+    });
+    if (!macrocycle) {
+      return NextResponse.json({ error: 'Macrocycle not found' }, { status: 404 });
+    }
+    const effectiveStartDate = parsedStartDate ?? macrocycle.startDate;
+    const effectiveEndDate = parsedEndDate ?? macrocycle.endDate;
+    if (
+      effectiveStartDate < macrocycle.startDate ||
+      effectiveStartDate > macrocycle.endDate ||
+      effectiveEndDate < macrocycle.startDate ||
+      effectiveEndDate > macrocycle.endDate
+    ) {
+      return NextResponse.json(
+        { error: 'Mesocycle dates must be within macrocycle date range' },
+        { status: 400 }
+      );
+    }
+    if (effectiveEndDate < effectiveStartDate) {
+      return NextResponse.json({ error: 'End date must be after start date' }, { status: 400 });
+    }
+
+    let nextNumber = existingMesocycle.number ?? 1;
+    if (macrocycleIdNumber && macrocycleIdNumber !== existingMesocycle.macrocycleId) {
+      const lastMesocycle = await prisma.mesocycle.findFirst({
+        where: {
+          macrocycleId: macrocycleIdNumber,
+          number: { not: null },
+        },
+        orderBy: {
+          number: 'desc',
+        },
+        select: {
+          number: true,
+        },
+      });
+      nextNumber = (lastMesocycle?.number ?? 0) + 1;
+    }
 
     const payload = {
-      where: { id: Number(id) },
+      where: { id: mesocycleId },
       data: {
         name,
-        number: Number(number),
-        startDate: startDate ? new Date(startDate) : undefined,
-        endDate: endDate ? new Date(endDate) : undefined,
+        number: nextNumber,
+        startDate: parsedStartDate,
+        endDate: parsedEndDate,
         notes,
-        macrocycleId,
+        macrocycleId: targetMacrocycleId,
       },
     };
     const updatedMesocycle = await prisma.mesocycle.update(payload);

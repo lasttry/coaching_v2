@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import {
+  Avatar,
   Box,
   Button,
+  IconButton,
   Typography,
   Stack,
   TextField,
@@ -12,9 +14,12 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { IconUpload, IconTrash } from '@tabler/icons-react';
 import { CompactPicker } from 'react-color';
 import { ClubInterface } from '@/types/club/types';
 import { Grid } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import '@/lib/i18n.client';
 
 interface ClubDetailsProps {
   selectedClub: ClubInterface;
@@ -31,6 +36,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
   onCancel,
   onDelete,
 }) => {
+  const { t } = useTranslation();
   const [deleteOverlayVisible, setDeleteOverlayVisible] = useState(false);
   const [newVenue, setNewVenue] = useState('');
 
@@ -43,6 +49,21 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleFederationLogoUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        onEditChange('federationLogo', reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveFederationLogo = (): void => {
+    onEditChange('federationLogo', '');
   };
 
   const handleDelete = (): void => {
@@ -67,9 +88,56 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
     <>
       <Box sx={{ marginTop: 4 }}>
         <Divider sx={{ marginY: 2 }} />
-        <Stack spacing={2}>
+        <Stack spacing={3}>
+          {/* Federation Logo - at the top */}
+          <Box>
+            <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+              {t('federationLogo')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              {t('federationLogoHelper')}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Avatar
+                src={selectedClub.federationLogo || undefined}
+                variant="rounded"
+                sx={{ width: 120, height: 120, bgcolor: 'grey.200' }}
+              >
+                {!selectedClub.federationLogo && 'FPB'}
+              </Avatar>
+              <Stack direction="column" spacing={1}>
+                <Button
+                  component="label"
+                  variant="outlined"
+                  startIcon={<IconUpload size={18} />}
+                  size="small"
+                >
+                  {t('imageUpload')}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={handleFederationLogoUpload}
+                  />
+                </Button>
+                {selectedClub.federationLogo && (
+                  <IconButton
+                    color="error"
+                    onClick={handleRemoveFederationLogo}
+                    size="small"
+                    title={t('imageRemove')}
+                  >
+                    <IconTrash size={18} />
+                  </IconButton>
+                )}
+              </Stack>
+            </Box>
+          </Box>
+
+          <Divider />
+
           <TextField
-            label="Name"
+            label={t('name')}
             value={selectedClub.name}
             onChange={(e) => onEditChange('name', e.target.value)}
             fullWidth
@@ -77,7 +145,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
           <Grid container spacing={2}>
             <Grid size={{ xs: 6 }}>
               <TextField
-                label="Short Name"
+                label={t('shortName')}
                 value={selectedClub.shortName || ''}
                 onChange={(e) => onEditChange('shortName', e.target.value)}
                 fullWidth
@@ -88,17 +156,17 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
           {/* Venues */}
           <Box>
             <Typography variant="subtitle1" fontWeight={600}>
-              Venues
+              {t('venues')}
             </Typography>
             <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
               <TextField
-                label="New Venue"
+                label={t('newVenue')}
                 value={newVenue}
                 onChange={(e) => setNewVenue(e.target.value)}
                 fullWidth
               />
               <Button variant="outlined" onClick={handleAddVenue}>
-                Add
+                {t('Add')}
               </Button>
             </Stack>
             <Stack spacing={1} mt={2}>
@@ -111,7 +179,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
                 >
                   <Typography>{venue.name}</Typography>
                   <Button size="small" color="error" onClick={() => handleRemoveVenue(index)}>
-                    Remove
+                    {t('remove')}
                   </Button>
                 </Stack>
               ))}
@@ -120,7 +188,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
 
           <Box>
             <Typography variant="subtitle1" fontWeight={600}>
-              Club Image
+              {t('clubImage')}
             </Typography>
             <input type="file" accept="image/*" onChange={handleImageUpload} />
           </Box>
@@ -128,7 +196,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
             <Grid size={{ xs: 6 }}>
               <Box>
                 <Typography variant="subtitle1" fontWeight={600}>
-                  Background Color
+                  {t('backgroundColor')}
                 </Typography>
                 <CompactPicker
                   color={selectedClub.backgroundColor || '#ffffff'}
@@ -139,7 +207,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
             <Grid size={{ xs: 6 }}>
               <Box>
                 <Typography variant="subtitle1" fontWeight={600}>
-                  Foreground Color
+                  {t('foregroundColor')}
                 </Typography>
                 <CompactPicker
                   color={selectedClub.foregroundColor || '#000000'}
@@ -151,12 +219,12 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
           <Grid container spacing={2}>
             <Grid size={{ xs: 4 }}>
               <Button variant="contained" color="primary" onClick={onSave} sx={{ width: '100%' }}>
-                Save
+                {t('Save')}
               </Button>
             </Grid>
             <Grid size={{ xs: 4 }}>
               <Button variant="outlined" onClick={onCancel} sx={{ width: '100%' }}>
-                Cancel
+                {t('Cancel')}
               </Button>
             </Grid>
             <Grid size={{ xs: 4 }}>
@@ -166,26 +234,23 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
                 onClick={() => setDeleteOverlayVisible(true)}
                 sx={{ width: '100%' }}
               >
-                Delete Club
+                {t('deleteClub')}
               </Button>
             </Grid>
           </Grid>
         </Stack>
       </Box>
       <Dialog open={deleteOverlayVisible} onClose={() => setDeleteOverlayVisible(false)}>
-        <DialogTitle>Delete Club</DialogTitle>
+        <DialogTitle>{t('deleteClub')}</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this club? All information related to this club will be
-            deleted.
-          </DialogContentText>
+          <DialogContentText>{t('deleteClubConfirmation')}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteOverlayVisible(false)} color="primary">
-            Cancel
+            {t('Cancel')}
           </Button>
           <Button onClick={handleDelete} color="secondary">
-            Delete
+            {t('Delete')}
           </Button>
         </DialogActions>
       </Dialog>

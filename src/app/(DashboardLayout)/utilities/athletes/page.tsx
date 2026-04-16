@@ -16,8 +16,11 @@ import {
   MenuItem,
   Chip,
   Divider,
+  Avatar,
+  IconButton,
 } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { IconUpload, IconTrash } from '@tabler/icons-react';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
@@ -37,7 +40,7 @@ const buildEmptyAthlete = (): AthleteInterface => ({
   fpbNumber: null,
   active: true,
   shirtSize: Size.S,
-  // opcional no tipo, mas garantimos array para não dar undefined
+  photo: null,
   preferredNumbers: [],
 });
 
@@ -118,6 +121,21 @@ const AthletesPage: React.FC = () => {
       ...prev,
       shirtSize: value,
     }));
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedAthlete((prev) => ({ ...prev, photo: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemovePhoto = (): void => {
+    setSelectedAthlete((prev) => ({ ...prev, photo: null }));
   };
 
   const handlePreferredNumberChange = (color: string, value: string): void => {
@@ -236,6 +254,7 @@ const AthletesPage: React.FC = () => {
     setSelectedAthlete({
       ...athlete,
       birthdate: birthdateFormatted,
+      photo: athlete.photo ?? null,
       preferredNumbers: athlete.preferredNumbers ?? [],
     });
     setOpenDialog(true);
@@ -438,6 +457,48 @@ const AthletesPage: React.FC = () => {
           {selectedAthlete && (
             <Box sx={{ mt: 2 }}>
               <Grid container spacing={2}>
+                {/* Photo Upload */}
+                <Grid size={{ xs: 12 }}>
+                  <Box display="flex" alignItems="center" gap={2}>
+                    <Avatar
+                      src={selectedAthlete.photo || undefined}
+                      sx={{ width: 60, height: 75, borderRadius: 1 }}
+                      variant="rounded"
+                    >
+                      {selectedAthlete.name?.charAt(0) || '?'}
+                    </Avatar>
+                    <Box>
+                      <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id="athlete-photo-upload"
+                        type="file"
+                        onChange={handlePhotoUpload}
+                      />
+                      <label htmlFor="athlete-photo-upload">
+                        <Button
+                          variant="outlined"
+                          component="span"
+                          startIcon={<IconUpload size={18} />}
+                          size="small"
+                        >
+                          {t('uploadImage')}
+                        </Button>
+                      </label>
+                      {selectedAthlete.photo && (
+                        <IconButton
+                          color="error"
+                          onClick={handleRemovePhoto}
+                          size="small"
+                          sx={{ ml: 1 }}
+                        >
+                          <IconTrash size={18} />
+                        </IconButton>
+                      )}
+                    </Box>
+                  </Box>
+                </Grid>
+
                 <Grid size={{ xs: 12, sm: 2 }}>
                   <TextField
                     label={t('number')}

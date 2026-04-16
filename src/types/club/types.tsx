@@ -8,6 +8,7 @@ export function mapClubToInterface(club: Club): ClubInterface {
     name: club.name,
     shortName: club.shortName ?? '',
     image: club.image ?? undefined,
+    federationLogo: club.federationLogo ?? undefined,
     backgroundColor: club.backgroundColor ?? undefined,
     foregroundColor: club.foregroundColor ?? undefined,
     createdAt: club.createdAt ?? undefined,
@@ -20,6 +21,7 @@ export interface ClubInterface {
   name: string;
   shortName: string;
   image?: string;
+  federationLogo?: string;
   backgroundColor?: string;
   foregroundColor?: string;
 

@@ -83,9 +83,9 @@ const Logo = (): ReactElement => {
 
   return (
     <Box
-      display="flex"
-      alignItems="center"
       sx={{
+        display: 'flex',
+        alignItems: 'center',
         paddingTop: '20px',
         cursor: hasMultipleClubs ? 'pointer' : 'default',
       }}

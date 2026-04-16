@@ -14,13 +14,21 @@ const resources = {
   en: { translation: en },
 };
 
+const getInitialLanguage = (): 'pt' | 'en' => {
+  if (typeof window === 'undefined') return 'pt';
+  const stored = localStorage.getItem('lng');
+  if (stored === 'pt' || stored === 'en') return stored;
+  const browserLang = navigator.language?.toLowerCase().startsWith('en') ? 'en' : 'pt';
+  return browserLang;
+};
+
 // Evita inicializar mais de uma vez
 if (!i18next.isInitialized) {
   i18next
     .use(initReactI18next)
     .init({
       resources,
-      lng: 'pt', // idioma padrão
+      lng: getInitialLanguage(),
       fallbackLng: 'pt',
       interpolation: {
         escapeValue: false, // o React já faz escaping

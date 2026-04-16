@@ -108,6 +108,7 @@ export async function PUT(
       name: clubPayload.name,
       shortName: clubPayload.shortName || null,
       image: clubPayload.image || null,
+      federationLogo: clubPayload.federationLogo || null,
       backgroundColor: clubPayload.backgroundColor || '#ffffff',
       foregroundColor: clubPayload.foregroundColor || '#000000',
     };

@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { Box, AppBar, Toolbar, styled, Stack, IconButton, Badge } from '@mui/material';
+import { Box, AppBar, Toolbar, styled, IconButton, Badge } from '@mui/material';
 import PropTypes from 'prop-types';
 
 // components
@@ -58,8 +58,15 @@ const Header = ({ toggleMobileSidebar }: ItemType): ReactElement => {
             <IconBellRinging size="21" stroke="1.5" />
           </Badge>
         </IconButton>
-        <Box flexGrow={1} />
-        <Stack spacing={1} direction="row" alignItems="center">
+        <Box sx={{ flexGrow: 1 }} />
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 1,
+          }}
+        >
           <Box
             sx={{
               display: {
@@ -71,7 +78,7 @@ const Header = ({ toggleMobileSidebar }: ItemType): ReactElement => {
             {/* we can put a button */}
           </Box>
           <Profile />
-        </Stack>
+        </Box>
       </ToolbarStyled>
     </AppBarStyled>
   );

@@ -31,6 +31,24 @@ enum Role {
   TEAM_MANAGER
 }
 
+enum StaffRole {
+  HEAD_COACH
+  ASSISTANT_COACH
+  DIRECTOR
+  TEAM_MANAGER
+  PHYSIOTHERAPIST
+  STATISTICIAN
+  OTHER
+}
+
+enum CoachGrade {
+  GRADE_1
+  GRADE_2
+  GRADE_3
+  GRADE_4
+  TRAINEE
+}
+
 enum PlatformRole {
   ADMIN
   USER
@@ -71,6 +89,7 @@ model Athlete {
   idType           IdType?
   active           Boolean                  @default(true)
   shirtSize        Size?
+  photo            String?                  @db.Text
   clubId           Int
   club             Club                     @relation(fields: [clubId], references: [id], onDelete: Cascade)
   athleteReports   AthleteReport[]
@@ -305,6 +324,7 @@ model Club {
   name            String        @unique @db.VarChar(50)
   shortName       String?       @db.VarChar(6)
   image           String?
+  federationLogo  String?       @db.Text
   backgroundColor String?       @db.VarChar(7)
   foregroundColor String?       @db.VarChar(7)
   accounts        AccountClub[] @relation("ClubToAccounts")
@@ -314,6 +334,7 @@ model Club {
   teams           Team[]
   venues          Venue[]
   equipmentColors EquipmentColor[]
+  staff           Staff[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -370,6 +391,7 @@ model Team {
   echelonId Int
   echelon   Echelon       @relation(fields: [echelonId], references: [id], onDelete: Cascade)
   athletes  TeamAthlete[]
+  staff     TeamStaff[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
   games     Game[]
@@ -383,6 +405,33 @@ model TeamAthlete {
   athlete   Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
 
   @@unique([teamId, athleteId])
+}
+
+model Staff {
+  id          Int         @id @default(autoincrement())
+  name        String      @db.VarChar(100)
+  birthdate   DateTime?
+  tptdNumber  Int?        // Carteira TPTD
+  fpbLicense  Int?        // Licença FPB
+  grade       CoachGrade?
+  role        StaffRole
+  active      Boolean     @default(true)
+  clubId      Int
+  club        Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  teams       TeamStaff[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model TeamStaff {
+  id        Int       @id @default(autoincrement())
+  teamId    Int
+  staffId   Int
+  isPrimary Boolean   @default(false) // Treinador principal vs adjunto
+  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  staff     Staff     @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, staffId])
 }
 
 model Competition {
