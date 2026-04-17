@@ -156,7 +156,7 @@ const TeamsPage = (): ReactElement => {
 
   return (
     <Box>
-      <Typography variant="h4" mb={3}>
+      <Typography variant="h4" sx={{ mb: 3 }}>
         Manage Teams
       </Typography>
 
@@ -169,11 +169,11 @@ const TeamsPage = (): ReactElement => {
         {teams.map((team) => (
           <Grid key={team.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
             <Box
-              p={2}
-              border={1}
-              borderRadius={2}
               onClick={() => setSelectedTeam(team)}
               sx={{
+                p: 2,
+                border: 1,
+                borderRadius: 2,
                 cursor: 'pointer',
                 borderColor: selectedTeam?.id === team.id ? 'primary.main' : 'grey.300',
               }}
@@ -250,7 +250,7 @@ const TeamsPage = (): ReactElement => {
       {/* Athletes List for Adding */}
       {selectedTeam && (
         <>
-          <Typography variant="h5" mt={4}>
+          <Typography variant="h5" sx={{ mt: 4 }}>
             {t('addAthletesTo')} {selectedTeam.name}
           </Typography>
           <Table>

@@ -204,7 +204,7 @@ export default function OpponentManagement(): React.JSX.Element {
           {errorMessage}
         </Alert>
       </Snackbar>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h5">{t('opponentsManagement')}</Typography>
         <Button
           variant="contained"
@@ -239,9 +239,9 @@ export default function OpponentManagement(): React.JSX.Element {
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="sm">
         <DialogTitle>{editingOpponent ? t('opponentEdit') : t('opponentAdd')}</DialogTitle>
         <DialogContent>
-          <Stack spacing={2} mt={1}>
+          <Stack spacing={2} sx={{ mt: 1 }}>
             {/* Upload Image */}
-            <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
               {formOpponent.image ? (
                 <>
                   <Avatar
@@ -297,7 +297,7 @@ export default function OpponentManagement(): React.JSX.Element {
               value={formOpponent.shortName}
               onChange={(e) => setFormOpponent({ ...formOpponent, shortName: e.target.value })}
               required
-              inputProps={{ maxLength: 6 }}
+              slotProps={{ htmlInput: { maxLength: 6 } }}
             />
 
             <TextField
@@ -310,7 +310,7 @@ export default function OpponentManagement(): React.JSX.Element {
                   fpbClubId: e.target.value === '' ? undefined : Number(e.target.value),
                 })
               }
-              inputProps={{ min: 0 }}
+              slotProps={{ htmlInput: { min: 0 } }}
             />
 
             <TextField
@@ -323,11 +323,11 @@ export default function OpponentManagement(): React.JSX.Element {
                   fpbTeamId: e.target.value === '' ? undefined : Number(e.target.value),
                 })
               }
-              inputProps={{ min: 0 }}
+              slotProps={{ htmlInput: { min: 0 } }}
             />
 
             {/* Venues */}
-            <Stack direction="row" spacing={1} alignItems="center">
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
               <TextField
                 label={t('addVenue')}
                 value={newVenue}

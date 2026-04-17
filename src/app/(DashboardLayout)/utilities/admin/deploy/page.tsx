@@ -131,7 +131,7 @@ export default function DeployPage(): React.JSX.Element {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight={400}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 400 }}>
         <CircularProgress />
       </Box>
     );
@@ -139,14 +139,14 @@ export default function DeployPage(): React.JSX.Element {
 
   if (error && !status) {
     return (
-      <Box p={3}>
+      <Box sx={{ p: 3 }}>
         <Alert severity="error">{error}</Alert>
       </Box>
     );
   }
 
   return (
-    <Box p={3}>
+    <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom>
         Deploy & Atualizações
       </Typography>
@@ -159,7 +159,9 @@ export default function DeployPage(): React.JSX.Element {
 
       {/* Current Status */}
       <Paper sx={{ p: 3, mb: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Box
+          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: '2' }}
+        >
           <Typography variant="h6">Estado Atual</Typography>
           <Button startIcon={<RefreshIcon />} onClick={fetchStatus} disabled={loading}>
             Atualizar
@@ -168,7 +170,7 @@ export default function DeployPage(): React.JSX.Element {
 
         {status && (
           <>
-            <Box display="flex" gap={2} flexWrap="wrap" mb={2}>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
               <Chip
                 label={`PM2: ${status.pm2Status}`}
                 color={getStatusColor(status.pm2Status)}
@@ -191,7 +193,7 @@ export default function DeployPage(): React.JSX.Element {
               Último commit em produção:
             </Typography>
             <Box sx={{ mt: 1, p: 2, bgcolor: 'grey.100', borderRadius: 1 }}>
-              <Typography variant="body2" fontFamily="monospace">
+              <Typography variant="body2" sx={{ fontFamily: 'monospace' }}>
                 <strong>{status.currentCommit.hash}</strong> - {status.currentCommit.message}
               </Typography>
               <Typography variant="caption" color="text.secondary">

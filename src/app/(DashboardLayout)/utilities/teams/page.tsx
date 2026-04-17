@@ -217,7 +217,7 @@ export default function TeamsPage(): React.JSX.Element {
   return (
     <Box>
       {/* Header with Add Button */}
-      <Box display="flex" justifyContent="space-between" mb={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Typography variant="h5">{t('teamsManagement')}</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => setDialogOpen(true)}>
           {t('addTeam')}

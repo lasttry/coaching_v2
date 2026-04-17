@@ -162,7 +162,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
           onChange={(e) => setConfirmPassword(e.target.value)}
         />
         <Stack spacing={2}>
-          <Typography variant="subtitle1" fontWeight={600}>
+          <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
             {t('updateAccount')}
           </Typography>
           <TextField

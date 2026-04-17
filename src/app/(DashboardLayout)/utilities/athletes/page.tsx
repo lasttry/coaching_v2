@@ -333,12 +333,14 @@ const AthletesPage: React.FC = () => {
     <Box sx={{ p: 3 }}>
       {/* Header / toolbar */}
       <Box
-        mb={3}
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        flexWrap="wrap"
-        gap={2}
+        sx={{
+          mb: 2,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
       >
         <Box>
           <Typography variant="h4">{t('athletesManagement')}</Typography>
@@ -347,7 +349,7 @@ const AthletesPage: React.FC = () => {
           </Typography>
         </Box>
 
-        <Box display="flex" gap={1}>
+        <Box sx={{ display: 'flex', gap: 1 }}>
           <Button variant="outlined" onClick={fetchAthletes} disabled={loading}>
             {t('refresh')}
           </Button>
@@ -359,12 +361,12 @@ const AthletesPage: React.FC = () => {
 
       {/* Messages */}
       {successMessage && (
-        <Box mb={2}>
+        <Box sx={{ mb: 2 }}>
           <Alert severity="success">{successMessage}</Alert>
         </Box>
       )}
       {errorMessage && (
-        <Box mb={2}>
+        <Box sx={{ mb: 2 }}>
           <Alert severity="error">{errorMessage}</Alert>
         </Box>
       )}
@@ -459,7 +461,7 @@ const AthletesPage: React.FC = () => {
               <Grid container spacing={2}>
                 {/* Photo Upload */}
                 <Grid size={{ xs: 12 }}>
-                  <Box display="flex" alignItems="center" gap={2}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Avatar
                       src={selectedAthlete.photo || undefined}
                       sx={{ width: 60, height: 75, borderRadius: 1 }}
@@ -559,7 +561,7 @@ const AthletesPage: React.FC = () => {
                 {/* Preferred numbers per equipment color */}
                 {equipmentColors.length > 0 && (
                   <Grid size={{ xs: 12 }}>
-                    <Grid container spacing={1} alignItems="center">
+                    <Grid container spacing={1} sx={{ alignItems: 'center' }}>
                       <Grid size={{ xs: 12 }} sx={{ mb: 1 }}>
                         <strong>{t('preferredNumbers')}</strong>
                         <Typography variant="caption" color="text.secondary" sx={{ ml: 1 }}>
@@ -593,7 +595,7 @@ const AthletesPage: React.FC = () => {
                           <Typography variant="body2" sx={{ minWidth: 80 }}>
                             {pref.color}
                           </Typography>
-                          <Typography variant="body1" fontWeight="bold" sx={{ minWidth: 50 }}>
+                          <Typography variant="body1" sx={{ minWidth: 50, fontWeight: 'bold' }}>
                             Nº {pref.number}
                           </Typography>
                           <Button

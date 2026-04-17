@@ -51,12 +51,14 @@ const ForgotPasswordPage = (): ReactElement => {
 
   if (isSubmitted) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Box sx={{ width: 400, padding: 4, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
-          <Typography fontWeight="700" variant="h4" mb={2}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
+        <Box sx={{ width: 400, p: 4, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }}>
             Check Your Email
           </Typography>
-          <Typography variant="body1" mb={3}>
+          <Typography variant="body1" sx={{ mb: 3 }}>
             If an account exists with <strong>{email}</strong>, you will receive a password reset
             link shortly.
           </Typography>
@@ -69,7 +71,7 @@ const ForgotPasswordPage = (): ReactElement => {
   }
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -81,11 +83,11 @@ const ForgotPasswordPage = (): ReactElement => {
           </Alert>
         )}
 
-        <Typography fontWeight="700" variant="h4" mb={1}>
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           Forgot Password
         </Typography>
 
-        <Typography variant="body2" mb={3}>
+        <Typography variant="body2" sx={{ mb: 3 }}>
           Enter your email address and we&apos;ll send you a link to reset your password.
         </Typography>
 
@@ -93,10 +95,9 @@ const ForgotPasswordPage = (): ReactElement => {
           <Box>
             <Typography
               variant="subtitle1"
-              fontWeight={600}
               component="label"
               htmlFor="email"
-              mb="5px"
+              sx={{ fontWeight: 600, mb: '5px' }}
             >
               Email Address
             </Typography>
@@ -121,7 +122,7 @@ const ForgotPasswordPage = (): ReactElement => {
             {isSubmitting ? 'Sending...' : 'Send Reset Link'}
           </Button>
 
-          <Box textAlign="center">
+          <Box sx={{ textAlign: 'center' }}>
             <MuiLink href="/auth/signin" variant="body2" sx={{ cursor: 'pointer' }}>
               Back to Sign In
             </MuiLink>

@@ -97,7 +97,7 @@ const OpponentComponent: React.FC<Props> = ({ opponent, setOpponent }) => {
 
       <Grid size={{ xs: 12, sm: 12 }}>
         <Typography variant="subtitle1">{t('venues')}</Typography>
-        <Stack direction="row" spacing={1} mt={1}>
+        <Stack direction="row" sx={{ spacing: 1, mt: 1 }}>
           <TextField
             fullWidth
             label={t('newVenue')}

@@ -101,7 +101,7 @@ const ChooseClubPage = (): ReactElement => {
           <></>
         )}
         <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-          <Typography variant="h6" fontWeight="bold">
+          <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
             Clubs
           </Typography>
           <Box sx={{ mt: 2 }}>
@@ -125,7 +125,12 @@ const ChooseClubPage = (): ReactElement => {
         </Box>
         <Accordion defaultExpanded>
           <AccordionDetails>
-            <Grid container spacing={3} justifyContent="flex-start" className="grid-container">
+            <Grid
+              container
+              spacing={3}
+              sx={{ justifyContent: 'flex-start' }}
+              className="grid-container"
+            >
               {clubs.map((club) => (
                 <Grid
                   key={club.id}

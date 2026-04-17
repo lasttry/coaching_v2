@@ -22,6 +22,7 @@ import {
   Chip,
   OutlinedInput,
   SelectChangeEvent,
+  SelectProps,
 } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ptBR } from '@mui/x-data-grid/locales';
@@ -35,11 +36,13 @@ import { TeamInterface } from '@/types/teams/types';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
+const menuProps: NonNullable<SelectProps<number[]>['MenuProps']> = {
+  slotProps: {
+    paper: {
+      sx: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
     },
   },
 };
@@ -269,8 +272,8 @@ export default function StaffPage(): React.JSX.Element {
   );
 
   return (
-    <Box p={3}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+    <Box sx={{ p: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4">{t('staffManagement')}</Typography>
         <Button variant="contained" startIcon={<IconPlus />} onClick={handleAdd}>
           {t('add')}
@@ -295,7 +298,7 @@ export default function StaffPage(): React.JSX.Element {
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>{selectedStaff ? t('editStaff') : t('addStaff')}</DialogTitle>
         <DialogContent>
-          <Box display="flex" flexDirection="column" gap={2} mt={1}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
             <TextField
               label={t('name')}
               value={formData.name}
@@ -390,7 +393,7 @@ export default function StaffPage(): React.JSX.Element {
                     })}
                   </Box>
                 )}
-                MenuProps={MenuProps}
+                MenuProps={menuProps}
               >
                 {teams
                   .filter((team) => team.id !== undefined && team.id !== null)

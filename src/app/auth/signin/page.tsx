@@ -67,7 +67,7 @@ const SignInPage = (): ReactElement => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <Box
         component="form"
         onSubmit={handleSignIn}
@@ -76,7 +76,7 @@ const SignInPage = (): ReactElement => {
         {/* Success/Error Messages */}
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
-        <Typography fontWeight="700" variant="h2" mb={1}>
+        <Typography variant="h2" sx={{ fontWeight: 700, mb: 1 }}>
           Sign In
         </Typography>
 
@@ -86,10 +86,9 @@ const SignInPage = (): ReactElement => {
           <Box>
             <Typography
               variant="subtitle1"
-              fontWeight={600}
               component="label"
               htmlFor="username"
-              mb="5px"
+              sx={{ fontWeight: 600, mb: '5px' }}
             >
               Username
             </Typography>
@@ -100,13 +99,12 @@ const SignInPage = (): ReactElement => {
               onChange={(e) => setUsername(e.target.value)}
             />
           </Box>
-          <Box mt="25px">
+          <Box sx={{ mt: '25px' }}>
             <Typography
               variant="subtitle1"
-              fontWeight={600}
               component="label"
               htmlFor="password"
-              mb="5px"
+              sx={{ fontWeight: 600, mb: '5px' }}
             >
               Password
             </Typography>
@@ -118,7 +116,10 @@ const SignInPage = (): ReactElement => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Box>
-          <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
+          <Stack
+            direction="row"
+            sx={{ justifyContent: 'space-between', alignItems: 'center', my: 2 }}
+          >
             <FormGroup>
               <FormControlLabel
                 control={<Checkbox defaultChecked />}

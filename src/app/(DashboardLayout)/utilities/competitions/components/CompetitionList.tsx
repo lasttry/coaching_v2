@@ -121,7 +121,7 @@ const CompetitionListComponent: React.FC<CompetitionListProps> = ({
           return (
             <Accordion key={id}>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={2} sx={{ alignItems: 'center' }}>
                   <Grid size={2}>
                     {edited.image && (
                       <Image src={edited.image} alt={edited.name} width={50} height={50} />

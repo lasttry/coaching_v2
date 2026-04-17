@@ -139,7 +139,7 @@ const OpponentListComponent: React.FC<OpponentListProps> = ({
                   onChange={(_, expanded) => setExpandedId(expanded ? opponent.id : null)}
                 >
                   <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Grid container spacing={2} alignItems="center" sx={{ width: '100%' }}>
+                    <Grid container spacing={2} sx={{ alignItems: 'center', width: '100%' }}>
                       <Grid size={2}>
                         <Box
                           component="img"
@@ -210,7 +210,7 @@ const OpponentListComponent: React.FC<OpponentListProps> = ({
                     </Grid>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Grid container spacing={2} alignItems="center">
+                    <Grid container spacing={2} sx={{ alignItems: 'center' }}>
                       {isEditing ? (
                         <OpponentComponent
                           opponent={edited}

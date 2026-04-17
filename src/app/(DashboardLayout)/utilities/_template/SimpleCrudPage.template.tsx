@@ -266,7 +266,7 @@ export default function EntitiesPage(): React.JSX.Element {
       </Snackbar>
 
       {/* Page Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h5">{t('entitiesManagement')}</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenDialog()}>
           {t('addEntity')}

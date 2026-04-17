@@ -26,8 +26,9 @@ import { CompetitionInterface, CompetitionSerieInterface } from '@/types/competi
 import { EchelonInterface } from '@/types/echelons/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Chip from '@mui/material/Chip';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import EditIcon from '@mui/icons-material/Edit';
+import { AddCircleOutlineOutlined } from '@mui/icons-material';
 
 const CompetitionsPage: React.FC = () => {
   const initialSeries: CompetitionSerieInterface = {
@@ -210,7 +211,7 @@ const CompetitionsPage: React.FC = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4">{t('competitions')}</Typography>
         <Stack direction="row" spacing={2}>
           <Select
@@ -268,7 +269,7 @@ const CompetitionsPage: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           {selectedCompetition && (
-            <Grid container spacing={2} mt={1}>
+            <Grid container sx={{ spacing: 2, mt: 1 }}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   label={t('name')}
@@ -310,7 +311,7 @@ const CompetitionsPage: React.FC = () => {
                       fpbCompetitionId: e.target.value === '' ? undefined : Number(e.target.value),
                     }))
                   }
-                  inputProps={{ min: 0 }}
+                  slotProps={{ htmlInput: { min: 0 } }}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -330,7 +331,7 @@ const CompetitionsPage: React.FC = () => {
 
               {/* Image Upload */}
               <Grid size={{ xs: 12 }}>
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Avatar
                     src={selectedCompetition.image || ''}
                     alt={selectedCompetition.name}
@@ -352,9 +353,9 @@ const CompetitionsPage: React.FC = () => {
                 {/* Lista animada de séries */}
                 <Stack
                   direction="row"
-                  flexWrap="wrap"
                   spacing={1}
                   sx={{
+                    flexWrap: 'wrap',
                     p: 1,
                     mb: 2,
                     borderRadius: 2,
@@ -403,7 +404,7 @@ const CompetitionsPage: React.FC = () => {
                   </AnimatePresence>
                 </Stack>
 
-                <Stack direction="row" spacing={2} alignItems="center">
+                <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <TextField
                     label={t('newSeries')}
                     placeholder={t('seriesName')}
@@ -426,7 +427,7 @@ const CompetitionsPage: React.FC = () => {
                         fpbSerieId: e.target.value === '' ? undefined : Number(e.target.value),
                       }))
                     }
-                    inputProps={{ min: 0 }}
+                    slotProps={{ htmlInput: { min: 0 } }}
                   />
                   <IconButton
                     color="primary"
@@ -452,12 +453,12 @@ const CompetitionsPage: React.FC = () => {
                       setNewSeries(initialSeries);
                     }}
                   >
-                    <AddCircleOutlineIcon fontSize="large" />
+                    <AddCircleOutlineOutlined fontSize="large" />
                   </IconButton>
                 </Stack>
 
                 {editingSerie && (
-                  <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 2 }}>
+                  <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 2 }}>
                     <TextField
                       label={t('Series Name')}
                       value={editingSerie.name}
@@ -488,7 +489,7 @@ const CompetitionsPage: React.FC = () => {
                             : prev
                         )
                       }
-                      inputProps={{ min: 0 }}
+                      slotProps={{ htmlInput: { min: 0 } }}
                     />
 
                     <Button

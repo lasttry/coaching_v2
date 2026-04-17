@@ -225,7 +225,7 @@ const SeasonsPage: React.FC = () => {
 
   return (
     <Box sx={{ height: 700, width: '100%' }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4" gutterBottom>
           {t('seasonsManagement')}
         </Typography>
@@ -272,7 +272,7 @@ const SeasonsPage: React.FC = () => {
             type="date"
             fullWidth
             size="small"
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
             value={newSeason.startDate}
             onChange={(e) => handleFieldChange('startDate', e.target.value)}
           />
@@ -281,7 +281,7 @@ const SeasonsPage: React.FC = () => {
             type="date"
             fullWidth
             size="small"
-            InputLabelProps={{ shrink: true }}
+            slotProps={{ inputLabel: { shrink: true } }}
             value={newSeason.endDate}
             onChange={(e) => handleFieldChange('endDate', e.target.value)}
           />

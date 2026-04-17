@@ -269,7 +269,7 @@ const GamesPage: React.FC = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h4" gutterBottom>
           {t('gamesManagement')}
         </Typography>
@@ -325,8 +325,8 @@ const GamesPage: React.FC = () => {
               sx={{ mb: 1 }}
             >
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                <Box display="flex" alignItems="center" gap={2} width="100%">
-                  <Typography variant="h6" fontWeight="bold">
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                     {competitionName}
                   </Typography>
                   <Chip
@@ -350,8 +350,8 @@ const GamesPage: React.FC = () => {
                       sx={{ mb: 1 }}
                     >
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Box display="flex" alignItems="center" gap={2}>
-                          <Typography fontWeight="medium">{serieName}</Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <Typography sx={{ fontWeight: 'medium' }}>{serieName}</Typography>
                           <Chip
                             label={`${groupedGames[competitionName][serieName].length} ${t('games')}`}
                             size="small"

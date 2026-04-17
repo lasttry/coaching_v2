@@ -136,7 +136,7 @@ const ProfilePage = (): ReactElement => {
       <form onSubmit={handleSubmit}>
         <Stack spacing={2}>
           {/* Profile Photo Section */}
-          <Box display="flex" alignItems="center" gap={2}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Avatar
               src={photoPreview || undefined}
               alt="Profile Photo"
@@ -193,8 +193,10 @@ const ProfilePage = (): ReactElement => {
                 }));
               }}
               fullWidth
-              SelectProps={{
-                native: true, // Use native dropdown
+              slotProps={{
+                select: {
+                  native: true,
+                },
               }}
             >
               <option value={0} disabled>

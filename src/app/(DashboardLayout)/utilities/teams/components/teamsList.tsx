@@ -171,7 +171,7 @@ const TeamsListComponent: React.FC<TeamsListProps> = ({
         teams.map((team) => (
           <Accordion key={team.id}>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Grid container spacing={2} alignItems="center">
+              <Grid container spacing={2} sx={{ alignItems: 'center' }}>
                 <Grid size={4}>
                   <Typography>{team.name}</Typography>
                 </Grid>

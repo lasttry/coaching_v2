@@ -25,7 +25,7 @@ const AthleteSelectionComponent: React.FC<AthleteSelectionProps> = ({
   return (
     <>
       {athletes.map((athlete) => (
-        <Grid container key={athlete.id} spacing={2} alignItems="center" sx={{ mb: 1 }}>
+        <Grid container key={athlete.id} spacing={2} sx={{ alignItems: 'center', mb: 1 }}>
           <Grid size={{ xs: 2 }}>
             <Checkbox
               checked={athlete.selected}

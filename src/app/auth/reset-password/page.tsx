@@ -89,7 +89,9 @@ const ResetPasswordContent = (): ReactElement => {
 
   if (isValidating) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
         <CircularProgress />
       </Box>
     );
@@ -97,12 +99,14 @@ const ResetPasswordContent = (): ReactElement => {
 
   if (!token || !isValidToken) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Box sx={{ width: 400, padding: 4, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
-          <Typography fontWeight="700" variant="h4" mb={2} color="error">
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
+        <Box sx={{ width: 400, p: 4, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
+          <Typography variant="h4" color="error" sx={{ fontWeight: 700, mb: 2 }}>
             Invalid or Expired Link
           </Typography>
-          <Typography variant="body1" mb={3}>
+          <Typography variant="body1" sx={{ mb: 3 }}>
             This password reset link is invalid or has expired. Please request a new one.
           </Typography>
           <Button
@@ -119,12 +123,14 @@ const ResetPasswordContent = (): ReactElement => {
 
   if (isSuccess) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-        <Box sx={{ width: 400, padding: 4, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
-          <Typography fontWeight="700" variant="h4" mb={2} color="success.main">
+      <Box
+        sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+      >
+        <Box sx={{ width: 400, p: 4, boxShadow: 3, borderRadius: 2, textAlign: 'center' }}>
+          <Typography variant="h4" sx={{ fontWeight: 700, mb: 2 }} color="success.main">
             Password Reset Successful
           </Typography>
-          <Typography variant="body1" mb={3}>
+          <Typography variant="body1" sx={{ mb: 3 }}>
             Your password has been reset successfully. You can now sign in with your new password.
           </Typography>
           <Button variant="contained" onClick={() => router.push('/auth/signin')} fullWidth>
@@ -136,7 +142,7 @@ const ResetPasswordContent = (): ReactElement => {
   }
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -148,11 +154,11 @@ const ResetPasswordContent = (): ReactElement => {
           </Alert>
         )}
 
-        <Typography fontWeight="700" variant="h4" mb={1}>
+        <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
           Reset Password
         </Typography>
 
-        <Typography variant="body2" mb={3}>
+        <Typography variant="body2" sx={{ mb: 3 }}>
           Enter your new password below.
         </Typography>
 
@@ -160,10 +166,9 @@ const ResetPasswordContent = (): ReactElement => {
           <Box>
             <Typography
               variant="subtitle1"
-              fontWeight={600}
               component="label"
               htmlFor="password"
-              mb="5px"
+              sx={{ fontWeight: 600, mb: '5px' }}
             >
               New Password
             </Typography>
@@ -180,10 +185,9 @@ const ResetPasswordContent = (): ReactElement => {
           <Box>
             <Typography
               variant="subtitle1"
-              fontWeight={600}
               component="label"
               htmlFor="confirmPassword"
-              mb="5px"
+              sx={{ fontWeight: 600, mb: '5px' }}
             >
               Confirm Password
             </Typography>
@@ -208,7 +212,7 @@ const ResetPasswordContent = (): ReactElement => {
             {isSubmitting ? 'Resetting...' : 'Reset Password'}
           </Button>
 
-          <Box textAlign="center">
+          <Box sx={{ textAlign: 'center' }}>
             <MuiLink href="/auth/signin" variant="body2" sx={{ cursor: 'pointer' }}>
               Back to Sign In
             </MuiLink>
@@ -223,7 +227,9 @@ const ResetPasswordPage = (): ReactElement => {
   return (
     <Suspense
       fallback={
-        <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+        <Box
+          sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}
+        >
           <CircularProgress />
         </Box>
       }

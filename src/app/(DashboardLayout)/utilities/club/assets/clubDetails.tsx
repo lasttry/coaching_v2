@@ -91,7 +91,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
         <Stack spacing={3}>
           {/* Federation Logo - at the top */}
           <Box>
-            <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
               {t('federationLogo')}
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -155,10 +155,10 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
 
           {/* Venues */}
           <Box>
-            <Typography variant="subtitle1" fontWeight={600}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {t('venues')}
             </Typography>
-            <Stack direction="row" spacing={2} alignItems="center" sx={{ mt: 1 }}>
+            <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 1 }}>
               <TextField
                 label={t('newVenue')}
                 value={newVenue}
@@ -169,13 +169,12 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
                 {t('Add')}
               </Button>
             </Stack>
-            <Stack spacing={1} mt={2}>
+            <Stack spacing={1} sx={{ mt: 2 }}>
               {(selectedClub.venues || []).map((venue, index) => (
                 <Stack
                   direction="row"
                   key={index}
-                  justifyContent="space-between"
-                  alignItems="center"
+                  sx={{ justifyContent: 'space-between', alignItems: 'center' }}
                 >
                   <Typography>{venue.name}</Typography>
                   <Button size="small" color="error" onClick={() => handleRemoveVenue(index)}>
@@ -187,7 +186,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
           </Box>
 
           <Box>
-            <Typography variant="subtitle1" fontWeight={600}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
               {t('clubImage')}
             </Typography>
             <input type="file" accept="image/*" onChange={handleImageUpload} />
@@ -195,7 +194,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
           <Grid container spacing={2}>
             <Grid size={{ xs: 6 }}>
               <Box>
-                <Typography variant="subtitle1" fontWeight={600}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                   {t('backgroundColor')}
                 </Typography>
                 <CompactPicker
@@ -206,7 +205,7 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
             </Grid>
             <Grid size={{ xs: 6 }}>
               <Box>
-                <Typography variant="subtitle1" fontWeight={600}>
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                   {t('foregroundColor')}
                 </Typography>
                 <CompactPicker

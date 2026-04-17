@@ -220,7 +220,7 @@ export default function EchelonsPage(): React.JSX.Element {
       </Snackbar>
 
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h5">{t('echelonsManagement')}</Typography>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenDialog()}>
           {t('addNewEchelon')}

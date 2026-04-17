@@ -242,32 +242,32 @@ const MesoCyclesList = (): ReactElement => {
                   <TableHead>
                     <TableRow>
                       <TableCell>
-                        <Typography variant="subtitle2" fontWeight={600}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                           {t('mesocycleNumber')}
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="subtitle2" fontWeight={600}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                           {t('name')}
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="subtitle2" fontWeight={600}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                           {t('start')}
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="subtitle2" fontWeight={600}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                           {t('end')}
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="subtitle2" fontWeight={600}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                           {t('notes')}
                         </Typography>
                       </TableCell>
                       <TableCell align="right">
-                        <Typography variant="subtitle2" fontWeight={600}>
+                        <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                           {t('actions')}
                         </Typography>
                       </TableCell>

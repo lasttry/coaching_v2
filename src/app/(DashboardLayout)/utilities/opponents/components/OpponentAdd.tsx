@@ -60,7 +60,7 @@ const OpponentAddComponent: React.FC<OpponentAddProps> = ({
   return (
     <Accordion expanded={expanded} onChange={() => setExpanded(!expanded)}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Grid container spacing={2} alignItems="center" sx={{ width: '100%' }}>
+        <Grid container spacing={2} sx={{ alignItems: 'center', width: '100%' }}>
           <Grid size={6}>
             <Typography>
               <span suppressHydrationWarning>{t('addOponent')}</span>

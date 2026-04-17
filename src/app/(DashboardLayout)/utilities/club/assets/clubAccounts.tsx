@@ -177,7 +177,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
 
   return (
     <Box sx={{ marginTop: 4 }}>
-      <Typography variant="h6" fontWeight="bold">
+      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
         Manage Accounts
       </Typography>
       <Divider sx={{ marginY: 2 }} />
@@ -214,7 +214,7 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
           Add Account
         </Button>
       </Box>
-      <Typography variant="h6" fontWeight="bold">
+      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
         Linked Accounts
       </Typography>
       <Divider sx={{ marginY: 2 }} />

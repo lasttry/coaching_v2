@@ -944,7 +944,7 @@ const GameComponent: React.FC<GameProps> = ({
               opponentResultsCount: Number(e.target.value) || 5,
             }))
           }
-          inputProps={{ min: 0, max: 20 }}
+          slotProps={{ htmlInput: { min: 0, max: 20 } }}
           helperText={t('opponentResultsCountHelper')}
         />
       </Grid>
@@ -1051,7 +1051,7 @@ const GameComponent: React.FC<GameProps> = ({
           >
             {opponents.map((opponent) => (
               <MenuItem key={opponent.id} value={opponent.id}>
-                <Box display="flex" alignItems="center" gap={1}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   {opponent.image && (
                     <img
                       src={opponent.image}
@@ -1111,8 +1111,8 @@ const GameComponent: React.FC<GameProps> = ({
       {/* Athletes Selection Section */}
       <Paper elevation={2} sx={{ p: 2, mt: 3 }}>
         {/* Header with count and actions */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Box display="flex" alignItems="center" gap={2}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="h6">{t('Athletes')}</Typography>
             <Chip
               label={`${gameAthletes.filter((a) => a.selected).length}/12`}
@@ -1125,7 +1125,7 @@ const GameComponent: React.FC<GameProps> = ({
               </Typography>
             )}
           </Box>
-          <Box display="flex" gap={1}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
             <Tooltip title={t('selectAll')}>
               <span>
                 <Button
@@ -1183,7 +1183,7 @@ const GameComponent: React.FC<GameProps> = ({
 
         {/* Selected Athletes - sorted by birthdate (oldest first) then alphabetically */}
         {gameAthletes.filter((a) => a.selected).length > 0 && (
-          <Box mb={3}>
+          <Box sx={{ mb: 3 }}>
             <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
               {t('selectedAthletes')} ({gameAthletes.filter((a) => a.selected).length})
             </Typography>
@@ -1258,12 +1258,12 @@ const GameComponent: React.FC<GameProps> = ({
                             handleAthleteFieldChange(athlete.athleteId, 'number', value);
                           }
                         }}
-                        inputProps={{ maxLength: 2 }}
+                        slotProps={{ htmlInput: { maxLength: 2 } }}
                         sx={{ width: 60 }}
                       />
 
                       {/* Period chips */}
-                      <Box display="flex" gap={0.5}>
+                      <Box sx={{ display: 'flex', gap: 0.5 }}>
                         {[1, 2, 3, 4].map((p) => (
                           <Chip
                             key={p}
@@ -1373,7 +1373,7 @@ const GameComponent: React.FC<GameProps> = ({
 
       <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
         <Typography variant="h6">{t('equipment.title')}</Typography>
-        <Grid container spacing={2} alignItems="center">
+        <Grid container spacing={2} sx={{ alignItems: 'center' }}>
           <Grid size={{ xs: 12, sm: 4 }}>
             <FormControl fullWidth>
               <InputLabel>{t('equipment.color')}</InputLabel>
@@ -1384,7 +1384,7 @@ const GameComponent: React.FC<GameProps> = ({
                 renderValue={(selected) => {
                   const found = distinctEquipmentColors.find((c) => c.color === selected);
                   return found ? (
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Box
                         sx={{
                           width: 20,
@@ -1404,7 +1404,7 @@ const GameComponent: React.FC<GameProps> = ({
                 <MenuItem value="">{t('equipment.selectColor')}</MenuItem>
                 {distinctEquipmentColors.map(({ color, colorHex }) => (
                   <MenuItem key={color} value={color}>
-                    <Box display="flex" alignItems="center" gap={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <Box
                         sx={{
                           width: 20,

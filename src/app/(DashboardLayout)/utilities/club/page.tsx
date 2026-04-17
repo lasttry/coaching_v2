@@ -171,7 +171,7 @@ const ClubPage = (): ReactElement => {
       <Box sx={{ padding: 3 }}>
         <Accordion defaultExpanded>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h6" fontWeight="bold">
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
               {t('Clubs')}
             </Typography>
           </AccordionSummary>
@@ -181,7 +181,12 @@ const ClubPage = (): ReactElement => {
                 <CircularProgress />
               </Box>
             ) : (
-              <Grid container spacing={3} justifyContent="flex-start" className="grid-container">
+              <Grid
+                container
+                spacing={3}
+                sx={{ justifyContent: 'flex-start' }}
+                className="grid-container"
+              >
                 {sortedClubs.map((club) => (
                   <Grid
                     key={club.id}

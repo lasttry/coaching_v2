@@ -23,6 +23,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Box,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
@@ -413,32 +414,32 @@ const MicrocyclesList = (): ReactElement => {
                         <TableHead>
                           <TableRow>
                             <TableCell>
-                              <Typography variant="subtitle2" fontWeight={600}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                                 Number
                               </Typography>
                             </TableCell>
                             <TableCell>
-                              <Typography variant="subtitle2" fontWeight={600}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                                 Name
                               </Typography>
                             </TableCell>
                             <TableCell>
-                              <Typography variant="subtitle2" fontWeight={600}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                                 Start Date
                               </Typography>
                             </TableCell>
                             <TableCell>
-                              <Typography variant="subtitle2" fontWeight={600}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                                 End Date
                               </Typography>
                             </TableCell>
                             <TableCell>
-                              <Typography variant="subtitle2" fontWeight={600}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                                 Notes
                               </Typography>
                             </TableCell>
                             <TableCell align="right">
-                              <Typography variant="subtitle2" fontWeight={600}>
+                              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
                                 Actions
                               </Typography>
                             </TableCell>
