@@ -61,12 +61,9 @@ export async function POST(): Promise<NextResponse> {
 
     // Step 2: npm install
     try {
-      const { stdout: npmOutput } = await execAsync(
-        `cd ${appDir} && npm install --legacy-peer-deps`,
-        {
-          timeout: 300000, // 5 minutes
-        }
-      );
+      const { stdout: npmOutput } = await execAsync(`cd ${appDir} && npm install`, {
+        timeout: 300000, // 5 minutes
+      });
       steps.push({ step: 'NPM Install', output: npmOutput.slice(-500), success: true });
     } catch (error) {
       const err = error as { stderr?: string; message?: string };
