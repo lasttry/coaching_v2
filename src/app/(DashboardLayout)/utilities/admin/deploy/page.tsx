@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   Button,
@@ -18,14 +18,19 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  LinearProgress,
+  Collapse,
 } from '@mui/material';
 import {
   Refresh as RefreshIcon,
   RocketLaunch as DeployIcon,
   CheckCircle as SuccessIcon,
   Error as ErrorIcon,
-  Pending as PendingIcon,
   Update as UpdateIcon,
+  PlayArrow as RunningIcon,
+  Schedule as PendingIcon,
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon,
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
@@ -44,17 +49,11 @@ interface StatusResponse {
   pm2Status: string;
 }
 
-interface DeployStep {
-  step: string;
+interface StepProgress {
+  name: string;
+  status: 'pending' | 'running' | 'success' | 'error';
   output: string;
-  success: boolean;
-}
-
-interface DeployResponse {
-  success: boolean;
-  steps: DeployStep[];
-  message?: string;
-  error?: string;
+  exitCode?: number;
 }
 
 export default function DeployPage(): React.JSX.Element {
@@ -62,9 +61,13 @@ export default function DeployPage(): React.JSX.Element {
   const [status, setStatus] = useState<StatusResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [deploying, setDeploying] = useState(false);
-  const [deployResult, setDeployResult] = useState<DeployResponse | null>(null);
+  const [steps, setSteps] = useState<StepProgress[]>([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState<number>(-1);
+  const [deploySuccess, setDeploySuccess] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [expandedStep, setExpandedStep] = useState<number | null>(null);
+  const outputRef = useRef<HTMLPreElement>(null);
 
   const fetchStatus = async (): Promise<void> => {
     setLoading(true);
@@ -92,22 +95,124 @@ export default function DeployPage(): React.JSX.Element {
     fetchStatus();
   }, []);
 
+  useEffect(() => {
+    if (outputRef.current) {
+      outputRef.current.scrollTop = outputRef.current.scrollHeight;
+    }
+  }, [steps, currentStepIndex]);
+
   const handleDeploy = async (): Promise<void> => {
     setConfirmOpen(false);
     setDeploying(true);
-    setDeployResult(null);
+    setSteps([]);
+    setCurrentStepIndex(-1);
+    setDeploySuccess(null);
     setError(null);
+    setExpandedStep(null);
 
     try {
       const res = await fetch('/api/admin/deploy', {
         method: 'POST',
       });
-      const data = await res.json();
-      setDeployResult(data);
 
-      if (data.success) {
-        // Refresh status after successful deploy
-        setTimeout(() => fetchStatus(), 2000);
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || 'Erro ao executar deploy.');
+        setDeploying(false);
+        return;
+      }
+
+      const reader = res.body?.getReader();
+      if (!reader) {
+        setError('Erro: Stream não disponível');
+        setDeploying(false);
+        return;
+      }
+
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          if (!line.trim()) continue;
+
+          const eventMatch = line.match(/^event: (.+)$/m);
+          const dataMatch = line.match(/^data: (.+)$/m);
+
+          if (eventMatch && dataMatch) {
+            const eventType = eventMatch[1];
+            const data = JSON.parse(dataMatch[1]);
+
+            switch (eventType) {
+              case 'deploy_start':
+                setSteps(
+                  data.steps.map((name: string) => ({
+                    name,
+                    status: 'pending',
+                    output: '',
+                  }))
+                );
+                break;
+
+              case 'step_start':
+                setCurrentStepIndex(data.stepIndex);
+                setExpandedStep(data.stepIndex);
+                setSteps((prev) =>
+                  prev.map((step, i) =>
+                    i === data.stepIndex ? { ...step, status: 'running' } : step
+                  )
+                );
+                break;
+
+              case 'step_output':
+                setSteps((prev) =>
+                  prev.map((step, i) =>
+                    i === data.stepIndex ? { ...step, output: step.output + data.output } : step
+                  )
+                );
+                break;
+
+              case 'step_complete':
+                setSteps((prev) =>
+                  prev.map((step, i) =>
+                    i === data.stepIndex
+                      ? {
+                          ...step,
+                          status: data.success ? 'success' : 'error',
+                          exitCode: data.exitCode,
+                        }
+                      : step
+                  )
+                );
+                break;
+
+              case 'step_error':
+                setSteps((prev) =>
+                  prev.map((step, i) =>
+                    i === data.stepIndex
+                      ? { ...step, status: 'error', output: step.output + '\n' + data.error }
+                      : step
+                  )
+                );
+                break;
+
+              case 'deploy_complete':
+                setDeploySuccess(data.success);
+                setCurrentStepIndex(-1);
+                if (data.success) {
+                  setTimeout(() => fetchStatus(), 2000);
+                }
+                break;
+            }
+          }
+        }
       }
     } catch (err) {
       setError('Erro ao executar deploy.');
@@ -227,51 +332,112 @@ export default function DeployPage(): React.JSX.Element {
 
         {deploying && (
           <Alert severity="info" sx={{ mt: 2 }}>
-            O deploy está em execução. Isto pode demorar alguns minutos...
+            O deploy está em execução. Podes acompanhar o progresso em tempo real abaixo.
           </Alert>
         )}
       </Paper>
 
-      {/* Deploy Result */}
-      {deployResult && (
+      {/* Deploy Progress */}
+      {(steps.length > 0 || deploying) && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom>
-            Resultado do Deploy
+            {deploying ? 'Progresso do Deploy' : 'Resultado do Deploy'}
           </Typography>
 
-          <Alert severity={deployResult.success ? 'success' : 'error'} sx={{ mb: 2 }}>
-            {deployResult.success
-              ? 'Deploy concluído com sucesso!'
-              : `Deploy falhou: ${deployResult.error}`}
-          </Alert>
+          {deploySuccess !== null && (
+            <Alert severity={deploySuccess ? 'success' : 'error'} sx={{ mb: 2 }}>
+              {deploySuccess ? 'Deploy concluído com sucesso!' : 'Deploy falhou!'}
+            </Alert>
+          )}
+
+          {deploying && steps.length > 0 && (
+            <Box sx={{ mb: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                  Passo {currentStepIndex + 1} de {steps.length}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {Math.round(((currentStepIndex + 1) / steps.length) * 100)}%
+                </Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={((currentStepIndex + 1) / steps.length) * 100}
+              />
+            </Box>
+          )}
 
           <List dense>
-            {deployResult.steps.map((step, index) => (
-              <ListItem key={index}>
-                <ListItemIcon>
-                  {step.success ? <SuccessIcon color="success" /> : <ErrorIcon color="error" />}
-                </ListItemIcon>
-                <ListItemText
-                  primary={step.step}
-                  secondary={
-                    <Box
-                      component="pre"
-                      sx={{
-                        fontSize: '0.75rem',
-                        maxHeight: 100,
-                        overflow: 'auto',
-                        bgcolor: 'grey.100',
-                        p: 1,
-                        borderRadius: 1,
-                        whiteSpace: 'pre-wrap',
-                        wordBreak: 'break-word',
-                      }}
-                    >
-                      {step.output || 'OK'}
-                    </Box>
-                  }
-                />
-              </ListItem>
+            {steps.map((step, index) => (
+              <Box key={index}>
+                <ListItem
+                  component="div"
+                  onClick={() => setExpandedStep(expandedStep === index ? null : index)}
+                  sx={{
+                    cursor: 'pointer',
+                    bgcolor:
+                      step.status === 'running'
+                        ? 'action.selected'
+                        : step.status === 'error'
+                          ? 'error.light'
+                          : undefined,
+                    borderRadius: 1,
+                    mb: 0.5,
+                    '&:hover': { bgcolor: 'action.hover' },
+                  }}
+                >
+                  <ListItemIcon>
+                    {step.status === 'pending' && <PendingIcon color="disabled" />}
+                    {step.status === 'running' && <CircularProgress size={24} color="primary" />}
+                    {step.status === 'success' && <SuccessIcon color="success" />}
+                    {step.status === 'error' && <ErrorIcon color="error" />}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Typography
+                          variant="body1"
+                          sx={{
+                            fontWeight: step.status === 'running' ? 600 : 400,
+                          }}
+                        >
+                          {step.name}
+                        </Typography>
+                        {step.status === 'running' && (
+                          <Chip label="A executar..." size="small" color="primary" />
+                        )}
+                        {step.exitCode !== undefined && step.exitCode !== 0 && (
+                          <Chip label={`Exit: ${step.exitCode}`} size="small" color="error" />
+                        )}
+                      </Box>
+                    }
+                  />
+                  {step.output &&
+                    (expandedStep === index ? <ExpandLessIcon /> : <ExpandMoreIcon />)}
+                </ListItem>
+                <Collapse in={expandedStep === index && !!step.output}>
+                  <Box
+                    component="pre"
+                    ref={step.status === 'running' ? outputRef : undefined}
+                    sx={{
+                      fontSize: '0.7rem',
+                      maxHeight: 200,
+                      overflow: 'auto',
+                      bgcolor: 'grey.900',
+                      color: 'grey.100',
+                      p: 1.5,
+                      mx: 2,
+                      mb: 1,
+                      borderRadius: 1,
+                      whiteSpace: 'pre-wrap',
+                      wordBreak: 'break-word',
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    {step.output || 'A aguardar output...'}
+                  </Box>
+                </Collapse>
+              </Box>
             ))}
           </List>
         </Paper>

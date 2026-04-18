@@ -1,164 +1,171 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { promisify } from 'util';
 import { PlatformRole } from '@prisma/client';
 
 const execAsync = promisify(exec);
 
-// Only allow ADMIN users to deploy
-export async function POST(): Promise<NextResponse> {
-  try {
-    // Check authentication
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+interface DeployStep {
+  name: string;
+  command: string;
+  timeout?: number;
+  truncateOutput?: number;
+}
 
-    // Check if user is admin
-    if (session.user.role !== PlatformRole.ADMIN) {
-      return NextResponse.json({ error: 'Forbidden - Admin only' }, { status: 403 });
-    }
+const DEPLOY_STEPS: DeployStep[] = [
+  { name: 'Reset Local Changes', command: 'git reset --hard HEAD' },
+  { name: 'Git Pull', command: 'git pull --no-rebase origin main' },
+  { name: 'NPM Install', command: 'npm install', timeout: 300000, truncateOutput: 1000 },
+  { name: 'Prisma Generate', command: 'npx prisma generate' },
+  { name: 'Prisma Migrate', command: 'npx prisma migrate deploy' },
+  { name: 'Next Build', command: 'npx next build', timeout: 600000, truncateOutput: 1000 },
+  { name: 'PM2 Restart', command: 'pm2 restart coaching' },
+];
 
-    const appDir = process.env.APP_DIR || '/var/www/coaching';
-    const steps: { step: string; output: string; success: boolean }[] = [];
-
-    // Step 1: Reset local changes (package-lock.json often differs between environments)
-    try {
-      const { stdout: resetOutput } = await execAsync(`cd ${appDir} && git reset --hard HEAD`);
-      steps.push({ step: 'Reset Local Changes', output: resetOutput, success: true });
-    } catch (error) {
-      const err = error as { stderr?: string; message?: string };
-      steps.push({
-        step: 'Reset Local Changes',
-        output: err.stderr || err.message || 'Unknown error',
-        success: false,
-      });
-      return NextResponse.json(
-        { success: false, steps, error: 'Git reset failed' },
-        { status: 500 }
-      );
-    }
-
-    // Step 2: Git pull (--no-rebase to avoid issues with local changes)
-    try {
-      const { stdout: gitOutput } = await execAsync(
-        `cd ${appDir} && git pull --no-rebase origin main`
-      );
-      steps.push({ step: 'Git Pull', output: gitOutput, success: true });
-    } catch (error) {
-      const err = error as { stderr?: string; message?: string };
-      steps.push({
-        step: 'Git Pull',
-        output: err.stderr || err.message || 'Unknown error',
-        success: false,
-      });
-      return NextResponse.json(
-        { success: false, steps, error: 'Git pull failed' },
-        { status: 500 }
-      );
-    }
-
-    // Step 2: npm install
-    try {
-      const { stdout: npmOutput } = await execAsync(`cd ${appDir} && npm install`, {
-        timeout: 300000, // 5 minutes
-      });
-      steps.push({ step: 'NPM Install', output: npmOutput.slice(-500), success: true });
-    } catch (error) {
-      const err = error as { stderr?: string; message?: string };
-      steps.push({
-        step: 'NPM Install',
-        output: err.stderr || err.message || 'Unknown error',
-        success: false,
-      });
-      return NextResponse.json(
-        { success: false, steps, error: 'NPM install failed' },
-        { status: 500 }
-      );
-    }
-
-    // Step 3: Prisma generate
-    try {
-      const { stdout: prismaOutput } = await execAsync(`cd ${appDir} && npx prisma generate`);
-      steps.push({ step: 'Prisma Generate', output: prismaOutput, success: true });
-    } catch (error) {
-      const err = error as { stderr?: string; message?: string };
-      steps.push({
-        step: 'Prisma Generate',
-        output: err.stderr || err.message || 'Unknown error',
-        success: false,
-      });
-      return NextResponse.json(
-        { success: false, steps, error: 'Prisma generate failed' },
-        { status: 500 }
-      );
-    }
-
-    // Step 4: Prisma migrate
-    try {
-      const { stdout: migrateOutput } = await execAsync(
-        `cd ${appDir} && npx prisma migrate deploy`
-      );
-      steps.push({ step: 'Prisma Migrate', output: migrateOutput, success: true });
-    } catch (error) {
-      const err = error as { stderr?: string; message?: string };
-      steps.push({
-        step: 'Prisma Migrate',
-        output: err.stderr || err.message || 'Unknown error',
-        success: false,
-      });
-      return NextResponse.json(
-        { success: false, steps, error: 'Prisma migrate failed' },
-        { status: 500 }
-      );
-    }
-
-    // Step 5: Build
-    try {
-      const { stdout: buildOutput } = await execAsync(`cd ${appDir} && npx next build`, {
-        timeout: 600000, // 10 minutes
-      });
-      steps.push({ step: 'Next Build', output: buildOutput.slice(-500), success: true });
-    } catch (error) {
-      const err = error as { stderr?: string; message?: string };
-      steps.push({
-        step: 'Next Build',
-        output: err.stderr || err.message || 'Unknown error',
-        success: false,
-      });
-      return NextResponse.json({ success: false, steps, error: 'Build failed' }, { status: 500 });
-    }
-
-    // Step 6: Restart PM2
-    try {
-      const { stdout: pm2Output } = await execAsync(`pm2 restart coaching`);
-      steps.push({ step: 'PM2 Restart', output: pm2Output, success: true });
-    } catch (error) {
-      const err = error as { stderr?: string; message?: string };
-      steps.push({
-        step: 'PM2 Restart',
-        output: err.stderr || err.message || 'Unknown error',
-        success: false,
-      });
-      return NextResponse.json(
-        { success: false, steps, error: 'PM2 restart failed' },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      steps,
-      message: 'Deploy completed successfully!',
-    });
-  } catch (error) {
-    console.error('Deploy error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error', details: String(error) },
-      { status: 500 }
-    );
+// SSE endpoint for real-time deploy updates
+export async function POST(request: NextRequest): Promise<Response> {
+  const session = await auth();
+  if (!session?.user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  if (session.user.role !== PlatformRole.ADMIN) {
+    return NextResponse.json({ error: 'Forbidden - Admin only' }, { status: 403 });
+  }
+
+  const appDir = process.env.APP_DIR || '/var/www/coaching';
+
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    async start(controller) {
+      const sendEvent = (event: string, data: object) => {
+        controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
+      };
+
+      const runStep = async (
+        step: DeployStep,
+        stepIndex: number
+      ): Promise<{ success: boolean; output: string }> => {
+        return new Promise((resolve) => {
+          sendEvent('step_start', {
+            stepIndex,
+            stepName: step.name,
+            totalSteps: DEPLOY_STEPS.length,
+          });
+
+          let output = '';
+          let errorOutput = '';
+
+          const child = spawn('sh', ['-c', `cd ${appDir} && ${step.command}`], {
+            env: { ...process.env, FORCE_COLOR: '0' },
+          });
+
+          const timeout = step.timeout
+            ? setTimeout(() => {
+                child.kill('SIGTERM');
+                sendEvent('step_error', {
+                  stepIndex,
+                  stepName: step.name,
+                  error: 'Command timed out',
+                });
+                resolve({ success: false, output: 'Command timed out' });
+              }, step.timeout)
+            : null;
+
+          child.stdout?.on('data', (data: Buffer) => {
+            const text = data.toString();
+            output += text;
+            sendEvent('step_output', {
+              stepIndex,
+              stepName: step.name,
+              output: text,
+              stream: 'stdout',
+            });
+          });
+
+          child.stderr?.on('data', (data: Buffer) => {
+            const text = data.toString();
+            errorOutput += text;
+            sendEvent('step_output', {
+              stepIndex,
+              stepName: step.name,
+              output: text,
+              stream: 'stderr',
+            });
+          });
+
+          child.on('close', (code) => {
+            if (timeout) clearTimeout(timeout);
+
+            const success = code === 0;
+            const finalOutput = step.truncateOutput
+              ? (output + errorOutput).slice(-step.truncateOutput)
+              : output + errorOutput;
+
+            sendEvent('step_complete', {
+              stepIndex,
+              stepName: step.name,
+              success,
+              exitCode: code,
+              output: finalOutput,
+            });
+
+            resolve({ success, output: finalOutput });
+          });
+
+          child.on('error', (err) => {
+            if (timeout) clearTimeout(timeout);
+            sendEvent('step_error', {
+              stepIndex,
+              stepName: step.name,
+              error: err.message,
+            });
+            resolve({ success: false, output: err.message });
+          });
+        });
+      };
+
+      sendEvent('deploy_start', {
+        totalSteps: DEPLOY_STEPS.length,
+        steps: DEPLOY_STEPS.map((s) => s.name),
+      });
+
+      const results: { step: string; success: boolean; output: string }[] = [];
+
+      for (let i = 0; i < DEPLOY_STEPS.length; i++) {
+        const step = DEPLOY_STEPS[i];
+        const result = await runStep(step, i);
+        results.push({ step: step.name, success: result.success, output: result.output });
+
+        if (!result.success) {
+          sendEvent('deploy_complete', {
+            success: false,
+            failedStep: step.name,
+            results,
+          });
+          controller.close();
+          return;
+        }
+      }
+
+      sendEvent('deploy_complete', {
+        success: true,
+        message: 'Deploy completed successfully!',
+        results,
+      });
+
+      controller.close();
+    },
+  });
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    },
+  });
 }
 
 // GET endpoint to check deploy status / last commit
