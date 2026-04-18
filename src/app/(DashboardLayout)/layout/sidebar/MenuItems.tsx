@@ -13,6 +13,7 @@ import {
   IconRefresh,
   IconRocket,
   IconUsers,
+  IconChartBar,
 } from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
@@ -86,6 +87,13 @@ const MenuItemsComponent = (): MenuItem[] => {
           href: '/utilities/cycles/macrocycles',
         },
       ],
+    },
+    { navlabel: true, subheader: t('Statistics') },
+    {
+      id: uniqueId(),
+      title: t('Games'),
+      icon: IconChartBar,
+      href: '/utilities/athletes/statistics',
     },
     { navlabel: true, subheader: t('Club') },
     {

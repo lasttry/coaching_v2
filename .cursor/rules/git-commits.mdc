@@ -1,0 +1,24 @@
+---
+description: Git commit rules
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Git Commit Rules
+
+## NUNCA fazer commit automaticamente
+
+**IMPORTANTE**: NUNCA fazer `git commit` ou `git push` sem o utilizador pedir explicitamente.
+
+- Fazer todas as alterações necessárias
+- Correr o build para verificar erros
+- Esperar que o utilizador peça para fazer commit
+- Só então fazer commit e push
+
+## Quando o utilizador pedir commit
+
+1. Verificar `git status`
+2. Verificar `git diff --stat`
+3. Correr `npm run build` primeiro
+4. Se build passar, fazer commit com mensagem descritiva
+5. Fazer push apenas se pedido

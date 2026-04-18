@@ -1,0 +1,64 @@
+---
+description: Common import patterns and gotchas for this project
+globs: ["src/**/*.ts", "src/**/*.tsx"]
+alwaysApply: true
+---
+
+# Project Import Patterns
+
+## Prisma Client
+Always use named import for prisma:
+
+```typescript
+// ✅ Correct
+import { prisma } from '@/lib/prisma';
+
+// ❌ Wrong - will cause build error
+import prisma from '@/lib/prisma';
+```
+
+## Authentication
+Use the auth function from lib:
+
+```typescript
+import { auth } from '@/lib/auth';
+
+const session = await auth();
+// Access club via selectedClubId, NOT clubId
+const clubId = session?.user?.selectedClubId;
+```
+
+## Common Session Properties
+- `session.user.id` - User ID
+- `session.user.email` - User email
+- `session.user.selectedClubId` - Currently selected club ID (NOT clubId)
+- `session.user.role` - Platform role (PlatformRole enum)
+
+## i18n Translations
+Always import i18n.client before useTranslation:
+
+```typescript
+import '@/lib/i18n.client';
+import { useTranslation } from 'react-i18next';
+
+// In component
+const { t } = useTranslation();
+```
+
+## Prisma Models - No clubId on Competition
+Competition model does NOT have clubId. Filter competitions by:
+- Getting competition IDs from games that belong to the club
+- Or filtering by echelon
+
+```typescript
+// ✅ Correct - get competitions from club's games
+const competitionIds = [...new Set(games.map(g => g.competitionId).filter(Boolean))];
+const competitions = await prisma.competition.findMany({
+  where: { id: { in: competitionIds as number[] } },
+});
+
+// ❌ Wrong - Competition has no clubId
+const competitions = await prisma.competition.findMany({
+  where: { clubId },
+});
+```
