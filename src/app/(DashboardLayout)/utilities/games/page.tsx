@@ -28,6 +28,9 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Menu,
+  ListItemIcon,
+  ListItemText,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
@@ -38,7 +41,11 @@ import dayjs from 'dayjs';
 import { GameInterface } from '@/types/game/types';
 import { log } from '@/lib/logger';
 import GameComponent from './components/Game';
-import { generatePDF, generateRegistrationPDF } from '@/app/utilities/pdf/pdfUtils';
+import {
+  generatePDF,
+  generateRegistrationPDF,
+  getDistinctEquipmentColorsFromGame,
+} from '@/app/utilities/pdf/pdfUtils';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 
 interface GroupedGames {
@@ -58,6 +65,8 @@ const GamesPage: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
   const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [pdfMenuAnchor, setPdfMenuAnchor] = useState<null | HTMLElement>(null);
+  const [pdfSelectedGame, setPdfSelectedGame] = useState<GameInterface | null>(null);
   const [editGame, setEditGame] = useState<GameInterface | null>(null);
   const [expandedCompetition, setExpandedCompetition] = useState<string | false>(false);
   const [expandedSeries, setExpandedSeries] = useState<string | false>(false);
@@ -387,10 +396,10 @@ const GamesPage: React.FC = () => {
                                       size="small"
                                       color="primary"
                                       title={t('gameSheet')}
-                                      onClick={() =>
-                                        session?.user.selectedClubId &&
-                                        generatePDF(game, session.user.selectedClubId)
-                                      }
+                                      onClick={(e) => {
+                                        setPdfSelectedGame(game);
+                                        setPdfMenuAnchor(e.currentTarget);
+                                      }}
                                     >
                                       <PictureAsPdfIcon fontSize="small" />
                                     </IconButton>
@@ -488,6 +497,64 @@ const GamesPage: React.FC = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* PDF Color Selection Menu */}
+      <Menu
+        anchorEl={pdfMenuAnchor}
+        open={Boolean(pdfMenuAnchor)}
+        onClose={() => {
+          setPdfMenuAnchor(null);
+          setPdfSelectedGame(null);
+        }}
+      >
+        {pdfSelectedGame &&
+          (() => {
+            const colors = getDistinctEquipmentColorsFromGame(pdfSelectedGame);
+            if (colors.length === 0) {
+              return (
+                <MenuItem
+                  onClick={() => {
+                    if (session?.user.selectedClubId && pdfSelectedGame) {
+                      generatePDF(pdfSelectedGame, session.user.selectedClubId);
+                    }
+                    setPdfMenuAnchor(null);
+                    setPdfSelectedGame(null);
+                  }}
+                >
+                  <ListItemIcon>
+                    <PictureAsPdfIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t('gameSheet')}</ListItemText>
+                </MenuItem>
+              );
+            }
+            return colors.map(({ colorId, color, colorHex }) => (
+              <MenuItem
+                key={colorId}
+                onClick={() => {
+                  if (session?.user.selectedClubId && pdfSelectedGame) {
+                    generatePDF(pdfSelectedGame, session.user.selectedClubId, colorId);
+                  }
+                  setPdfMenuAnchor(null);
+                  setPdfSelectedGame(null);
+                }}
+              >
+                <ListItemIcon>
+                  <Box
+                    sx={{
+                      width: 20,
+                      height: 20,
+                      backgroundColor: colorHex,
+                      borderRadius: '4px',
+                      border: '1px solid #ccc',
+                    }}
+                  />
+                </ListItemIcon>
+                <ListItemText>{color}</ListItemText>
+              </MenuItem>
+            ));
+          })()}
+      </Menu>
     </Box>
   );
 };

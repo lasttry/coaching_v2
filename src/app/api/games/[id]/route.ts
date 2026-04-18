@@ -62,6 +62,7 @@ export async function GET(
               equipmentColor: true,
             },
           },
+          equipmentColor: true,
         },
       },
     },
@@ -177,9 +178,16 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
           deleteMany: {},
           createMany: {
             data: (data.gameEquipments ?? []).map(
-              (ge: { athleteId: number; equipmentId: number }) => ({
+              (ge: {
+                athleteId: number;
+                equipmentId: number;
+                equipmentColorId: number;
+                manualOverride?: boolean;
+              }) => ({
                 athleteId: ge.athleteId,
                 equipmentId: ge.equipmentId,
+                equipmentColorId: ge.equipmentColorId,
+                manualOverride: ge.manualOverride ?? false,
               })
             ),
           },
@@ -207,6 +215,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
                 equipmentColor: true,
               },
             },
+            equipmentColor: true,
           },
         },
       },

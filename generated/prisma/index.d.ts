@@ -768,7 +768,7 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.6.0
+   * Prisma Client JS version: 7.7.0
    * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
    */
   export type PrismaVersion = {
@@ -4361,10 +4361,12 @@ export namespace Prisma {
 
   export type EquipmentColorCountOutputType = {
     equipments: number
+    gameEquipments: number
   }
 
   export type EquipmentColorCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     equipments?: boolean | EquipmentColorCountOutputTypeCountEquipmentsArgs
+    gameEquipments?: boolean | EquipmentColorCountOutputTypeCountGameEquipmentsArgs
   }
 
   // Custom InputTypes
@@ -4383,6 +4385,13 @@ export namespace Prisma {
    */
   export type EquipmentColorCountOutputTypeCountEquipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: EquipmentWhereInput
+  }
+
+  /**
+   * EquipmentColorCountOutputType without action
+   */
+  export type EquipmentColorCountOutputTypeCountGameEquipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GameEquipmentWhereInput
   }
 
 
@@ -36877,6 +36886,7 @@ export namespace Prisma {
     season?: boolean | SeasonDefaultArgs<ExtArgs>
     echelon?: boolean | EchelonDefaultArgs<ExtArgs>
     equipments?: boolean | EquipmentColor$equipmentsArgs<ExtArgs>
+    gameEquipments?: boolean | EquipmentColor$gameEquipmentsArgs<ExtArgs>
     _count?: boolean | EquipmentColorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["equipmentColor"]>
 
@@ -36925,6 +36935,7 @@ export namespace Prisma {
     season?: boolean | SeasonDefaultArgs<ExtArgs>
     echelon?: boolean | EchelonDefaultArgs<ExtArgs>
     equipments?: boolean | EquipmentColor$equipmentsArgs<ExtArgs>
+    gameEquipments?: boolean | EquipmentColor$gameEquipmentsArgs<ExtArgs>
     _count?: boolean | EquipmentColorCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type EquipmentColorIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -36945,6 +36956,7 @@ export namespace Prisma {
       season: Prisma.$SeasonPayload<ExtArgs>
       echelon: Prisma.$EchelonPayload<ExtArgs>
       equipments: Prisma.$EquipmentPayload<ExtArgs>[]
+      gameEquipments: Prisma.$GameEquipmentPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -37353,6 +37365,7 @@ export namespace Prisma {
     season<T extends SeasonDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SeasonDefaultArgs<ExtArgs>>): Prisma__SeasonClient<$Result.GetResult<Prisma.$SeasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     echelon<T extends EchelonDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EchelonDefaultArgs<ExtArgs>>): Prisma__EchelonClient<$Result.GetResult<Prisma.$EchelonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     equipments<T extends EquipmentColor$equipmentsArgs<ExtArgs> = {}>(args?: Subset<T, EquipmentColor$equipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    gameEquipments<T extends EquipmentColor$gameEquipmentsArgs<ExtArgs> = {}>(args?: Subset<T, EquipmentColor$gameEquipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameEquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -37812,6 +37825,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: EquipmentScalarFieldEnum | EquipmentScalarFieldEnum[]
+  }
+
+  /**
+   * EquipmentColor.gameEquipments
+   */
+  export type EquipmentColor$gameEquipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GameEquipment
+     */
+    select?: GameEquipmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GameEquipment
+     */
+    omit?: GameEquipmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GameEquipmentInclude<ExtArgs> | null
+    where?: GameEquipmentWhereInput
+    orderBy?: GameEquipmentOrderByWithRelationInput | GameEquipmentOrderByWithRelationInput[]
+    cursor?: GameEquipmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GameEquipmentScalarFieldEnum | GameEquipmentScalarFieldEnum[]
   }
 
   /**
@@ -38998,6 +39035,7 @@ export namespace Prisma {
     gameId: number | null
     athleteId: number | null
     equipmentId: number | null
+    equipmentColorId: number | null
   }
 
   export type GameEquipmentSumAggregateOutputType = {
@@ -39005,6 +39043,7 @@ export namespace Prisma {
     gameId: number | null
     athleteId: number | null
     equipmentId: number | null
+    equipmentColorId: number | null
   }
 
   export type GameEquipmentMinAggregateOutputType = {
@@ -39012,6 +39051,8 @@ export namespace Prisma {
     gameId: number | null
     athleteId: number | null
     equipmentId: number | null
+    equipmentColorId: number | null
+    manualOverride: boolean | null
   }
 
   export type GameEquipmentMaxAggregateOutputType = {
@@ -39019,6 +39060,8 @@ export namespace Prisma {
     gameId: number | null
     athleteId: number | null
     equipmentId: number | null
+    equipmentColorId: number | null
+    manualOverride: boolean | null
   }
 
   export type GameEquipmentCountAggregateOutputType = {
@@ -39026,6 +39069,8 @@ export namespace Prisma {
     gameId: number
     athleteId: number
     equipmentId: number
+    equipmentColorId: number
+    manualOverride: number
     _all: number
   }
 
@@ -39035,6 +39080,7 @@ export namespace Prisma {
     gameId?: true
     athleteId?: true
     equipmentId?: true
+    equipmentColorId?: true
   }
 
   export type GameEquipmentSumAggregateInputType = {
@@ -39042,6 +39088,7 @@ export namespace Prisma {
     gameId?: true
     athleteId?: true
     equipmentId?: true
+    equipmentColorId?: true
   }
 
   export type GameEquipmentMinAggregateInputType = {
@@ -39049,6 +39096,8 @@ export namespace Prisma {
     gameId?: true
     athleteId?: true
     equipmentId?: true
+    equipmentColorId?: true
+    manualOverride?: true
   }
 
   export type GameEquipmentMaxAggregateInputType = {
@@ -39056,6 +39105,8 @@ export namespace Prisma {
     gameId?: true
     athleteId?: true
     equipmentId?: true
+    equipmentColorId?: true
+    manualOverride?: true
   }
 
   export type GameEquipmentCountAggregateInputType = {
@@ -39063,6 +39114,8 @@ export namespace Prisma {
     gameId?: true
     athleteId?: true
     equipmentId?: true
+    equipmentColorId?: true
+    manualOverride?: true
     _all?: true
   }
 
@@ -39157,6 +39210,8 @@ export namespace Prisma {
     gameId: number
     athleteId: number
     equipmentId: number
+    equipmentColorId: number
+    manualOverride: boolean
     _count: GameEquipmentCountAggregateOutputType | null
     _avg: GameEquipmentAvgAggregateOutputType | null
     _sum: GameEquipmentSumAggregateOutputType | null
@@ -39183,9 +39238,12 @@ export namespace Prisma {
     gameId?: boolean
     athleteId?: boolean
     equipmentId?: boolean
+    equipmentColorId?: boolean
+    manualOverride?: boolean
     game?: boolean | GameDefaultArgs<ExtArgs>
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
     equipment?: boolean | EquipmentDefaultArgs<ExtArgs>
+    equipmentColor?: boolean | EquipmentColorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["gameEquipment"]>
 
   export type GameEquipmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -39193,9 +39251,12 @@ export namespace Prisma {
     gameId?: boolean
     athleteId?: boolean
     equipmentId?: boolean
+    equipmentColorId?: boolean
+    manualOverride?: boolean
     game?: boolean | GameDefaultArgs<ExtArgs>
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
     equipment?: boolean | EquipmentDefaultArgs<ExtArgs>
+    equipmentColor?: boolean | EquipmentColorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["gameEquipment"]>
 
   export type GameEquipmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -39203,9 +39264,12 @@ export namespace Prisma {
     gameId?: boolean
     athleteId?: boolean
     equipmentId?: boolean
+    equipmentColorId?: boolean
+    manualOverride?: boolean
     game?: boolean | GameDefaultArgs<ExtArgs>
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
     equipment?: boolean | EquipmentDefaultArgs<ExtArgs>
+    equipmentColor?: boolean | EquipmentColorDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["gameEquipment"]>
 
   export type GameEquipmentSelectScalar = {
@@ -39213,23 +39277,28 @@ export namespace Prisma {
     gameId?: boolean
     athleteId?: boolean
     equipmentId?: boolean
+    equipmentColorId?: boolean
+    manualOverride?: boolean
   }
 
-  export type GameEquipmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameId" | "athleteId" | "equipmentId", ExtArgs["result"]["gameEquipment"]>
+  export type GameEquipmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "gameId" | "athleteId" | "equipmentId" | "equipmentColorId" | "manualOverride", ExtArgs["result"]["gameEquipment"]>
   export type GameEquipmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     game?: boolean | GameDefaultArgs<ExtArgs>
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
     equipment?: boolean | EquipmentDefaultArgs<ExtArgs>
+    equipmentColor?: boolean | EquipmentColorDefaultArgs<ExtArgs>
   }
   export type GameEquipmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     game?: boolean | GameDefaultArgs<ExtArgs>
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
     equipment?: boolean | EquipmentDefaultArgs<ExtArgs>
+    equipmentColor?: boolean | EquipmentColorDefaultArgs<ExtArgs>
   }
   export type GameEquipmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     game?: boolean | GameDefaultArgs<ExtArgs>
     athlete?: boolean | AthleteDefaultArgs<ExtArgs>
     equipment?: boolean | EquipmentDefaultArgs<ExtArgs>
+    equipmentColor?: boolean | EquipmentColorDefaultArgs<ExtArgs>
   }
 
   export type $GameEquipmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -39238,12 +39307,15 @@ export namespace Prisma {
       game: Prisma.$GamePayload<ExtArgs>
       athlete: Prisma.$AthletePayload<ExtArgs>
       equipment: Prisma.$EquipmentPayload<ExtArgs>
+      equipmentColor: Prisma.$EquipmentColorPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       gameId: number
       athleteId: number
       equipmentId: number
+      equipmentColorId: number
+      manualOverride: boolean
     }, ExtArgs["result"]["gameEquipment"]>
     composites: {}
   }
@@ -39641,6 +39713,7 @@ export namespace Prisma {
     game<T extends GameDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GameDefaultArgs<ExtArgs>>): Prisma__GameClient<$Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     athlete<T extends AthleteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AthleteDefaultArgs<ExtArgs>>): Prisma__AthleteClient<$Result.GetResult<Prisma.$AthletePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     equipment<T extends EquipmentDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EquipmentDefaultArgs<ExtArgs>>): Prisma__EquipmentClient<$Result.GetResult<Prisma.$EquipmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    equipmentColor<T extends EquipmentColorDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EquipmentColorDefaultArgs<ExtArgs>>): Prisma__EquipmentColorClient<$Result.GetResult<Prisma.$EquipmentColorPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -39674,6 +39747,8 @@ export namespace Prisma {
     readonly gameId: FieldRef<"GameEquipment", 'Int'>
     readonly athleteId: FieldRef<"GameEquipment", 'Int'>
     readonly equipmentId: FieldRef<"GameEquipment", 'Int'>
+    readonly equipmentColorId: FieldRef<"GameEquipment", 'Int'>
+    readonly manualOverride: FieldRef<"GameEquipment", 'Boolean'>
   }
     
 
@@ -40513,7 +40588,9 @@ export namespace Prisma {
     id: 'id',
     gameId: 'gameId',
     athleteId: 'athleteId',
-    equipmentId: 'equipmentId'
+    equipmentId: 'equipmentId',
+    equipmentColorId: 'equipmentColorId',
+    manualOverride: 'manualOverride'
   };
 
   export type GameEquipmentScalarFieldEnum = (typeof GameEquipmentScalarFieldEnum)[keyof typeof GameEquipmentScalarFieldEnum]
@@ -42847,6 +42924,7 @@ export namespace Prisma {
     season?: XOR<SeasonScalarRelationFilter, SeasonWhereInput>
     echelon?: XOR<EchelonScalarRelationFilter, EchelonWhereInput>
     equipments?: EquipmentListRelationFilter
+    gameEquipments?: GameEquipmentListRelationFilter
   }
 
   export type EquipmentColorOrderByWithRelationInput = {
@@ -42862,6 +42940,7 @@ export namespace Prisma {
     season?: SeasonOrderByWithRelationInput
     echelon?: EchelonOrderByWithRelationInput
     equipments?: EquipmentOrderByRelationAggregateInput
+    gameEquipments?: GameEquipmentOrderByRelationAggregateInput
   }
 
   export type EquipmentColorWhereUniqueInput = Prisma.AtLeast<{
@@ -42881,6 +42960,7 @@ export namespace Prisma {
     season?: XOR<SeasonScalarRelationFilter, SeasonWhereInput>
     echelon?: XOR<EchelonScalarRelationFilter, EchelonWhereInput>
     equipments?: EquipmentListRelationFilter
+    gameEquipments?: GameEquipmentListRelationFilter
   }, "id" | "clubId_seasonId_echelonId_color">
 
   export type EquipmentColorOrderByWithAggregationInput = {
@@ -42986,9 +43066,12 @@ export namespace Prisma {
     gameId?: IntFilter<"GameEquipment"> | number
     athleteId?: IntFilter<"GameEquipment"> | number
     equipmentId?: IntFilter<"GameEquipment"> | number
+    equipmentColorId?: IntFilter<"GameEquipment"> | number
+    manualOverride?: BoolFilter<"GameEquipment"> | boolean
     game?: XOR<GameScalarRelationFilter, GameWhereInput>
     athlete?: XOR<AthleteScalarRelationFilter, AthleteWhereInput>
     equipment?: XOR<EquipmentScalarRelationFilter, EquipmentWhereInput>
+    equipmentColor?: XOR<EquipmentColorScalarRelationFilter, EquipmentColorWhereInput>
   }
 
   export type GameEquipmentOrderByWithRelationInput = {
@@ -42996,30 +43079,38 @@ export namespace Prisma {
     gameId?: SortOrder
     athleteId?: SortOrder
     equipmentId?: SortOrder
+    equipmentColorId?: SortOrder
+    manualOverride?: SortOrder
     game?: GameOrderByWithRelationInput
     athlete?: AthleteOrderByWithRelationInput
     equipment?: EquipmentOrderByWithRelationInput
+    equipmentColor?: EquipmentColorOrderByWithRelationInput
   }
 
   export type GameEquipmentWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    gameId_athleteId?: GameEquipmentGameIdAthleteIdCompoundUniqueInput
+    gameId_athleteId_equipmentColorId?: GameEquipmentGameIdAthleteIdEquipmentColorIdCompoundUniqueInput
     AND?: GameEquipmentWhereInput | GameEquipmentWhereInput[]
     OR?: GameEquipmentWhereInput[]
     NOT?: GameEquipmentWhereInput | GameEquipmentWhereInput[]
     gameId?: IntFilter<"GameEquipment"> | number
     athleteId?: IntFilter<"GameEquipment"> | number
     equipmentId?: IntFilter<"GameEquipment"> | number
+    equipmentColorId?: IntFilter<"GameEquipment"> | number
+    manualOverride?: BoolFilter<"GameEquipment"> | boolean
     game?: XOR<GameScalarRelationFilter, GameWhereInput>
     athlete?: XOR<AthleteScalarRelationFilter, AthleteWhereInput>
     equipment?: XOR<EquipmentScalarRelationFilter, EquipmentWhereInput>
-  }, "id" | "gameId_athleteId">
+    equipmentColor?: XOR<EquipmentColorScalarRelationFilter, EquipmentColorWhereInput>
+  }, "id" | "gameId_athleteId_equipmentColorId">
 
   export type GameEquipmentOrderByWithAggregationInput = {
     id?: SortOrder
     gameId?: SortOrder
     athleteId?: SortOrder
     equipmentId?: SortOrder
+    equipmentColorId?: SortOrder
+    manualOverride?: SortOrder
     _count?: GameEquipmentCountOrderByAggregateInput
     _avg?: GameEquipmentAvgOrderByAggregateInput
     _max?: GameEquipmentMaxOrderByAggregateInput
@@ -43035,6 +43126,8 @@ export namespace Prisma {
     gameId?: IntWithAggregatesFilter<"GameEquipment"> | number
     athleteId?: IntWithAggregatesFilter<"GameEquipment"> | number
     equipmentId?: IntWithAggregatesFilter<"GameEquipment"> | number
+    equipmentColorId?: IntWithAggregatesFilter<"GameEquipment"> | number
+    manualOverride?: BoolWithAggregatesFilter<"GameEquipment"> | boolean
   }
 
   export type AthleteCreateInput = {
@@ -45162,6 +45255,7 @@ export namespace Prisma {
     season: SeasonCreateNestedOneWithoutEquipmentColorsInput
     echelon: EchelonCreateNestedOneWithoutEquipmentColorsInput
     equipments?: EquipmentCreateNestedManyWithoutEquipmentColorInput
+    gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorUncheckedCreateInput = {
@@ -45174,6 +45268,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
+    gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorUpdateInput = {
@@ -45185,6 +45280,7 @@ export namespace Prisma {
     season?: SeasonUpdateOneRequiredWithoutEquipmentColorsNestedInput
     echelon?: EchelonUpdateOneRequiredWithoutEquipmentColorsNestedInput
     equipments?: EquipmentUpdateManyWithoutEquipmentColorNestedInput
+    gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorUncheckedUpdateInput = {
@@ -45197,6 +45293,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
+    gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorCreateManyInput = {
@@ -45292,9 +45389,11 @@ export namespace Prisma {
   }
 
   export type GameEquipmentCreateInput = {
+    manualOverride?: boolean
     game: GameCreateNestedOneWithoutGameEquipmentsInput
     athlete: AthleteCreateNestedOneWithoutGameEquipmentsInput
     equipment: EquipmentCreateNestedOneWithoutGameEquipmentsInput
+    equipmentColor: EquipmentColorCreateNestedOneWithoutGameEquipmentsInput
   }
 
   export type GameEquipmentUncheckedCreateInput = {
@@ -45302,12 +45401,16 @@ export namespace Prisma {
     gameId: number
     athleteId: number
     equipmentId: number
+    equipmentColorId: number
+    manualOverride?: boolean
   }
 
   export type GameEquipmentUpdateInput = {
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
     game?: GameUpdateOneRequiredWithoutGameEquipmentsNestedInput
     athlete?: AthleteUpdateOneRequiredWithoutGameEquipmentsNestedInput
     equipment?: EquipmentUpdateOneRequiredWithoutGameEquipmentsNestedInput
+    equipmentColor?: EquipmentColorUpdateOneRequiredWithoutGameEquipmentsNestedInput
   }
 
   export type GameEquipmentUncheckedUpdateInput = {
@@ -45315,6 +45418,8 @@ export namespace Prisma {
     gameId?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
     equipmentId?: IntFieldUpdateOperationsInput | number
+    equipmentColorId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GameEquipmentCreateManyInput = {
@@ -45322,10 +45427,12 @@ export namespace Prisma {
     gameId: number
     athleteId: number
     equipmentId: number
+    equipmentColorId: number
+    manualOverride?: boolean
   }
 
   export type GameEquipmentUpdateManyMutationInput = {
-
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GameEquipmentUncheckedUpdateManyInput = {
@@ -45333,6 +45440,8 @@ export namespace Prisma {
     gameId?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
     equipmentId?: IntFieldUpdateOperationsInput | number
+    equipmentColorId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -47436,9 +47545,10 @@ export namespace Prisma {
     isNot?: EquipmentWhereInput
   }
 
-  export type GameEquipmentGameIdAthleteIdCompoundUniqueInput = {
+  export type GameEquipmentGameIdAthleteIdEquipmentColorIdCompoundUniqueInput = {
     gameId: number
     athleteId: number
+    equipmentColorId: number
   }
 
   export type GameEquipmentCountOrderByAggregateInput = {
@@ -47446,6 +47556,8 @@ export namespace Prisma {
     gameId?: SortOrder
     athleteId?: SortOrder
     equipmentId?: SortOrder
+    equipmentColorId?: SortOrder
+    manualOverride?: SortOrder
   }
 
   export type GameEquipmentAvgOrderByAggregateInput = {
@@ -47453,6 +47565,7 @@ export namespace Prisma {
     gameId?: SortOrder
     athleteId?: SortOrder
     equipmentId?: SortOrder
+    equipmentColorId?: SortOrder
   }
 
   export type GameEquipmentMaxOrderByAggregateInput = {
@@ -47460,6 +47573,8 @@ export namespace Prisma {
     gameId?: SortOrder
     athleteId?: SortOrder
     equipmentId?: SortOrder
+    equipmentColorId?: SortOrder
+    manualOverride?: SortOrder
   }
 
   export type GameEquipmentMinOrderByAggregateInput = {
@@ -47467,6 +47582,8 @@ export namespace Prisma {
     gameId?: SortOrder
     athleteId?: SortOrder
     equipmentId?: SortOrder
+    equipmentColorId?: SortOrder
+    manualOverride?: SortOrder
   }
 
   export type GameEquipmentSumOrderByAggregateInput = {
@@ -47474,6 +47591,7 @@ export namespace Prisma {
     gameId?: SortOrder
     athleteId?: SortOrder
     equipmentId?: SortOrder
+    equipmentColorId?: SortOrder
   }
 
   export type ClubCreateNestedOneWithoutAthletesInput = {
@@ -49817,11 +49935,25 @@ export namespace Prisma {
     connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
   }
 
+  export type GameEquipmentCreateNestedManyWithoutEquipmentColorInput = {
+    create?: XOR<GameEquipmentCreateWithoutEquipmentColorInput, GameEquipmentUncheckedCreateWithoutEquipmentColorInput> | GameEquipmentCreateWithoutEquipmentColorInput[] | GameEquipmentUncheckedCreateWithoutEquipmentColorInput[]
+    connectOrCreate?: GameEquipmentCreateOrConnectWithoutEquipmentColorInput | GameEquipmentCreateOrConnectWithoutEquipmentColorInput[]
+    createMany?: GameEquipmentCreateManyEquipmentColorInputEnvelope
+    connect?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+  }
+
   export type EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput = {
     create?: XOR<EquipmentCreateWithoutEquipmentColorInput, EquipmentUncheckedCreateWithoutEquipmentColorInput> | EquipmentCreateWithoutEquipmentColorInput[] | EquipmentUncheckedCreateWithoutEquipmentColorInput[]
     connectOrCreate?: EquipmentCreateOrConnectWithoutEquipmentColorInput | EquipmentCreateOrConnectWithoutEquipmentColorInput[]
     createMany?: EquipmentCreateManyEquipmentColorInputEnvelope
     connect?: EquipmentWhereUniqueInput | EquipmentWhereUniqueInput[]
+  }
+
+  export type GameEquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput = {
+    create?: XOR<GameEquipmentCreateWithoutEquipmentColorInput, GameEquipmentUncheckedCreateWithoutEquipmentColorInput> | GameEquipmentCreateWithoutEquipmentColorInput[] | GameEquipmentUncheckedCreateWithoutEquipmentColorInput[]
+    connectOrCreate?: GameEquipmentCreateOrConnectWithoutEquipmentColorInput | GameEquipmentCreateOrConnectWithoutEquipmentColorInput[]
+    createMany?: GameEquipmentCreateManyEquipmentColorInputEnvelope
+    connect?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
   }
 
   export type ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput = {
@@ -49862,6 +49994,20 @@ export namespace Prisma {
     deleteMany?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
   }
 
+  export type GameEquipmentUpdateManyWithoutEquipmentColorNestedInput = {
+    create?: XOR<GameEquipmentCreateWithoutEquipmentColorInput, GameEquipmentUncheckedCreateWithoutEquipmentColorInput> | GameEquipmentCreateWithoutEquipmentColorInput[] | GameEquipmentUncheckedCreateWithoutEquipmentColorInput[]
+    connectOrCreate?: GameEquipmentCreateOrConnectWithoutEquipmentColorInput | GameEquipmentCreateOrConnectWithoutEquipmentColorInput[]
+    upsert?: GameEquipmentUpsertWithWhereUniqueWithoutEquipmentColorInput | GameEquipmentUpsertWithWhereUniqueWithoutEquipmentColorInput[]
+    createMany?: GameEquipmentCreateManyEquipmentColorInputEnvelope
+    set?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+    disconnect?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+    delete?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+    connect?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+    update?: GameEquipmentUpdateWithWhereUniqueWithoutEquipmentColorInput | GameEquipmentUpdateWithWhereUniqueWithoutEquipmentColorInput[]
+    updateMany?: GameEquipmentUpdateManyWithWhereWithoutEquipmentColorInput | GameEquipmentUpdateManyWithWhereWithoutEquipmentColorInput[]
+    deleteMany?: GameEquipmentScalarWhereInput | GameEquipmentScalarWhereInput[]
+  }
+
   export type EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput = {
     create?: XOR<EquipmentCreateWithoutEquipmentColorInput, EquipmentUncheckedCreateWithoutEquipmentColorInput> | EquipmentCreateWithoutEquipmentColorInput[] | EquipmentUncheckedCreateWithoutEquipmentColorInput[]
     connectOrCreate?: EquipmentCreateOrConnectWithoutEquipmentColorInput | EquipmentCreateOrConnectWithoutEquipmentColorInput[]
@@ -49874,6 +50020,20 @@ export namespace Prisma {
     update?: EquipmentUpdateWithWhereUniqueWithoutEquipmentColorInput | EquipmentUpdateWithWhereUniqueWithoutEquipmentColorInput[]
     updateMany?: EquipmentUpdateManyWithWhereWithoutEquipmentColorInput | EquipmentUpdateManyWithWhereWithoutEquipmentColorInput[]
     deleteMany?: EquipmentScalarWhereInput | EquipmentScalarWhereInput[]
+  }
+
+  export type GameEquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput = {
+    create?: XOR<GameEquipmentCreateWithoutEquipmentColorInput, GameEquipmentUncheckedCreateWithoutEquipmentColorInput> | GameEquipmentCreateWithoutEquipmentColorInput[] | GameEquipmentUncheckedCreateWithoutEquipmentColorInput[]
+    connectOrCreate?: GameEquipmentCreateOrConnectWithoutEquipmentColorInput | GameEquipmentCreateOrConnectWithoutEquipmentColorInput[]
+    upsert?: GameEquipmentUpsertWithWhereUniqueWithoutEquipmentColorInput | GameEquipmentUpsertWithWhereUniqueWithoutEquipmentColorInput[]
+    createMany?: GameEquipmentCreateManyEquipmentColorInputEnvelope
+    set?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+    disconnect?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+    delete?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+    connect?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+    update?: GameEquipmentUpdateWithWhereUniqueWithoutEquipmentColorInput | GameEquipmentUpdateWithWhereUniqueWithoutEquipmentColorInput[]
+    updateMany?: GameEquipmentUpdateManyWithWhereWithoutEquipmentColorInput | GameEquipmentUpdateManyWithWhereWithoutEquipmentColorInput[]
+    deleteMany?: GameEquipmentScalarWhereInput | GameEquipmentScalarWhereInput[]
   }
 
   export type EquipmentColorCreateNestedOneWithoutEquipmentsInput = {
@@ -49954,6 +50114,12 @@ export namespace Prisma {
     connect?: EquipmentWhereUniqueInput
   }
 
+  export type EquipmentColorCreateNestedOneWithoutGameEquipmentsInput = {
+    create?: XOR<EquipmentColorCreateWithoutGameEquipmentsInput, EquipmentColorUncheckedCreateWithoutGameEquipmentsInput>
+    connectOrCreate?: EquipmentColorCreateOrConnectWithoutGameEquipmentsInput
+    connect?: EquipmentColorWhereUniqueInput
+  }
+
   export type GameUpdateOneRequiredWithoutGameEquipmentsNestedInput = {
     create?: XOR<GameCreateWithoutGameEquipmentsInput, GameUncheckedCreateWithoutGameEquipmentsInput>
     connectOrCreate?: GameCreateOrConnectWithoutGameEquipmentsInput
@@ -49976,6 +50142,14 @@ export namespace Prisma {
     upsert?: EquipmentUpsertWithoutGameEquipmentsInput
     connect?: EquipmentWhereUniqueInput
     update?: XOR<XOR<EquipmentUpdateToOneWithWhereWithoutGameEquipmentsInput, EquipmentUpdateWithoutGameEquipmentsInput>, EquipmentUncheckedUpdateWithoutGameEquipmentsInput>
+  }
+
+  export type EquipmentColorUpdateOneRequiredWithoutGameEquipmentsNestedInput = {
+    create?: XOR<EquipmentColorCreateWithoutGameEquipmentsInput, EquipmentColorUncheckedCreateWithoutGameEquipmentsInput>
+    connectOrCreate?: EquipmentColorCreateOrConnectWithoutGameEquipmentsInput
+    upsert?: EquipmentColorUpsertWithoutGameEquipmentsInput
+    connect?: EquipmentColorWhereUniqueInput
+    update?: XOR<XOR<EquipmentColorUpdateToOneWithWhereWithoutGameEquipmentsInput, EquipmentColorUpdateWithoutGameEquipmentsInput>, EquipmentColorUncheckedUpdateWithoutGameEquipmentsInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -50607,14 +50781,18 @@ export namespace Prisma {
   }
 
   export type GameEquipmentCreateWithoutAthleteInput = {
+    manualOverride?: boolean
     game: GameCreateNestedOneWithoutGameEquipmentsInput
     equipment: EquipmentCreateNestedOneWithoutGameEquipmentsInput
+    equipmentColor: EquipmentColorCreateNestedOneWithoutGameEquipmentsInput
   }
 
   export type GameEquipmentUncheckedCreateWithoutAthleteInput = {
     id?: number
     gameId: number
     equipmentId: number
+    equipmentColorId: number
+    manualOverride?: boolean
   }
 
   export type GameEquipmentCreateOrConnectWithoutAthleteInput = {
@@ -50894,6 +51072,8 @@ export namespace Prisma {
     gameId?: IntFilter<"GameEquipment"> | number
     athleteId?: IntFilter<"GameEquipment"> | number
     equipmentId?: IntFilter<"GameEquipment"> | number
+    equipmentColorId?: IntFilter<"GameEquipment"> | number
+    manualOverride?: BoolFilter<"GameEquipment"> | boolean
   }
 
   export type GameCreateWithoutGameAthletesInput = {
@@ -51345,14 +51525,18 @@ export namespace Prisma {
   }
 
   export type GameEquipmentCreateWithoutGameInput = {
+    manualOverride?: boolean
     athlete: AthleteCreateNestedOneWithoutGameEquipmentsInput
     equipment: EquipmentCreateNestedOneWithoutGameEquipmentsInput
+    equipmentColor: EquipmentColorCreateNestedOneWithoutGameEquipmentsInput
   }
 
   export type GameEquipmentUncheckedCreateWithoutGameInput = {
     id?: number
     athleteId: number
     equipmentId: number
+    equipmentColorId: number
+    manualOverride?: boolean
   }
 
   export type GameEquipmentCreateOrConnectWithoutGameInput = {
@@ -53530,6 +53714,7 @@ export namespace Prisma {
     club: ClubCreateNestedOneWithoutEquipmentColorsInput
     season: SeasonCreateNestedOneWithoutEquipmentColorsInput
     equipments?: EquipmentCreateNestedManyWithoutEquipmentColorInput
+    gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorUncheckedCreateWithoutEchelonInput = {
@@ -53541,6 +53726,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
+    gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorCreateOrConnectWithoutEchelonInput = {
@@ -53892,6 +54078,7 @@ export namespace Prisma {
     season: SeasonCreateNestedOneWithoutEquipmentColorsInput
     echelon: EchelonCreateNestedOneWithoutEquipmentColorsInput
     equipments?: EquipmentCreateNestedManyWithoutEquipmentColorInput
+    gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorUncheckedCreateWithoutClubInput = {
@@ -53903,6 +54090,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
+    gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorCreateOrConnectWithoutClubInput = {
@@ -54137,6 +54325,7 @@ export namespace Prisma {
     club: ClubCreateNestedOneWithoutEquipmentColorsInput
     echelon: EchelonCreateNestedOneWithoutEquipmentColorsInput
     equipments?: EquipmentCreateNestedManyWithoutEquipmentColorInput
+    gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorUncheckedCreateWithoutSeasonInput = {
@@ -54148,6 +54337,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
+    gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorCreateOrConnectWithoutSeasonInput = {
@@ -56003,6 +56193,31 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type GameEquipmentCreateWithoutEquipmentColorInput = {
+    manualOverride?: boolean
+    game: GameCreateNestedOneWithoutGameEquipmentsInput
+    athlete: AthleteCreateNestedOneWithoutGameEquipmentsInput
+    equipment: EquipmentCreateNestedOneWithoutGameEquipmentsInput
+  }
+
+  export type GameEquipmentUncheckedCreateWithoutEquipmentColorInput = {
+    id?: number
+    gameId: number
+    athleteId: number
+    equipmentId: number
+    manualOverride?: boolean
+  }
+
+  export type GameEquipmentCreateOrConnectWithoutEquipmentColorInput = {
+    where: GameEquipmentWhereUniqueInput
+    create: XOR<GameEquipmentCreateWithoutEquipmentColorInput, GameEquipmentUncheckedCreateWithoutEquipmentColorInput>
+  }
+
+  export type GameEquipmentCreateManyEquipmentColorInputEnvelope = {
+    data: GameEquipmentCreateManyEquipmentColorInput | GameEquipmentCreateManyEquipmentColorInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ClubUpsertWithoutEquipmentColorsInput = {
     update: XOR<ClubUpdateWithoutEquipmentColorsInput, ClubUncheckedUpdateWithoutEquipmentColorsInput>
     create: XOR<ClubCreateWithoutEquipmentColorsInput, ClubUncheckedCreateWithoutEquipmentColorsInput>
@@ -56141,6 +56356,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Equipment"> | Date | string
   }
 
+  export type GameEquipmentUpsertWithWhereUniqueWithoutEquipmentColorInput = {
+    where: GameEquipmentWhereUniqueInput
+    update: XOR<GameEquipmentUpdateWithoutEquipmentColorInput, GameEquipmentUncheckedUpdateWithoutEquipmentColorInput>
+    create: XOR<GameEquipmentCreateWithoutEquipmentColorInput, GameEquipmentUncheckedCreateWithoutEquipmentColorInput>
+  }
+
+  export type GameEquipmentUpdateWithWhereUniqueWithoutEquipmentColorInput = {
+    where: GameEquipmentWhereUniqueInput
+    data: XOR<GameEquipmentUpdateWithoutEquipmentColorInput, GameEquipmentUncheckedUpdateWithoutEquipmentColorInput>
+  }
+
+  export type GameEquipmentUpdateManyWithWhereWithoutEquipmentColorInput = {
+    where: GameEquipmentScalarWhereInput
+    data: XOR<GameEquipmentUpdateManyMutationInput, GameEquipmentUncheckedUpdateManyWithoutEquipmentColorInput>
+  }
+
   export type EquipmentColorCreateWithoutEquipmentsInput = {
     color: string
     colorHex?: string
@@ -56149,6 +56380,7 @@ export namespace Prisma {
     club: ClubCreateNestedOneWithoutEquipmentColorsInput
     season: SeasonCreateNestedOneWithoutEquipmentColorsInput
     echelon: EchelonCreateNestedOneWithoutEquipmentColorsInput
+    gameEquipments?: GameEquipmentCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorUncheckedCreateWithoutEquipmentsInput = {
@@ -56160,6 +56392,7 @@ export namespace Prisma {
     colorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
+    gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
   }
 
   export type EquipmentColorCreateOrConnectWithoutEquipmentsInput = {
@@ -56168,14 +56401,18 @@ export namespace Prisma {
   }
 
   export type GameEquipmentCreateWithoutEquipmentInput = {
+    manualOverride?: boolean
     game: GameCreateNestedOneWithoutGameEquipmentsInput
     athlete: AthleteCreateNestedOneWithoutGameEquipmentsInput
+    equipmentColor: EquipmentColorCreateNestedOneWithoutGameEquipmentsInput
   }
 
   export type GameEquipmentUncheckedCreateWithoutEquipmentInput = {
     id?: number
     gameId: number
     athleteId: number
+    equipmentColorId: number
+    manualOverride?: boolean
   }
 
   export type GameEquipmentCreateOrConnectWithoutEquipmentInput = {
@@ -56207,6 +56444,7 @@ export namespace Prisma {
     club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
     season?: SeasonUpdateOneRequiredWithoutEquipmentColorsNestedInput
     echelon?: EchelonUpdateOneRequiredWithoutEquipmentColorsNestedInput
+    gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorUncheckedUpdateWithoutEquipmentsInput = {
@@ -56218,6 +56456,7 @@ export namespace Prisma {
     colorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type GameEquipmentUpsertWithWhereUniqueWithoutEquipmentInput = {
@@ -56374,6 +56613,34 @@ export namespace Prisma {
   export type EquipmentCreateOrConnectWithoutGameEquipmentsInput = {
     where: EquipmentWhereUniqueInput
     create: XOR<EquipmentCreateWithoutGameEquipmentsInput, EquipmentUncheckedCreateWithoutGameEquipmentsInput>
+  }
+
+  export type EquipmentColorCreateWithoutGameEquipmentsInput = {
+    color: string
+    colorHex?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutEquipmentColorsInput
+    season: SeasonCreateNestedOneWithoutEquipmentColorsInput
+    echelon: EchelonCreateNestedOneWithoutEquipmentColorsInput
+    equipments?: EquipmentCreateNestedManyWithoutEquipmentColorInput
+  }
+
+  export type EquipmentColorUncheckedCreateWithoutGameEquipmentsInput = {
+    id?: number
+    clubId: number
+    seasonId: number
+    echelonId: number
+    color: string
+    colorHex?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
+  }
+
+  export type EquipmentColorCreateOrConnectWithoutGameEquipmentsInput = {
+    where: EquipmentColorWhereUniqueInput
+    create: XOR<EquipmentColorCreateWithoutGameEquipmentsInput, EquipmentColorUncheckedCreateWithoutGameEquipmentsInput>
   }
 
   export type GameUpsertWithoutGameEquipmentsInput = {
@@ -56534,6 +56801,40 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type EquipmentColorUpsertWithoutGameEquipmentsInput = {
+    update: XOR<EquipmentColorUpdateWithoutGameEquipmentsInput, EquipmentColorUncheckedUpdateWithoutGameEquipmentsInput>
+    create: XOR<EquipmentColorCreateWithoutGameEquipmentsInput, EquipmentColorUncheckedCreateWithoutGameEquipmentsInput>
+    where?: EquipmentColorWhereInput
+  }
+
+  export type EquipmentColorUpdateToOneWithWhereWithoutGameEquipmentsInput = {
+    where?: EquipmentColorWhereInput
+    data: XOR<EquipmentColorUpdateWithoutGameEquipmentsInput, EquipmentColorUncheckedUpdateWithoutGameEquipmentsInput>
+  }
+
+  export type EquipmentColorUpdateWithoutGameEquipmentsInput = {
+    color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
+    season?: SeasonUpdateOneRequiredWithoutEquipmentColorsNestedInput
+    echelon?: EchelonUpdateOneRequiredWithoutEquipmentColorsNestedInput
+    equipments?: EquipmentUpdateManyWithoutEquipmentColorNestedInput
+  }
+
+  export type EquipmentColorUncheckedUpdateWithoutGameEquipmentsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    seasonId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
+    color?: StringFieldUpdateOperationsInput | string
+    colorHex?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
+  }
+
   export type AthleteReportCreateManyAthleteInput = {
     id?: number
     gameId: number
@@ -56607,6 +56908,8 @@ export namespace Prisma {
     id?: number
     gameId: number
     equipmentId: number
+    equipmentColorId: number
+    manualOverride?: boolean
   }
 
   export type AthleteReportUpdateWithoutAthleteInput = {
@@ -56811,20 +57114,26 @@ export namespace Prisma {
   }
 
   export type GameEquipmentUpdateWithoutAthleteInput = {
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
     game?: GameUpdateOneRequiredWithoutGameEquipmentsNestedInput
     equipment?: EquipmentUpdateOneRequiredWithoutGameEquipmentsNestedInput
+    equipmentColor?: EquipmentColorUpdateOneRequiredWithoutGameEquipmentsNestedInput
   }
 
   export type GameEquipmentUncheckedUpdateWithoutAthleteInput = {
     id?: IntFieldUpdateOperationsInput | number
     gameId?: IntFieldUpdateOperationsInput | number
     equipmentId?: IntFieldUpdateOperationsInput | number
+    equipmentColorId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GameEquipmentUncheckedUpdateManyWithoutAthleteInput = {
     id?: IntFieldUpdateOperationsInput | number
     gameId?: IntFieldUpdateOperationsInput | number
     equipmentId?: IntFieldUpdateOperationsInput | number
+    equipmentColorId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GameAthleteCreateManyGameInput = {
@@ -56840,6 +57149,8 @@ export namespace Prisma {
     id?: number
     athleteId: number
     equipmentId: number
+    equipmentColorId: number
+    manualOverride?: boolean
   }
 
   export type ObjectiveCreateManyGameInput = {
@@ -56918,20 +57229,26 @@ export namespace Prisma {
   }
 
   export type GameEquipmentUpdateWithoutGameInput = {
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
     athlete?: AthleteUpdateOneRequiredWithoutGameEquipmentsNestedInput
     equipment?: EquipmentUpdateOneRequiredWithoutGameEquipmentsNestedInput
+    equipmentColor?: EquipmentColorUpdateOneRequiredWithoutGameEquipmentsNestedInput
   }
 
   export type GameEquipmentUncheckedUpdateWithoutGameInput = {
     id?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
     equipmentId?: IntFieldUpdateOperationsInput | number
+    equipmentColorId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GameEquipmentUncheckedUpdateManyWithoutGameInput = {
     id?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
     equipmentId?: IntFieldUpdateOperationsInput | number
+    equipmentColorId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ObjectiveUpdateWithoutGameInput = {
@@ -57462,6 +57779,7 @@ export namespace Prisma {
     club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
     season?: SeasonUpdateOneRequiredWithoutEquipmentColorsNestedInput
     equipments?: EquipmentUpdateManyWithoutEquipmentColorNestedInput
+    gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorUncheckedUpdateWithoutEchelonInput = {
@@ -57473,6 +57791,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
+    gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorUncheckedUpdateManyWithoutEchelonInput = {
@@ -57846,6 +58165,7 @@ export namespace Prisma {
     season?: SeasonUpdateOneRequiredWithoutEquipmentColorsNestedInput
     echelon?: EchelonUpdateOneRequiredWithoutEquipmentColorsNestedInput
     equipments?: EquipmentUpdateManyWithoutEquipmentColorNestedInput
+    gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorUncheckedUpdateWithoutClubInput = {
@@ -57857,6 +58177,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
+    gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorUncheckedUpdateManyWithoutClubInput = {
@@ -57927,6 +58248,7 @@ export namespace Prisma {
     club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
     echelon?: EchelonUpdateOneRequiredWithoutEquipmentColorsNestedInput
     equipments?: EquipmentUpdateManyWithoutEquipmentColorNestedInput
+    gameEquipments?: GameEquipmentUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorUncheckedUpdateWithoutSeasonInput = {
@@ -57938,6 +58260,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
+    gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
   }
 
   export type EquipmentColorUncheckedUpdateManyWithoutSeasonInput = {
@@ -58535,6 +58858,14 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type GameEquipmentCreateManyEquipmentColorInput = {
+    id?: number
+    gameId: number
+    athleteId: number
+    equipmentId: number
+    manualOverride?: boolean
+  }
+
   export type EquipmentUpdateWithoutEquipmentColorInput = {
     number?: IntFieldUpdateOperationsInput | number
     size?: EnumSizeFieldUpdateOperationsInput | $Enums.Size
@@ -58560,27 +58891,58 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GameEquipmentUpdateWithoutEquipmentColorInput = {
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
+    game?: GameUpdateOneRequiredWithoutGameEquipmentsNestedInput
+    athlete?: AthleteUpdateOneRequiredWithoutGameEquipmentsNestedInput
+    equipment?: EquipmentUpdateOneRequiredWithoutGameEquipmentsNestedInput
+  }
+
+  export type GameEquipmentUncheckedUpdateWithoutEquipmentColorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    gameId?: IntFieldUpdateOperationsInput | number
+    athleteId?: IntFieldUpdateOperationsInput | number
+    equipmentId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type GameEquipmentUncheckedUpdateManyWithoutEquipmentColorInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    gameId?: IntFieldUpdateOperationsInput | number
+    athleteId?: IntFieldUpdateOperationsInput | number
+    equipmentId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type GameEquipmentCreateManyEquipmentInput = {
     id?: number
     gameId: number
     athleteId: number
+    equipmentColorId: number
+    manualOverride?: boolean
   }
 
   export type GameEquipmentUpdateWithoutEquipmentInput = {
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
     game?: GameUpdateOneRequiredWithoutGameEquipmentsNestedInput
     athlete?: AthleteUpdateOneRequiredWithoutGameEquipmentsNestedInput
+    equipmentColor?: EquipmentColorUpdateOneRequiredWithoutGameEquipmentsNestedInput
   }
 
   export type GameEquipmentUncheckedUpdateWithoutEquipmentInput = {
     id?: IntFieldUpdateOperationsInput | number
     gameId?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
+    equipmentColorId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type GameEquipmentUncheckedUpdateManyWithoutEquipmentInput = {
     id?: IntFieldUpdateOperationsInput | number
     gameId?: IntFieldUpdateOperationsInput | number
     athleteId?: IntFieldUpdateOperationsInput | number
+    equipmentColorId?: IntFieldUpdateOperationsInput | number
+    manualOverride?: BoolFieldUpdateOperationsInput | boolean
   }
 
 

@@ -337,7 +337,16 @@
     "selectColor": "Select color",
     "notAssigned": "Not assigned",
     "notEnoughForAll": "Not enough equipment for all athletes.",
-    "assignedToSelected": "Equipment assigned successfully."
+    "assignedToSelected": "Equipment assigned successfully.",
+    "reassignAll": "Reassign All",
+    "hasIssues": "Issues with equipment assignment",
+    "issuesWarning": "{{count}} athlete/color combinations have issues",
+    "manualOverride": "Manually assigned",
+    "noFit": "No fit",
+    "assignedToAll": "Equipment assigned for all colors",
+    "legendFixed": "Fixed number",
+    "legendManual": "Manual change",
+    "legendAuto": "Auto assigned"
   },
 
   "opponentResultsCount": "Opponent Results Count",

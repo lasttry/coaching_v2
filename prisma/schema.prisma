@@ -486,7 +486,8 @@ model EquipmentColor {
   color    String
   colorHex String @default("#000000")
 
-  equipments Equipment[]
+  equipments     Equipment[]
+  gameEquipments GameEquipment[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -515,14 +516,20 @@ model Equipment {
 }
 
 model GameEquipment {
-  id          Int @id @default(autoincrement())
-  gameId      Int
-  athleteId   Int
-  equipmentId Int
+  id               Int     @id @default(autoincrement())
+  gameId           Int
+  athleteId        Int
+  equipmentId      Int
+  equipmentColorId Int
+  manualOverride   Boolean @default(false)
 
-  game      Game      @relation(fields: [gameId], references: [id], onDelete: Cascade)
-  athlete   Athlete   @relation(fields: [athleteId], references: [id], onDelete: Cascade)
-  equipment Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  game           Game           @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  athlete        Athlete        @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  equipment      Equipment      @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  equipmentColor EquipmentColor @relation(fields: [equipmentColorId], references: [id], onDelete: Cascade)
 
-  @@unique([gameId, athleteId])
+  @@unique([gameId, athleteId, equipmentColorId])
+  @@index([gameId])
+  @@index([athleteId])
+  @@index([equipmentColorId])
 }

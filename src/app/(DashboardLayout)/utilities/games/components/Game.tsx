@@ -45,9 +45,10 @@ import { TeamInterface } from '@/types/teams/types';
 import { ClubInterface } from '@/types/club/types';
 import { VenueInterface } from '@/types/venues/types';
 import { generateVsBanner } from '@/utils/generateVsBanner';
-import { GameEquipmentInterface } from '@/types/gameEquipment/types';
+import { GameEquipmentInterface, EquipmentAssignmentIssue } from '@/types/gameEquipment/types';
 import { OpponentInterface } from '@/types/opponent/types';
-import { EquipmentInterface } from '@/types/equipment/types';
+import { EquipmentInterface, EquipmentColorBasicInterface } from '@/types/equipment/types';
+import WarningIcon from '@mui/icons-material/Warning';
 
 interface BannerTeam {
   image: string;
@@ -85,8 +86,9 @@ const GameComponent: React.FC<GameProps> = ({
   const [gameAthletes, setGameAthletes] = useState<GameAthleteInterface[]>([]);
   const [venues, setVenues] = useState<VenueInterface[]>([]);
   const [equipments, setEquipments] = useState<EquipmentInterface[]>([]);
-  const [selectedEquipmentColor, setSelectedEquipmentColor] = useState<string>('');
   const [gameEquipments, setGameEquipments] = useState<GameEquipmentInterface[]>([]);
+  const [equipmentIssues, setEquipmentIssues] = useState<EquipmentAssignmentIssue[]>([]);
+  const [manualOverrides, setManualOverrides] = useState<Set<string>>(new Set());
   const selectedOpponent = opponents.find((o) => o.id === game.opponentId);
   const [club, setClub] = useState<ClubInterface | null>(null);
 
@@ -101,14 +103,17 @@ const GameComponent: React.FC<GameProps> = ({
     : [];
 
   const distinctEquipmentColors = React.useMemo(() => {
-    const colorMap = new Map<string, string>();
+    const colorMap = new Map<string, { colorHex: string; colorId: number }>();
     equipments.forEach((eq) => {
       if (eq.color && !colorMap.has(eq.color)) {
-        colorMap.set(eq.color, eq.colorHex || '#000000');
+        colorMap.set(eq.color, {
+          colorHex: eq.colorHex || '#000000',
+          colorId: eq.equipmentColorId,
+        });
       }
     });
     return Array.from(colorMap.entries())
-      .map(([color, colorHex]) => ({ color, colorHex }))
+      .map(([color, { colorHex, colorId }]) => ({ color, colorHex, colorId }))
       .sort((a, b) => a.color.localeCompare(b.color));
   }, [equipments]);
 
@@ -347,6 +352,17 @@ const GameComponent: React.FC<GameProps> = ({
       );
     }
   }, [teamAthletes]);
+
+  const selectedAthletesCount = React.useMemo(
+    () => gameAthletes.filter((a) => a.selected).length,
+    [gameAthletes]
+  );
+
+  useEffect(() => {
+    if (selectedAthletesCount > 0 && distinctEquipmentColors.length > 0) {
+      autoAssignAllEquipments(gameAthletes);
+    }
+  }, [selectedAthletesCount, distinctEquipmentColors.length]);
 
   useEffect(() => {
     const fetchVenues = async (): Promise<void> => {
@@ -657,86 +673,105 @@ const GameComponent: React.FC<GameProps> = ({
     }
   };
 
-  const handleAssignEquipment = (): void => {
-    if (!selectedEquipmentColor) {
-      setErrorMessage(t('equipment.selectColorFirst'));
-      return;
-    }
-
-    // Filter equipments by color (case-insensitive comparison)
-    const selectedColorLower = selectedEquipmentColor.toLowerCase().trim();
+  const assignEquipmentForColor = (
+    colorName: string,
+    colorId: number,
+    selectedAthletes: GameAthleteInterface[],
+    existingAssignments: GameEquipmentInterface[]
+  ): { assignments: GameEquipmentInterface[]; issues: EquipmentAssignmentIssue[] } => {
+    const colorNameLower = colorName.toLowerCase().trim();
     const availableForColor = equipments.filter(
-      (eq) => eq.color?.toLowerCase().trim() === selectedColorLower
+      (eq) => eq.color?.toLowerCase().trim() === colorNameLower
     );
+
+    const assignments: GameEquipmentInterface[] = [];
+    const issues: EquipmentAssignmentIssue[] = [];
+
     if (!availableForColor.length) {
-      setErrorMessage(t('equipment.noEquipmentForColor'));
-      return;
+      selectedAthletes.forEach((athlete) => {
+        if (athlete.athleteId) {
+          issues.push({
+            athleteId: athlete.athleteId,
+            athleteName: athlete.athlete?.name || '',
+            colorId,
+            colorName,
+            reason: 'no_equipment_available',
+          });
+        }
+      });
+      return { assignments, issues };
     }
 
-    const selectedAthletes = gameAthletes.filter((a) => a.selected);
-    if (!selectedAthletes.length) {
-      setErrorMessage(t('equipment.noSelectedAthletes'));
-      return;
-    }
-
-    // Sort selected athletes by shirt size (smallest first) to ensure fair distribution
     const sortedAthletes = [...selectedAthletes].sort(
       (a, b) => sizeRank(a.athlete?.shirtSize) - sizeRank(b.athlete?.shirtSize)
     );
 
     const usedEquipmentIds = new Set<number>();
-    const assignments: GameEquipmentInterface[] = [];
     const athleteAssigned: Record<number, boolean> = {};
-    const athleteNumberAssignments: Record<number, number> = {};
 
-    // Sort available equipment by size (smallest first) then by number
     const sortedEquipments = [...availableForColor].sort((a, b) => {
       const sizeCompare = sizeRank(a.size) - sizeRank(b.size);
       if (sizeCompare !== 0) return sizeCompare;
       return a.number - b.number;
     });
 
-    // FIRST PASS: Assign athletes with preferred numbers for this color
-    // Process by athlete size order to ensure smaller athletes get priority
     for (const athlete of sortedAthletes) {
+      if (!athlete.athleteId) continue;
+
+      const overrideKey = `${athlete.athleteId}-${colorId}`;
+      const existingManual = existingAssignments.find(
+        (ge) =>
+          ge.athleteId === athlete.athleteId && ge.equipmentColorId === colorId && ge.manualOverride
+      );
+
+      if (existingManual && manualOverrides.has(overrideKey)) {
+        assignments.push(existingManual);
+        if (existingManual.equipmentId) {
+          usedEquipmentIds.add(existingManual.equipmentId);
+        }
+        athleteAssigned[athlete.athleteId] = true;
+        continue;
+      }
+    }
+
+    for (const athlete of sortedAthletes) {
+      if (!athlete.athleteId || athleteAssigned[athlete.athleteId]) continue;
+
       const preferredNumbers = athlete.athlete?.preferredNumbers;
       if (!Array.isArray(preferredNumbers) || preferredNumbers.length === 0) {
         continue;
       }
 
-      // Find preferred number for selected color (case-insensitive)
       const preferredForColor = preferredNumbers.find(
-        (p) => p.color?.toLowerCase().trim() === selectedColorLower
+        (p) => p.color?.toLowerCase().trim() === colorNameLower
       );
 
-      if (!preferredForColor) {
-        continue;
-      }
+      if (!preferredForColor) continue;
 
-      // Find equipment with the preferred number (ignore size for preferred numbers)
       const matchingEquipment = sortedEquipments.find(
         (eq) => eq.id && eq.number === preferredForColor.number && !usedEquipmentIds.has(eq.id)
       );
 
-      if (matchingEquipment && matchingEquipment.id && athlete.athleteId) {
+      if (matchingEquipment && matchingEquipment.id) {
         assignments.push({
           gameId: game.id ?? 0,
           athleteId: athlete.athleteId,
           equipmentId: matchingEquipment.id,
+          equipmentColorId: colorId,
+          manualOverride: false,
         });
         usedEquipmentIds.add(matchingEquipment.id);
         athleteAssigned[athlete.athleteId] = true;
-        athleteNumberAssignments[athlete.athleteId] = matchingEquipment.number;
-        log.debug(`Assigned preferred #${matchingEquipment.number} to ${athlete.athlete?.name}`);
+        log.debug(
+          `[${colorName}] Assigned preferred #${matchingEquipment.number} to ${athlete.athlete?.name}`
+        );
       }
     }
 
-    // SECOND PASS: Assign remaining athletes by size (smallest athletes first)
     const remainingAthletes = sortedAthletes.filter(
       (athlete) => !athleteAssigned[Number(athlete.athleteId)]
     );
 
-    // Get remaining equipment sorted by size then number
     const remainingEquipments = sortedEquipments.filter(
       (eq) => eq.id && !usedEquipmentIds.has(eq.id)
     );
@@ -744,7 +779,6 @@ const GameComponent: React.FC<GameProps> = ({
     for (const athlete of remainingAthletes) {
       if (!athlete.athleteId) continue;
 
-      // Find first equipment that fits (size >= athlete's size)
       const equipmentIndex = remainingEquipments.findIndex(
         (eq) => sizeRank(eq.size) >= sizeRank(athlete.athlete?.shirtSize)
       );
@@ -756,58 +790,229 @@ const GameComponent: React.FC<GameProps> = ({
             gameId: game.id ?? 0,
             athleteId: athlete.athleteId,
             equipmentId: eq.id,
+            equipmentColorId: colorId,
+            manualOverride: false,
           });
           usedEquipmentIds.add(eq.id);
           athleteAssigned[athlete.athleteId] = true;
-          athleteNumberAssignments[athlete.athleteId] = eq.number;
-          // Remove from remaining
           remainingEquipments.splice(equipmentIndex, 1);
           log.debug(
-            `Assigned #${eq.number} (${eq.size}) to ${athlete.athlete?.name} (size: ${athlete.athlete?.shirtSize})`
+            `[${colorName}] Assigned #${eq.number} (${eq.size}) to ${athlete.athlete?.name} (size: ${athlete.athlete?.shirtSize})`
           );
+        }
+      } else {
+        issues.push({
+          athleteId: athlete.athleteId,
+          athleteName: athlete.athlete?.name || '',
+          colorId,
+          colorName,
+          reason: 'no_size_available',
+        });
+      }
+    }
+
+    return { assignments, issues };
+  };
+
+  const autoAssignAllEquipments = React.useCallback(
+    (athletes: GameAthleteInterface[]): void => {
+      const selectedAthletes = athletes.filter((a) => a.selected);
+      if (!selectedAthletes.length || !distinctEquipmentColors.length) {
+        setGameEquipments([]);
+        setEquipmentIssues([]);
+        setGame((prev) => ({ ...prev, gameEquipments: [] }));
+        return;
+      }
+
+      const existingAssignments = game.gameEquipments ?? [];
+      const allAssignments: GameEquipmentInterface[] = [];
+      const allIssues: EquipmentAssignmentIssue[] = [];
+
+      for (const { color, colorId } of distinctEquipmentColors) {
+        const { assignments, issues } = assignEquipmentForColor(
+          color,
+          colorId,
+          selectedAthletes,
+          existingAssignments
+        );
+        allAssignments.push(...assignments);
+        allIssues.push(...issues);
+      }
+
+      setGameEquipments(allAssignments);
+      setEquipmentIssues(allIssues);
+      setGame((prev) => ({ ...prev, gameEquipments: allAssignments }));
+
+      if (allIssues.length > 0) {
+        log.warn(`Equipment issues found for ${allIssues.length} athlete/color combinations`);
+      }
+    },
+    [distinctEquipmentColors, equipments, game.gameEquipments, game.id, manualOverrides]
+  );
+
+  const handleManualEquipmentChange = (
+    athleteId: number,
+    colorId: number,
+    newEquipmentId: number | null
+  ): void => {
+    const overrideKey = `${athleteId}-${colorId}`;
+
+    const newManualOverrides = new Set(manualOverrides);
+    if (newEquipmentId === null) {
+      newManualOverrides.delete(overrideKey);
+    } else {
+      newManualOverrides.add(overrideKey);
+    }
+    setManualOverrides(newManualOverrides);
+
+    const updatedEquipments = gameEquipments.filter(
+      (ge) => !(ge.athleteId === athleteId && ge.equipmentColorId === colorId)
+    );
+
+    if (newEquipmentId !== null) {
+      updatedEquipments.push({
+        gameId: game.id ?? 0,
+        athleteId,
+        equipmentId: newEquipmentId,
+        equipmentColorId: colorId,
+        manualOverride: true,
+      });
+    }
+
+    const selectedAthletes = gameAthletes.filter((a) => a.selected);
+    const allAssignments: GameEquipmentInterface[] = [];
+    const allIssues: EquipmentAssignmentIssue[] = [];
+
+    for (const { color, colorId: cId } of distinctEquipmentColors) {
+      const colorNameLower = color.toLowerCase().trim();
+      const availableForColor = equipments.filter(
+        (eq) => eq.color?.toLowerCase().trim() === colorNameLower
+      );
+
+      if (!availableForColor.length) {
+        selectedAthletes.forEach((athlete) => {
+          if (athlete.athleteId) {
+            allIssues.push({
+              athleteId: athlete.athleteId,
+              athleteName: athlete.athlete?.name || '',
+              colorId: cId,
+              colorName: color,
+              reason: 'no_equipment_available',
+            });
+          }
+        });
+        continue;
+      }
+
+      const sortedAthletes = [...selectedAthletes].sort(
+        (a, b) => sizeRank(a.athlete?.shirtSize) - sizeRank(b.athlete?.shirtSize)
+      );
+
+      const usedEquipmentIds = new Set<number>();
+      const athleteAssigned: Record<number, boolean> = {};
+
+      const sortedEquipments = [...availableForColor].sort((a, b) => {
+        const sizeCompare = sizeRank(a.size) - sizeRank(b.size);
+        if (sizeCompare !== 0) return sizeCompare;
+        return a.number - b.number;
+      });
+
+      for (const athlete of sortedAthletes) {
+        if (!athlete.athleteId) continue;
+
+        const oKey = `${athlete.athleteId}-${cId}`;
+        const existingManual = updatedEquipments.find(
+          (ge) =>
+            ge.athleteId === athlete.athleteId &&
+            ge.equipmentColorId === cId &&
+            (ge.manualOverride || newManualOverrides.has(oKey))
+        );
+
+        if (existingManual && newManualOverrides.has(oKey)) {
+          allAssignments.push(existingManual);
+          if (existingManual.equipmentId) {
+            usedEquipmentIds.add(existingManual.equipmentId);
+          }
+          athleteAssigned[athlete.athleteId] = true;
+        }
+      }
+
+      for (const athlete of sortedAthletes) {
+        if (!athlete.athleteId || athleteAssigned[athlete.athleteId]) continue;
+
+        const preferredNumbers = athlete.athlete?.preferredNumbers;
+        if (!Array.isArray(preferredNumbers) || preferredNumbers.length === 0) {
+          continue;
+        }
+
+        const preferredForColor = preferredNumbers.find(
+          (p) => p.color?.toLowerCase().trim() === colorNameLower
+        );
+
+        if (!preferredForColor) continue;
+
+        const matchingEquipment = sortedEquipments.find(
+          (eq) => eq.id && eq.number === preferredForColor.number && !usedEquipmentIds.has(eq.id)
+        );
+
+        if (matchingEquipment && matchingEquipment.id) {
+          allAssignments.push({
+            gameId: game.id ?? 0,
+            athleteId: athlete.athleteId,
+            equipmentId: matchingEquipment.id,
+            equipmentColorId: cId,
+            manualOverride: false,
+          });
+          usedEquipmentIds.add(matchingEquipment.id);
+          athleteAssigned[athlete.athleteId] = true;
+        }
+      }
+
+      const remainingAthletes = sortedAthletes.filter(
+        (athlete) => !athleteAssigned[Number(athlete.athleteId)]
+      );
+
+      const remainingEquipments = sortedEquipments.filter(
+        (eq) => eq.id && !usedEquipmentIds.has(eq.id)
+      );
+
+      for (const athlete of remainingAthletes) {
+        if (!athlete.athleteId) continue;
+
+        const equipmentIndex = remainingEquipments.findIndex(
+          (eq) => sizeRank(eq.size) >= sizeRank(athlete.athlete?.shirtSize)
+        );
+
+        if (equipmentIndex !== -1) {
+          const eq = remainingEquipments[equipmentIndex];
+          if (eq.id) {
+            allAssignments.push({
+              gameId: game.id ?? 0,
+              athleteId: athlete.athleteId,
+              equipmentId: eq.id,
+              equipmentColorId: cId,
+              manualOverride: false,
+            });
+            usedEquipmentIds.add(eq.id);
+            athleteAssigned[athlete.athleteId] = true;
+            remainingEquipments.splice(equipmentIndex, 1);
+          }
+        } else {
+          allIssues.push({
+            athleteId: athlete.athleteId,
+            athleteName: athlete.athlete?.name || '',
+            colorId: cId,
+            colorName: color,
+            reason: 'no_size_available',
+          });
         }
       }
     }
 
-    // Guardar atribuições também no objeto `game`
-    setGame((prev) => ({
-      ...prev,
-      gameEquipments: assignments,
-    }));
-
-    // Atualizar o número dos atletas com o número do equipamento atribuído
-    setGameAthletes((prev) =>
-      prev.map((ga) => {
-        const assignedNumber = athleteNumberAssignments[Number(ga.athleteId)];
-        if (assignedNumber !== undefined) {
-          return {
-            ...ga,
-            number: String(assignedNumber),
-            selected: true,
-          };
-        }
-
-        // Para quem não foi selecionado, número passa a '0'
-        if (!ga.selected) {
-          return {
-            ...ga,
-            number: '0',
-          };
-        }
-
-        return ga;
-      })
-    );
-
-    setGameEquipments(assignments);
-    if (assignments.length < selectedAthletes.length) {
-      setErrorMessage(t('equipment.notEnoughForAll'));
-    } else {
-      setSuccessMessage(t('equipment.assignedToSelected'));
-    }
+    setGameEquipments(allAssignments);
+    setEquipmentIssues(allIssues);
+    setGame((prev) => ({ ...prev, gameEquipments: allAssignments }));
   };
-
-  const sourceGameEquipments = game.gameEquipments ?? gameEquipments;
 
   return (
     <Grid container spacing={2}>
@@ -1184,9 +1389,51 @@ const GameComponent: React.FC<GameProps> = ({
         {/* Selected Athletes - sorted by birthdate (oldest first) then alphabetically */}
         {gameAthletes.filter((a) => a.selected).length > 0 && (
           <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>
-              {t('selectedAthletes')} ({gameAthletes.filter((a) => a.selected).length})
-            </Typography>
+            <Box
+              sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}
+            >
+              <Typography variant="subtitle2" color="text.secondary">
+                {t('selectedAthletes')} ({gameAthletes.filter((a) => a.selected).length})
+              </Typography>
+              {distinctEquipmentColors.length > 0 && (
+                <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                  <Typography variant="caption" color="text.secondary">
+                    {t('equipment.title')}:
+                  </Typography>
+                  {distinctEquipmentColors.map(({ color, colorHex, colorId }) => {
+                    const hasIssues = equipmentIssues.some((issue) => issue.colorId === colorId);
+                    return (
+                      <Box
+                        key={colorId}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 0.5,
+                          px: 1,
+                          py: 0.25,
+                          borderRadius: 1,
+                          backgroundColor: hasIssues ? 'warning.light' : 'action.hover',
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            width: 12,
+                            height: 12,
+                            backgroundColor: colorHex,
+                            borderRadius: '2px',
+                            border: '1px solid #ccc',
+                          }}
+                        />
+                        <Typography variant="caption" sx={{ fontWeight: 500 }}>
+                          {color}
+                        </Typography>
+                        {hasIssues && <WarningIcon color="warning" sx={{ fontSize: 14 }} />}
+                      </Box>
+                    );
+                  })}
+                </Box>
+              )}
+            </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
               {gameAthletes
                 .filter((a) => a.selected)
@@ -1197,13 +1444,6 @@ const GameComponent: React.FC<GameProps> = ({
                   return (a.athlete?.name || '').localeCompare(b.athlete?.name || '');
                 })
                 .map((athlete) => {
-                  const assignment = sourceGameEquipments.find(
-                    (ge) => ge.athleteId === athlete.athleteId
-                  );
-                  const assignedEquipment = assignment
-                    ? equipments.find((eq) => eq.id === assignment.equipmentId)
-                    : undefined;
-
                   return (
                     <Paper
                       key={athlete.athleteId}
@@ -1242,10 +1482,13 @@ const GameComponent: React.FC<GameProps> = ({
                         {athlete.number || '?'}
                       </Avatar>
 
-                      {/* Name */}
-                      <Typography sx={{ minWidth: 150, fontWeight: 500 }}>
-                        {athlete.athlete?.name}
-                      </Typography>
+                      {/* Name and size */}
+                      <Box sx={{ minWidth: 150 }}>
+                        <Typography sx={{ fontWeight: 500 }}>{athlete.athlete?.name}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {athlete.athlete?.shirtSize || '?'}
+                        </Typography>
+                      </Box>
 
                       {/* Number input */}
                       <TextField
@@ -1291,32 +1534,140 @@ const GameComponent: React.FC<GameProps> = ({
                         ))}
                       </Box>
 
-                      {/* Equipment */}
-                      <Box sx={{ ml: 'auto' }}>
-                        {assignedEquipment ? (
-                          <Chip
-                            size="small"
-                            icon={
+                      {/* Equipment per color - dropdowns */}
+                      <Box
+                        sx={{
+                          ml: 'auto',
+                          display: 'flex',
+                          gap: 1,
+                          flexWrap: 'wrap',
+                          alignItems: 'center',
+                        }}
+                      >
+                        {distinctEquipmentColors.map(({ color, colorHex, colorId }) => {
+                          const assignment = gameEquipments.find(
+                            (ge) =>
+                              ge.athleteId === athlete.athleteId && ge.equipmentColorId === colorId
+                          );
+                          const hasIssue = equipmentIssues.some(
+                            (i) => i.athleteId === athlete.athleteId && i.colorId === colorId
+                          );
+                          const isManual =
+                            assignment?.manualOverride ||
+                            manualOverrides.has(`${athlete.athleteId}-${colorId}`);
+                          const colorNameLower = color.toLowerCase().trim();
+                          const hasPreferredNumber = athlete.athlete?.preferredNumbers?.some(
+                            (p) => p.color?.toLowerCase().trim() === colorNameLower
+                          );
+                          const availableEquipmentsForColor = equipments.filter(
+                            (eq) => eq.equipmentColorId === colorId
+                          );
+
+                          return (
+                            <Box
+                              key={colorId}
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                backgroundColor: hasIssue ? 'warning.light' : undefined,
+                                borderRadius: 1,
+                                p: hasIssue ? 0.5 : 0,
+                                position: 'relative',
+                              }}
+                            >
                               <Box
                                 sx={{
-                                  width: 12,
-                                  height: 12,
-                                  backgroundColor:
-                                    assignedEquipment.colorHex ||
-                                    assignedEquipment.equipmentColor?.colorHex ||
-                                    '#000000',
-                                  borderRadius: '2px',
-                                  ml: 0.5,
+                                  width: 14,
+                                  height: 14,
+                                  backgroundColor: colorHex,
+                                  borderRadius: '3px',
+                                  border: '1px solid #ccc',
+                                  flexShrink: 0,
                                 }}
                               />
-                            }
-                            label={`#${assignedEquipment.number} (${assignedEquipment.size})`}
-                          />
-                        ) : (
-                          <Typography variant="caption" color="text.secondary">
-                            {t('equipment.notAssigned')}
-                          </Typography>
-                        )}
+                              <FormControl size="small" sx={{ minWidth: 85 }}>
+                                <Select
+                                  value={assignment?.equipmentId || ''}
+                                  displayEmpty
+                                  onChange={(e) => {
+                                    const newId = e.target.value as number | '';
+                                    handleManualEquipmentChange(
+                                      athlete.athleteId!,
+                                      colorId,
+                                      newId === '' ? null : newId
+                                    );
+                                  }}
+                                  sx={{
+                                    '& .MuiSelect-select': {
+                                      py: 0.25,
+                                      px: 1,
+                                      fontSize: '0.8rem',
+                                    },
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                      ...(hasPreferredNumber &&
+                                        !isManual && {
+                                          borderColor: 'error.main',
+                                          borderWidth: 2,
+                                        }),
+                                      ...(isManual && {
+                                        borderColor: 'info.main',
+                                        borderWidth: 2,
+                                      }),
+                                    },
+                                  }}
+                                >
+                                  <MenuItem value="">
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                      sx={{ fontSize: '0.8rem' }}
+                                    >
+                                      {hasIssue ? t('equipment.noFit') : '-'}
+                                    </Typography>
+                                  </MenuItem>
+                                  {availableEquipmentsForColor
+                                    .sort((a, b) => a.number - b.number)
+                                    .map((eq) => {
+                                      const isUsedByOther = gameEquipments.some(
+                                        (ge) =>
+                                          ge.equipmentId === eq.id &&
+                                          ge.athleteId !== athlete.athleteId &&
+                                          ge.equipmentColorId === colorId
+                                      );
+                                      return (
+                                        <MenuItem
+                                          key={eq.id}
+                                          value={eq.id}
+                                          disabled={isUsedByOther}
+                                          sx={{ opacity: isUsedByOther ? 0.5 : 1 }}
+                                        >
+                                          <Box
+                                            sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}
+                                          >
+                                            <Typography
+                                              variant="body2"
+                                              sx={{ fontWeight: 600, fontSize: '0.8rem' }}
+                                            >
+                                              #{eq.number}
+                                            </Typography>
+                                            <Typography variant="caption" color="text.secondary">
+                                              ({eq.size})
+                                            </Typography>
+                                          </Box>
+                                        </MenuItem>
+                                      );
+                                    })}
+                                </Select>
+                              </FormControl>
+                              {hasIssue && (
+                                <Tooltip title={t('equipment.hasIssues')}>
+                                  <WarningIcon color="warning" sx={{ fontSize: 16 }} />
+                                </Tooltip>
+                              )}
+                            </Box>
+                          );
+                        })}
                       </Box>
                     </Paper>
                   );
@@ -1371,67 +1722,62 @@ const GameComponent: React.FC<GameProps> = ({
         )}
       </Paper>
 
-      <Grid size={{ xs: 12 }} sx={{ mt: 2 }}>
-        <Typography variant="h6">{t('equipment.title')}</Typography>
-        <Grid container spacing={2} sx={{ alignItems: 'center' }}>
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <FormControl fullWidth>
-              <InputLabel>{t('equipment.color')}</InputLabel>
-              <Select
-                value={selectedEquipmentColor}
-                label={t('equipment.color')}
-                onChange={(e) => setSelectedEquipmentColor(e.target.value as string)}
-                renderValue={(selected) => {
-                  const found = distinctEquipmentColors.find((c) => c.color === selected);
-                  return found ? (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Box
-                        sx={{
-                          width: 20,
-                          height: 20,
-                          backgroundColor: found.colorHex,
-                          borderRadius: '4px',
-                          border: '1px solid #ccc',
-                        }}
-                      />
-                      {found.color}
-                    </Box>
-                  ) : (
-                    t('equipment.selectColor')
-                  );
-                }}
-              >
-                <MenuItem value="">{t('equipment.selectColor')}</MenuItem>
-                {distinctEquipmentColors.map(({ color, colorHex }) => (
-                  <MenuItem key={color} value={color}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Box
-                        sx={{
-                          width: 20,
-                          height: 20,
-                          backgroundColor: colorHex,
-                          borderRadius: '4px',
-                          border: '1px solid #ccc',
-                        }}
-                      />
-                      {color}
-                    </Box>
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 4 }}>
-            <Button
-              variant="contained"
-              onClick={handleAssignEquipment}
-              disabled={!selectedEquipmentColor || !equipments.length}
-            >
-              {t('equipment.assignToSelected')}
-            </Button>
-          </Grid>
-        </Grid>
-      </Grid>
+      {/* Equipment legend */}
+      {gameAthletes.filter((a) => a.selected).length > 0 && distinctEquipmentColors.length > 0 && (
+        <Box sx={{ mt: 1, px: 2, display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Box
+              sx={{
+                width: 20,
+                height: 14,
+                border: '2px solid',
+                borderColor: 'error.main',
+                borderRadius: 0.5,
+              }}
+            />
+            <Typography variant="caption" color="text.secondary">
+              {t('equipment.legendFixed')}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Box
+              sx={{
+                width: 20,
+                height: 14,
+                border: '2px solid',
+                borderColor: 'info.main',
+                borderRadius: 0.5,
+              }}
+            />
+            <Typography variant="caption" color="text.secondary">
+              {t('equipment.legendManual')}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            <Box
+              sx={{
+                width: 20,
+                height: 14,
+                border: '1px solid',
+                borderColor: 'grey.400',
+                borderRadius: 0.5,
+              }}
+            />
+            <Typography variant="caption" color="text.secondary">
+              {t('equipment.legendAuto')}
+            </Typography>
+          </Box>
+          {equipmentIssues.length > 0 && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+              <WarningIcon color="warning" sx={{ fontSize: 16 }} />
+              <Typography variant="caption" color="warning.main">
+                {t('equipment.issuesWarning', { count: equipmentIssues.length })}
+              </Typography>
+            </Box>
+          )}
+        </Box>
+      )}
+
       {/* Notes & Speech Section */}
       <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 2 }} />

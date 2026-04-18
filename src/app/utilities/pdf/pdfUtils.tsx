@@ -138,30 +138,76 @@ const formatAthleteName = (fullName: string | undefined): string => {
   return `${firstInitial} ${lastName}`;
 };
 
-const getGameEquipmentColor = (game: GameInterface): { color: string; colorHex: string } | null => {
-  const firstAssignment = game.gameEquipments?.[0];
-  if (!firstAssignment?.equipment) return null;
-  const equipment = firstAssignment.equipment;
+const getGameEquipmentColor = (
+  game: GameInterface,
+  selectedColorId?: number
+): { color: string; colorHex: string } | null => {
+  if (!game.gameEquipments?.length) return null;
+
+  let assignment;
+  if (selectedColorId) {
+    assignment = game.gameEquipments.find((ge) => ge.equipmentColorId === selectedColorId);
+  }
+  if (!assignment) {
+    assignment = game.gameEquipments[0];
+  }
+
+  if (!assignment?.equipment) return null;
+  const equipment = assignment.equipment;
   const color = equipment.color || equipment.equipmentColor?.color || '';
   const colorHex = equipment.colorHex || equipment.equipmentColor?.colorHex || '';
   return color ? { color, colorHex } : null;
 };
 
-const athletesTableBody = (
+export const getDistinctEquipmentColorsFromGame = (
   game: GameInterface
+): { colorId: number; color: string; colorHex: string }[] => {
+  const colorMap = new Map<number, { color: string; colorHex: string }>();
+
+  game.gameEquipments?.forEach((ge) => {
+    if (ge.equipmentColorId && !colorMap.has(ge.equipmentColorId)) {
+      const eq = ge.equipment;
+      if (eq) {
+        colorMap.set(ge.equipmentColorId, {
+          color: eq.color || eq.equipmentColor?.color || '',
+          colorHex: eq.colorHex || eq.equipmentColor?.colorHex || '#000000',
+        });
+      }
+    }
+  });
+
+  return Array.from(colorMap.entries())
+    .map(([colorId, { color, colorHex }]) => ({ colorId, color, colorHex }))
+    .filter((c) => c.color)
+    .sort((a, b) => a.color.localeCompare(b.color));
+};
+
+const athletesTableBody = (
+  game: GameInterface,
+  selectedColorId?: number
 ): { content: string; styles?: { fillColor?: string } }[][] => {
   return (
     game.gameAthletes
-      ?.sort((a, b) => {
-        // First, sort by number, with -1 always last
-        const numberA = parseInt(a.number);
-        const numberB = parseInt(b.number);
+      ?.map((entry) => {
+        let number = entry.number;
+        if (selectedColorId && game.gameEquipments) {
+          const colorEquipment = game.gameEquipments.find(
+            (ge) => ge.athleteId === entry.athleteId && ge.equipmentColorId === selectedColorId
+          );
+          if (colorEquipment?.equipment) {
+            number = String(colorEquipment.equipment.number);
+          }
+        }
+        return { ...entry, displayNumber: number };
+      })
+      .sort((a, b) => {
+        const numberA = parseInt(a.displayNumber);
+        const numberB = parseInt(b.displayNumber);
 
         if (numberA === -1 && numberB !== -1) return 1;
         if (numberB === -1 && numberA !== -1) return -1;
         if (numberA !== numberB) return numberA - numberB;
 
-        // ✅ Safely handle missing athlete or athlete.name
         const nameA = a.athlete?.name ?? '';
         const nameB = b.athlete?.name ?? '';
         return nameA.localeCompare(nameB);
@@ -169,7 +215,7 @@ const athletesTableBody = (
       .map((entry) => {
         return [
           { content: formatAthleteName(entry.athlete?.name) },
-          { content: entry.number === '-1' ? '' : entry.number },
+          { content: entry.displayNumber === '-1' ? '' : entry.displayNumber },
           { content: entry.period1 ? 'X' : '' },
           { content: entry.period2 ? 'X' : '' },
           { content: entry.period3 ? 'X' : '' },
@@ -367,13 +413,14 @@ const generateTopLeft = async (
   startY: number,
   game: GameInterface,
   club: ClubInterface,
-  bannerImage: string
+  bannerImage: string,
+  selectedColorId?: number
 ): Promise<void> => {
   doc.setFontSize(12);
   doc.text('Jogadores', startX, startY);
 
   // Show equipment color indicator
-  const equipmentColor = getGameEquipmentColor(game);
+  const equipmentColor = getGameEquipmentColor(game, selectedColorId);
   if (equipmentColor) {
     const colorBoxX = startX + 30;
     const colorBoxY = startY - 3;
@@ -416,7 +463,7 @@ const generateTopLeft = async (
     tableWidth: tableWidth + 10,
     columnStyles,
     head: [['Nome', '#', '1', '2', '3', '4']],
-    body: athletesTableBody(game),
+    body: athletesTableBody(game, selectedColorId),
     headStyles: {
       font: 'scienceGothic',
       fontStyle: 'normal', // <- não tentar bold na fonte custom
@@ -672,7 +719,11 @@ const generateBottomRight = async (
   });
 };
 
-export const generatePDF = async (game: GameInterface, clubId?: number): Promise<void> => {
+export const generatePDF = async (
+  game: GameInterface,
+  clubId?: number,
+  selectedColorId?: number
+): Promise<void> => {
   if (!clubId) {
     log.error('ClubId is missing');
     return;
@@ -717,7 +768,7 @@ export const generatePDF = async (game: GameInterface, clubId?: number): Promise
   const bannerImage = await generateVsBanner(bannerHomeTeam, bannerAwayTeam);
 
   // parte 1
-  await generateTopLeft(doc, padding, padding, game, club, bannerImage);
+  await generateTopLeft(doc, padding, padding, game, club, bannerImage, selectedColorId);
   await generateTopRight(
     doc,
     doc.internal.pageSize.getWidth() / 2 + padding,
@@ -767,7 +818,10 @@ export const generatePDF = async (game: GameInterface, clubId?: number): Promise
     doc.text(lines, margin, margin);
   }
 
-  doc.save(`Folha_de_Jogo_${game.id}.pdf`);
+  // Get color name for filename
+  const equipmentColor = getGameEquipmentColor(game, selectedColorId);
+  const colorSuffix = equipmentColor ? `_${equipmentColor.color}` : '';
+  doc.save(`Folha_de_Jogo_${game.id}${colorSuffix}.pdf`);
 };
 
 // Helper function for statistics PDF

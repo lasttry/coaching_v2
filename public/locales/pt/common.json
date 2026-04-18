@@ -338,7 +338,16 @@
     "selectColor": "Selecionar cor",
     "notAssigned": "Não atribuído",
     "notEnoughForAll": "Não existem equipamentos suficientes para todos os atletas.",
-    "assignedToSelected": "Equipamentos atribuídos com sucesso."
+    "assignedToSelected": "Equipamentos atribuídos com sucesso.",
+    "reassignAll": "Reatribuir Todos",
+    "hasIssues": "Problemas na atribuição de equipamentos",
+    "issuesWarning": "{{count}} combinações atleta/cor têm problemas",
+    "manualOverride": "Atribuído manualmente",
+    "noFit": "Sem tamanho",
+    "assignedToAll": "Equipamentos atribuídos para todas as cores",
+    "legendFixed": "Número fixo",
+    "legendManual": "Alteração manual",
+    "legendAuto": "Atribuição automática"
   },
 
   "opponentResultsCount": "Nº Resultados Adversário",
