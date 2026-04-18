@@ -21,7 +21,12 @@ const DEPLOY_STEPS: DeployStep[] = [
     command:
       'rm -rf node_modules/.cache node_modules/.webpack-* node_modules/.next-* && npm cache clean --force',
   },
-  { name: 'NPM Install', command: 'npm install', timeout: 300000, truncateOutput: 1000 },
+  {
+    name: 'NPM Install',
+    command: 'npm install --include=dev',
+    timeout: 300000,
+    truncateOutput: 1000,
+  },
   { name: 'Prisma Generate', command: 'npx prisma generate' },
   { name: 'Prisma Migrate', command: 'npx prisma migrate deploy' },
   { name: 'Next Build', command: 'npx next build', timeout: 600000, truncateOutput: 1000 },
