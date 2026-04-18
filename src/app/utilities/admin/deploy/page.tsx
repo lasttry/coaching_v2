@@ -137,79 +137,91 @@ export default function DeployPage(): React.JSX.Element {
         if (done) break;
 
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split('\n\n');
-        buffer = lines.pop() || '';
+        const events = buffer.split('\n\n');
+        buffer = events.pop() || '';
 
-        for (const line of lines) {
-          if (!line.trim()) continue;
+        for (const eventBlock of events) {
+          if (!eventBlock.trim()) continue;
 
-          const eventMatch = line.match(/^event: (.+)$/m);
-          const dataMatch = line.match(/^data: (.+)$/m);
+          const lines = eventBlock.split('\n');
+          let eventType = '';
+          let eventData = '';
 
-          if (eventMatch && dataMatch) {
-            const eventType = eventMatch[1];
-            const data = JSON.parse(dataMatch[1]);
+          for (const line of lines) {
+            if (line.startsWith('event: ')) {
+              eventType = line.slice(7).trim();
+            } else if (line.startsWith('data: ')) {
+              eventData = line.slice(6);
+            }
+          }
 
-            switch (eventType) {
-              case 'deploy_start':
-                setSteps(
-                  data.steps.map((name: string) => ({
-                    name,
-                    status: 'pending',
-                    output: '',
-                  }))
-                );
-                break;
+          if (eventType && eventData) {
+            try {
+              const data = JSON.parse(eventData);
 
-              case 'step_start':
-                setCurrentStepIndex(data.stepIndex);
-                setExpandedStep(data.stepIndex);
-                setSteps((prev) =>
-                  prev.map((step, i) =>
-                    i === data.stepIndex ? { ...step, status: 'running' } : step
-                  )
-                );
-                break;
+              switch (eventType) {
+                case 'deploy_start':
+                  setSteps(
+                    data.steps.map((name: string) => ({
+                      name,
+                      status: 'pending',
+                      output: '',
+                    }))
+                  );
+                  break;
 
-              case 'step_output':
-                setSteps((prev) =>
-                  prev.map((step, i) =>
-                    i === data.stepIndex ? { ...step, output: step.output + data.output } : step
-                  )
-                );
-                break;
+                case 'step_start':
+                  setCurrentStepIndex(data.stepIndex);
+                  setExpandedStep(data.stepIndex);
+                  setSteps((prev) =>
+                    prev.map((step, i) =>
+                      i === data.stepIndex ? { ...step, status: 'running' } : step
+                    )
+                  );
+                  break;
 
-              case 'step_complete':
-                setSteps((prev) =>
-                  prev.map((step, i) =>
-                    i === data.stepIndex
-                      ? {
-                          ...step,
-                          status: data.success ? 'success' : 'error',
-                          exitCode: data.exitCode,
-                        }
-                      : step
-                  )
-                );
-                break;
+                case 'step_output':
+                  setSteps((prev) =>
+                    prev.map((step, i) =>
+                      i === data.stepIndex ? { ...step, output: step.output + data.output } : step
+                    )
+                  );
+                  break;
 
-              case 'step_error':
-                setSteps((prev) =>
-                  prev.map((step, i) =>
-                    i === data.stepIndex
-                      ? { ...step, status: 'error', output: step.output + '\n' + data.error }
-                      : step
-                  )
-                );
-                break;
+                case 'step_complete':
+                  setSteps((prev) =>
+                    prev.map((step, i) =>
+                      i === data.stepIndex
+                        ? {
+                            ...step,
+                            status: data.success ? 'success' : 'error',
+                            exitCode: data.exitCode,
+                          }
+                        : step
+                    )
+                  );
+                  break;
 
-              case 'deploy_complete':
-                setDeploySuccess(data.success);
-                setCurrentStepIndex(-1);
-                if (data.success) {
-                  setTimeout(() => fetchStatus(), 2000);
-                }
-                break;
+                case 'step_error':
+                  setSteps((prev) =>
+                    prev.map((step, i) =>
+                      i === data.stepIndex
+                        ? { ...step, status: 'error', output: step.output + '\n' + data.error }
+                        : step
+                    )
+                  );
+                  break;
+
+                case 'deploy_complete':
+                  setDeploySuccess(data.success);
+                  setCurrentStepIndex(-1);
+                  if (data.success) {
+                    setTimeout(() => fetchStatus(), 2000);
+                  }
+                  break;
+              }
+            } catch (parseError) {
+              console.error('Error parsing SSE event:', parseError, eventData);
             }
           }
         }
