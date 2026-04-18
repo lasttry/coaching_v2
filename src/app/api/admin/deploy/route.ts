@@ -30,7 +30,11 @@ const DEPLOY_STEPS: DeployStep[] = [
   { name: 'Prisma Generate', command: 'npx prisma generate' },
   { name: 'Prisma Migrate', command: 'npx prisma migrate deploy' },
   { name: 'Next Build', command: 'npx next build', timeout: 600000, truncateOutput: 1000 },
-  { name: 'PM2 Restart', command: 'pm2 restart coaching' },
+  {
+    name: 'PM2 Restart',
+    command:
+      'nohup pm2 reload coaching --update-env > /tmp/pm2-reload.log 2>&1 & sleep 1 && echo "PM2 reload initiated"',
+  },
 ];
 
 // SSE endpoint for real-time deploy updates
