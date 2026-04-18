@@ -1,3 +1,0 @@
-Save all the changes made in the file with the time of the changes in md format.
-Always use last versions of the components.
-Before making the git push, we need to build (npm run buld) and make sure that there is no errors.

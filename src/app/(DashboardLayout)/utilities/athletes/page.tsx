@@ -418,15 +418,57 @@ const AthletesPage: React.FC = () => {
                     >
                       {athlete.number || '-'}
                     </Typography>
-                    <Typography variant="body1" sx={{ flex: 1 }}>
+                    <Typography variant="body1" sx={{ minWidth: 180 }}>
                       {athlete.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
                       {athlete.birthdate ? dayjs(athlete.birthdate).format('DD/MM/YYYY') : '-'}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ minWidth: 50 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ minWidth: 40 }}>
                       {athlete.shirtSize || '-'}
                     </Typography>
+                    {/* Preferred Numbers */}
+                    <Box sx={{ display: 'flex', gap: 0.5, minWidth: 120 }}>
+                      {(athlete.preferredNumbers ?? []).map((pref) => {
+                        const colorHex =
+                          equipmentColors.find((c) => c.color === pref.color)?.colorHex || '#ccc';
+                        return (
+                          <Box
+                            key={pref.color}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 0.5,
+                              px: 0.75,
+                              py: 0.25,
+                              borderRadius: 1,
+                              backgroundColor: colorHex,
+                              border: '1px solid rgba(0,0,0,0.2)',
+                            }}
+                            title={pref.color}
+                          >
+                            <Typography
+                              variant="caption"
+                              sx={{
+                                fontWeight: 'bold',
+                                color:
+                                  colorHex.toLowerCase() === '#ffffff' ||
+                                  colorHex.toLowerCase() === '#fff'
+                                    ? '#000'
+                                    : '#fff',
+                                textShadow:
+                                  colorHex.toLowerCase() === '#ffffff' ||
+                                  colorHex.toLowerCase() === '#fff'
+                                    ? 'none'
+                                    : '0 0 2px rgba(0,0,0,0.5)',
+                              }}
+                            >
+                              {pref.number}
+                            </Typography>
+                          </Box>
+                        );
+                      })}
+                    </Box>
                     {!athlete.active && <Chip label={t('inactive')} size="small" color="default" />}
                   </Box>
                   <Box sx={{ display: 'flex', gap: 1 }}>

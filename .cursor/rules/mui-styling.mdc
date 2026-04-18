@@ -1,0 +1,46 @@
+---
+description: Material UI styling conventions
+globs: ["src/**/*.tsx", "src/**/*.jsx"]
+alwaysApply: true
+---
+
+# Material UI Styling Rules
+
+## Use sx prop for all styling
+- Always use `sx={{}}` for styling in Material UI components
+- Never use styling props directly on components
+
+## Forbidden direct props
+Do NOT use these props directly on MUI components:
+- `display`
+- `alignItems`
+- `justifyContent`
+- `mb`, `mt`, `ml`, `mr`, `m`
+- `pb`, `pt`, `pl`, `pr`, `p`
+- `gap`
+- `flexWrap`
+- `flex`
+- `width`, `height`
+
+## Correct usage
+
+```tsx
+// ❌ Wrong
+<Box display="flex" alignItems="center" gap={2} mb={2}>
+
+// ✅ Correct
+<Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+```
+
+## slotProps over deprecated props
+- Use MUI v5+ patterns
+- Prefer `slotProps` over deprecated props
+- Example: use `slotProps.htmlInput` instead of `inputProps`
+
+```tsx
+// ❌ Wrong
+<TextField inputProps={{ maxLength: 10 }} />
+
+// ✅ Correct
+<TextField slotProps={{ htmlInput: { maxLength: 10 } }} />
+```

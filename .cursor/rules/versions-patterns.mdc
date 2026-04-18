@@ -1,0 +1,27 @@
+---
+description: Version and pattern guidelines for the project
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Versions and Patterns
+
+## General Guidelines
+- Always use the latest stable version and patterns of components and libraries already adopted in the project
+- Do not introduce new dependencies without necessity
+- Check existing patterns in the codebase before implementing new features
+
+## Technology Stack
+- **Framework**: Next.js 16+ (App Router)
+- **UI Library**: Material UI v5+
+- **Database**: Prisma ORM
+- **Authentication**: NextAuth.js
+- **Internationalization**: react-i18next
+- **Language**: TypeScript
+
+## Code Patterns
+- Use functional components with hooks
+- Prefer `async/await` over `.then()` chains
+- Use TypeScript interfaces for type definitions
+- Keep components focused and single-purpose
+- Extract reusable logic into custom hooks

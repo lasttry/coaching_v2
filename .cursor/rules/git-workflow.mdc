@@ -1,0 +1,18 @@
+---
+description: Rules for git operations and change tracking
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Git Workflow Rules
+
+## Change Tracking
+- Save all changes made to files in the CHANGELOG.md file
+- Each change entry must include the date and time when the change was made
+- Group changes by feature or fix
+
+## Validation Before Push
+- Before any `git push`, always run the build command first
+- Command: `npm run build`
+- Only push if the build completes without errors
+- Commit messages should be clear and descriptive
