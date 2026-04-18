@@ -205,12 +205,38 @@ export async function GET(): Promise<NextResponse> {
     );
     const [hash, message, author, time] = commitInfo.trim().split('|');
 
+    // Get current version (latest tag that points to HEAD or before)
+    let currentVersion = 'dev';
+    try {
+      const { stdout: version } = await execAsync(
+        `cd ${appDir} && git describe --tags --abbrev=0 2>/dev/null || echo ""`
+      );
+      if (version.trim()) {
+        currentVersion = version.trim();
+      }
+    } catch {
+      // No tags yet
+    }
+
     // Check for updates
-    await execAsync(`cd ${appDir} && git fetch origin main`);
+    await execAsync(`cd ${appDir} && git fetch origin main --tags`);
     const { stdout: behind } = await execAsync(
       `cd ${appDir} && git rev-list HEAD..origin/main --count`
     );
     const commitsBeind = parseInt(behind.trim(), 10);
+
+    // Get latest available version from remote
+    let latestVersion = currentVersion;
+    try {
+      const { stdout: latestTag } = await execAsync(
+        `cd ${appDir} && git describe --tags --abbrev=0 origin/main 2>/dev/null || echo ""`
+      );
+      if (latestTag.trim()) {
+        latestVersion = latestTag.trim();
+      }
+    } catch {
+      // No tags on remote
+    }
 
     // Get PM2 status
     let pm2Status = 'unknown';
@@ -230,6 +256,8 @@ export async function GET(): Promise<NextResponse> {
         author,
         time,
       },
+      currentVersion,
+      latestVersion,
       updateAvailable: commitsBeind > 0,
       commitsBehind: commitsBeind,
       pm2Status,

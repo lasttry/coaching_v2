@@ -44,6 +44,8 @@ interface CommitInfo {
 
 interface StatusResponse {
   currentCommit: CommitInfo;
+  currentVersion: string;
+  latestVersion: string;
   updateAvailable: boolean;
   commitsBehind: number;
   pm2Status: string;
@@ -287,7 +289,13 @@ export default function DeployPage(): React.JSX.Element {
 
         {status && (
           <>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2 }}>
+            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 2, alignItems: 'center' }}>
+              <Chip
+                label={status.currentVersion}
+                color="primary"
+                variant="filled"
+                sx={{ fontWeight: 'bold', fontSize: '1rem' }}
+              />
               <Chip
                 label={`PM2: ${status.pm2Status}`}
                 color={getStatusColor(status.pm2Status)}
@@ -296,7 +304,11 @@ export default function DeployPage(): React.JSX.Element {
               {status.updateAvailable ? (
                 <Chip
                   icon={<UpdateIcon />}
-                  label={t('deploy.updatesAvailable', { count: status.commitsBehind })}
+                  label={
+                    status.latestVersion !== status.currentVersion
+                      ? `${status.latestVersion} ${t('deploy.updateAvailable')}`
+                      : t('deploy.updatesAvailable', { count: status.commitsBehind })
+                  }
                   color="warning"
                 />
               ) : (
