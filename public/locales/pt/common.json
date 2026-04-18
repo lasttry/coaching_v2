@@ -613,6 +613,7 @@
       "streamNotAvailable": "Erro: Stream não disponível"
     },
     "monitorInfo": "O deploy está em execução. Podes acompanhar o progresso em tempo real abaixo.",
+    "connecting": "A conectar ao servidor...",
     "confirmTitle": "Confirmar Deploy",
     "confirmMessage": "Tens a certeza que queres fazer deploy?",
     "yesStart": "Sim, iniciar deploy",

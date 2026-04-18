@@ -157,9 +157,12 @@ export default function DeployPage(): React.JSX.Element {
             }
           }
 
+          console.log('SSE Event received:', eventType, eventData);
+
           if (eventType && eventData) {
             try {
               const data = JSON.parse(eventData);
+              console.log('Parsed SSE data:', eventType, data);
 
               switch (eventType) {
                 case 'deploy_start':
@@ -371,6 +374,15 @@ export default function DeployPage(): React.JSX.Element {
             <Alert severity={deploySuccess ? 'success' : 'error'} sx={{ mb: 2 }}>
               {deploySuccess ? t('deploy.successMessage') : t('deploy.failedMessage')}
             </Alert>
+          )}
+
+          {deploying && steps.length === 0 && (
+            <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 2 }}>
+              <CircularProgress size={20} />
+              <Typography variant="body2" color="text.secondary">
+                {t('deploy.connecting')}
+              </Typography>
+            </Box>
           )}
 
           {deploying && steps.length > 0 && (
