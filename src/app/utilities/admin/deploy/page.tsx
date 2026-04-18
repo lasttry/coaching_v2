@@ -157,12 +157,9 @@ export default function DeployPage(): React.JSX.Element {
             }
           }
 
-          console.log('SSE Event received:', eventType, eventData);
-
           if (eventType && eventData) {
             try {
               const data = JSON.parse(eventData);
-              console.log('Parsed SSE data:', eventType, data);
 
               switch (eventType) {
                 case 'deploy_start':
