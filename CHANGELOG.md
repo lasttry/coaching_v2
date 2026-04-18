@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-04-10 18:15
+
+### Fix Deploy NPM Permissions
+
+- Adicionado novo passo "Clean NPM Cache" no deploy
+- Remove diretórios temporários problemáticos antes do npm install
+- Limpa cache npm para evitar conflitos de permissões
+
+### Ficheiros alterados:
+
+- `src/app/api/admin/deploy/route.ts` - Novo passo de limpeza de cache
+
+---
+
 ## 2026-04-10 18:00
 
 ### Traduções da Página do Clube

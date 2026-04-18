@@ -16,6 +16,11 @@ interface DeployStep {
 const DEPLOY_STEPS: DeployStep[] = [
   { name: 'Reset Local Changes', command: 'git reset --hard HEAD' },
   { name: 'Git Pull', command: 'git pull --no-rebase origin main' },
+  {
+    name: 'Clean NPM Cache',
+    command:
+      'rm -rf node_modules/.cache node_modules/.webpack-* node_modules/.next-* && npm cache clean --force',
+  },
   { name: 'NPM Install', command: 'npm install', timeout: 300000, truncateOutput: 1000 },
   { name: 'Prisma Generate', command: 'npx prisma generate' },
   { name: 'Prisma Migrate', command: 'npx prisma migrate deploy' },
