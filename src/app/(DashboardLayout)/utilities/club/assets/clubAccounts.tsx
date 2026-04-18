@@ -20,6 +20,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { RoleDisplayNames } from '@/types/club/types';
 import { AccountInterface, AccountClubInterface } from '@/types/accounts/types';
 import { Role } from '@prisma/client';
+import '@/lib/i18n.client';
+import { useTranslation } from 'react-i18next';
 
 interface ClubAccountsProps {
   clubId?: number;
@@ -27,6 +29,7 @@ interface ClubAccountsProps {
 }
 
 const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
+  const { t } = useTranslation();
   const [emailInput, setEmailInput] = useState<string>('');
   const [addAccount, setAddAccount] = useState<AccountInterface | null>(null);
   const [filteredAccounts, setFilteredAccounts] = useState<AccountInterface[]>([]);
@@ -44,11 +47,11 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
           setAccounts(data);
         } else {
           log.error('Failed to fetch accounts for the club');
-          onError?.('Failed to fetch accounts for the club');
+          onError?.(t('fetchAccountsError'));
         }
       } catch (error) {
         log.error('Error fetching accounts:', error);
-        onError?.('Error fetching accounts');
+        onError?.(t('fetchAccountsNetworkError', { error: String(error) }));
       }
     };
 
@@ -66,11 +69,11 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
           setFilteredAccounts(data);
         } else {
           log.error('Failed to fetch accounts for autocomplete');
-          onError?.('Failed to fetch accounts for autocomplete');
+          onError?.(t('fetchAutocompleteError'));
         }
       } catch (error) {
         log.error('Error fetching accounts:', error);
-        onError?.('Error fetching accounts');
+        onError?.(t('fetchAutocompleteNetworkError', { error: String(error) }));
       }
     } else {
       setFilteredAccounts([]);
@@ -97,15 +100,15 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
       } else {
         const errorData = await response.json();
         if (errorData?.error) {
-          onError?.(`Failed to add account to the club: ${errorData.error}`);
+          onError?.(t('addAccountFailedWithReason', { reason: errorData.error }));
         } else {
           log.error('Failed to add account to the club');
-          onError?.('Failed to add account to the club');
+          onError?.(t('addAccountFailed'));
         }
       }
     } catch (error) {
       log.error('Error adding account to the club:', error);
-      onError?.('Error adding account to the club');
+      onError?.(t('addAccountNetworkError', { error: String(error) }));
     }
   };
 
@@ -139,11 +142,11 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
         );
       } else {
         log.error('Failed to update role');
-        onError?.('Failed to update role');
+        onError?.(t('updateRoleFailed'));
       }
     } catch (error) {
       log.error('Error updating role:', error);
-      onError?.('Error updating role');
+      onError?.(t('updateRoleNetworkError', { error: String(error) }));
     }
   };
 
@@ -159,15 +162,15 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
       } else {
         const errorData = await response.json();
         if (errorData?.error) {
-          onError?.(`Error removing account from the club: ${errorData.error}`);
+          onError?.(t('removeAccountFailedWithReason', { reason: errorData.error }));
         } else {
           log.error('Failed to remove account from the club');
-          onError?.('Failed to remove account from the club');
+          onError?.(t('removeAccountFailed'));
         }
       }
     } catch (error) {
       log.error('Error removing account from the club:', error);
-      onError?.('Error removing account from the club');
+      onError?.(t('removeAccountNetworkError', { error: String(error) }));
     }
   };
 
@@ -178,12 +181,12 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
   return (
     <Box sx={{ marginTop: 4 }}>
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-        Manage Accounts
+        {t('manageAccounts')}
       </Typography>
       <Divider sx={{ marginY: 2 }} />
       <Box sx={{ marginBottom: 2 }}>
         <TextField
-          label="Add Account by Email"
+          label={t('addAccountByEmail')}
           value={emailInput}
           onChange={(e) => handleEmailChange(e.target.value)}
           fullWidth
@@ -211,23 +214,23 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({ clubId, onError }) => {
           onClick={handleAddAccount}
           disabled={!emailInput}
         >
-          Add Account
+          {t('addAccount')}
         </Button>
       </Box>
       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-        Linked Accounts
+        {t('linkedAccounts')}
       </Typography>
       <Divider sx={{ marginY: 2 }} />
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
+              <TableCell>{t('name')}</TableCell>
+              <TableCell>{t('email')}</TableCell>
               {Object.values(Role).map((role) => (
                 <TableCell key={role}>{RoleDisplayNames[role]}</TableCell>
               ))}
-              <TableCell>Actions</TableCell>
+              <TableCell>{t('actions')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

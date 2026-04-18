@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-04-10 18:00
+
+### Traduções da Página do Clube
+
+- **ClubAccounts**: Adicionado suporte i18n para traduzir todos os textos em inglês
+  - "Manage Accounts" -> "Gerir contas"
+  - "Add Account by Email" -> "Adicionar conta por email"
+  - "Add Account" -> "Adicionar conta"
+  - "Linked Accounts" -> "Contas ligadas"
+  - Cabeçalhos da tabela e mensagens de erro também traduzidos
+
+### Ficheiros alterados:
+
+- `src/app/(DashboardLayout)/utilities/club/assets/clubAccounts.tsx` - Adicionado i18n e traduções
+
+---
+
 ## 2026-04-10 17:30
 
 ### Deploy em Tempo Real (SSE Streaming)
