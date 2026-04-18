@@ -19,7 +19,7 @@ export async function GET(req: Request): Promise<NextResponse> {
     return NextResponse.json(athletes ?? []);
   } catch (error) {
     log.error('Failed to get athletes:', error);
-    return NextResponse.json({ error: i18next.t('failedFetchAthletes') }, { status: 500 });
+    return NextResponse.json({ error: i18next.t('athlete.fetch.error') }, { status: 500 });
   }
 }
 
@@ -34,7 +34,7 @@ export async function POST(req: Request): Promise<NextResponse> {
 
   try {
     if (!session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
-      throw new Error(i18next.t('invalidClubId'));
+      throw new Error(i18next.t('club.validation.invalidId'));
     }
 
     const clubId = Number(session.user.selectedClubId);
@@ -98,6 +98,6 @@ export async function POST(req: Request): Promise<NextResponse> {
     return NextResponse.json(newAthlete);
   } catch (error) {
     log.error('Failed to create athlete:', error);
-    return NextResponse.json({ error: i18next.t('athleteCreateFailed') }, { status: 400 });
+    return NextResponse.json({ error: i18next.t('athlete.save.createError') }, { status: 400 });
   }
 }

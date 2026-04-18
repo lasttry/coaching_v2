@@ -15,11 +15,11 @@ export async function GET(request: Request): Promise<NextResponse> {
     }
 
     const { searchParams } = new URL(request.url);
-    const competitionId = searchParams.get('competitionId');
-    const competitionSerieId = searchParams.get('competitionSerieId');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
-    const teamId = searchParams.get('teamId');
+    const competitionId = searchParams.get('fpb.competitionId');
+    const competitionSerieId = searchParams.get('fpb.serieId');
+    const startDate = searchParams.get('filters.startDate');
+    const endDate = searchParams.get('filters.endDate');
+    const teamId = searchParams.get('fpb.teamId');
 
     // Build game filter
     const gameFilter: {

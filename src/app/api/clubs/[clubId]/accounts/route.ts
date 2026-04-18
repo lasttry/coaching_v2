@@ -146,8 +146,8 @@ export async function POST(
 
 export async function DELETE(request: Request): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
-  const clubId = parseInt(searchParams.get('clubId') || '', 10);
-  const accountId = parseInt(searchParams.get('accountId') || '', 10);
+  const clubId = parseInt(searchParams.get('fpb.clubId') || '', 10);
+  const accountId = parseInt(searchParams.get('common.id') || '', 10);
 
   if (isNaN(clubId) || isNaN(accountId)) {
     return NextResponse.json({ error: 'Valid clubId and accountId are required' }, { status: 400 });

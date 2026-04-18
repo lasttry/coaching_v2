@@ -27,14 +27,17 @@ export async function GET(req: Request, segmentData: { params: Params }): Promis
       if (athlete) {
         return NextResponse.json(athlete); // Return athlete data
       } else {
-        return NextResponse.json({ error: i18next.t('athleteNotFound') }, { status: 404 }); // Return 404 if not found
+        return NextResponse.json(
+          { error: i18next.t('athlete.fetch.singleNotFound') },
+          { status: 404 }
+        ); // Return 404 if not found
       }
     } catch (error) {
       log.error('Error fetching athlete:', error);
-      return NextResponse.json({ error: i18next.t('failedFetchAthlete') }, { status: 500 });
+      return NextResponse.json({ error: i18next.t('athlete.fetch.singleError') }, { status: 500 });
     }
   } else {
-    return NextResponse.json({ error: i18next.t('invalidAthleteId') }, { status: 400 }); // Invalid ID
+    return NextResponse.json({ error: i18next.t('athlete.validation.invalidId') }, { status: 400 }); // Invalid ID
   }
 }
 
@@ -59,10 +62,10 @@ export async function DELETE(req: Request, segmentData: { params: Params }): Pro
       return new NextResponse(null, { status: 204 });
     } catch (error) {
       log.error('Error deleting athlete:', error);
-      return NextResponse.json({ error: i18next.t('failedDeleteAthlete') }, { status: 400 });
+      return NextResponse.json({ error: i18next.t('athlete.save.deleteError') }, { status: 400 });
     }
   } else {
-    return NextResponse.json({ error: i18next.t('invalidAthleteId') }, { status: 400 });
+    return NextResponse.json({ error: i18next.t('athlete.validation.invalidId') }, { status: 400 });
   }
 }
 
@@ -76,7 +79,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
 
   // Ensure the ID is a valid number
   if (!id || isNaN(Number(id))) {
-    return NextResponse.json({ error: i18next.t('invalidAthleteId') }, { status: 400 });
+    return NextResponse.json({ error: i18next.t('athlete.validation.invalidId') }, { status: 400 });
   }
 
   try {
@@ -86,7 +89,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     // Validate required fields
     if (!data.name || !data.birthdate) {
       return NextResponse.json(
-        { error: i18next.t('requiredNameNumberBirthdate') },
+        { error: i18next.t('athlete.validation.requiredFields') },
         { status: 400 }
       );
     }
@@ -94,7 +97,10 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     // Convert birthdate to Date object (ensure valid date format)
     const birthdate = new Date(data.birthdate);
     if (isNaN(birthdate.getTime())) {
-      return NextResponse.json({ error: i18next.t('invalidBirthdate') }, { status: 400 });
+      return NextResponse.json(
+        { error: i18next.t('athlete.validation.invalidBirthdate') },
+        { status: 400 }
+      );
     }
 
     // Normalize preferredNumbers from the payload (if provided)
@@ -117,7 +123,10 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     });
 
     if (!athlete) {
-      return NextResponse.json({ error: i18next.t('athleteNotFound') }, { status: 404 });
+      return NextResponse.json(
+        { error: i18next.t('athlete.fetch.singleNotFound') },
+        { status: 404 }
+      );
     }
 
     // Validate preferred numbers - check for duplicates per color in the club (excluding this athlete)
@@ -182,6 +191,6 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     return NextResponse.json(updatedAthlete, { status: 200 });
   } catch (error) {
     log.error('Error updating athlete:', error);
-    return NextResponse.json({ error: i18next.t('athleteUpdateFailed') }, { status: 500 });
+    return NextResponse.json({ error: i18next.t('athlete.save.updateError') }, { status: 500 });
   }
 }

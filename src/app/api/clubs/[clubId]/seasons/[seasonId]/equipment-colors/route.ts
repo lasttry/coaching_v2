@@ -13,7 +13,7 @@ export async function GET(
   const seasonId = Number(params.seasonId);
 
   const { searchParams } = new URL(req.url);
-  const echelonId = searchParams.get('echelonId');
+  const echelonId = searchParams.get('echelon.singular');
 
   const equipmentColors = await prisma.equipmentColor.findMany({
     where: {

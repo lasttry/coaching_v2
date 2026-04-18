@@ -20,7 +20,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json(teams);
   } catch (error) {
     log.error('Failed to fetch teams:', error);
-    return NextResponse.json({ error: i18next.t('failedFetchTeams') }, { status: 500 });
+    return NextResponse.json({ error: i18next.t('team.fetch.error') }, { status: 500 });
   }
 }
 
@@ -34,13 +34,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
   try {
     if (!session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
-      throw new Error(i18next.t('invalidClubId'));
+      throw new Error(i18next.t('club.validation.invalidId'));
     }
     const { name, type, echelonId } = await req.json();
 
     if (!name || !type || !echelonId) {
       log.error('Missing required fields');
-      return NextResponse.json({ error: i18next.t('missingFields') }, { status: 400 });
+      return NextResponse.json({ error: i18next.t('messages.missingFields') }, { status: 400 });
     }
 
     const team = await prisma.team.create({
@@ -50,6 +50,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     return NextResponse.json(team, { status: 201 });
   } catch (error) {
     log.error('Failed to create team:', error);
-    return NextResponse.json({ error: i18next.t('teamCreateFailed') }, { status: 500 });
+    return NextResponse.json({ error: i18next.t('team.save.createError') }, { status: 500 });
   }
 }

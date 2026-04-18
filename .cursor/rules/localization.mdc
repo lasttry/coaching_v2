@@ -1,0 +1,224 @@
+---
+description: Localization requirements for all user-facing text
+globs: ["**/*.tsx", "**/*.ts"]
+alwaysApply: true
+---
+
+# Localization Requirements
+
+All user-facing text in this application MUST be localized using react-i18next.
+
+## Rules
+
+1. **NEVER hardcode user-facing strings** - All text visible to users must use the `t()` function from `useTranslation()`.
+
+2. **Required imports for any component with UI text:**
+   ```typescript
+   import { useTranslation } from 'react-i18next';
+   import '@/lib/i18n.client';
+   ```
+
+3. **Hook usage:**
+   ```typescript
+   const { t } = useTranslation();
+   ```
+
+4. **Translation files location:**
+   - PT: `public/locales/pt/common.json`
+   - EN: `public/locales/en/common.json`
+
+5. **What must be translated:**
+   - Page titles and headings
+   - Button labels
+   - Form labels and placeholders
+   - Error messages
+   - Success messages
+   - Table headers
+   - Dialog titles and content
+   - Tooltips
+   - Menu items
+   - Validation messages
+
+6. **Exceptions (do NOT translate):**
+   - Technical identifiers (IDs, codes)
+   - Proper nouns (brand names, team names from data)
+   - Abbreviations that are universal (PM2, FPB IDs)
+
+## Hierarchical Structure (MANDATORY)
+
+The translation files use a **hierarchical nested structure** with 2-3 levels. This is mandatory for organization and to avoid key duplication.
+
+### Structure Pattern
+
+```json
+{
+  "category": {
+    "title": "Category Title",
+    "singular": "Category Item",
+    "subcategory": {
+      "key": "value"
+    }
+  }
+}
+```
+
+### Main Categories
+
+| Category | Description | Example Keys |
+|----------|-------------|--------------|
+| `common` | Generic words used everywhere | `common.name`, `common.loading`, `common.date` |
+| `actions` | Action buttons | `actions.add`, `actions.edit`, `actions.save`, `actions.cancel`, `actions.delete` |
+| `status` | Status labels | `status.created`, `status.updated`, `status.pending` |
+| `messages` | Generic messages | `messages.saveSuccess`, `messages.deleteError` |
+| `images` | Image-related | `images.upload`, `images.remove` |
+| `filters` | Filter controls | `filters.startDate`, `filters.clear` |
+| `gender` | Gender options | `gender.male`, `gender.female` |
+| `menu` | Menu items | `menu.configuration`, `menu.statistics` |
+| `validation` | Validation errors | `validation.nameRequired`, `validation.dateInvalid` |
+
+### Entity Categories (with sub-levels)
+
+Each entity has its own category with consistent sub-structure:
+
+```json
+{
+  "athlete": {
+    "title": "Atletas",
+    "singular": "Atleta",
+    "management": "Gestão de Atletas",
+    "add": "Adicionar Atleta",
+    "edit": "Editar Atleta",
+    "statistics": {
+      "title": "Estatísticas",
+      "subtitle": "Número de jogos..."
+    },
+    "fetch": {
+      "error": "Falha ao obter atletas",
+      "notFound": "Nenhum atleta encontrado"
+    },
+    "save": {
+      "success": "Atleta criado com sucesso",
+      "createError": "Falha ao criar atleta",
+      "updateError": "Falha ao atualizar atleta",
+      "deleteError": "Falha ao eliminar atleta"
+    },
+    "validation": {
+      "invalidId": "ID de atleta inválido",
+      "requiredFields": "Nome e data são obrigatórios"
+    }
+  }
+}
+```
+
+### Sub-level Patterns
+
+| Sub-level | Purpose | Example |
+|-----------|---------|---------|
+| `fetch` | Fetch/load errors | `athlete.fetch.error`, `athlete.fetch.notFound` |
+| `save` | Create/update/delete results | `athlete.save.success`, `athlete.save.createError` |
+| `delete` | Delete confirmations | `game.delete.confirm`, `game.delete.success` |
+| `validation` | Entity-specific validation | `game.validation.numberRequired` |
+
+### Complex Features (3 levels)
+
+For complex features like equipment:
+
+```json
+{
+  "equipment": {
+    "title": "Equipamentos",
+    "color": {
+      "title": "Cor",
+      "add": "Adicionar Cor",
+      "edit": "Editar Cor",
+      "required": "O nome da cor é obrigatório"
+    },
+    "item": {
+      "add": "Adicionar Item",
+      "noItems": "Nenhum equipamento nesta cor"
+    },
+    "size": {
+      "title": "Tamanho",
+      "select": "Selecionar Tamanho"
+    },
+    "assignment": {
+      "hasIssues": "Problemas na atribuição",
+      "noFit": "Sem tamanho"
+    },
+    "legend": {
+      "fixed": "Número fixo",
+      "manual": "Alteração manual",
+      "auto": "Atribuição automática"
+    }
+  }
+}
+```
+
+### Cycles Example (nested entities)
+
+```json
+{
+  "cycles": {
+    "macrocycle": {
+      "title": "Macrociclos",
+      "singular": "Macrociclo",
+      "add": "Adicionar Macrociclo",
+      "fetch": { "error": "..." },
+      "save": { "createSuccess": "...", "error": "..." },
+      "delete": { "confirm": "..." }
+    },
+    "mesocycle": { ... },
+    "microcycle": { ... }
+  }
+}
+```
+
+## Code Examples
+
+### Bad (flat keys - DO NOT USE)
+```tsx
+<Typography>{t('athletesManagement')}</Typography>
+<Button>{t('Save')}</Button>
+<Button>{t('Cancel')}</Button>
+setError(t('athleteFetchError'));
+```
+
+### Good (hierarchical keys - USE THIS)
+```tsx
+<Typography>{t('athlete.management')}</Typography>
+<Button>{t('actions.save')}</Button>
+<Button>{t('actions.cancel')}</Button>
+setError(t('athlete.fetch.error'));
+```
+
+### Dynamic Values
+```tsx
+t('opponent.deleteConfirmation', { name: opponent.name })
+t('game.delete.success', { id: game.id })
+t('equipment.assignment.issuesWarning', { count: issues.length })
+```
+
+## Adding New Translations
+
+When adding a new translation:
+
+1. **Identify the category** - Does it belong to an existing entity or is it a new one?
+2. **Identify the sub-level** - Is it a fetch error? Save success? Validation?
+3. **Add to BOTH files** - `pt/common.json` AND `en/common.json`
+4. **Maintain consistency** - Follow the exact same structure in both files
+5. **Use the full path** - `t('entity.sublevel.key')`
+
+### Checklist for new translations
+- [ ] Key added to `public/locales/pt/common.json`
+- [ ] Key added to `public/locales/en/common.json`
+- [ ] Key follows hierarchical structure (category.subcategory.key)
+- [ ] Key placed in correct category section
+- [ ] Both languages have appropriate translations (not just copy/paste)
+
+## Common Mistakes to Avoid
+
+1. **Flat keys at root level** - Always nest under a category
+2. **Inconsistent naming** - Use same key structure in both language files
+3. **Hardcoded English in PT file** - Translate all values to Portuguese
+4. **Missing translations** - Always add to BOTH files
+5. **Using deprecated flat keys** - Always use hierarchical paths like `common.name` not `name`

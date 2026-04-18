@@ -24,8 +24,8 @@ export async function GET(
   }
 
   const searchParams = request.nextUrl.searchParams;
-  const competitionId = Number(searchParams.get('competitionId'));
-  const phaseId = Number(searchParams.get('phaseId'));
+  const competitionId = Number(searchParams.get('fpb.competitionId'));
+  const phaseId = Number(searchParams.get('competition.series'));
 
   const standings = await fetchFpbPhaseStandings(
     competitionId || null,
