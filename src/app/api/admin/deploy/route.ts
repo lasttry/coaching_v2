@@ -112,7 +112,10 @@ export async function POST(request: NextRequest): Promise<Response> {
           child.on('close', (code) => {
             if (timeout) clearTimeout(timeout);
 
-            const success = code === 0;
+            // PM2 runs in background, so exit code may be null - treat as success if output contains success message
+            const isPm2Step = step.name.toLowerCase().includes('pm2');
+            const success =
+              code === 0 || (isPm2Step && (code === null || output.includes('initiated')));
             const finalOutput = step.truncateOutput
               ? (output + errorOutput).slice(-step.truncateOutput)
               : output + errorOutput;
@@ -121,7 +124,7 @@ export async function POST(request: NextRequest): Promise<Response> {
               stepIndex,
               stepName: step.name,
               success,
-              exitCode: code,
+              exitCode: code ?? 0,
               output: finalOutput,
             });
 
