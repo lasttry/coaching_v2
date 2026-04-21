@@ -253,6 +253,9 @@ const SeasonsPage: React.FC = () => {
         pageSizeOptions={[5, 10, 20]}
         pagination
         disableRowSelectionOnClick
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10 } },
+        }}
         localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
       />
 

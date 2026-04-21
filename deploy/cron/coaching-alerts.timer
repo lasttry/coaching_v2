@@ -1,0 +1,15 @@
+[Unit]
+Description=Run coaching alerts generator daily
+Documentation=https://github.com/YOUR_ORG/coaching_v2
+
+[Timer]
+# 00:15 local time every day. Use the server's timezone.
+OnCalendar=*-*-* 00:15:00
+# If the server was off at the scheduled time, run on next boot.
+Persistent=true
+# Avoid thundering-herd when multiple services share a schedule.
+RandomizedDelaySec=5min
+Unit=coaching-alerts.service
+
+[Install]
+WantedBy=timers.target

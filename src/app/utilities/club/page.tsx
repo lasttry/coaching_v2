@@ -18,6 +18,7 @@ import '@/styles/clubsAccordion.css';
 import { useSession } from 'next-auth/react';
 import ClubDetails from './assets/clubDetails';
 import ClubAccounts from './assets/clubAccounts';
+import ClubEmailSettings from './assets/clubEmailSettings';
 import { log } from '@/lib/logger';
 
 import '@/lib/i18n.client';
@@ -238,6 +239,9 @@ const ClubPage = (): ReactElement => {
               clubId={selectedClub.id}
               onError={(error: string) => setErrorMessage(error)}
             />
+            {selectedClub.id && selectedClub.id !== 0 && (
+              <ClubEmailSettings clubId={selectedClub.id} />
+            )}
           </DashboardCard>
         )}
       </Box>

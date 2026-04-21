@@ -373,7 +373,6 @@ const GamesPage: React.FC = () => {
                           <Table size="small">
                             <TableHead>
                               <TableRow>
-                                <TableCell>{t('common.number')}</TableCell>
                                 <TableCell>{t('common.date')}</TableCell>
                                 <TableCell>{t('common.team')}</TableCell>
                                 <TableCell>{t('common.opponent')}</TableCell>
@@ -384,7 +383,6 @@ const GamesPage: React.FC = () => {
                             <TableBody>
                               {groupedGames[competitionName][serieName].map((game) => (
                                 <TableRow key={game.id} hover>
-                                  <TableCell>{game.number || '-'}</TableCell>
                                   <TableCell>
                                     {game.date ? dayjs(game.date).format('DD/MM/YYYY HH:mm') : '-'}
                                   </TableCell>

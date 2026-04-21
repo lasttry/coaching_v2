@@ -94,6 +94,13 @@ export type Echelon = $Result.DefaultSelection<Prisma.$EchelonPayload>
  */
 export type Club = $Result.DefaultSelection<Prisma.$ClubPayload>
 /**
+ * Model ClubEmailSettings
+ * SMTP settings used by a club to send outgoing emails (alerts, notifications).
+ * `passEncrypted` is encrypted with AES-256-GCM using EMAIL_ENCRYPTION_KEY from the
+ * environment. It is never returned as-is by any API; only `hasPassword` is exposed.
+ */
+export type ClubEmailSettings = $Result.DefaultSelection<Prisma.$ClubEmailSettingsPayload>
+/**
  * Model Season
  * 
  */
@@ -163,6 +170,16 @@ export type Equipment = $Result.DefaultSelection<Prisma.$EquipmentPayload>
  * 
  */
 export type GameEquipment = $Result.DefaultSelection<Prisma.$GameEquipmentPayload>
+/**
+ * Model Alert
+ * 
+ */
+export type Alert = $Result.DefaultSelection<Prisma.$AlertPayload>
+/**
+ * Model AlertRecipient
+ * 
+ */
+export type AlertRecipient = $Result.DefaultSelection<Prisma.$AlertRecipientPayload>
 
 /**
  * Enums
@@ -260,6 +277,32 @@ export const Size: {
 
 export type Size = (typeof Size)[keyof typeof Size]
 
+
+export const AlertType: {
+  INFO: 'INFO',
+  ATTENTION: 'ATTENTION',
+  IMPORTANT: 'IMPORTANT',
+  PRIORITY: 'PRIORITY'
+};
+
+export type AlertType = (typeof AlertType)[keyof typeof AlertType]
+
+
+export const AlertCategory: {
+  ATHLETE_BIRTHDAY: 'ATHLETE_BIRTHDAY'
+};
+
+export type AlertCategory = (typeof AlertCategory)[keyof typeof AlertCategory]
+
+
+export const AlertRecipientStatus: {
+  UNREAD: 'UNREAD',
+  READ: 'READ',
+  DELETED: 'DELETED'
+};
+
+export type AlertRecipientStatus = (typeof AlertRecipientStatus)[keyof typeof AlertRecipientStatus]
+
 }
 
 export type IdType = $Enums.IdType
@@ -297,6 +340,18 @@ export const TeamType: typeof $Enums.TeamType
 export type Size = $Enums.Size
 
 export const Size: typeof $Enums.Size
+
+export type AlertType = $Enums.AlertType
+
+export const AlertType: typeof $Enums.AlertType
+
+export type AlertCategory = $Enums.AlertCategory
+
+export const AlertCategory: typeof $Enums.AlertCategory
+
+export type AlertRecipientStatus = $Enums.AlertRecipientStatus
+
+export const AlertRecipientStatus: typeof $Enums.AlertRecipientStatus
 
 /**
  * ##  Prisma Client ʲˢ
@@ -580,6 +635,16 @@ export class PrismaClient<
   get club(): Prisma.ClubDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.clubEmailSettings`: Exposes CRUD operations for the **ClubEmailSettings** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClubEmailSettings
+    * const clubEmailSettings = await prisma.clubEmailSettings.findMany()
+    * ```
+    */
+  get clubEmailSettings(): Prisma.ClubEmailSettingsDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.season`: Exposes CRUD operations for the **Season** model.
     * Example usage:
     * ```ts
@@ -718,6 +783,26 @@ export class PrismaClient<
     * ```
     */
   get gameEquipment(): Prisma.GameEquipmentDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.alert`: Exposes CRUD operations for the **Alert** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Alerts
+    * const alerts = await prisma.alert.findMany()
+    * ```
+    */
+  get alert(): Prisma.AlertDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.alertRecipient`: Exposes CRUD operations for the **AlertRecipient** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more AlertRecipients
+    * const alertRecipients = await prisma.alertRecipient.findMany()
+    * ```
+    */
+  get alertRecipient(): Prisma.AlertRecipientDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -1168,6 +1253,7 @@ export namespace Prisma {
     Drill: 'Drill',
     Echelon: 'Echelon',
     Club: 'Club',
+    ClubEmailSettings: 'ClubEmailSettings',
     Season: 'Season',
     Venue: 'Venue',
     AccountClub: 'AccountClub',
@@ -1181,7 +1267,9 @@ export namespace Prisma {
     AthletePreferredNumber: 'AthletePreferredNumber',
     EquipmentColor: 'EquipmentColor',
     Equipment: 'Equipment',
-    GameEquipment: 'GameEquipment'
+    GameEquipment: 'GameEquipment',
+    Alert: 'Alert',
+    AlertRecipient: 'AlertRecipient'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1197,7 +1285,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "athlete" | "gameAthlete" | "game" | "opponent" | "account" | "statistic" | "timeEntry" | "athleteReport" | "macrocycle" | "mesocycle" | "microcycle" | "sessionGoal" | "objective" | "drill" | "echelon" | "club" | "season" | "venue" | "accountClub" | "accountClubRole" | "team" | "teamAthlete" | "staff" | "teamStaff" | "competition" | "competitionSerie" | "athletePreferredNumber" | "equipmentColor" | "equipment" | "gameEquipment"
+      modelProps: "athlete" | "gameAthlete" | "game" | "opponent" | "account" | "statistic" | "timeEntry" | "athleteReport" | "macrocycle" | "mesocycle" | "microcycle" | "sessionGoal" | "objective" | "drill" | "echelon" | "club" | "clubEmailSettings" | "season" | "venue" | "accountClub" | "accountClubRole" | "team" | "teamAthlete" | "staff" | "teamStaff" | "competition" | "competitionSerie" | "athletePreferredNumber" | "equipmentColor" | "equipment" | "gameEquipment" | "alert" | "alertRecipient"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2385,6 +2473,80 @@ export namespace Prisma {
           }
         }
       }
+      ClubEmailSettings: {
+        payload: Prisma.$ClubEmailSettingsPayload<ExtArgs>
+        fields: Prisma.ClubEmailSettingsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClubEmailSettingsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClubEmailSettingsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>
+          }
+          findFirst: {
+            args: Prisma.ClubEmailSettingsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClubEmailSettingsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>
+          }
+          findMany: {
+            args: Prisma.ClubEmailSettingsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>[]
+          }
+          create: {
+            args: Prisma.ClubEmailSettingsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>
+          }
+          createMany: {
+            args: Prisma.ClubEmailSettingsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClubEmailSettingsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>[]
+          }
+          delete: {
+            args: Prisma.ClubEmailSettingsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>
+          }
+          update: {
+            args: Prisma.ClubEmailSettingsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClubEmailSettingsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClubEmailSettingsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClubEmailSettingsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClubEmailSettingsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubEmailSettingsPayload>
+          }
+          aggregate: {
+            args: Prisma.ClubEmailSettingsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClubEmailSettings>
+          }
+          groupBy: {
+            args: Prisma.ClubEmailSettingsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClubEmailSettingsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClubEmailSettingsCountArgs<ExtArgs>
+            result: $Utils.Optional<ClubEmailSettingsCountAggregateOutputType> | number
+          }
+        }
+      }
       Season: {
         payload: Prisma.$SeasonPayload<ExtArgs>
         fields: Prisma.SeasonFieldRefs
@@ -3421,6 +3583,154 @@ export namespace Prisma {
           }
         }
       }
+      Alert: {
+        payload: Prisma.$AlertPayload<ExtArgs>
+        fields: Prisma.AlertFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AlertFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AlertFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>
+          }
+          findFirst: {
+            args: Prisma.AlertFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AlertFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>
+          }
+          findMany: {
+            args: Prisma.AlertFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>[]
+          }
+          create: {
+            args: Prisma.AlertCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>
+          }
+          createMany: {
+            args: Prisma.AlertCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AlertCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>[]
+          }
+          delete: {
+            args: Prisma.AlertDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>
+          }
+          update: {
+            args: Prisma.AlertUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>
+          }
+          deleteMany: {
+            args: Prisma.AlertDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AlertUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AlertUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>[]
+          }
+          upsert: {
+            args: Prisma.AlertUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertPayload>
+          }
+          aggregate: {
+            args: Prisma.AlertAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAlert>
+          }
+          groupBy: {
+            args: Prisma.AlertGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AlertGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AlertCountArgs<ExtArgs>
+            result: $Utils.Optional<AlertCountAggregateOutputType> | number
+          }
+        }
+      }
+      AlertRecipient: {
+        payload: Prisma.$AlertRecipientPayload<ExtArgs>
+        fields: Prisma.AlertRecipientFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.AlertRecipientFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.AlertRecipientFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>
+          }
+          findFirst: {
+            args: Prisma.AlertRecipientFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.AlertRecipientFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>
+          }
+          findMany: {
+            args: Prisma.AlertRecipientFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>[]
+          }
+          create: {
+            args: Prisma.AlertRecipientCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>
+          }
+          createMany: {
+            args: Prisma.AlertRecipientCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.AlertRecipientCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>[]
+          }
+          delete: {
+            args: Prisma.AlertRecipientDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>
+          }
+          update: {
+            args: Prisma.AlertRecipientUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>
+          }
+          deleteMany: {
+            args: Prisma.AlertRecipientDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.AlertRecipientUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.AlertRecipientUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>[]
+          }
+          upsert: {
+            args: Prisma.AlertRecipientUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$AlertRecipientPayload>
+          }
+          aggregate: {
+            args: Prisma.AlertRecipientAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateAlertRecipient>
+          }
+          groupBy: {
+            args: Prisma.AlertRecipientGroupByArgs<ExtArgs>
+            result: $Utils.Optional<AlertRecipientGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.AlertRecipientCountArgs<ExtArgs>
+            result: $Utils.Optional<AlertRecipientCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3545,6 +3855,7 @@ export namespace Prisma {
     drill?: DrillOmit
     echelon?: EchelonOmit
     club?: ClubOmit
+    clubEmailSettings?: ClubEmailSettingsOmit
     season?: SeasonOmit
     venue?: VenueOmit
     accountClub?: AccountClubOmit
@@ -3559,6 +3870,8 @@ export namespace Prisma {
     equipmentColor?: EquipmentColorOmit
     equipment?: EquipmentOmit
     gameEquipment?: GameEquipmentOmit
+    alert?: AlertOmit
+    alertRecipient?: AlertRecipientOmit
   }
 
   /* Types for Logging */
@@ -3850,10 +4163,14 @@ export namespace Prisma {
 
   export type AccountCountOutputType = {
     clubs: number
+    staffProfiles: number
+    alertRecipients: number
   }
 
   export type AccountCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     clubs?: boolean | AccountCountOutputTypeCountClubsArgs
+    staffProfiles?: boolean | AccountCountOutputTypeCountStaffProfilesArgs
+    alertRecipients?: boolean | AccountCountOutputTypeCountAlertRecipientsArgs
   }
 
   // Custom InputTypes
@@ -3872,6 +4189,20 @@ export namespace Prisma {
    */
   export type AccountCountOutputTypeCountClubsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AccountClubWhereInput
+  }
+
+  /**
+   * AccountCountOutputType without action
+   */
+  export type AccountCountOutputTypeCountStaffProfilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: StaffWhereInput
+  }
+
+  /**
+   * AccountCountOutputType without action
+   */
+  export type AccountCountOutputTypeCountAlertRecipientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AlertRecipientWhereInput
   }
 
 
@@ -4030,6 +4361,7 @@ export namespace Prisma {
     venues: number
     equipmentColors: number
     staff: number
+    alerts: number
   }
 
   export type ClubCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4041,6 +4373,7 @@ export namespace Prisma {
     venues?: boolean | ClubCountOutputTypeCountVenuesArgs
     equipmentColors?: boolean | ClubCountOutputTypeCountEquipmentColorsArgs
     staff?: boolean | ClubCountOutputTypeCountStaffArgs
+    alerts?: boolean | ClubCountOutputTypeCountAlertsArgs
   }
 
   // Custom InputTypes
@@ -4108,6 +4441,13 @@ export namespace Prisma {
    */
   export type ClubCountOutputTypeCountStaffArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: StaffWhereInput
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountAlertsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AlertWhereInput
   }
 
 
@@ -4423,6 +4763,37 @@ export namespace Prisma {
    */
   export type EquipmentCountOutputTypeCountGameEquipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GameEquipmentWhereInput
+  }
+
+
+  /**
+   * Count Type AlertCountOutputType
+   */
+
+  export type AlertCountOutputType = {
+    recipients: number
+  }
+
+  export type AlertCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    recipients?: boolean | AlertCountOutputTypeCountRecipientsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * AlertCountOutputType without action
+   */
+  export type AlertCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertCountOutputType
+     */
+    select?: AlertCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * AlertCountOutputType without action
+   */
+  export type AlertCountOutputTypeCountRecipientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AlertRecipientWhereInput
   }
 
 
@@ -10101,6 +10472,8 @@ export namespace Prisma {
     resetToken?: boolean
     resetTokenExpiry?: boolean
     clubs?: boolean | Account$clubsArgs<ExtArgs>
+    staffProfiles?: boolean | Account$staffProfilesArgs<ExtArgs>
+    alertRecipients?: boolean | Account$alertRecipientsArgs<ExtArgs>
     _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["account"]>
 
@@ -10149,6 +10522,8 @@ export namespace Prisma {
   export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "image" | "createdAt" | "updatedAt" | "defaultClubId" | "role" | "resetToken" | "resetTokenExpiry", ExtArgs["result"]["account"]>
   export type AccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     clubs?: boolean | Account$clubsArgs<ExtArgs>
+    staffProfiles?: boolean | Account$staffProfilesArgs<ExtArgs>
+    alertRecipients?: boolean | Account$alertRecipientsArgs<ExtArgs>
     _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -10158,6 +10533,8 @@ export namespace Prisma {
     name: "Account"
     objects: {
       clubs: Prisma.$AccountClubPayload<ExtArgs>[]
+      staffProfiles: Prisma.$StaffPayload<ExtArgs>[]
+      alertRecipients: Prisma.$AlertRecipientPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -10566,6 +10943,8 @@ export namespace Prisma {
   export interface Prisma__AccountClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     clubs<T extends Account$clubsArgs<ExtArgs> = {}>(args?: Subset<T, Account$clubsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountClubPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    staffProfiles<T extends Account$staffProfilesArgs<ExtArgs> = {}>(args?: Subset<T, Account$staffProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    alertRecipients<T extends Account$alertRecipientsArgs<ExtArgs> = {}>(args?: Subset<T, Account$alertRecipientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11020,6 +11399,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AccountClubScalarFieldEnum | AccountClubScalarFieldEnum[]
+  }
+
+  /**
+   * Account.staffProfiles
+   */
+  export type Account$staffProfilesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Staff
+     */
+    select?: StaffSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Staff
+     */
+    omit?: StaffOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: StaffInclude<ExtArgs> | null
+    where?: StaffWhereInput
+    orderBy?: StaffOrderByWithRelationInput | StaffOrderByWithRelationInput[]
+    cursor?: StaffWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: StaffScalarFieldEnum | StaffScalarFieldEnum[]
+  }
+
+  /**
+   * Account.alertRecipients
+   */
+  export type Account$alertRecipientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    where?: AlertRecipientWhereInput
+    orderBy?: AlertRecipientOrderByWithRelationInput | AlertRecipientOrderByWithRelationInput[]
+    cursor?: AlertRecipientWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AlertRecipientScalarFieldEnum | AlertRecipientScalarFieldEnum[]
   }
 
   /**
@@ -22937,6 +23364,8 @@ export namespace Prisma {
     venues?: boolean | Club$venuesArgs<ExtArgs>
     equipmentColors?: boolean | Club$equipmentColorsArgs<ExtArgs>
     staff?: boolean | Club$staffArgs<ExtArgs>
+    alerts?: boolean | Club$alertsArgs<ExtArgs>
+    emailSettings?: boolean | Club$emailSettingsArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["club"]>
 
@@ -22986,6 +23415,8 @@ export namespace Prisma {
     venues?: boolean | Club$venuesArgs<ExtArgs>
     equipmentColors?: boolean | Club$equipmentColorsArgs<ExtArgs>
     staff?: boolean | Club$staffArgs<ExtArgs>
+    alerts?: boolean | Club$alertsArgs<ExtArgs>
+    emailSettings?: boolean | Club$emailSettingsArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClubIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -23002,6 +23433,8 @@ export namespace Prisma {
       venues: Prisma.$VenuePayload<ExtArgs>[]
       equipmentColors: Prisma.$EquipmentColorPayload<ExtArgs>[]
       staff: Prisma.$StaffPayload<ExtArgs>[]
+      alerts: Prisma.$AlertPayload<ExtArgs>[]
+      emailSettings: Prisma.$ClubEmailSettingsPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -23415,6 +23848,8 @@ export namespace Prisma {
     venues<T extends Club$venuesArgs<ExtArgs> = {}>(args?: Subset<T, Club$venuesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VenuePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     equipmentColors<T extends Club$equipmentColorsArgs<ExtArgs> = {}>(args?: Subset<T, Club$equipmentColorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipmentColorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     staff<T extends Club$staffArgs<ExtArgs> = {}>(args?: Subset<T, Club$staffArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    alerts<T extends Club$alertsArgs<ExtArgs> = {}>(args?: Subset<T, Club$alertsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    emailSettings<T extends Club$emailSettingsArgs<ExtArgs> = {}>(args?: Subset<T, Club$emailSettingsArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -24038,6 +24473,49 @@ export namespace Prisma {
   }
 
   /**
+   * Club.alerts
+   */
+  export type Club$alertsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    where?: AlertWhereInput
+    orderBy?: AlertOrderByWithRelationInput | AlertOrderByWithRelationInput[]
+    cursor?: AlertWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AlertScalarFieldEnum | AlertScalarFieldEnum[]
+  }
+
+  /**
+   * Club.emailSettings
+   */
+  export type Club$emailSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    where?: ClubEmailSettingsWhereInput
+  }
+
+  /**
    * Club without action
    */
   export type ClubDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -24053,6 +24531,1215 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ClubInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ClubEmailSettings
+   */
+
+  export type AggregateClubEmailSettings = {
+    _count: ClubEmailSettingsCountAggregateOutputType | null
+    _avg: ClubEmailSettingsAvgAggregateOutputType | null
+    _sum: ClubEmailSettingsSumAggregateOutputType | null
+    _min: ClubEmailSettingsMinAggregateOutputType | null
+    _max: ClubEmailSettingsMaxAggregateOutputType | null
+  }
+
+  export type ClubEmailSettingsAvgAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    port: number | null
+  }
+
+  export type ClubEmailSettingsSumAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    port: number | null
+  }
+
+  export type ClubEmailSettingsMinAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    enabled: boolean | null
+    host: string | null
+    port: number | null
+    secure: boolean | null
+    user: string | null
+    passEncrypted: string | null
+    fromEmail: string | null
+    fromName: string | null
+    replyTo: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClubEmailSettingsMaxAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    enabled: boolean | null
+    host: string | null
+    port: number | null
+    secure: boolean | null
+    user: string | null
+    passEncrypted: string | null
+    fromEmail: string | null
+    fromName: string | null
+    replyTo: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClubEmailSettingsCountAggregateOutputType = {
+    id: number
+    clubId: number
+    enabled: number
+    host: number
+    port: number
+    secure: number
+    user: number
+    passEncrypted: number
+    fromEmail: number
+    fromName: number
+    replyTo: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ClubEmailSettingsAvgAggregateInputType = {
+    id?: true
+    clubId?: true
+    port?: true
+  }
+
+  export type ClubEmailSettingsSumAggregateInputType = {
+    id?: true
+    clubId?: true
+    port?: true
+  }
+
+  export type ClubEmailSettingsMinAggregateInputType = {
+    id?: true
+    clubId?: true
+    enabled?: true
+    host?: true
+    port?: true
+    secure?: true
+    user?: true
+    passEncrypted?: true
+    fromEmail?: true
+    fromName?: true
+    replyTo?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClubEmailSettingsMaxAggregateInputType = {
+    id?: true
+    clubId?: true
+    enabled?: true
+    host?: true
+    port?: true
+    secure?: true
+    user?: true
+    passEncrypted?: true
+    fromEmail?: true
+    fromName?: true
+    replyTo?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClubEmailSettingsCountAggregateInputType = {
+    id?: true
+    clubId?: true
+    enabled?: true
+    host?: true
+    port?: true
+    secure?: true
+    user?: true
+    passEncrypted?: true
+    fromEmail?: true
+    fromName?: true
+    replyTo?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ClubEmailSettingsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClubEmailSettings to aggregate.
+     */
+    where?: ClubEmailSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubEmailSettings to fetch.
+     */
+    orderBy?: ClubEmailSettingsOrderByWithRelationInput | ClubEmailSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClubEmailSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubEmailSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubEmailSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ClubEmailSettings
+    **/
+    _count?: true | ClubEmailSettingsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ClubEmailSettingsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ClubEmailSettingsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClubEmailSettingsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClubEmailSettingsMaxAggregateInputType
+  }
+
+  export type GetClubEmailSettingsAggregateType<T extends ClubEmailSettingsAggregateArgs> = {
+        [P in keyof T & keyof AggregateClubEmailSettings]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClubEmailSettings[P]>
+      : GetScalarType<T[P], AggregateClubEmailSettings[P]>
+  }
+
+
+
+
+  export type ClubEmailSettingsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClubEmailSettingsWhereInput
+    orderBy?: ClubEmailSettingsOrderByWithAggregationInput | ClubEmailSettingsOrderByWithAggregationInput[]
+    by: ClubEmailSettingsScalarFieldEnum[] | ClubEmailSettingsScalarFieldEnum
+    having?: ClubEmailSettingsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClubEmailSettingsCountAggregateInputType | true
+    _avg?: ClubEmailSettingsAvgAggregateInputType
+    _sum?: ClubEmailSettingsSumAggregateInputType
+    _min?: ClubEmailSettingsMinAggregateInputType
+    _max?: ClubEmailSettingsMaxAggregateInputType
+  }
+
+  export type ClubEmailSettingsGroupByOutputType = {
+    id: number
+    clubId: number
+    enabled: boolean
+    host: string | null
+    port: number | null
+    secure: boolean
+    user: string | null
+    passEncrypted: string | null
+    fromEmail: string | null
+    fromName: string | null
+    replyTo: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: ClubEmailSettingsCountAggregateOutputType | null
+    _avg: ClubEmailSettingsAvgAggregateOutputType | null
+    _sum: ClubEmailSettingsSumAggregateOutputType | null
+    _min: ClubEmailSettingsMinAggregateOutputType | null
+    _max: ClubEmailSettingsMaxAggregateOutputType | null
+  }
+
+  type GetClubEmailSettingsGroupByPayload<T extends ClubEmailSettingsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClubEmailSettingsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClubEmailSettingsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClubEmailSettingsGroupByOutputType[P]>
+            : GetScalarType<T[P], ClubEmailSettingsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClubEmailSettingsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    enabled?: boolean
+    host?: boolean
+    port?: boolean
+    secure?: boolean
+    user?: boolean
+    passEncrypted?: boolean
+    fromEmail?: boolean
+    fromName?: boolean
+    replyTo?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubEmailSettings"]>
+
+  export type ClubEmailSettingsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    enabled?: boolean
+    host?: boolean
+    port?: boolean
+    secure?: boolean
+    user?: boolean
+    passEncrypted?: boolean
+    fromEmail?: boolean
+    fromName?: boolean
+    replyTo?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubEmailSettings"]>
+
+  export type ClubEmailSettingsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    enabled?: boolean
+    host?: boolean
+    port?: boolean
+    secure?: boolean
+    user?: boolean
+    passEncrypted?: boolean
+    fromEmail?: boolean
+    fromName?: boolean
+    replyTo?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubEmailSettings"]>
+
+  export type ClubEmailSettingsSelectScalar = {
+    id?: boolean
+    clubId?: boolean
+    enabled?: boolean
+    host?: boolean
+    port?: boolean
+    secure?: boolean
+    user?: boolean
+    passEncrypted?: boolean
+    fromEmail?: boolean
+    fromName?: boolean
+    replyTo?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ClubEmailSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "enabled" | "host" | "port" | "secure" | "user" | "passEncrypted" | "fromEmail" | "fromName" | "replyTo" | "createdAt" | "updatedAt", ExtArgs["result"]["clubEmailSettings"]>
+  export type ClubEmailSettingsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type ClubEmailSettingsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type ClubEmailSettingsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+
+  export type $ClubEmailSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClubEmailSettings"
+    objects: {
+      club: Prisma.$ClubPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      clubId: number
+      enabled: boolean
+      host: string | null
+      port: number | null
+      secure: boolean
+      user: string | null
+      passEncrypted: string | null
+      fromEmail: string | null
+      fromName: string | null
+      replyTo: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["clubEmailSettings"]>
+    composites: {}
+  }
+
+  type ClubEmailSettingsGetPayload<S extends boolean | null | undefined | ClubEmailSettingsDefaultArgs> = $Result.GetResult<Prisma.$ClubEmailSettingsPayload, S>
+
+  type ClubEmailSettingsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClubEmailSettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClubEmailSettingsCountAggregateInputType | true
+    }
+
+  export interface ClubEmailSettingsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClubEmailSettings'], meta: { name: 'ClubEmailSettings' } }
+    /**
+     * Find zero or one ClubEmailSettings that matches the filter.
+     * @param {ClubEmailSettingsFindUniqueArgs} args - Arguments to find a ClubEmailSettings
+     * @example
+     * // Get one ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClubEmailSettingsFindUniqueArgs>(args: SelectSubset<T, ClubEmailSettingsFindUniqueArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClubEmailSettings that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClubEmailSettingsFindUniqueOrThrowArgs} args - Arguments to find a ClubEmailSettings
+     * @example
+     * // Get one ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClubEmailSettingsFindUniqueOrThrowArgs>(args: SelectSubset<T, ClubEmailSettingsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClubEmailSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubEmailSettingsFindFirstArgs} args - Arguments to find a ClubEmailSettings
+     * @example
+     * // Get one ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClubEmailSettingsFindFirstArgs>(args?: SelectSubset<T, ClubEmailSettingsFindFirstArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClubEmailSettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubEmailSettingsFindFirstOrThrowArgs} args - Arguments to find a ClubEmailSettings
+     * @example
+     * // Get one ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClubEmailSettingsFindFirstOrThrowArgs>(args?: SelectSubset<T, ClubEmailSettingsFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClubEmailSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubEmailSettingsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.findMany()
+     * 
+     * // Get first 10 ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const clubEmailSettingsWithIdOnly = await prisma.clubEmailSettings.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClubEmailSettingsFindManyArgs>(args?: SelectSubset<T, ClubEmailSettingsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClubEmailSettings.
+     * @param {ClubEmailSettingsCreateArgs} args - Arguments to create a ClubEmailSettings.
+     * @example
+     * // Create one ClubEmailSettings
+     * const ClubEmailSettings = await prisma.clubEmailSettings.create({
+     *   data: {
+     *     // ... data to create a ClubEmailSettings
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClubEmailSettingsCreateArgs>(args: SelectSubset<T, ClubEmailSettingsCreateArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClubEmailSettings.
+     * @param {ClubEmailSettingsCreateManyArgs} args - Arguments to create many ClubEmailSettings.
+     * @example
+     * // Create many ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClubEmailSettingsCreateManyArgs>(args?: SelectSubset<T, ClubEmailSettingsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClubEmailSettings and returns the data saved in the database.
+     * @param {ClubEmailSettingsCreateManyAndReturnArgs} args - Arguments to create many ClubEmailSettings.
+     * @example
+     * // Create many ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ClubEmailSettings and only return the `id`
+     * const clubEmailSettingsWithIdOnly = await prisma.clubEmailSettings.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClubEmailSettingsCreateManyAndReturnArgs>(args?: SelectSubset<T, ClubEmailSettingsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClubEmailSettings.
+     * @param {ClubEmailSettingsDeleteArgs} args - Arguments to delete one ClubEmailSettings.
+     * @example
+     * // Delete one ClubEmailSettings
+     * const ClubEmailSettings = await prisma.clubEmailSettings.delete({
+     *   where: {
+     *     // ... filter to delete one ClubEmailSettings
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClubEmailSettingsDeleteArgs>(args: SelectSubset<T, ClubEmailSettingsDeleteArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClubEmailSettings.
+     * @param {ClubEmailSettingsUpdateArgs} args - Arguments to update one ClubEmailSettings.
+     * @example
+     * // Update one ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClubEmailSettingsUpdateArgs>(args: SelectSubset<T, ClubEmailSettingsUpdateArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClubEmailSettings.
+     * @param {ClubEmailSettingsDeleteManyArgs} args - Arguments to filter ClubEmailSettings to delete.
+     * @example
+     * // Delete a few ClubEmailSettings
+     * const { count } = await prisma.clubEmailSettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClubEmailSettingsDeleteManyArgs>(args?: SelectSubset<T, ClubEmailSettingsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClubEmailSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubEmailSettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClubEmailSettingsUpdateManyArgs>(args: SelectSubset<T, ClubEmailSettingsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClubEmailSettings and returns the data updated in the database.
+     * @param {ClubEmailSettingsUpdateManyAndReturnArgs} args - Arguments to update many ClubEmailSettings.
+     * @example
+     * // Update many ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ClubEmailSettings and only return the `id`
+     * const clubEmailSettingsWithIdOnly = await prisma.clubEmailSettings.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClubEmailSettingsUpdateManyAndReturnArgs>(args: SelectSubset<T, ClubEmailSettingsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClubEmailSettings.
+     * @param {ClubEmailSettingsUpsertArgs} args - Arguments to update or create a ClubEmailSettings.
+     * @example
+     * // Update or create a ClubEmailSettings
+     * const clubEmailSettings = await prisma.clubEmailSettings.upsert({
+     *   create: {
+     *     // ... data to create a ClubEmailSettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClubEmailSettings we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClubEmailSettingsUpsertArgs>(args: SelectSubset<T, ClubEmailSettingsUpsertArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClubEmailSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubEmailSettingsCountArgs} args - Arguments to filter ClubEmailSettings to count.
+     * @example
+     * // Count the number of ClubEmailSettings
+     * const count = await prisma.clubEmailSettings.count({
+     *   where: {
+     *     // ... the filter for the ClubEmailSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClubEmailSettingsCountArgs>(
+      args?: Subset<T, ClubEmailSettingsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClubEmailSettingsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClubEmailSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubEmailSettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClubEmailSettingsAggregateArgs>(args: Subset<T, ClubEmailSettingsAggregateArgs>): Prisma.PrismaPromise<GetClubEmailSettingsAggregateType<T>>
+
+    /**
+     * Group by ClubEmailSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubEmailSettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClubEmailSettingsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClubEmailSettingsGroupByArgs['orderBy'] }
+        : { orderBy?: ClubEmailSettingsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClubEmailSettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClubEmailSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClubEmailSettings model
+   */
+  readonly fields: ClubEmailSettingsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClubEmailSettings.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClubEmailSettingsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClubEmailSettings model
+   */
+  interface ClubEmailSettingsFieldRefs {
+    readonly id: FieldRef<"ClubEmailSettings", 'Int'>
+    readonly clubId: FieldRef<"ClubEmailSettings", 'Int'>
+    readonly enabled: FieldRef<"ClubEmailSettings", 'Boolean'>
+    readonly host: FieldRef<"ClubEmailSettings", 'String'>
+    readonly port: FieldRef<"ClubEmailSettings", 'Int'>
+    readonly secure: FieldRef<"ClubEmailSettings", 'Boolean'>
+    readonly user: FieldRef<"ClubEmailSettings", 'String'>
+    readonly passEncrypted: FieldRef<"ClubEmailSettings", 'String'>
+    readonly fromEmail: FieldRef<"ClubEmailSettings", 'String'>
+    readonly fromName: FieldRef<"ClubEmailSettings", 'String'>
+    readonly replyTo: FieldRef<"ClubEmailSettings", 'String'>
+    readonly createdAt: FieldRef<"ClubEmailSettings", 'DateTime'>
+    readonly updatedAt: FieldRef<"ClubEmailSettings", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ClubEmailSettings findUnique
+   */
+  export type ClubEmailSettingsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubEmailSettings to fetch.
+     */
+    where: ClubEmailSettingsWhereUniqueInput
+  }
+
+  /**
+   * ClubEmailSettings findUniqueOrThrow
+   */
+  export type ClubEmailSettingsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubEmailSettings to fetch.
+     */
+    where: ClubEmailSettingsWhereUniqueInput
+  }
+
+  /**
+   * ClubEmailSettings findFirst
+   */
+  export type ClubEmailSettingsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubEmailSettings to fetch.
+     */
+    where?: ClubEmailSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubEmailSettings to fetch.
+     */
+    orderBy?: ClubEmailSettingsOrderByWithRelationInput | ClubEmailSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClubEmailSettings.
+     */
+    cursor?: ClubEmailSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubEmailSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubEmailSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubEmailSettings.
+     */
+    distinct?: ClubEmailSettingsScalarFieldEnum | ClubEmailSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * ClubEmailSettings findFirstOrThrow
+   */
+  export type ClubEmailSettingsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubEmailSettings to fetch.
+     */
+    where?: ClubEmailSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubEmailSettings to fetch.
+     */
+    orderBy?: ClubEmailSettingsOrderByWithRelationInput | ClubEmailSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClubEmailSettings.
+     */
+    cursor?: ClubEmailSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubEmailSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubEmailSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubEmailSettings.
+     */
+    distinct?: ClubEmailSettingsScalarFieldEnum | ClubEmailSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * ClubEmailSettings findMany
+   */
+  export type ClubEmailSettingsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubEmailSettings to fetch.
+     */
+    where?: ClubEmailSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubEmailSettings to fetch.
+     */
+    orderBy?: ClubEmailSettingsOrderByWithRelationInput | ClubEmailSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ClubEmailSettings.
+     */
+    cursor?: ClubEmailSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubEmailSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubEmailSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubEmailSettings.
+     */
+    distinct?: ClubEmailSettingsScalarFieldEnum | ClubEmailSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * ClubEmailSettings create
+   */
+  export type ClubEmailSettingsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClubEmailSettings.
+     */
+    data: XOR<ClubEmailSettingsCreateInput, ClubEmailSettingsUncheckedCreateInput>
+  }
+
+  /**
+   * ClubEmailSettings createMany
+   */
+  export type ClubEmailSettingsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClubEmailSettings.
+     */
+    data: ClubEmailSettingsCreateManyInput | ClubEmailSettingsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClubEmailSettings createManyAndReturn
+   */
+  export type ClubEmailSettingsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClubEmailSettings.
+     */
+    data: ClubEmailSettingsCreateManyInput | ClubEmailSettingsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClubEmailSettings update
+   */
+  export type ClubEmailSettingsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClubEmailSettings.
+     */
+    data: XOR<ClubEmailSettingsUpdateInput, ClubEmailSettingsUncheckedUpdateInput>
+    /**
+     * Choose, which ClubEmailSettings to update.
+     */
+    where: ClubEmailSettingsWhereUniqueInput
+  }
+
+  /**
+   * ClubEmailSettings updateMany
+   */
+  export type ClubEmailSettingsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClubEmailSettings.
+     */
+    data: XOR<ClubEmailSettingsUpdateManyMutationInput, ClubEmailSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which ClubEmailSettings to update
+     */
+    where?: ClubEmailSettingsWhereInput
+    /**
+     * Limit how many ClubEmailSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClubEmailSettings updateManyAndReturn
+   */
+  export type ClubEmailSettingsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * The data used to update ClubEmailSettings.
+     */
+    data: XOR<ClubEmailSettingsUpdateManyMutationInput, ClubEmailSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which ClubEmailSettings to update
+     */
+    where?: ClubEmailSettingsWhereInput
+    /**
+     * Limit how many ClubEmailSettings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClubEmailSettings upsert
+   */
+  export type ClubEmailSettingsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClubEmailSettings to update in case it exists.
+     */
+    where: ClubEmailSettingsWhereUniqueInput
+    /**
+     * In case the ClubEmailSettings found by the `where` argument doesn't exist, create a new ClubEmailSettings with this data.
+     */
+    create: XOR<ClubEmailSettingsCreateInput, ClubEmailSettingsUncheckedCreateInput>
+    /**
+     * In case the ClubEmailSettings was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClubEmailSettingsUpdateInput, ClubEmailSettingsUncheckedUpdateInput>
+  }
+
+  /**
+   * ClubEmailSettings delete
+   */
+  export type ClubEmailSettingsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
+    /**
+     * Filter which ClubEmailSettings to delete.
+     */
+    where: ClubEmailSettingsWhereUniqueInput
+  }
+
+  /**
+   * ClubEmailSettings deleteMany
+   */
+  export type ClubEmailSettingsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClubEmailSettings to delete
+     */
+    where?: ClubEmailSettingsWhereInput
+    /**
+     * Limit how many ClubEmailSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClubEmailSettings without action
+   */
+  export type ClubEmailSettingsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubEmailSettings
+     */
+    select?: ClubEmailSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubEmailSettings
+     */
+    omit?: ClubEmailSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubEmailSettingsInclude<ExtArgs> | null
   }
 
 
@@ -30906,6 +32593,7 @@ export namespace Prisma {
     tptdNumber: number | null
     fpbLicense: number | null
     clubId: number | null
+    accountId: number | null
   }
 
   export type StaffSumAggregateOutputType = {
@@ -30913,6 +32601,7 @@ export namespace Prisma {
     tptdNumber: number | null
     fpbLicense: number | null
     clubId: number | null
+    accountId: number | null
   }
 
   export type StaffMinAggregateOutputType = {
@@ -30925,6 +32614,7 @@ export namespace Prisma {
     role: $Enums.StaffRole | null
     active: boolean | null
     clubId: number | null
+    accountId: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -30939,6 +32629,7 @@ export namespace Prisma {
     role: $Enums.StaffRole | null
     active: boolean | null
     clubId: number | null
+    accountId: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -30953,6 +32644,7 @@ export namespace Prisma {
     role: number
     active: number
     clubId: number
+    accountId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -30964,6 +32656,7 @@ export namespace Prisma {
     tptdNumber?: true
     fpbLicense?: true
     clubId?: true
+    accountId?: true
   }
 
   export type StaffSumAggregateInputType = {
@@ -30971,6 +32664,7 @@ export namespace Prisma {
     tptdNumber?: true
     fpbLicense?: true
     clubId?: true
+    accountId?: true
   }
 
   export type StaffMinAggregateInputType = {
@@ -30983,6 +32677,7 @@ export namespace Prisma {
     role?: true
     active?: true
     clubId?: true
+    accountId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -30997,6 +32692,7 @@ export namespace Prisma {
     role?: true
     active?: true
     clubId?: true
+    accountId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -31011,6 +32707,7 @@ export namespace Prisma {
     role?: true
     active?: true
     clubId?: true
+    accountId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -31112,6 +32809,7 @@ export namespace Prisma {
     role: $Enums.StaffRole
     active: boolean
     clubId: number
+    accountId: number | null
     createdAt: Date
     updatedAt: Date
     _count: StaffCountAggregateOutputType | null
@@ -31145,10 +32843,12 @@ export namespace Prisma {
     role?: boolean
     active?: boolean
     clubId?: boolean
+    accountId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
     teams?: boolean | Staff$teamsArgs<ExtArgs>
+    account?: boolean | Staff$accountArgs<ExtArgs>
     _count?: boolean | StaffCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["staff"]>
 
@@ -31162,9 +32862,11 @@ export namespace Prisma {
     role?: boolean
     active?: boolean
     clubId?: boolean
+    accountId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    account?: boolean | Staff$accountArgs<ExtArgs>
   }, ExtArgs["result"]["staff"]>
 
   export type StaffSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -31177,9 +32879,11 @@ export namespace Prisma {
     role?: boolean
     active?: boolean
     clubId?: boolean
+    accountId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    account?: boolean | Staff$accountArgs<ExtArgs>
   }, ExtArgs["result"]["staff"]>
 
   export type StaffSelectScalar = {
@@ -31192,21 +32896,25 @@ export namespace Prisma {
     role?: boolean
     active?: boolean
     clubId?: boolean
+    accountId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type StaffOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "birthdate" | "tptdNumber" | "fpbLicense" | "grade" | "role" | "active" | "clubId" | "createdAt" | "updatedAt", ExtArgs["result"]["staff"]>
+  export type StaffOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "birthdate" | "tptdNumber" | "fpbLicense" | "grade" | "role" | "active" | "clubId" | "accountId" | "createdAt" | "updatedAt", ExtArgs["result"]["staff"]>
   export type StaffInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
     teams?: boolean | Staff$teamsArgs<ExtArgs>
+    account?: boolean | Staff$accountArgs<ExtArgs>
     _count?: boolean | StaffCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type StaffIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    account?: boolean | Staff$accountArgs<ExtArgs>
   }
   export type StaffIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    account?: boolean | Staff$accountArgs<ExtArgs>
   }
 
   export type $StaffPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -31214,6 +32922,7 @@ export namespace Prisma {
     objects: {
       club: Prisma.$ClubPayload<ExtArgs>
       teams: Prisma.$TeamStaffPayload<ExtArgs>[]
+      account: Prisma.$AccountPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -31225,6 +32934,7 @@ export namespace Prisma {
       role: $Enums.StaffRole
       active: boolean
       clubId: number
+      accountId: number | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["staff"]>
@@ -31623,6 +33333,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     teams<T extends Staff$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Staff$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    account<T extends Staff$accountArgs<ExtArgs> = {}>(args?: Subset<T, Staff$accountArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -31661,6 +33372,7 @@ export namespace Prisma {
     readonly role: FieldRef<"Staff", 'StaffRole'>
     readonly active: FieldRef<"Staff", 'Boolean'>
     readonly clubId: FieldRef<"Staff", 'Int'>
+    readonly accountId: FieldRef<"Staff", 'Int'>
     readonly createdAt: FieldRef<"Staff", 'DateTime'>
     readonly updatedAt: FieldRef<"Staff", 'DateTime'>
   }
@@ -32085,6 +33797,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: TeamStaffScalarFieldEnum | TeamStaffScalarFieldEnum[]
+  }
+
+  /**
+   * Staff.account
+   */
+  export type Staff$accountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Account
+     */
+    select?: AccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Account
+     */
+    omit?: AccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountInclude<ExtArgs> | null
+    where?: AccountWhereInput
   }
 
   /**
@@ -40169,6 +41900,2371 @@ export namespace Prisma {
 
 
   /**
+   * Model Alert
+   */
+
+  export type AggregateAlert = {
+    _count: AlertCountAggregateOutputType | null
+    _avg: AlertAvgAggregateOutputType | null
+    _sum: AlertSumAggregateOutputType | null
+    _min: AlertMinAggregateOutputType | null
+    _max: AlertMaxAggregateOutputType | null
+  }
+
+  export type AlertAvgAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    referenceId: number | null
+  }
+
+  export type AlertSumAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    referenceId: number | null
+  }
+
+  export type AlertMinAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    type: $Enums.AlertType | null
+    category: $Enums.AlertCategory | null
+    title: string | null
+    message: string | null
+    linkUrl: string | null
+    referenceType: string | null
+    referenceId: number | null
+    triggerDate: Date | null
+    expiresAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type AlertMaxAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    type: $Enums.AlertType | null
+    category: $Enums.AlertCategory | null
+    title: string | null
+    message: string | null
+    linkUrl: string | null
+    referenceType: string | null
+    referenceId: number | null
+    triggerDate: Date | null
+    expiresAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type AlertCountAggregateOutputType = {
+    id: number
+    clubId: number
+    type: number
+    category: number
+    title: number
+    message: number
+    linkUrl: number
+    referenceType: number
+    referenceId: number
+    triggerDate: number
+    expiresAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AlertAvgAggregateInputType = {
+    id?: true
+    clubId?: true
+    referenceId?: true
+  }
+
+  export type AlertSumAggregateInputType = {
+    id?: true
+    clubId?: true
+    referenceId?: true
+  }
+
+  export type AlertMinAggregateInputType = {
+    id?: true
+    clubId?: true
+    type?: true
+    category?: true
+    title?: true
+    message?: true
+    linkUrl?: true
+    referenceType?: true
+    referenceId?: true
+    triggerDate?: true
+    expiresAt?: true
+    createdAt?: true
+  }
+
+  export type AlertMaxAggregateInputType = {
+    id?: true
+    clubId?: true
+    type?: true
+    category?: true
+    title?: true
+    message?: true
+    linkUrl?: true
+    referenceType?: true
+    referenceId?: true
+    triggerDate?: true
+    expiresAt?: true
+    createdAt?: true
+  }
+
+  export type AlertCountAggregateInputType = {
+    id?: true
+    clubId?: true
+    type?: true
+    category?: true
+    title?: true
+    message?: true
+    linkUrl?: true
+    referenceType?: true
+    referenceId?: true
+    triggerDate?: true
+    expiresAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AlertAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Alert to aggregate.
+     */
+    where?: AlertWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Alerts to fetch.
+     */
+    orderBy?: AlertOrderByWithRelationInput | AlertOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AlertWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Alerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Alerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Alerts
+    **/
+    _count?: true | AlertCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AlertAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AlertSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AlertMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AlertMaxAggregateInputType
+  }
+
+  export type GetAlertAggregateType<T extends AlertAggregateArgs> = {
+        [P in keyof T & keyof AggregateAlert]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAlert[P]>
+      : GetScalarType<T[P], AggregateAlert[P]>
+  }
+
+
+
+
+  export type AlertGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AlertWhereInput
+    orderBy?: AlertOrderByWithAggregationInput | AlertOrderByWithAggregationInput[]
+    by: AlertScalarFieldEnum[] | AlertScalarFieldEnum
+    having?: AlertScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AlertCountAggregateInputType | true
+    _avg?: AlertAvgAggregateInputType
+    _sum?: AlertSumAggregateInputType
+    _min?: AlertMinAggregateInputType
+    _max?: AlertMaxAggregateInputType
+  }
+
+  export type AlertGroupByOutputType = {
+    id: number
+    clubId: number
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl: string | null
+    referenceType: string | null
+    referenceId: number | null
+    triggerDate: Date
+    expiresAt: Date | null
+    createdAt: Date
+    _count: AlertCountAggregateOutputType | null
+    _avg: AlertAvgAggregateOutputType | null
+    _sum: AlertSumAggregateOutputType | null
+    _min: AlertMinAggregateOutputType | null
+    _max: AlertMaxAggregateOutputType | null
+  }
+
+  type GetAlertGroupByPayload<T extends AlertGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AlertGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AlertGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AlertGroupByOutputType[P]>
+            : GetScalarType<T[P], AlertGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AlertSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    type?: boolean
+    category?: boolean
+    title?: boolean
+    message?: boolean
+    linkUrl?: boolean
+    referenceType?: boolean
+    referenceId?: boolean
+    triggerDate?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    recipients?: boolean | Alert$recipientsArgs<ExtArgs>
+    _count?: boolean | AlertCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["alert"]>
+
+  export type AlertSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    type?: boolean
+    category?: boolean
+    title?: boolean
+    message?: boolean
+    linkUrl?: boolean
+    referenceType?: boolean
+    referenceId?: boolean
+    triggerDate?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["alert"]>
+
+  export type AlertSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    type?: boolean
+    category?: boolean
+    title?: boolean
+    message?: boolean
+    linkUrl?: boolean
+    referenceType?: boolean
+    referenceId?: boolean
+    triggerDate?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["alert"]>
+
+  export type AlertSelectScalar = {
+    id?: boolean
+    clubId?: boolean
+    type?: boolean
+    category?: boolean
+    title?: boolean
+    message?: boolean
+    linkUrl?: boolean
+    referenceType?: boolean
+    referenceId?: boolean
+    triggerDate?: boolean
+    expiresAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type AlertOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "type" | "category" | "title" | "message" | "linkUrl" | "referenceType" | "referenceId" | "triggerDate" | "expiresAt" | "createdAt", ExtArgs["result"]["alert"]>
+  export type AlertInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    recipients?: boolean | Alert$recipientsArgs<ExtArgs>
+    _count?: boolean | AlertCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type AlertIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type AlertIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+
+  export type $AlertPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Alert"
+    objects: {
+      club: Prisma.$ClubPayload<ExtArgs>
+      recipients: Prisma.$AlertRecipientPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      clubId: number
+      type: $Enums.AlertType
+      category: $Enums.AlertCategory
+      title: string
+      message: string
+      linkUrl: string | null
+      referenceType: string | null
+      referenceId: number | null
+      triggerDate: Date
+      expiresAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["alert"]>
+    composites: {}
+  }
+
+  type AlertGetPayload<S extends boolean | null | undefined | AlertDefaultArgs> = $Result.GetResult<Prisma.$AlertPayload, S>
+
+  type AlertCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AlertFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AlertCountAggregateInputType | true
+    }
+
+  export interface AlertDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Alert'], meta: { name: 'Alert' } }
+    /**
+     * Find zero or one Alert that matches the filter.
+     * @param {AlertFindUniqueArgs} args - Arguments to find a Alert
+     * @example
+     * // Get one Alert
+     * const alert = await prisma.alert.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AlertFindUniqueArgs>(args: SelectSubset<T, AlertFindUniqueArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Alert that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AlertFindUniqueOrThrowArgs} args - Arguments to find a Alert
+     * @example
+     * // Get one Alert
+     * const alert = await prisma.alert.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AlertFindUniqueOrThrowArgs>(args: SelectSubset<T, AlertFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Alert that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertFindFirstArgs} args - Arguments to find a Alert
+     * @example
+     * // Get one Alert
+     * const alert = await prisma.alert.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AlertFindFirstArgs>(args?: SelectSubset<T, AlertFindFirstArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Alert that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertFindFirstOrThrowArgs} args - Arguments to find a Alert
+     * @example
+     * // Get one Alert
+     * const alert = await prisma.alert.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AlertFindFirstOrThrowArgs>(args?: SelectSubset<T, AlertFindFirstOrThrowArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Alerts that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Alerts
+     * const alerts = await prisma.alert.findMany()
+     * 
+     * // Get first 10 Alerts
+     * const alerts = await prisma.alert.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const alertWithIdOnly = await prisma.alert.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AlertFindManyArgs>(args?: SelectSubset<T, AlertFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Alert.
+     * @param {AlertCreateArgs} args - Arguments to create a Alert.
+     * @example
+     * // Create one Alert
+     * const Alert = await prisma.alert.create({
+     *   data: {
+     *     // ... data to create a Alert
+     *   }
+     * })
+     * 
+     */
+    create<T extends AlertCreateArgs>(args: SelectSubset<T, AlertCreateArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Alerts.
+     * @param {AlertCreateManyArgs} args - Arguments to create many Alerts.
+     * @example
+     * // Create many Alerts
+     * const alert = await prisma.alert.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AlertCreateManyArgs>(args?: SelectSubset<T, AlertCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Alerts and returns the data saved in the database.
+     * @param {AlertCreateManyAndReturnArgs} args - Arguments to create many Alerts.
+     * @example
+     * // Create many Alerts
+     * const alert = await prisma.alert.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Alerts and only return the `id`
+     * const alertWithIdOnly = await prisma.alert.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AlertCreateManyAndReturnArgs>(args?: SelectSubset<T, AlertCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Alert.
+     * @param {AlertDeleteArgs} args - Arguments to delete one Alert.
+     * @example
+     * // Delete one Alert
+     * const Alert = await prisma.alert.delete({
+     *   where: {
+     *     // ... filter to delete one Alert
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AlertDeleteArgs>(args: SelectSubset<T, AlertDeleteArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Alert.
+     * @param {AlertUpdateArgs} args - Arguments to update one Alert.
+     * @example
+     * // Update one Alert
+     * const alert = await prisma.alert.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AlertUpdateArgs>(args: SelectSubset<T, AlertUpdateArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Alerts.
+     * @param {AlertDeleteManyArgs} args - Arguments to filter Alerts to delete.
+     * @example
+     * // Delete a few Alerts
+     * const { count } = await prisma.alert.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AlertDeleteManyArgs>(args?: SelectSubset<T, AlertDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Alerts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Alerts
+     * const alert = await prisma.alert.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AlertUpdateManyArgs>(args: SelectSubset<T, AlertUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Alerts and returns the data updated in the database.
+     * @param {AlertUpdateManyAndReturnArgs} args - Arguments to update many Alerts.
+     * @example
+     * // Update many Alerts
+     * const alert = await prisma.alert.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Alerts and only return the `id`
+     * const alertWithIdOnly = await prisma.alert.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AlertUpdateManyAndReturnArgs>(args: SelectSubset<T, AlertUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Alert.
+     * @param {AlertUpsertArgs} args - Arguments to update or create a Alert.
+     * @example
+     * // Update or create a Alert
+     * const alert = await prisma.alert.upsert({
+     *   create: {
+     *     // ... data to create a Alert
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Alert we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AlertUpsertArgs>(args: SelectSubset<T, AlertUpsertArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Alerts.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertCountArgs} args - Arguments to filter Alerts to count.
+     * @example
+     * // Count the number of Alerts
+     * const count = await prisma.alert.count({
+     *   where: {
+     *     // ... the filter for the Alerts we want to count
+     *   }
+     * })
+    **/
+    count<T extends AlertCountArgs>(
+      args?: Subset<T, AlertCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AlertCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Alert.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AlertAggregateArgs>(args: Subset<T, AlertAggregateArgs>): Prisma.PrismaPromise<GetAlertAggregateType<T>>
+
+    /**
+     * Group by Alert.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AlertGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AlertGroupByArgs['orderBy'] }
+        : { orderBy?: AlertGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AlertGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAlertGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Alert model
+   */
+  readonly fields: AlertFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Alert.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AlertClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    recipients<T extends Alert$recipientsArgs<ExtArgs> = {}>(args?: Subset<T, Alert$recipientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Alert model
+   */
+  interface AlertFieldRefs {
+    readonly id: FieldRef<"Alert", 'Int'>
+    readonly clubId: FieldRef<"Alert", 'Int'>
+    readonly type: FieldRef<"Alert", 'AlertType'>
+    readonly category: FieldRef<"Alert", 'AlertCategory'>
+    readonly title: FieldRef<"Alert", 'String'>
+    readonly message: FieldRef<"Alert", 'String'>
+    readonly linkUrl: FieldRef<"Alert", 'String'>
+    readonly referenceType: FieldRef<"Alert", 'String'>
+    readonly referenceId: FieldRef<"Alert", 'Int'>
+    readonly triggerDate: FieldRef<"Alert", 'DateTime'>
+    readonly expiresAt: FieldRef<"Alert", 'DateTime'>
+    readonly createdAt: FieldRef<"Alert", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Alert findUnique
+   */
+  export type AlertFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * Filter, which Alert to fetch.
+     */
+    where: AlertWhereUniqueInput
+  }
+
+  /**
+   * Alert findUniqueOrThrow
+   */
+  export type AlertFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * Filter, which Alert to fetch.
+     */
+    where: AlertWhereUniqueInput
+  }
+
+  /**
+   * Alert findFirst
+   */
+  export type AlertFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * Filter, which Alert to fetch.
+     */
+    where?: AlertWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Alerts to fetch.
+     */
+    orderBy?: AlertOrderByWithRelationInput | AlertOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Alerts.
+     */
+    cursor?: AlertWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Alerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Alerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Alerts.
+     */
+    distinct?: AlertScalarFieldEnum | AlertScalarFieldEnum[]
+  }
+
+  /**
+   * Alert findFirstOrThrow
+   */
+  export type AlertFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * Filter, which Alert to fetch.
+     */
+    where?: AlertWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Alerts to fetch.
+     */
+    orderBy?: AlertOrderByWithRelationInput | AlertOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Alerts.
+     */
+    cursor?: AlertWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Alerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Alerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Alerts.
+     */
+    distinct?: AlertScalarFieldEnum | AlertScalarFieldEnum[]
+  }
+
+  /**
+   * Alert findMany
+   */
+  export type AlertFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * Filter, which Alerts to fetch.
+     */
+    where?: AlertWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Alerts to fetch.
+     */
+    orderBy?: AlertOrderByWithRelationInput | AlertOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Alerts.
+     */
+    cursor?: AlertWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Alerts from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Alerts.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Alerts.
+     */
+    distinct?: AlertScalarFieldEnum | AlertScalarFieldEnum[]
+  }
+
+  /**
+   * Alert create
+   */
+  export type AlertCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Alert.
+     */
+    data: XOR<AlertCreateInput, AlertUncheckedCreateInput>
+  }
+
+  /**
+   * Alert createMany
+   */
+  export type AlertCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Alerts.
+     */
+    data: AlertCreateManyInput | AlertCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Alert createManyAndReturn
+   */
+  export type AlertCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * The data used to create many Alerts.
+     */
+    data: AlertCreateManyInput | AlertCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Alert update
+   */
+  export type AlertUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Alert.
+     */
+    data: XOR<AlertUpdateInput, AlertUncheckedUpdateInput>
+    /**
+     * Choose, which Alert to update.
+     */
+    where: AlertWhereUniqueInput
+  }
+
+  /**
+   * Alert updateMany
+   */
+  export type AlertUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Alerts.
+     */
+    data: XOR<AlertUpdateManyMutationInput, AlertUncheckedUpdateManyInput>
+    /**
+     * Filter which Alerts to update
+     */
+    where?: AlertWhereInput
+    /**
+     * Limit how many Alerts to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Alert updateManyAndReturn
+   */
+  export type AlertUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * The data used to update Alerts.
+     */
+    data: XOR<AlertUpdateManyMutationInput, AlertUncheckedUpdateManyInput>
+    /**
+     * Filter which Alerts to update
+     */
+    where?: AlertWhereInput
+    /**
+     * Limit how many Alerts to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Alert upsert
+   */
+  export type AlertUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Alert to update in case it exists.
+     */
+    where: AlertWhereUniqueInput
+    /**
+     * In case the Alert found by the `where` argument doesn't exist, create a new Alert with this data.
+     */
+    create: XOR<AlertCreateInput, AlertUncheckedCreateInput>
+    /**
+     * In case the Alert was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AlertUpdateInput, AlertUncheckedUpdateInput>
+  }
+
+  /**
+   * Alert delete
+   */
+  export type AlertDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+    /**
+     * Filter which Alert to delete.
+     */
+    where: AlertWhereUniqueInput
+  }
+
+  /**
+   * Alert deleteMany
+   */
+  export type AlertDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Alerts to delete
+     */
+    where?: AlertWhereInput
+    /**
+     * Limit how many Alerts to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Alert.recipients
+   */
+  export type Alert$recipientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    where?: AlertRecipientWhereInput
+    orderBy?: AlertRecipientOrderByWithRelationInput | AlertRecipientOrderByWithRelationInput[]
+    cursor?: AlertRecipientWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: AlertRecipientScalarFieldEnum | AlertRecipientScalarFieldEnum[]
+  }
+
+  /**
+   * Alert without action
+   */
+  export type AlertDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Alert
+     */
+    select?: AlertSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Alert
+     */
+    omit?: AlertOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model AlertRecipient
+   */
+
+  export type AggregateAlertRecipient = {
+    _count: AlertRecipientCountAggregateOutputType | null
+    _avg: AlertRecipientAvgAggregateOutputType | null
+    _sum: AlertRecipientSumAggregateOutputType | null
+    _min: AlertRecipientMinAggregateOutputType | null
+    _max: AlertRecipientMaxAggregateOutputType | null
+  }
+
+  export type AlertRecipientAvgAggregateOutputType = {
+    id: number | null
+    alertId: number | null
+    accountId: number | null
+  }
+
+  export type AlertRecipientSumAggregateOutputType = {
+    id: number | null
+    alertId: number | null
+    accountId: number | null
+  }
+
+  export type AlertRecipientMinAggregateOutputType = {
+    id: number | null
+    alertId: number | null
+    accountId: number | null
+    status: $Enums.AlertRecipientStatus | null
+    readAt: Date | null
+    deletedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type AlertRecipientMaxAggregateOutputType = {
+    id: number | null
+    alertId: number | null
+    accountId: number | null
+    status: $Enums.AlertRecipientStatus | null
+    readAt: Date | null
+    deletedAt: Date | null
+    createdAt: Date | null
+  }
+
+  export type AlertRecipientCountAggregateOutputType = {
+    id: number
+    alertId: number
+    accountId: number
+    status: number
+    readAt: number
+    deletedAt: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type AlertRecipientAvgAggregateInputType = {
+    id?: true
+    alertId?: true
+    accountId?: true
+  }
+
+  export type AlertRecipientSumAggregateInputType = {
+    id?: true
+    alertId?: true
+    accountId?: true
+  }
+
+  export type AlertRecipientMinAggregateInputType = {
+    id?: true
+    alertId?: true
+    accountId?: true
+    status?: true
+    readAt?: true
+    deletedAt?: true
+    createdAt?: true
+  }
+
+  export type AlertRecipientMaxAggregateInputType = {
+    id?: true
+    alertId?: true
+    accountId?: true
+    status?: true
+    readAt?: true
+    deletedAt?: true
+    createdAt?: true
+  }
+
+  export type AlertRecipientCountAggregateInputType = {
+    id?: true
+    alertId?: true
+    accountId?: true
+    status?: true
+    readAt?: true
+    deletedAt?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type AlertRecipientAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AlertRecipient to aggregate.
+     */
+    where?: AlertRecipientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AlertRecipients to fetch.
+     */
+    orderBy?: AlertRecipientOrderByWithRelationInput | AlertRecipientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: AlertRecipientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AlertRecipients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AlertRecipients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned AlertRecipients
+    **/
+    _count?: true | AlertRecipientCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: AlertRecipientAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: AlertRecipientSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: AlertRecipientMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: AlertRecipientMaxAggregateInputType
+  }
+
+  export type GetAlertRecipientAggregateType<T extends AlertRecipientAggregateArgs> = {
+        [P in keyof T & keyof AggregateAlertRecipient]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateAlertRecipient[P]>
+      : GetScalarType<T[P], AggregateAlertRecipient[P]>
+  }
+
+
+
+
+  export type AlertRecipientGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: AlertRecipientWhereInput
+    orderBy?: AlertRecipientOrderByWithAggregationInput | AlertRecipientOrderByWithAggregationInput[]
+    by: AlertRecipientScalarFieldEnum[] | AlertRecipientScalarFieldEnum
+    having?: AlertRecipientScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: AlertRecipientCountAggregateInputType | true
+    _avg?: AlertRecipientAvgAggregateInputType
+    _sum?: AlertRecipientSumAggregateInputType
+    _min?: AlertRecipientMinAggregateInputType
+    _max?: AlertRecipientMaxAggregateInputType
+  }
+
+  export type AlertRecipientGroupByOutputType = {
+    id: number
+    alertId: number
+    accountId: number
+    status: $Enums.AlertRecipientStatus
+    readAt: Date | null
+    deletedAt: Date | null
+    createdAt: Date
+    _count: AlertRecipientCountAggregateOutputType | null
+    _avg: AlertRecipientAvgAggregateOutputType | null
+    _sum: AlertRecipientSumAggregateOutputType | null
+    _min: AlertRecipientMinAggregateOutputType | null
+    _max: AlertRecipientMaxAggregateOutputType | null
+  }
+
+  type GetAlertRecipientGroupByPayload<T extends AlertRecipientGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<AlertRecipientGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof AlertRecipientGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], AlertRecipientGroupByOutputType[P]>
+            : GetScalarType<T[P], AlertRecipientGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type AlertRecipientSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    alertId?: boolean
+    accountId?: boolean
+    status?: boolean
+    readAt?: boolean
+    deletedAt?: boolean
+    createdAt?: boolean
+    alert?: boolean | AlertDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["alertRecipient"]>
+
+  export type AlertRecipientSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    alertId?: boolean
+    accountId?: boolean
+    status?: boolean
+    readAt?: boolean
+    deletedAt?: boolean
+    createdAt?: boolean
+    alert?: boolean | AlertDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["alertRecipient"]>
+
+  export type AlertRecipientSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    alertId?: boolean
+    accountId?: boolean
+    status?: boolean
+    readAt?: boolean
+    deletedAt?: boolean
+    createdAt?: boolean
+    alert?: boolean | AlertDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["alertRecipient"]>
+
+  export type AlertRecipientSelectScalar = {
+    id?: boolean
+    alertId?: boolean
+    accountId?: boolean
+    status?: boolean
+    readAt?: boolean
+    deletedAt?: boolean
+    createdAt?: boolean
+  }
+
+  export type AlertRecipientOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "alertId" | "accountId" | "status" | "readAt" | "deletedAt" | "createdAt", ExtArgs["result"]["alertRecipient"]>
+  export type AlertRecipientInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    alert?: boolean | AlertDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }
+  export type AlertRecipientIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    alert?: boolean | AlertDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }
+  export type AlertRecipientIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    alert?: boolean | AlertDefaultArgs<ExtArgs>
+    account?: boolean | AccountDefaultArgs<ExtArgs>
+  }
+
+  export type $AlertRecipientPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "AlertRecipient"
+    objects: {
+      alert: Prisma.$AlertPayload<ExtArgs>
+      account: Prisma.$AccountPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      alertId: number
+      accountId: number
+      status: $Enums.AlertRecipientStatus
+      readAt: Date | null
+      deletedAt: Date | null
+      createdAt: Date
+    }, ExtArgs["result"]["alertRecipient"]>
+    composites: {}
+  }
+
+  type AlertRecipientGetPayload<S extends boolean | null | undefined | AlertRecipientDefaultArgs> = $Result.GetResult<Prisma.$AlertRecipientPayload, S>
+
+  type AlertRecipientCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<AlertRecipientFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: AlertRecipientCountAggregateInputType | true
+    }
+
+  export interface AlertRecipientDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['AlertRecipient'], meta: { name: 'AlertRecipient' } }
+    /**
+     * Find zero or one AlertRecipient that matches the filter.
+     * @param {AlertRecipientFindUniqueArgs} args - Arguments to find a AlertRecipient
+     * @example
+     * // Get one AlertRecipient
+     * const alertRecipient = await prisma.alertRecipient.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends AlertRecipientFindUniqueArgs>(args: SelectSubset<T, AlertRecipientFindUniqueArgs<ExtArgs>>): Prisma__AlertRecipientClient<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one AlertRecipient that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {AlertRecipientFindUniqueOrThrowArgs} args - Arguments to find a AlertRecipient
+     * @example
+     * // Get one AlertRecipient
+     * const alertRecipient = await prisma.alertRecipient.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends AlertRecipientFindUniqueOrThrowArgs>(args: SelectSubset<T, AlertRecipientFindUniqueOrThrowArgs<ExtArgs>>): Prisma__AlertRecipientClient<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AlertRecipient that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertRecipientFindFirstArgs} args - Arguments to find a AlertRecipient
+     * @example
+     * // Get one AlertRecipient
+     * const alertRecipient = await prisma.alertRecipient.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends AlertRecipientFindFirstArgs>(args?: SelectSubset<T, AlertRecipientFindFirstArgs<ExtArgs>>): Prisma__AlertRecipientClient<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first AlertRecipient that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertRecipientFindFirstOrThrowArgs} args - Arguments to find a AlertRecipient
+     * @example
+     * // Get one AlertRecipient
+     * const alertRecipient = await prisma.alertRecipient.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends AlertRecipientFindFirstOrThrowArgs>(args?: SelectSubset<T, AlertRecipientFindFirstOrThrowArgs<ExtArgs>>): Prisma__AlertRecipientClient<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more AlertRecipients that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertRecipientFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all AlertRecipients
+     * const alertRecipients = await prisma.alertRecipient.findMany()
+     * 
+     * // Get first 10 AlertRecipients
+     * const alertRecipients = await prisma.alertRecipient.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const alertRecipientWithIdOnly = await prisma.alertRecipient.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends AlertRecipientFindManyArgs>(args?: SelectSubset<T, AlertRecipientFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a AlertRecipient.
+     * @param {AlertRecipientCreateArgs} args - Arguments to create a AlertRecipient.
+     * @example
+     * // Create one AlertRecipient
+     * const AlertRecipient = await prisma.alertRecipient.create({
+     *   data: {
+     *     // ... data to create a AlertRecipient
+     *   }
+     * })
+     * 
+     */
+    create<T extends AlertRecipientCreateArgs>(args: SelectSubset<T, AlertRecipientCreateArgs<ExtArgs>>): Prisma__AlertRecipientClient<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many AlertRecipients.
+     * @param {AlertRecipientCreateManyArgs} args - Arguments to create many AlertRecipients.
+     * @example
+     * // Create many AlertRecipients
+     * const alertRecipient = await prisma.alertRecipient.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends AlertRecipientCreateManyArgs>(args?: SelectSubset<T, AlertRecipientCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many AlertRecipients and returns the data saved in the database.
+     * @param {AlertRecipientCreateManyAndReturnArgs} args - Arguments to create many AlertRecipients.
+     * @example
+     * // Create many AlertRecipients
+     * const alertRecipient = await prisma.alertRecipient.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many AlertRecipients and only return the `id`
+     * const alertRecipientWithIdOnly = await prisma.alertRecipient.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends AlertRecipientCreateManyAndReturnArgs>(args?: SelectSubset<T, AlertRecipientCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a AlertRecipient.
+     * @param {AlertRecipientDeleteArgs} args - Arguments to delete one AlertRecipient.
+     * @example
+     * // Delete one AlertRecipient
+     * const AlertRecipient = await prisma.alertRecipient.delete({
+     *   where: {
+     *     // ... filter to delete one AlertRecipient
+     *   }
+     * })
+     * 
+     */
+    delete<T extends AlertRecipientDeleteArgs>(args: SelectSubset<T, AlertRecipientDeleteArgs<ExtArgs>>): Prisma__AlertRecipientClient<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one AlertRecipient.
+     * @param {AlertRecipientUpdateArgs} args - Arguments to update one AlertRecipient.
+     * @example
+     * // Update one AlertRecipient
+     * const alertRecipient = await prisma.alertRecipient.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends AlertRecipientUpdateArgs>(args: SelectSubset<T, AlertRecipientUpdateArgs<ExtArgs>>): Prisma__AlertRecipientClient<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more AlertRecipients.
+     * @param {AlertRecipientDeleteManyArgs} args - Arguments to filter AlertRecipients to delete.
+     * @example
+     * // Delete a few AlertRecipients
+     * const { count } = await prisma.alertRecipient.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends AlertRecipientDeleteManyArgs>(args?: SelectSubset<T, AlertRecipientDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AlertRecipients.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertRecipientUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many AlertRecipients
+     * const alertRecipient = await prisma.alertRecipient.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends AlertRecipientUpdateManyArgs>(args: SelectSubset<T, AlertRecipientUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more AlertRecipients and returns the data updated in the database.
+     * @param {AlertRecipientUpdateManyAndReturnArgs} args - Arguments to update many AlertRecipients.
+     * @example
+     * // Update many AlertRecipients
+     * const alertRecipient = await prisma.alertRecipient.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more AlertRecipients and only return the `id`
+     * const alertRecipientWithIdOnly = await prisma.alertRecipient.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends AlertRecipientUpdateManyAndReturnArgs>(args: SelectSubset<T, AlertRecipientUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one AlertRecipient.
+     * @param {AlertRecipientUpsertArgs} args - Arguments to update or create a AlertRecipient.
+     * @example
+     * // Update or create a AlertRecipient
+     * const alertRecipient = await prisma.alertRecipient.upsert({
+     *   create: {
+     *     // ... data to create a AlertRecipient
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the AlertRecipient we want to update
+     *   }
+     * })
+     */
+    upsert<T extends AlertRecipientUpsertArgs>(args: SelectSubset<T, AlertRecipientUpsertArgs<ExtArgs>>): Prisma__AlertRecipientClient<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of AlertRecipients.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertRecipientCountArgs} args - Arguments to filter AlertRecipients to count.
+     * @example
+     * // Count the number of AlertRecipients
+     * const count = await prisma.alertRecipient.count({
+     *   where: {
+     *     // ... the filter for the AlertRecipients we want to count
+     *   }
+     * })
+    **/
+    count<T extends AlertRecipientCountArgs>(
+      args?: Subset<T, AlertRecipientCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], AlertRecipientCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a AlertRecipient.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertRecipientAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends AlertRecipientAggregateArgs>(args: Subset<T, AlertRecipientAggregateArgs>): Prisma.PrismaPromise<GetAlertRecipientAggregateType<T>>
+
+    /**
+     * Group by AlertRecipient.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {AlertRecipientGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends AlertRecipientGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: AlertRecipientGroupByArgs['orderBy'] }
+        : { orderBy?: AlertRecipientGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, AlertRecipientGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetAlertRecipientGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the AlertRecipient model
+   */
+  readonly fields: AlertRecipientFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for AlertRecipient.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__AlertRecipientClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    alert<T extends AlertDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AlertDefaultArgs<ExtArgs>>): Prisma__AlertClient<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    account<T extends AccountDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AccountDefaultArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the AlertRecipient model
+   */
+  interface AlertRecipientFieldRefs {
+    readonly id: FieldRef<"AlertRecipient", 'Int'>
+    readonly alertId: FieldRef<"AlertRecipient", 'Int'>
+    readonly accountId: FieldRef<"AlertRecipient", 'Int'>
+    readonly status: FieldRef<"AlertRecipient", 'AlertRecipientStatus'>
+    readonly readAt: FieldRef<"AlertRecipient", 'DateTime'>
+    readonly deletedAt: FieldRef<"AlertRecipient", 'DateTime'>
+    readonly createdAt: FieldRef<"AlertRecipient", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * AlertRecipient findUnique
+   */
+  export type AlertRecipientFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * Filter, which AlertRecipient to fetch.
+     */
+    where: AlertRecipientWhereUniqueInput
+  }
+
+  /**
+   * AlertRecipient findUniqueOrThrow
+   */
+  export type AlertRecipientFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * Filter, which AlertRecipient to fetch.
+     */
+    where: AlertRecipientWhereUniqueInput
+  }
+
+  /**
+   * AlertRecipient findFirst
+   */
+  export type AlertRecipientFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * Filter, which AlertRecipient to fetch.
+     */
+    where?: AlertRecipientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AlertRecipients to fetch.
+     */
+    orderBy?: AlertRecipientOrderByWithRelationInput | AlertRecipientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AlertRecipients.
+     */
+    cursor?: AlertRecipientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AlertRecipients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AlertRecipients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AlertRecipients.
+     */
+    distinct?: AlertRecipientScalarFieldEnum | AlertRecipientScalarFieldEnum[]
+  }
+
+  /**
+   * AlertRecipient findFirstOrThrow
+   */
+  export type AlertRecipientFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * Filter, which AlertRecipient to fetch.
+     */
+    where?: AlertRecipientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AlertRecipients to fetch.
+     */
+    orderBy?: AlertRecipientOrderByWithRelationInput | AlertRecipientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for AlertRecipients.
+     */
+    cursor?: AlertRecipientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AlertRecipients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AlertRecipients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AlertRecipients.
+     */
+    distinct?: AlertRecipientScalarFieldEnum | AlertRecipientScalarFieldEnum[]
+  }
+
+  /**
+   * AlertRecipient findMany
+   */
+  export type AlertRecipientFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * Filter, which AlertRecipients to fetch.
+     */
+    where?: AlertRecipientWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of AlertRecipients to fetch.
+     */
+    orderBy?: AlertRecipientOrderByWithRelationInput | AlertRecipientOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing AlertRecipients.
+     */
+    cursor?: AlertRecipientWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` AlertRecipients from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` AlertRecipients.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of AlertRecipients.
+     */
+    distinct?: AlertRecipientScalarFieldEnum | AlertRecipientScalarFieldEnum[]
+  }
+
+  /**
+   * AlertRecipient create
+   */
+  export type AlertRecipientCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * The data needed to create a AlertRecipient.
+     */
+    data: XOR<AlertRecipientCreateInput, AlertRecipientUncheckedCreateInput>
+  }
+
+  /**
+   * AlertRecipient createMany
+   */
+  export type AlertRecipientCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many AlertRecipients.
+     */
+    data: AlertRecipientCreateManyInput | AlertRecipientCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * AlertRecipient createManyAndReturn
+   */
+  export type AlertRecipientCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * The data used to create many AlertRecipients.
+     */
+    data: AlertRecipientCreateManyInput | AlertRecipientCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AlertRecipient update
+   */
+  export type AlertRecipientUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * The data needed to update a AlertRecipient.
+     */
+    data: XOR<AlertRecipientUpdateInput, AlertRecipientUncheckedUpdateInput>
+    /**
+     * Choose, which AlertRecipient to update.
+     */
+    where: AlertRecipientWhereUniqueInput
+  }
+
+  /**
+   * AlertRecipient updateMany
+   */
+  export type AlertRecipientUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update AlertRecipients.
+     */
+    data: XOR<AlertRecipientUpdateManyMutationInput, AlertRecipientUncheckedUpdateManyInput>
+    /**
+     * Filter which AlertRecipients to update
+     */
+    where?: AlertRecipientWhereInput
+    /**
+     * Limit how many AlertRecipients to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * AlertRecipient updateManyAndReturn
+   */
+  export type AlertRecipientUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * The data used to update AlertRecipients.
+     */
+    data: XOR<AlertRecipientUpdateManyMutationInput, AlertRecipientUncheckedUpdateManyInput>
+    /**
+     * Filter which AlertRecipients to update
+     */
+    where?: AlertRecipientWhereInput
+    /**
+     * Limit how many AlertRecipients to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * AlertRecipient upsert
+   */
+  export type AlertRecipientUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * The filter to search for the AlertRecipient to update in case it exists.
+     */
+    where: AlertRecipientWhereUniqueInput
+    /**
+     * In case the AlertRecipient found by the `where` argument doesn't exist, create a new AlertRecipient with this data.
+     */
+    create: XOR<AlertRecipientCreateInput, AlertRecipientUncheckedCreateInput>
+    /**
+     * In case the AlertRecipient was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<AlertRecipientUpdateInput, AlertRecipientUncheckedUpdateInput>
+  }
+
+  /**
+   * AlertRecipient delete
+   */
+  export type AlertRecipientDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+    /**
+     * Filter which AlertRecipient to delete.
+     */
+    where: AlertRecipientWhereUniqueInput
+  }
+
+  /**
+   * AlertRecipient deleteMany
+   */
+  export type AlertRecipientDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which AlertRecipients to delete
+     */
+    where?: AlertRecipientWhereInput
+    /**
+     * Limit how many AlertRecipients to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * AlertRecipient without action
+   */
+  export type AlertRecipientDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the AlertRecipient
+     */
+    select?: AlertRecipientSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the AlertRecipient
+     */
+    omit?: AlertRecipientOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AlertRecipientInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -40430,6 +44526,25 @@ export namespace Prisma {
   export type ClubScalarFieldEnum = (typeof ClubScalarFieldEnum)[keyof typeof ClubScalarFieldEnum]
 
 
+  export const ClubEmailSettingsScalarFieldEnum: {
+    id: 'id',
+    clubId: 'clubId',
+    enabled: 'enabled',
+    host: 'host',
+    port: 'port',
+    secure: 'secure',
+    user: 'user',
+    passEncrypted: 'passEncrypted',
+    fromEmail: 'fromEmail',
+    fromName: 'fromName',
+    replyTo: 'replyTo',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ClubEmailSettingsScalarFieldEnum = (typeof ClubEmailSettingsScalarFieldEnum)[keyof typeof ClubEmailSettingsScalarFieldEnum]
+
+
   export const SeasonScalarFieldEnum: {
     id: 'id',
     name: 'name',
@@ -40505,6 +44620,7 @@ export namespace Prisma {
     role: 'role',
     active: 'active',
     clubId: 'clubId',
+    accountId: 'accountId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -40594,6 +44710,37 @@ export namespace Prisma {
   };
 
   export type GameEquipmentScalarFieldEnum = (typeof GameEquipmentScalarFieldEnum)[keyof typeof GameEquipmentScalarFieldEnum]
+
+
+  export const AlertScalarFieldEnum: {
+    id: 'id',
+    clubId: 'clubId',
+    type: 'type',
+    category: 'category',
+    title: 'title',
+    message: 'message',
+    linkUrl: 'linkUrl',
+    referenceType: 'referenceType',
+    referenceId: 'referenceId',
+    triggerDate: 'triggerDate',
+    expiresAt: 'expiresAt',
+    createdAt: 'createdAt'
+  };
+
+  export type AlertScalarFieldEnum = (typeof AlertScalarFieldEnum)[keyof typeof AlertScalarFieldEnum]
+
+
+  export const AlertRecipientScalarFieldEnum: {
+    id: 'id',
+    alertId: 'alertId',
+    accountId: 'accountId',
+    status: 'status',
+    readAt: 'readAt',
+    deletedAt: 'deletedAt',
+    createdAt: 'createdAt'
+  };
+
+  export type AlertRecipientScalarFieldEnum = (typeof AlertRecipientScalarFieldEnum)[keyof typeof AlertRecipientScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -40797,6 +44944,48 @@ export namespace Prisma {
    * Reference to a field of type 'StaffRole[]'
    */
   export type ListEnumStaffRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StaffRole[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertType'
+   */
+  export type EnumAlertTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertType'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertType[]'
+   */
+  export type ListEnumAlertTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertCategory'
+   */
+  export type EnumAlertCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertCategory'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertCategory[]'
+   */
+  export type ListEnumAlertCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertCategory[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertRecipientStatus'
+   */
+  export type EnumAlertRecipientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertRecipientStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'AlertRecipientStatus[]'
+   */
+  export type ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AlertRecipientStatus[]'>
     
 
 
@@ -41285,6 +45474,8 @@ export namespace Prisma {
     resetToken?: StringNullableFilter<"Account"> | string | null
     resetTokenExpiry?: DateTimeNullableFilter<"Account"> | Date | string | null
     clubs?: AccountClubListRelationFilter
+    staffProfiles?: StaffListRelationFilter
+    alertRecipients?: AlertRecipientListRelationFilter
   }
 
   export type AccountOrderByWithRelationInput = {
@@ -41300,6 +45491,8 @@ export namespace Prisma {
     resetToken?: SortOrderInput | SortOrder
     resetTokenExpiry?: SortOrderInput | SortOrder
     clubs?: AccountClubOrderByRelationAggregateInput
+    staffProfiles?: StaffOrderByRelationAggregateInput
+    alertRecipients?: AlertRecipientOrderByRelationAggregateInput
   }
 
   export type AccountWhereUniqueInput = Prisma.AtLeast<{
@@ -41318,6 +45511,8 @@ export namespace Prisma {
     role?: EnumPlatformRoleFilter<"Account"> | $Enums.PlatformRole
     resetTokenExpiry?: DateTimeNullableFilter<"Account"> | Date | string | null
     clubs?: AccountClubListRelationFilter
+    staffProfiles?: StaffListRelationFilter
+    alertRecipients?: AlertRecipientListRelationFilter
   }, "id" | "email" | "resetToken">
 
   export type AccountOrderByWithAggregationInput = {
@@ -42123,6 +46318,8 @@ export namespace Prisma {
     venues?: VenueListRelationFilter
     equipmentColors?: EquipmentColorListRelationFilter
     staff?: StaffListRelationFilter
+    alerts?: AlertListRelationFilter
+    emailSettings?: XOR<ClubEmailSettingsNullableScalarRelationFilter, ClubEmailSettingsWhereInput> | null
   }
 
   export type ClubOrderByWithRelationInput = {
@@ -42143,6 +46340,8 @@ export namespace Prisma {
     venues?: VenueOrderByRelationAggregateInput
     equipmentColors?: EquipmentColorOrderByRelationAggregateInput
     staff?: StaffOrderByRelationAggregateInput
+    alerts?: AlertOrderByRelationAggregateInput
+    emailSettings?: ClubEmailSettingsOrderByWithRelationInput
   }
 
   export type ClubWhereUniqueInput = Prisma.AtLeast<{
@@ -42166,6 +46365,8 @@ export namespace Prisma {
     venues?: VenueListRelationFilter
     equipmentColors?: EquipmentColorListRelationFilter
     staff?: StaffListRelationFilter
+    alerts?: AlertListRelationFilter
+    emailSettings?: XOR<ClubEmailSettingsNullableScalarRelationFilter, ClubEmailSettingsWhereInput> | null
   }, "id" | "name">
 
   export type ClubOrderByWithAggregationInput = {
@@ -42198,6 +46399,103 @@ export namespace Prisma {
     foregroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
+  }
+
+  export type ClubEmailSettingsWhereInput = {
+    AND?: ClubEmailSettingsWhereInput | ClubEmailSettingsWhereInput[]
+    OR?: ClubEmailSettingsWhereInput[]
+    NOT?: ClubEmailSettingsWhereInput | ClubEmailSettingsWhereInput[]
+    id?: IntFilter<"ClubEmailSettings"> | number
+    clubId?: IntFilter<"ClubEmailSettings"> | number
+    enabled?: BoolFilter<"ClubEmailSettings"> | boolean
+    host?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    port?: IntNullableFilter<"ClubEmailSettings"> | number | null
+    secure?: BoolFilter<"ClubEmailSettings"> | boolean
+    user?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    passEncrypted?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    fromEmail?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    fromName?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    replyTo?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    createdAt?: DateTimeFilter<"ClubEmailSettings"> | Date | string
+    updatedAt?: DateTimeFilter<"ClubEmailSettings"> | Date | string
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+  }
+
+  export type ClubEmailSettingsOrderByWithRelationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    enabled?: SortOrder
+    host?: SortOrderInput | SortOrder
+    port?: SortOrderInput | SortOrder
+    secure?: SortOrder
+    user?: SortOrderInput | SortOrder
+    passEncrypted?: SortOrderInput | SortOrder
+    fromEmail?: SortOrderInput | SortOrder
+    fromName?: SortOrderInput | SortOrder
+    replyTo?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    club?: ClubOrderByWithRelationInput
+  }
+
+  export type ClubEmailSettingsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    clubId?: number
+    AND?: ClubEmailSettingsWhereInput | ClubEmailSettingsWhereInput[]
+    OR?: ClubEmailSettingsWhereInput[]
+    NOT?: ClubEmailSettingsWhereInput | ClubEmailSettingsWhereInput[]
+    enabled?: BoolFilter<"ClubEmailSettings"> | boolean
+    host?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    port?: IntNullableFilter<"ClubEmailSettings"> | number | null
+    secure?: BoolFilter<"ClubEmailSettings"> | boolean
+    user?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    passEncrypted?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    fromEmail?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    fromName?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    replyTo?: StringNullableFilter<"ClubEmailSettings"> | string | null
+    createdAt?: DateTimeFilter<"ClubEmailSettings"> | Date | string
+    updatedAt?: DateTimeFilter<"ClubEmailSettings"> | Date | string
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+  }, "id" | "clubId">
+
+  export type ClubEmailSettingsOrderByWithAggregationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    enabled?: SortOrder
+    host?: SortOrderInput | SortOrder
+    port?: SortOrderInput | SortOrder
+    secure?: SortOrder
+    user?: SortOrderInput | SortOrder
+    passEncrypted?: SortOrderInput | SortOrder
+    fromEmail?: SortOrderInput | SortOrder
+    fromName?: SortOrderInput | SortOrder
+    replyTo?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ClubEmailSettingsCountOrderByAggregateInput
+    _avg?: ClubEmailSettingsAvgOrderByAggregateInput
+    _max?: ClubEmailSettingsMaxOrderByAggregateInput
+    _min?: ClubEmailSettingsMinOrderByAggregateInput
+    _sum?: ClubEmailSettingsSumOrderByAggregateInput
+  }
+
+  export type ClubEmailSettingsScalarWhereWithAggregatesInput = {
+    AND?: ClubEmailSettingsScalarWhereWithAggregatesInput | ClubEmailSettingsScalarWhereWithAggregatesInput[]
+    OR?: ClubEmailSettingsScalarWhereWithAggregatesInput[]
+    NOT?: ClubEmailSettingsScalarWhereWithAggregatesInput | ClubEmailSettingsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ClubEmailSettings"> | number
+    clubId?: IntWithAggregatesFilter<"ClubEmailSettings"> | number
+    enabled?: BoolWithAggregatesFilter<"ClubEmailSettings"> | boolean
+    host?: StringNullableWithAggregatesFilter<"ClubEmailSettings"> | string | null
+    port?: IntNullableWithAggregatesFilter<"ClubEmailSettings"> | number | null
+    secure?: BoolWithAggregatesFilter<"ClubEmailSettings"> | boolean
+    user?: StringNullableWithAggregatesFilter<"ClubEmailSettings"> | string | null
+    passEncrypted?: StringNullableWithAggregatesFilter<"ClubEmailSettings"> | string | null
+    fromEmail?: StringNullableWithAggregatesFilter<"ClubEmailSettings"> | string | null
+    fromName?: StringNullableWithAggregatesFilter<"ClubEmailSettings"> | string | null
+    replyTo?: StringNullableWithAggregatesFilter<"ClubEmailSettings"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"ClubEmailSettings"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ClubEmailSettings"> | Date | string
   }
 
   export type SeasonWhereInput = {
@@ -42579,10 +46877,12 @@ export namespace Prisma {
     role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
     active?: BoolFilter<"Staff"> | boolean
     clubId?: IntFilter<"Staff"> | number
+    accountId?: IntNullableFilter<"Staff"> | number | null
     createdAt?: DateTimeFilter<"Staff"> | Date | string
     updatedAt?: DateTimeFilter<"Staff"> | Date | string
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     teams?: TeamStaffListRelationFilter
+    account?: XOR<AccountNullableScalarRelationFilter, AccountWhereInput> | null
   }
 
   export type StaffOrderByWithRelationInput = {
@@ -42595,14 +46895,17 @@ export namespace Prisma {
     role?: SortOrder
     active?: SortOrder
     clubId?: SortOrder
+    accountId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     club?: ClubOrderByWithRelationInput
     teams?: TeamStaffOrderByRelationAggregateInput
+    account?: AccountOrderByWithRelationInput
   }
 
   export type StaffWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    clubId_accountId?: StaffClubIdAccountIdCompoundUniqueInput
     AND?: StaffWhereInput | StaffWhereInput[]
     OR?: StaffWhereInput[]
     NOT?: StaffWhereInput | StaffWhereInput[]
@@ -42614,11 +46917,13 @@ export namespace Prisma {
     role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
     active?: BoolFilter<"Staff"> | boolean
     clubId?: IntFilter<"Staff"> | number
+    accountId?: IntNullableFilter<"Staff"> | number | null
     createdAt?: DateTimeFilter<"Staff"> | Date | string
     updatedAt?: DateTimeFilter<"Staff"> | Date | string
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
     teams?: TeamStaffListRelationFilter
-  }, "id">
+    account?: XOR<AccountNullableScalarRelationFilter, AccountWhereInput> | null
+  }, "id" | "clubId_accountId">
 
   export type StaffOrderByWithAggregationInput = {
     id?: SortOrder
@@ -42630,6 +46935,7 @@ export namespace Prisma {
     role?: SortOrder
     active?: SortOrder
     clubId?: SortOrder
+    accountId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: StaffCountOrderByAggregateInput
@@ -42652,6 +46958,7 @@ export namespace Prisma {
     role?: EnumStaffRoleWithAggregatesFilter<"Staff"> | $Enums.StaffRole
     active?: BoolWithAggregatesFilter<"Staff"> | boolean
     clubId?: IntWithAggregatesFilter<"Staff"> | number
+    accountId?: IntNullableWithAggregatesFilter<"Staff"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Staff"> | Date | string
   }
@@ -43128,6 +47435,173 @@ export namespace Prisma {
     equipmentId?: IntWithAggregatesFilter<"GameEquipment"> | number
     equipmentColorId?: IntWithAggregatesFilter<"GameEquipment"> | number
     manualOverride?: BoolWithAggregatesFilter<"GameEquipment"> | boolean
+  }
+
+  export type AlertWhereInput = {
+    AND?: AlertWhereInput | AlertWhereInput[]
+    OR?: AlertWhereInput[]
+    NOT?: AlertWhereInput | AlertWhereInput[]
+    id?: IntFilter<"Alert"> | number
+    clubId?: IntFilter<"Alert"> | number
+    type?: EnumAlertTypeFilter<"Alert"> | $Enums.AlertType
+    category?: EnumAlertCategoryFilter<"Alert"> | $Enums.AlertCategory
+    title?: StringFilter<"Alert"> | string
+    message?: StringFilter<"Alert"> | string
+    linkUrl?: StringNullableFilter<"Alert"> | string | null
+    referenceType?: StringNullableFilter<"Alert"> | string | null
+    referenceId?: IntNullableFilter<"Alert"> | number | null
+    triggerDate?: DateTimeFilter<"Alert"> | Date | string
+    expiresAt?: DateTimeNullableFilter<"Alert"> | Date | string | null
+    createdAt?: DateTimeFilter<"Alert"> | Date | string
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    recipients?: AlertRecipientListRelationFilter
+  }
+
+  export type AlertOrderByWithRelationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    linkUrl?: SortOrderInput | SortOrder
+    referenceType?: SortOrderInput | SortOrder
+    referenceId?: SortOrderInput | SortOrder
+    triggerDate?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    club?: ClubOrderByWithRelationInput
+    recipients?: AlertRecipientOrderByRelationAggregateInput
+  }
+
+  export type AlertWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    clubId_category_referenceType_referenceId_triggerDate?: AlertClubIdCategoryReferenceTypeReferenceIdTriggerDateCompoundUniqueInput
+    AND?: AlertWhereInput | AlertWhereInput[]
+    OR?: AlertWhereInput[]
+    NOT?: AlertWhereInput | AlertWhereInput[]
+    clubId?: IntFilter<"Alert"> | number
+    type?: EnumAlertTypeFilter<"Alert"> | $Enums.AlertType
+    category?: EnumAlertCategoryFilter<"Alert"> | $Enums.AlertCategory
+    title?: StringFilter<"Alert"> | string
+    message?: StringFilter<"Alert"> | string
+    linkUrl?: StringNullableFilter<"Alert"> | string | null
+    referenceType?: StringNullableFilter<"Alert"> | string | null
+    referenceId?: IntNullableFilter<"Alert"> | number | null
+    triggerDate?: DateTimeFilter<"Alert"> | Date | string
+    expiresAt?: DateTimeNullableFilter<"Alert"> | Date | string | null
+    createdAt?: DateTimeFilter<"Alert"> | Date | string
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    recipients?: AlertRecipientListRelationFilter
+  }, "id" | "clubId_category_referenceType_referenceId_triggerDate">
+
+  export type AlertOrderByWithAggregationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    linkUrl?: SortOrderInput | SortOrder
+    referenceType?: SortOrderInput | SortOrder
+    referenceId?: SortOrderInput | SortOrder
+    triggerDate?: SortOrder
+    expiresAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AlertCountOrderByAggregateInput
+    _avg?: AlertAvgOrderByAggregateInput
+    _max?: AlertMaxOrderByAggregateInput
+    _min?: AlertMinOrderByAggregateInput
+    _sum?: AlertSumOrderByAggregateInput
+  }
+
+  export type AlertScalarWhereWithAggregatesInput = {
+    AND?: AlertScalarWhereWithAggregatesInput | AlertScalarWhereWithAggregatesInput[]
+    OR?: AlertScalarWhereWithAggregatesInput[]
+    NOT?: AlertScalarWhereWithAggregatesInput | AlertScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Alert"> | number
+    clubId?: IntWithAggregatesFilter<"Alert"> | number
+    type?: EnumAlertTypeWithAggregatesFilter<"Alert"> | $Enums.AlertType
+    category?: EnumAlertCategoryWithAggregatesFilter<"Alert"> | $Enums.AlertCategory
+    title?: StringWithAggregatesFilter<"Alert"> | string
+    message?: StringWithAggregatesFilter<"Alert"> | string
+    linkUrl?: StringNullableWithAggregatesFilter<"Alert"> | string | null
+    referenceType?: StringNullableWithAggregatesFilter<"Alert"> | string | null
+    referenceId?: IntNullableWithAggregatesFilter<"Alert"> | number | null
+    triggerDate?: DateTimeWithAggregatesFilter<"Alert"> | Date | string
+    expiresAt?: DateTimeNullableWithAggregatesFilter<"Alert"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Alert"> | Date | string
+  }
+
+  export type AlertRecipientWhereInput = {
+    AND?: AlertRecipientWhereInput | AlertRecipientWhereInput[]
+    OR?: AlertRecipientWhereInput[]
+    NOT?: AlertRecipientWhereInput | AlertRecipientWhereInput[]
+    id?: IntFilter<"AlertRecipient"> | number
+    alertId?: IntFilter<"AlertRecipient"> | number
+    accountId?: IntFilter<"AlertRecipient"> | number
+    status?: EnumAlertRecipientStatusFilter<"AlertRecipient"> | $Enums.AlertRecipientStatus
+    readAt?: DateTimeNullableFilter<"AlertRecipient"> | Date | string | null
+    deletedAt?: DateTimeNullableFilter<"AlertRecipient"> | Date | string | null
+    createdAt?: DateTimeFilter<"AlertRecipient"> | Date | string
+    alert?: XOR<AlertScalarRelationFilter, AlertWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
+  }
+
+  export type AlertRecipientOrderByWithRelationInput = {
+    id?: SortOrder
+    alertId?: SortOrder
+    accountId?: SortOrder
+    status?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    alert?: AlertOrderByWithRelationInput
+    account?: AccountOrderByWithRelationInput
+  }
+
+  export type AlertRecipientWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    alertId_accountId?: AlertRecipientAlertIdAccountIdCompoundUniqueInput
+    AND?: AlertRecipientWhereInput | AlertRecipientWhereInput[]
+    OR?: AlertRecipientWhereInput[]
+    NOT?: AlertRecipientWhereInput | AlertRecipientWhereInput[]
+    alertId?: IntFilter<"AlertRecipient"> | number
+    accountId?: IntFilter<"AlertRecipient"> | number
+    status?: EnumAlertRecipientStatusFilter<"AlertRecipient"> | $Enums.AlertRecipientStatus
+    readAt?: DateTimeNullableFilter<"AlertRecipient"> | Date | string | null
+    deletedAt?: DateTimeNullableFilter<"AlertRecipient"> | Date | string | null
+    createdAt?: DateTimeFilter<"AlertRecipient"> | Date | string
+    alert?: XOR<AlertScalarRelationFilter, AlertWhereInput>
+    account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
+  }, "id" | "alertId_accountId">
+
+  export type AlertRecipientOrderByWithAggregationInput = {
+    id?: SortOrder
+    alertId?: SortOrder
+    accountId?: SortOrder
+    status?: SortOrder
+    readAt?: SortOrderInput | SortOrder
+    deletedAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: AlertRecipientCountOrderByAggregateInput
+    _avg?: AlertRecipientAvgOrderByAggregateInput
+    _max?: AlertRecipientMaxOrderByAggregateInput
+    _min?: AlertRecipientMinOrderByAggregateInput
+    _sum?: AlertRecipientSumOrderByAggregateInput
+  }
+
+  export type AlertRecipientScalarWhereWithAggregatesInput = {
+    AND?: AlertRecipientScalarWhereWithAggregatesInput | AlertRecipientScalarWhereWithAggregatesInput[]
+    OR?: AlertRecipientScalarWhereWithAggregatesInput[]
+    NOT?: AlertRecipientScalarWhereWithAggregatesInput | AlertRecipientScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"AlertRecipient"> | number
+    alertId?: IntWithAggregatesFilter<"AlertRecipient"> | number
+    accountId?: IntWithAggregatesFilter<"AlertRecipient"> | number
+    status?: EnumAlertRecipientStatusWithAggregatesFilter<"AlertRecipient"> | $Enums.AlertRecipientStatus
+    readAt?: DateTimeNullableWithAggregatesFilter<"AlertRecipient"> | Date | string | null
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"AlertRecipient"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"AlertRecipient"> | Date | string
   }
 
   export type AthleteCreateInput = {
@@ -43636,6 +48110,8 @@ export namespace Prisma {
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
     clubs?: AccountClubCreateNestedManyWithoutAccountInput
+    staffProfiles?: StaffCreateNestedManyWithoutAccountInput
+    alertRecipients?: AlertRecipientCreateNestedManyWithoutAccountInput
   }
 
   export type AccountUncheckedCreateInput = {
@@ -43651,6 +48127,8 @@ export namespace Prisma {
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
     clubs?: AccountClubUncheckedCreateNestedManyWithoutAccountInput
+    staffProfiles?: StaffUncheckedCreateNestedManyWithoutAccountInput
+    alertRecipients?: AlertRecipientUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type AccountUpdateInput = {
@@ -43665,6 +48143,8 @@ export namespace Prisma {
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     clubs?: AccountClubUpdateManyWithoutAccountNestedInput
+    staffProfiles?: StaffUpdateManyWithoutAccountNestedInput
+    alertRecipients?: AlertRecipientUpdateManyWithoutAccountNestedInput
   }
 
   export type AccountUncheckedUpdateInput = {
@@ -43680,6 +48160,8 @@ export namespace Prisma {
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     clubs?: AccountClubUncheckedUpdateManyWithoutAccountNestedInput
+    staffProfiles?: StaffUncheckedUpdateManyWithoutAccountNestedInput
+    alertRecipients?: AlertRecipientUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type AccountCreateManyInput = {
@@ -44492,6 +48974,8 @@ export namespace Prisma {
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateInput = {
@@ -44512,6 +48996,8 @@ export namespace Prisma {
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubUpdateInput = {
@@ -44531,6 +49017,8 @@ export namespace Prisma {
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateInput = {
@@ -44551,6 +49039,8 @@ export namespace Prisma {
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type ClubCreateManyInput = {
@@ -44584,6 +49074,114 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubEmailSettingsCreateInput = {
+    enabled?: boolean
+    host?: string | null
+    port?: number | null
+    secure?: boolean
+    user?: string | null
+    passEncrypted?: string | null
+    fromEmail?: string | null
+    fromName?: string | null
+    replyTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutEmailSettingsInput
+  }
+
+  export type ClubEmailSettingsUncheckedCreateInput = {
+    id?: number
+    clubId: number
+    enabled?: boolean
+    host?: string | null
+    port?: number | null
+    secure?: boolean
+    user?: string | null
+    passEncrypted?: string | null
+    fromEmail?: string | null
+    fromName?: string | null
+    replyTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClubEmailSettingsUpdateInput = {
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    host?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    secure?: BoolFieldUpdateOperationsInput | boolean
+    user?: NullableStringFieldUpdateOperationsInput | string | null
+    passEncrypted?: NullableStringFieldUpdateOperationsInput | string | null
+    fromEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    fromName?: NullableStringFieldUpdateOperationsInput | string | null
+    replyTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutEmailSettingsNestedInput
+  }
+
+  export type ClubEmailSettingsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    host?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    secure?: BoolFieldUpdateOperationsInput | boolean
+    user?: NullableStringFieldUpdateOperationsInput | string | null
+    passEncrypted?: NullableStringFieldUpdateOperationsInput | string | null
+    fromEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    fromName?: NullableStringFieldUpdateOperationsInput | string | null
+    replyTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubEmailSettingsCreateManyInput = {
+    id?: number
+    clubId: number
+    enabled?: boolean
+    host?: string | null
+    port?: number | null
+    secure?: boolean
+    user?: string | null
+    passEncrypted?: string | null
+    fromEmail?: string | null
+    fromName?: string | null
+    replyTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClubEmailSettingsUpdateManyMutationInput = {
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    host?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    secure?: BoolFieldUpdateOperationsInput | boolean
+    user?: NullableStringFieldUpdateOperationsInput | string | null
+    passEncrypted?: NullableStringFieldUpdateOperationsInput | string | null
+    fromEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    fromName?: NullableStringFieldUpdateOperationsInput | string | null
+    replyTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubEmailSettingsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    host?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    secure?: BoolFieldUpdateOperationsInput | boolean
+    user?: NullableStringFieldUpdateOperationsInput | string | null
+    passEncrypted?: NullableStringFieldUpdateOperationsInput | string | null
+    fromEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    fromName?: NullableStringFieldUpdateOperationsInput | string | null
+    replyTo?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44927,6 +49525,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutStaffInput
     teams?: TeamStaffCreateNestedManyWithoutStaffInput
+    account?: AccountCreateNestedOneWithoutStaffProfilesInput
   }
 
   export type StaffUncheckedCreateInput = {
@@ -44939,6 +49538,7 @@ export namespace Prisma {
     role: $Enums.StaffRole
     active?: boolean
     clubId: number
+    accountId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teams?: TeamStaffUncheckedCreateNestedManyWithoutStaffInput
@@ -44956,6 +49556,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutStaffNestedInput
     teams?: TeamStaffUpdateManyWithoutStaffNestedInput
+    account?: AccountUpdateOneWithoutStaffProfilesNestedInput
   }
 
   export type StaffUncheckedUpdateInput = {
@@ -44968,6 +49569,7 @@ export namespace Prisma {
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
     active?: BoolFieldUpdateOperationsInput | boolean
     clubId?: IntFieldUpdateOperationsInput | number
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamStaffUncheckedUpdateManyWithoutStaffNestedInput
@@ -44983,6 +49585,7 @@ export namespace Prisma {
     role: $Enums.StaffRole
     active?: boolean
     clubId: number
+    accountId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -45009,6 +49612,7 @@ export namespace Prisma {
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
     active?: BoolFieldUpdateOperationsInput | boolean
     clubId?: IntFieldUpdateOperationsInput | number
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -45442,6 +50046,176 @@ export namespace Prisma {
     equipmentId?: IntFieldUpdateOperationsInput | number
     equipmentColorId?: IntFieldUpdateOperationsInput | number
     manualOverride?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AlertCreateInput = {
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl?: string | null
+    referenceType?: string | null
+    referenceId?: number | null
+    triggerDate: Date | string
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    club: ClubCreateNestedOneWithoutAlertsInput
+    recipients?: AlertRecipientCreateNestedManyWithoutAlertInput
+  }
+
+  export type AlertUncheckedCreateInput = {
+    id?: number
+    clubId: number
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl?: string | null
+    referenceType?: string | null
+    referenceId?: number | null
+    triggerDate: Date | string
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    recipients?: AlertRecipientUncheckedCreateNestedManyWithoutAlertInput
+  }
+
+  export type AlertUpdateInput = {
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutAlertsNestedInput
+    recipients?: AlertRecipientUpdateManyWithoutAlertNestedInput
+  }
+
+  export type AlertUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recipients?: AlertRecipientUncheckedUpdateManyWithoutAlertNestedInput
+  }
+
+  export type AlertCreateManyInput = {
+    id?: number
+    clubId: number
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl?: string | null
+    referenceType?: string | null
+    referenceId?: number | null
+    triggerDate: Date | string
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AlertUpdateManyMutationInput = {
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlertUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlertRecipientCreateInput = {
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    alert: AlertCreateNestedOneWithoutRecipientsInput
+    account: AccountCreateNestedOneWithoutAlertRecipientsInput
+  }
+
+  export type AlertRecipientUncheckedCreateInput = {
+    id?: number
+    alertId: number
+    accountId: number
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AlertRecipientUpdateInput = {
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    alert?: AlertUpdateOneRequiredWithoutRecipientsNestedInput
+    account?: AccountUpdateOneRequiredWithoutAlertRecipientsNestedInput
+  }
+
+  export type AlertRecipientUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    alertId?: IntFieldUpdateOperationsInput | number
+    accountId?: IntFieldUpdateOperationsInput | number
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlertRecipientCreateManyInput = {
+    id?: number
+    alertId: number
+    accountId: number
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AlertRecipientUpdateManyMutationInput = {
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlertRecipientUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    alertId?: IntFieldUpdateOperationsInput | number
+    accountId?: IntFieldUpdateOperationsInput | number
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -46089,7 +50863,27 @@ export namespace Prisma {
     none?: AccountClubWhereInput
   }
 
+  export type StaffListRelationFilter = {
+    every?: StaffWhereInput
+    some?: StaffWhereInput
+    none?: StaffWhereInput
+  }
+
+  export type AlertRecipientListRelationFilter = {
+    every?: AlertRecipientWhereInput
+    some?: AlertRecipientWhereInput
+    none?: AlertRecipientWhereInput
+  }
+
   export type AccountClubOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type StaffOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type AlertRecipientOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -46777,10 +51571,15 @@ export namespace Prisma {
     none?: MacrocycleWhereInput
   }
 
-  export type StaffListRelationFilter = {
-    every?: StaffWhereInput
-    some?: StaffWhereInput
-    none?: StaffWhereInput
+  export type AlertListRelationFilter = {
+    every?: AlertWhereInput
+    some?: AlertWhereInput
+    none?: AlertWhereInput
+  }
+
+  export type ClubEmailSettingsNullableScalarRelationFilter = {
+    is?: ClubEmailSettingsWhereInput | null
+    isNot?: ClubEmailSettingsWhereInput | null
   }
 
   export type AthleteOrderByRelationAggregateInput = {
@@ -46791,7 +51590,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type StaffOrderByRelationAggregateInput = {
+  export type AlertOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -46837,6 +51636,66 @@ export namespace Prisma {
 
   export type ClubSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type ClubEmailSettingsCountOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    enabled?: SortOrder
+    host?: SortOrder
+    port?: SortOrder
+    secure?: SortOrder
+    user?: SortOrder
+    passEncrypted?: SortOrder
+    fromEmail?: SortOrder
+    fromName?: SortOrder
+    replyTo?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClubEmailSettingsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    port?: SortOrder
+  }
+
+  export type ClubEmailSettingsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    enabled?: SortOrder
+    host?: SortOrder
+    port?: SortOrder
+    secure?: SortOrder
+    user?: SortOrder
+    passEncrypted?: SortOrder
+    fromEmail?: SortOrder
+    fromName?: SortOrder
+    replyTo?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClubEmailSettingsMinOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    enabled?: SortOrder
+    host?: SortOrder
+    port?: SortOrder
+    secure?: SortOrder
+    user?: SortOrder
+    passEncrypted?: SortOrder
+    fromEmail?: SortOrder
+    fromName?: SortOrder
+    replyTo?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClubEmailSettingsSumOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    port?: SortOrder
   }
 
   export type SeasonCountOrderByAggregateInput = {
@@ -47154,6 +52013,16 @@ export namespace Prisma {
     not?: NestedEnumStaffRoleFilter<$PrismaModel> | $Enums.StaffRole
   }
 
+  export type AccountNullableScalarRelationFilter = {
+    is?: AccountWhereInput | null
+    isNot?: AccountWhereInput | null
+  }
+
+  export type StaffClubIdAccountIdCompoundUniqueInput = {
+    clubId: number
+    accountId: number
+  }
+
   export type StaffCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -47164,6 +52033,7 @@ export namespace Prisma {
     role?: SortOrder
     active?: SortOrder
     clubId?: SortOrder
+    accountId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -47173,6 +52043,7 @@ export namespace Prisma {
     tptdNumber?: SortOrder
     fpbLicense?: SortOrder
     clubId?: SortOrder
+    accountId?: SortOrder
   }
 
   export type StaffMaxOrderByAggregateInput = {
@@ -47185,6 +52056,7 @@ export namespace Prisma {
     role?: SortOrder
     active?: SortOrder
     clubId?: SortOrder
+    accountId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -47199,6 +52071,7 @@ export namespace Prisma {
     role?: SortOrder
     active?: SortOrder
     clubId?: SortOrder
+    accountId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -47208,6 +52081,7 @@ export namespace Prisma {
     tptdNumber?: SortOrder
     fpbLicense?: SortOrder
     clubId?: SortOrder
+    accountId?: SortOrder
   }
 
   export type EnumCoachGradeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -47592,6 +52466,174 @@ export namespace Prisma {
     athleteId?: SortOrder
     equipmentId?: SortOrder
     equipmentColorId?: SortOrder
+  }
+
+  export type EnumAlertTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertType | EnumAlertTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertTypeFilter<$PrismaModel> | $Enums.AlertType
+  }
+
+  export type EnumAlertCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertCategory | EnumAlertCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertCategory[] | ListEnumAlertCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertCategory[] | ListEnumAlertCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertCategoryFilter<$PrismaModel> | $Enums.AlertCategory
+  }
+
+  export type AlertClubIdCategoryReferenceTypeReferenceIdTriggerDateCompoundUniqueInput = {
+    clubId: number
+    category: $Enums.AlertCategory
+    referenceType: string
+    referenceId: number
+    triggerDate: Date | string
+  }
+
+  export type AlertCountOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    linkUrl?: SortOrder
+    referenceType?: SortOrder
+    referenceId?: SortOrder
+    triggerDate?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AlertAvgOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    referenceId?: SortOrder
+  }
+
+  export type AlertMaxOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    linkUrl?: SortOrder
+    referenceType?: SortOrder
+    referenceId?: SortOrder
+    triggerDate?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AlertMinOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    type?: SortOrder
+    category?: SortOrder
+    title?: SortOrder
+    message?: SortOrder
+    linkUrl?: SortOrder
+    referenceType?: SortOrder
+    referenceId?: SortOrder
+    triggerDate?: SortOrder
+    expiresAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AlertSumOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    referenceId?: SortOrder
+  }
+
+  export type EnumAlertTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertType | EnumAlertTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertTypeWithAggregatesFilter<$PrismaModel> | $Enums.AlertType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertTypeFilter<$PrismaModel>
+    _max?: NestedEnumAlertTypeFilter<$PrismaModel>
+  }
+
+  export type EnumAlertCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertCategory | EnumAlertCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertCategory[] | ListEnumAlertCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertCategory[] | ListEnumAlertCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertCategoryWithAggregatesFilter<$PrismaModel> | $Enums.AlertCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertCategoryFilter<$PrismaModel>
+    _max?: NestedEnumAlertCategoryFilter<$PrismaModel>
+  }
+
+  export type EnumAlertRecipientStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertRecipientStatus | EnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertRecipientStatus[] | ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertRecipientStatus[] | ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertRecipientStatusFilter<$PrismaModel> | $Enums.AlertRecipientStatus
+  }
+
+  export type AlertScalarRelationFilter = {
+    is?: AlertWhereInput
+    isNot?: AlertWhereInput
+  }
+
+  export type AlertRecipientAlertIdAccountIdCompoundUniqueInput = {
+    alertId: number
+    accountId: number
+  }
+
+  export type AlertRecipientCountOrderByAggregateInput = {
+    id?: SortOrder
+    alertId?: SortOrder
+    accountId?: SortOrder
+    status?: SortOrder
+    readAt?: SortOrder
+    deletedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AlertRecipientAvgOrderByAggregateInput = {
+    id?: SortOrder
+    alertId?: SortOrder
+    accountId?: SortOrder
+  }
+
+  export type AlertRecipientMaxOrderByAggregateInput = {
+    id?: SortOrder
+    alertId?: SortOrder
+    accountId?: SortOrder
+    status?: SortOrder
+    readAt?: SortOrder
+    deletedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AlertRecipientMinOrderByAggregateInput = {
+    id?: SortOrder
+    alertId?: SortOrder
+    accountId?: SortOrder
+    status?: SortOrder
+    readAt?: SortOrder
+    deletedAt?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type AlertRecipientSumOrderByAggregateInput = {
+    id?: SortOrder
+    alertId?: SortOrder
+    accountId?: SortOrder
+  }
+
+  export type EnumAlertRecipientStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertRecipientStatus | EnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertRecipientStatus[] | ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertRecipientStatus[] | ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertRecipientStatusWithAggregatesFilter<$PrismaModel> | $Enums.AlertRecipientStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertRecipientStatusFilter<$PrismaModel>
+    _max?: NestedEnumAlertRecipientStatusFilter<$PrismaModel>
   }
 
   export type ClubCreateNestedOneWithoutAthletesInput = {
@@ -48455,11 +53497,39 @@ export namespace Prisma {
     connect?: AccountClubWhereUniqueInput | AccountClubWhereUniqueInput[]
   }
 
+  export type StaffCreateNestedManyWithoutAccountInput = {
+    create?: XOR<StaffCreateWithoutAccountInput, StaffUncheckedCreateWithoutAccountInput> | StaffCreateWithoutAccountInput[] | StaffUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: StaffCreateOrConnectWithoutAccountInput | StaffCreateOrConnectWithoutAccountInput[]
+    createMany?: StaffCreateManyAccountInputEnvelope
+    connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+  }
+
+  export type AlertRecipientCreateNestedManyWithoutAccountInput = {
+    create?: XOR<AlertRecipientCreateWithoutAccountInput, AlertRecipientUncheckedCreateWithoutAccountInput> | AlertRecipientCreateWithoutAccountInput[] | AlertRecipientUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AlertRecipientCreateOrConnectWithoutAccountInput | AlertRecipientCreateOrConnectWithoutAccountInput[]
+    createMany?: AlertRecipientCreateManyAccountInputEnvelope
+    connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+  }
+
   export type AccountClubUncheckedCreateNestedManyWithoutAccountInput = {
     create?: XOR<AccountClubCreateWithoutAccountInput, AccountClubUncheckedCreateWithoutAccountInput> | AccountClubCreateWithoutAccountInput[] | AccountClubUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutAccountInput | AccountClubCreateOrConnectWithoutAccountInput[]
     createMany?: AccountClubCreateManyAccountInputEnvelope
     connect?: AccountClubWhereUniqueInput | AccountClubWhereUniqueInput[]
+  }
+
+  export type StaffUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<StaffCreateWithoutAccountInput, StaffUncheckedCreateWithoutAccountInput> | StaffCreateWithoutAccountInput[] | StaffUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: StaffCreateOrConnectWithoutAccountInput | StaffCreateOrConnectWithoutAccountInput[]
+    createMany?: StaffCreateManyAccountInputEnvelope
+    connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+  }
+
+  export type AlertRecipientUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<AlertRecipientCreateWithoutAccountInput, AlertRecipientUncheckedCreateWithoutAccountInput> | AlertRecipientCreateWithoutAccountInput[] | AlertRecipientUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AlertRecipientCreateOrConnectWithoutAccountInput | AlertRecipientCreateOrConnectWithoutAccountInput[]
+    createMany?: AlertRecipientCreateManyAccountInputEnvelope
+    connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
   }
 
   export type EnumPlatformRoleFieldUpdateOperationsInput = {
@@ -48480,6 +53550,34 @@ export namespace Prisma {
     deleteMany?: AccountClubScalarWhereInput | AccountClubScalarWhereInput[]
   }
 
+  export type StaffUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<StaffCreateWithoutAccountInput, StaffUncheckedCreateWithoutAccountInput> | StaffCreateWithoutAccountInput[] | StaffUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: StaffCreateOrConnectWithoutAccountInput | StaffCreateOrConnectWithoutAccountInput[]
+    upsert?: StaffUpsertWithWhereUniqueWithoutAccountInput | StaffUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: StaffCreateManyAccountInputEnvelope
+    set?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    disconnect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    delete?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    update?: StaffUpdateWithWhereUniqueWithoutAccountInput | StaffUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: StaffUpdateManyWithWhereWithoutAccountInput | StaffUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: StaffScalarWhereInput | StaffScalarWhereInput[]
+  }
+
+  export type AlertRecipientUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<AlertRecipientCreateWithoutAccountInput, AlertRecipientUncheckedCreateWithoutAccountInput> | AlertRecipientCreateWithoutAccountInput[] | AlertRecipientUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AlertRecipientCreateOrConnectWithoutAccountInput | AlertRecipientCreateOrConnectWithoutAccountInput[]
+    upsert?: AlertRecipientUpsertWithWhereUniqueWithoutAccountInput | AlertRecipientUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: AlertRecipientCreateManyAccountInputEnvelope
+    set?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    disconnect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    delete?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    update?: AlertRecipientUpdateWithWhereUniqueWithoutAccountInput | AlertRecipientUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: AlertRecipientUpdateManyWithWhereWithoutAccountInput | AlertRecipientUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: AlertRecipientScalarWhereInput | AlertRecipientScalarWhereInput[]
+  }
+
   export type AccountClubUncheckedUpdateManyWithoutAccountNestedInput = {
     create?: XOR<AccountClubCreateWithoutAccountInput, AccountClubUncheckedCreateWithoutAccountInput> | AccountClubCreateWithoutAccountInput[] | AccountClubUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutAccountInput | AccountClubCreateOrConnectWithoutAccountInput[]
@@ -48492,6 +53590,34 @@ export namespace Prisma {
     update?: AccountClubUpdateWithWhereUniqueWithoutAccountInput | AccountClubUpdateWithWhereUniqueWithoutAccountInput[]
     updateMany?: AccountClubUpdateManyWithWhereWithoutAccountInput | AccountClubUpdateManyWithWhereWithoutAccountInput[]
     deleteMany?: AccountClubScalarWhereInput | AccountClubScalarWhereInput[]
+  }
+
+  export type StaffUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<StaffCreateWithoutAccountInput, StaffUncheckedCreateWithoutAccountInput> | StaffCreateWithoutAccountInput[] | StaffUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: StaffCreateOrConnectWithoutAccountInput | StaffCreateOrConnectWithoutAccountInput[]
+    upsert?: StaffUpsertWithWhereUniqueWithoutAccountInput | StaffUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: StaffCreateManyAccountInputEnvelope
+    set?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    disconnect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    delete?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+    update?: StaffUpdateWithWhereUniqueWithoutAccountInput | StaffUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: StaffUpdateManyWithWhereWithoutAccountInput | StaffUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: StaffScalarWhereInput | StaffScalarWhereInput[]
+  }
+
+  export type AlertRecipientUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<AlertRecipientCreateWithoutAccountInput, AlertRecipientUncheckedCreateWithoutAccountInput> | AlertRecipientCreateWithoutAccountInput[] | AlertRecipientUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: AlertRecipientCreateOrConnectWithoutAccountInput | AlertRecipientCreateOrConnectWithoutAccountInput[]
+    upsert?: AlertRecipientUpsertWithWhereUniqueWithoutAccountInput | AlertRecipientUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: AlertRecipientCreateManyAccountInputEnvelope
+    set?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    disconnect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    delete?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    update?: AlertRecipientUpdateWithWhereUniqueWithoutAccountInput | AlertRecipientUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: AlertRecipientUpdateManyWithWhereWithoutAccountInput | AlertRecipientUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: AlertRecipientScalarWhereInput | AlertRecipientScalarWhereInput[]
   }
 
   export type AthleteCreateNestedOneWithoutStatisticsInput = {
@@ -48980,6 +54106,19 @@ export namespace Prisma {
     connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
   }
 
+  export type AlertCreateNestedManyWithoutClubInput = {
+    create?: XOR<AlertCreateWithoutClubInput, AlertUncheckedCreateWithoutClubInput> | AlertCreateWithoutClubInput[] | AlertUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: AlertCreateOrConnectWithoutClubInput | AlertCreateOrConnectWithoutClubInput[]
+    createMany?: AlertCreateManyClubInputEnvelope
+    connect?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+  }
+
+  export type ClubEmailSettingsCreateNestedOneWithoutClubInput = {
+    create?: XOR<ClubEmailSettingsCreateWithoutClubInput, ClubEmailSettingsUncheckedCreateWithoutClubInput>
+    connectOrCreate?: ClubEmailSettingsCreateOrConnectWithoutClubInput
+    connect?: ClubEmailSettingsWhereUniqueInput
+  }
+
   export type AccountClubUncheckedCreateNestedManyWithoutClubInput = {
     create?: XOR<AccountClubCreateWithoutClubInput, AccountClubUncheckedCreateWithoutClubInput> | AccountClubCreateWithoutClubInput[] | AccountClubUncheckedCreateWithoutClubInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutClubInput | AccountClubCreateOrConnectWithoutClubInput[]
@@ -49034,6 +54173,19 @@ export namespace Prisma {
     connectOrCreate?: StaffCreateOrConnectWithoutClubInput | StaffCreateOrConnectWithoutClubInput[]
     createMany?: StaffCreateManyClubInputEnvelope
     connect?: StaffWhereUniqueInput | StaffWhereUniqueInput[]
+  }
+
+  export type AlertUncheckedCreateNestedManyWithoutClubInput = {
+    create?: XOR<AlertCreateWithoutClubInput, AlertUncheckedCreateWithoutClubInput> | AlertCreateWithoutClubInput[] | AlertUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: AlertCreateOrConnectWithoutClubInput | AlertCreateOrConnectWithoutClubInput[]
+    createMany?: AlertCreateManyClubInputEnvelope
+    connect?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+  }
+
+  export type ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput = {
+    create?: XOR<ClubEmailSettingsCreateWithoutClubInput, ClubEmailSettingsUncheckedCreateWithoutClubInput>
+    connectOrCreate?: ClubEmailSettingsCreateOrConnectWithoutClubInput
+    connect?: ClubEmailSettingsWhereUniqueInput
   }
 
   export type AccountClubUpdateManyWithoutClubNestedInput = {
@@ -49148,6 +54300,30 @@ export namespace Prisma {
     deleteMany?: StaffScalarWhereInput | StaffScalarWhereInput[]
   }
 
+  export type AlertUpdateManyWithoutClubNestedInput = {
+    create?: XOR<AlertCreateWithoutClubInput, AlertUncheckedCreateWithoutClubInput> | AlertCreateWithoutClubInput[] | AlertUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: AlertCreateOrConnectWithoutClubInput | AlertCreateOrConnectWithoutClubInput[]
+    upsert?: AlertUpsertWithWhereUniqueWithoutClubInput | AlertUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: AlertCreateManyClubInputEnvelope
+    set?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+    disconnect?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+    delete?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+    connect?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+    update?: AlertUpdateWithWhereUniqueWithoutClubInput | AlertUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: AlertUpdateManyWithWhereWithoutClubInput | AlertUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: AlertScalarWhereInput | AlertScalarWhereInput[]
+  }
+
+  export type ClubEmailSettingsUpdateOneWithoutClubNestedInput = {
+    create?: XOR<ClubEmailSettingsCreateWithoutClubInput, ClubEmailSettingsUncheckedCreateWithoutClubInput>
+    connectOrCreate?: ClubEmailSettingsCreateOrConnectWithoutClubInput
+    upsert?: ClubEmailSettingsUpsertWithoutClubInput
+    disconnect?: ClubEmailSettingsWhereInput | boolean
+    delete?: ClubEmailSettingsWhereInput | boolean
+    connect?: ClubEmailSettingsWhereUniqueInput
+    update?: XOR<XOR<ClubEmailSettingsUpdateToOneWithWhereWithoutClubInput, ClubEmailSettingsUpdateWithoutClubInput>, ClubEmailSettingsUncheckedUpdateWithoutClubInput>
+  }
+
   export type AccountClubUncheckedUpdateManyWithoutClubNestedInput = {
     create?: XOR<AccountClubCreateWithoutClubInput, AccountClubUncheckedCreateWithoutClubInput> | AccountClubCreateWithoutClubInput[] | AccountClubUncheckedCreateWithoutClubInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutClubInput | AccountClubCreateOrConnectWithoutClubInput[]
@@ -49258,6 +54434,44 @@ export namespace Prisma {
     update?: StaffUpdateWithWhereUniqueWithoutClubInput | StaffUpdateWithWhereUniqueWithoutClubInput[]
     updateMany?: StaffUpdateManyWithWhereWithoutClubInput | StaffUpdateManyWithWhereWithoutClubInput[]
     deleteMany?: StaffScalarWhereInput | StaffScalarWhereInput[]
+  }
+
+  export type AlertUncheckedUpdateManyWithoutClubNestedInput = {
+    create?: XOR<AlertCreateWithoutClubInput, AlertUncheckedCreateWithoutClubInput> | AlertCreateWithoutClubInput[] | AlertUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: AlertCreateOrConnectWithoutClubInput | AlertCreateOrConnectWithoutClubInput[]
+    upsert?: AlertUpsertWithWhereUniqueWithoutClubInput | AlertUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: AlertCreateManyClubInputEnvelope
+    set?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+    disconnect?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+    delete?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+    connect?: AlertWhereUniqueInput | AlertWhereUniqueInput[]
+    update?: AlertUpdateWithWhereUniqueWithoutClubInput | AlertUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: AlertUpdateManyWithWhereWithoutClubInput | AlertUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: AlertScalarWhereInput | AlertScalarWhereInput[]
+  }
+
+  export type ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput = {
+    create?: XOR<ClubEmailSettingsCreateWithoutClubInput, ClubEmailSettingsUncheckedCreateWithoutClubInput>
+    connectOrCreate?: ClubEmailSettingsCreateOrConnectWithoutClubInput
+    upsert?: ClubEmailSettingsUpsertWithoutClubInput
+    disconnect?: ClubEmailSettingsWhereInput | boolean
+    delete?: ClubEmailSettingsWhereInput | boolean
+    connect?: ClubEmailSettingsWhereUniqueInput
+    update?: XOR<XOR<ClubEmailSettingsUpdateToOneWithWhereWithoutClubInput, ClubEmailSettingsUpdateWithoutClubInput>, ClubEmailSettingsUncheckedUpdateWithoutClubInput>
+  }
+
+  export type ClubCreateNestedOneWithoutEmailSettingsInput = {
+    create?: XOR<ClubCreateWithoutEmailSettingsInput, ClubUncheckedCreateWithoutEmailSettingsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutEmailSettingsInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type ClubUpdateOneRequiredWithoutEmailSettingsNestedInput = {
+    create?: XOR<ClubCreateWithoutEmailSettingsInput, ClubUncheckedCreateWithoutEmailSettingsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutEmailSettingsInput
+    upsert?: ClubUpsertWithoutEmailSettingsInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutEmailSettingsInput, ClubUpdateWithoutEmailSettingsInput>, ClubUncheckedUpdateWithoutEmailSettingsInput>
   }
 
   export type EquipmentColorCreateNestedManyWithoutSeasonInput = {
@@ -49663,6 +54877,12 @@ export namespace Prisma {
     connect?: TeamStaffWhereUniqueInput | TeamStaffWhereUniqueInput[]
   }
 
+  export type AccountCreateNestedOneWithoutStaffProfilesInput = {
+    create?: XOR<AccountCreateWithoutStaffProfilesInput, AccountUncheckedCreateWithoutStaffProfilesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutStaffProfilesInput
+    connect?: AccountWhereUniqueInput
+  }
+
   export type TeamStaffUncheckedCreateNestedManyWithoutStaffInput = {
     create?: XOR<TeamStaffCreateWithoutStaffInput, TeamStaffUncheckedCreateWithoutStaffInput> | TeamStaffCreateWithoutStaffInput[] | TeamStaffUncheckedCreateWithoutStaffInput[]
     connectOrCreate?: TeamStaffCreateOrConnectWithoutStaffInput | TeamStaffCreateOrConnectWithoutStaffInput[]
@@ -49698,6 +54918,16 @@ export namespace Prisma {
     update?: TeamStaffUpdateWithWhereUniqueWithoutStaffInput | TeamStaffUpdateWithWhereUniqueWithoutStaffInput[]
     updateMany?: TeamStaffUpdateManyWithWhereWithoutStaffInput | TeamStaffUpdateManyWithWhereWithoutStaffInput[]
     deleteMany?: TeamStaffScalarWhereInput | TeamStaffScalarWhereInput[]
+  }
+
+  export type AccountUpdateOneWithoutStaffProfilesNestedInput = {
+    create?: XOR<AccountCreateWithoutStaffProfilesInput, AccountUncheckedCreateWithoutStaffProfilesInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutStaffProfilesInput
+    upsert?: AccountUpsertWithoutStaffProfilesInput
+    disconnect?: AccountWhereInput | boolean
+    delete?: AccountWhereInput | boolean
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutStaffProfilesInput, AccountUpdateWithoutStaffProfilesInput>, AccountUncheckedUpdateWithoutStaffProfilesInput>
   }
 
   export type TeamStaffUncheckedUpdateManyWithoutStaffNestedInput = {
@@ -50152,6 +55382,102 @@ export namespace Prisma {
     update?: XOR<XOR<EquipmentColorUpdateToOneWithWhereWithoutGameEquipmentsInput, EquipmentColorUpdateWithoutGameEquipmentsInput>, EquipmentColorUncheckedUpdateWithoutGameEquipmentsInput>
   }
 
+  export type ClubCreateNestedOneWithoutAlertsInput = {
+    create?: XOR<ClubCreateWithoutAlertsInput, ClubUncheckedCreateWithoutAlertsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutAlertsInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type AlertRecipientCreateNestedManyWithoutAlertInput = {
+    create?: XOR<AlertRecipientCreateWithoutAlertInput, AlertRecipientUncheckedCreateWithoutAlertInput> | AlertRecipientCreateWithoutAlertInput[] | AlertRecipientUncheckedCreateWithoutAlertInput[]
+    connectOrCreate?: AlertRecipientCreateOrConnectWithoutAlertInput | AlertRecipientCreateOrConnectWithoutAlertInput[]
+    createMany?: AlertRecipientCreateManyAlertInputEnvelope
+    connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+  }
+
+  export type AlertRecipientUncheckedCreateNestedManyWithoutAlertInput = {
+    create?: XOR<AlertRecipientCreateWithoutAlertInput, AlertRecipientUncheckedCreateWithoutAlertInput> | AlertRecipientCreateWithoutAlertInput[] | AlertRecipientUncheckedCreateWithoutAlertInput[]
+    connectOrCreate?: AlertRecipientCreateOrConnectWithoutAlertInput | AlertRecipientCreateOrConnectWithoutAlertInput[]
+    createMany?: AlertRecipientCreateManyAlertInputEnvelope
+    connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+  }
+
+  export type EnumAlertTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AlertType
+  }
+
+  export type EnumAlertCategoryFieldUpdateOperationsInput = {
+    set?: $Enums.AlertCategory
+  }
+
+  export type ClubUpdateOneRequiredWithoutAlertsNestedInput = {
+    create?: XOR<ClubCreateWithoutAlertsInput, ClubUncheckedCreateWithoutAlertsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutAlertsInput
+    upsert?: ClubUpsertWithoutAlertsInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutAlertsInput, ClubUpdateWithoutAlertsInput>, ClubUncheckedUpdateWithoutAlertsInput>
+  }
+
+  export type AlertRecipientUpdateManyWithoutAlertNestedInput = {
+    create?: XOR<AlertRecipientCreateWithoutAlertInput, AlertRecipientUncheckedCreateWithoutAlertInput> | AlertRecipientCreateWithoutAlertInput[] | AlertRecipientUncheckedCreateWithoutAlertInput[]
+    connectOrCreate?: AlertRecipientCreateOrConnectWithoutAlertInput | AlertRecipientCreateOrConnectWithoutAlertInput[]
+    upsert?: AlertRecipientUpsertWithWhereUniqueWithoutAlertInput | AlertRecipientUpsertWithWhereUniqueWithoutAlertInput[]
+    createMany?: AlertRecipientCreateManyAlertInputEnvelope
+    set?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    disconnect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    delete?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    update?: AlertRecipientUpdateWithWhereUniqueWithoutAlertInput | AlertRecipientUpdateWithWhereUniqueWithoutAlertInput[]
+    updateMany?: AlertRecipientUpdateManyWithWhereWithoutAlertInput | AlertRecipientUpdateManyWithWhereWithoutAlertInput[]
+    deleteMany?: AlertRecipientScalarWhereInput | AlertRecipientScalarWhereInput[]
+  }
+
+  export type AlertRecipientUncheckedUpdateManyWithoutAlertNestedInput = {
+    create?: XOR<AlertRecipientCreateWithoutAlertInput, AlertRecipientUncheckedCreateWithoutAlertInput> | AlertRecipientCreateWithoutAlertInput[] | AlertRecipientUncheckedCreateWithoutAlertInput[]
+    connectOrCreate?: AlertRecipientCreateOrConnectWithoutAlertInput | AlertRecipientCreateOrConnectWithoutAlertInput[]
+    upsert?: AlertRecipientUpsertWithWhereUniqueWithoutAlertInput | AlertRecipientUpsertWithWhereUniqueWithoutAlertInput[]
+    createMany?: AlertRecipientCreateManyAlertInputEnvelope
+    set?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    disconnect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    delete?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+    update?: AlertRecipientUpdateWithWhereUniqueWithoutAlertInput | AlertRecipientUpdateWithWhereUniqueWithoutAlertInput[]
+    updateMany?: AlertRecipientUpdateManyWithWhereWithoutAlertInput | AlertRecipientUpdateManyWithWhereWithoutAlertInput[]
+    deleteMany?: AlertRecipientScalarWhereInput | AlertRecipientScalarWhereInput[]
+  }
+
+  export type AlertCreateNestedOneWithoutRecipientsInput = {
+    create?: XOR<AlertCreateWithoutRecipientsInput, AlertUncheckedCreateWithoutRecipientsInput>
+    connectOrCreate?: AlertCreateOrConnectWithoutRecipientsInput
+    connect?: AlertWhereUniqueInput
+  }
+
+  export type AccountCreateNestedOneWithoutAlertRecipientsInput = {
+    create?: XOR<AccountCreateWithoutAlertRecipientsInput, AccountUncheckedCreateWithoutAlertRecipientsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutAlertRecipientsInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type EnumAlertRecipientStatusFieldUpdateOperationsInput = {
+    set?: $Enums.AlertRecipientStatus
+  }
+
+  export type AlertUpdateOneRequiredWithoutRecipientsNestedInput = {
+    create?: XOR<AlertCreateWithoutRecipientsInput, AlertUncheckedCreateWithoutRecipientsInput>
+    connectOrCreate?: AlertCreateOrConnectWithoutRecipientsInput
+    upsert?: AlertUpsertWithoutRecipientsInput
+    connect?: AlertWhereUniqueInput
+    update?: XOR<XOR<AlertUpdateToOneWithWhereWithoutRecipientsInput, AlertUpdateWithoutRecipientsInput>, AlertUncheckedUpdateWithoutRecipientsInput>
+  }
+
+  export type AccountUpdateOneRequiredWithoutAlertRecipientsNestedInput = {
+    create?: XOR<AccountCreateWithoutAlertRecipientsInput, AccountUncheckedCreateWithoutAlertRecipientsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutAlertRecipientsInput
+    upsert?: AccountUpsertWithoutAlertRecipientsInput
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutAlertRecipientsInput, AccountUpdateWithoutAlertRecipientsInput>, AccountUncheckedUpdateWithoutAlertRecipientsInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -50536,6 +55862,57 @@ export namespace Prisma {
     _max?: NestedEnumSizeFilter<$PrismaModel>
   }
 
+  export type NestedEnumAlertTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertType | EnumAlertTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertTypeFilter<$PrismaModel> | $Enums.AlertType
+  }
+
+  export type NestedEnumAlertCategoryFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertCategory | EnumAlertCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertCategory[] | ListEnumAlertCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertCategory[] | ListEnumAlertCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertCategoryFilter<$PrismaModel> | $Enums.AlertCategory
+  }
+
+  export type NestedEnumAlertTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertType | EnumAlertTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertType[] | ListEnumAlertTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertTypeWithAggregatesFilter<$PrismaModel> | $Enums.AlertType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertTypeFilter<$PrismaModel>
+    _max?: NestedEnumAlertTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAlertCategoryWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertCategory | EnumAlertCategoryFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertCategory[] | ListEnumAlertCategoryFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertCategory[] | ListEnumAlertCategoryFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertCategoryWithAggregatesFilter<$PrismaModel> | $Enums.AlertCategory
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertCategoryFilter<$PrismaModel>
+    _max?: NestedEnumAlertCategoryFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAlertRecipientStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertRecipientStatus | EnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertRecipientStatus[] | ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertRecipientStatus[] | ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertRecipientStatusFilter<$PrismaModel> | $Enums.AlertRecipientStatus
+  }
+
+  export type NestedEnumAlertRecipientStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AlertRecipientStatus | EnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.AlertRecipientStatus[] | ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AlertRecipientStatus[] | ListEnumAlertRecipientStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumAlertRecipientStatusWithAggregatesFilter<$PrismaModel> | $Enums.AlertRecipientStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAlertRecipientStatusFilter<$PrismaModel>
+    _max?: NestedEnumAlertRecipientStatusFilter<$PrismaModel>
+  }
+
   export type ClubCreateWithoutAthletesInput = {
     name: string
     shortName?: string | null
@@ -50552,6 +55929,8 @@ export namespace Prisma {
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutAthletesInput = {
@@ -50571,6 +55950,8 @@ export namespace Prisma {
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutAthletesInput = {
@@ -50832,6 +56213,8 @@ export namespace Prisma {
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAthletesInput = {
@@ -50851,6 +56234,8 @@ export namespace Prisma {
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type AthleteReportUpsertWithWhereUniqueWithoutAthleteInput = {
@@ -51340,6 +56725,8 @@ export namespace Prisma {
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutGamesInput = {
@@ -51359,6 +56746,8 @@ export namespace Prisma {
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutGamesInput = {
@@ -51708,6 +57097,8 @@ export namespace Prisma {
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutGamesInput = {
@@ -51727,6 +57118,8 @@ export namespace Prisma {
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type TeamUpsertWithoutGamesInput = {
@@ -52198,6 +57591,72 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type StaffCreateWithoutAccountInput = {
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutStaffInput
+    teams?: TeamStaffCreateNestedManyWithoutStaffInput
+  }
+
+  export type StaffUncheckedCreateWithoutAccountInput = {
+    id?: number
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    clubId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamStaffUncheckedCreateNestedManyWithoutStaffInput
+  }
+
+  export type StaffCreateOrConnectWithoutAccountInput = {
+    where: StaffWhereUniqueInput
+    create: XOR<StaffCreateWithoutAccountInput, StaffUncheckedCreateWithoutAccountInput>
+  }
+
+  export type StaffCreateManyAccountInputEnvelope = {
+    data: StaffCreateManyAccountInput | StaffCreateManyAccountInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type AlertRecipientCreateWithoutAccountInput = {
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    alert: AlertCreateNestedOneWithoutRecipientsInput
+  }
+
+  export type AlertRecipientUncheckedCreateWithoutAccountInput = {
+    id?: number
+    alertId: number
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AlertRecipientCreateOrConnectWithoutAccountInput = {
+    where: AlertRecipientWhereUniqueInput
+    create: XOR<AlertRecipientCreateWithoutAccountInput, AlertRecipientUncheckedCreateWithoutAccountInput>
+  }
+
+  export type AlertRecipientCreateManyAccountInputEnvelope = {
+    data: AlertRecipientCreateManyAccountInput | AlertRecipientCreateManyAccountInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountClubUpsertWithWhereUniqueWithoutAccountInput = {
     where: AccountClubWhereUniqueInput
     update: XOR<AccountClubUpdateWithoutAccountInput, AccountClubUncheckedUpdateWithoutAccountInput>
@@ -52222,6 +57681,69 @@ export namespace Prisma {
     accountId?: IntFilter<"AccountClub"> | number
     clubId?: IntFilter<"AccountClub"> | number
     createdAt?: DateTimeFilter<"AccountClub"> | Date | string
+  }
+
+  export type StaffUpsertWithWhereUniqueWithoutAccountInput = {
+    where: StaffWhereUniqueInput
+    update: XOR<StaffUpdateWithoutAccountInput, StaffUncheckedUpdateWithoutAccountInput>
+    create: XOR<StaffCreateWithoutAccountInput, StaffUncheckedCreateWithoutAccountInput>
+  }
+
+  export type StaffUpdateWithWhereUniqueWithoutAccountInput = {
+    where: StaffWhereUniqueInput
+    data: XOR<StaffUpdateWithoutAccountInput, StaffUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type StaffUpdateManyWithWhereWithoutAccountInput = {
+    where: StaffScalarWhereInput
+    data: XOR<StaffUpdateManyMutationInput, StaffUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type StaffScalarWhereInput = {
+    AND?: StaffScalarWhereInput | StaffScalarWhereInput[]
+    OR?: StaffScalarWhereInput[]
+    NOT?: StaffScalarWhereInput | StaffScalarWhereInput[]
+    id?: IntFilter<"Staff"> | number
+    name?: StringFilter<"Staff"> | string
+    birthdate?: DateTimeNullableFilter<"Staff"> | Date | string | null
+    tptdNumber?: IntNullableFilter<"Staff"> | number | null
+    fpbLicense?: IntNullableFilter<"Staff"> | number | null
+    grade?: EnumCoachGradeNullableFilter<"Staff"> | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
+    active?: BoolFilter<"Staff"> | boolean
+    clubId?: IntFilter<"Staff"> | number
+    accountId?: IntNullableFilter<"Staff"> | number | null
+    createdAt?: DateTimeFilter<"Staff"> | Date | string
+    updatedAt?: DateTimeFilter<"Staff"> | Date | string
+  }
+
+  export type AlertRecipientUpsertWithWhereUniqueWithoutAccountInput = {
+    where: AlertRecipientWhereUniqueInput
+    update: XOR<AlertRecipientUpdateWithoutAccountInput, AlertRecipientUncheckedUpdateWithoutAccountInput>
+    create: XOR<AlertRecipientCreateWithoutAccountInput, AlertRecipientUncheckedCreateWithoutAccountInput>
+  }
+
+  export type AlertRecipientUpdateWithWhereUniqueWithoutAccountInput = {
+    where: AlertRecipientWhereUniqueInput
+    data: XOR<AlertRecipientUpdateWithoutAccountInput, AlertRecipientUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type AlertRecipientUpdateManyWithWhereWithoutAccountInput = {
+    where: AlertRecipientScalarWhereInput
+    data: XOR<AlertRecipientUpdateManyMutationInput, AlertRecipientUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type AlertRecipientScalarWhereInput = {
+    AND?: AlertRecipientScalarWhereInput | AlertRecipientScalarWhereInput[]
+    OR?: AlertRecipientScalarWhereInput[]
+    NOT?: AlertRecipientScalarWhereInput | AlertRecipientScalarWhereInput[]
+    id?: IntFilter<"AlertRecipient"> | number
+    alertId?: IntFilter<"AlertRecipient"> | number
+    accountId?: IntFilter<"AlertRecipient"> | number
+    status?: EnumAlertRecipientStatusFilter<"AlertRecipient"> | $Enums.AlertRecipientStatus
+    readAt?: DateTimeNullableFilter<"AlertRecipient"> | Date | string | null
+    deletedAt?: DateTimeNullableFilter<"AlertRecipient"> | Date | string | null
+    createdAt?: DateTimeFilter<"AlertRecipient"> | Date | string
   }
 
   export type AthleteCreateWithoutStatisticsInput = {
@@ -53090,6 +58612,8 @@ export namespace Prisma {
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutMacrocyclesInput = {
@@ -53109,6 +58633,8 @@ export namespace Prisma {
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutMacrocyclesInput = {
@@ -53172,6 +58698,8 @@ export namespace Prisma {
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMacrocyclesInput = {
@@ -53191,6 +58719,8 @@ export namespace Prisma {
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type MesocycleUpsertWithWhereUniqueWithoutMacrocycleInput = {
@@ -54114,6 +59644,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     teams?: TeamStaffCreateNestedManyWithoutStaffInput
+    account?: AccountCreateNestedOneWithoutStaffProfilesInput
   }
 
   export type StaffUncheckedCreateWithoutClubInput = {
@@ -54125,6 +59656,7 @@ export namespace Prisma {
     grade?: $Enums.CoachGrade | null
     role: $Enums.StaffRole
     active?: boolean
+    accountId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     teams?: TeamStaffUncheckedCreateNestedManyWithoutStaffInput
@@ -54138,6 +59670,79 @@ export namespace Prisma {
   export type StaffCreateManyClubInputEnvelope = {
     data: StaffCreateManyClubInput | StaffCreateManyClubInput[]
     skipDuplicates?: boolean
+  }
+
+  export type AlertCreateWithoutClubInput = {
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl?: string | null
+    referenceType?: string | null
+    referenceId?: number | null
+    triggerDate: Date | string
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    recipients?: AlertRecipientCreateNestedManyWithoutAlertInput
+  }
+
+  export type AlertUncheckedCreateWithoutClubInput = {
+    id?: number
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl?: string | null
+    referenceType?: string | null
+    referenceId?: number | null
+    triggerDate: Date | string
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    recipients?: AlertRecipientUncheckedCreateNestedManyWithoutAlertInput
+  }
+
+  export type AlertCreateOrConnectWithoutClubInput = {
+    where: AlertWhereUniqueInput
+    create: XOR<AlertCreateWithoutClubInput, AlertUncheckedCreateWithoutClubInput>
+  }
+
+  export type AlertCreateManyClubInputEnvelope = {
+    data: AlertCreateManyClubInput | AlertCreateManyClubInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubEmailSettingsCreateWithoutClubInput = {
+    enabled?: boolean
+    host?: string | null
+    port?: number | null
+    secure?: boolean
+    user?: string | null
+    passEncrypted?: string | null
+    fromEmail?: string | null
+    fromName?: string | null
+    replyTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClubEmailSettingsUncheckedCreateWithoutClubInput = {
+    id?: number
+    enabled?: boolean
+    host?: string | null
+    port?: number | null
+    secure?: boolean
+    user?: string | null
+    passEncrypted?: string | null
+    fromEmail?: string | null
+    fromName?: string | null
+    replyTo?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClubEmailSettingsCreateOrConnectWithoutClubInput = {
+    where: ClubEmailSettingsWhereUniqueInput
+    create: XOR<ClubEmailSettingsCreateWithoutClubInput, ClubEmailSettingsUncheckedCreateWithoutClubInput>
   }
 
   export type AccountClubUpsertWithWhereUniqueWithoutClubInput = {
@@ -54300,21 +59905,176 @@ export namespace Prisma {
     data: XOR<StaffUpdateManyMutationInput, StaffUncheckedUpdateManyWithoutClubInput>
   }
 
-  export type StaffScalarWhereInput = {
-    AND?: StaffScalarWhereInput | StaffScalarWhereInput[]
-    OR?: StaffScalarWhereInput[]
-    NOT?: StaffScalarWhereInput | StaffScalarWhereInput[]
-    id?: IntFilter<"Staff"> | number
-    name?: StringFilter<"Staff"> | string
-    birthdate?: DateTimeNullableFilter<"Staff"> | Date | string | null
-    tptdNumber?: IntNullableFilter<"Staff"> | number | null
-    fpbLicense?: IntNullableFilter<"Staff"> | number | null
-    grade?: EnumCoachGradeNullableFilter<"Staff"> | $Enums.CoachGrade | null
-    role?: EnumStaffRoleFilter<"Staff"> | $Enums.StaffRole
-    active?: BoolFilter<"Staff"> | boolean
-    clubId?: IntFilter<"Staff"> | number
-    createdAt?: DateTimeFilter<"Staff"> | Date | string
-    updatedAt?: DateTimeFilter<"Staff"> | Date | string
+  export type AlertUpsertWithWhereUniqueWithoutClubInput = {
+    where: AlertWhereUniqueInput
+    update: XOR<AlertUpdateWithoutClubInput, AlertUncheckedUpdateWithoutClubInput>
+    create: XOR<AlertCreateWithoutClubInput, AlertUncheckedCreateWithoutClubInput>
+  }
+
+  export type AlertUpdateWithWhereUniqueWithoutClubInput = {
+    where: AlertWhereUniqueInput
+    data: XOR<AlertUpdateWithoutClubInput, AlertUncheckedUpdateWithoutClubInput>
+  }
+
+  export type AlertUpdateManyWithWhereWithoutClubInput = {
+    where: AlertScalarWhereInput
+    data: XOR<AlertUpdateManyMutationInput, AlertUncheckedUpdateManyWithoutClubInput>
+  }
+
+  export type AlertScalarWhereInput = {
+    AND?: AlertScalarWhereInput | AlertScalarWhereInput[]
+    OR?: AlertScalarWhereInput[]
+    NOT?: AlertScalarWhereInput | AlertScalarWhereInput[]
+    id?: IntFilter<"Alert"> | number
+    clubId?: IntFilter<"Alert"> | number
+    type?: EnumAlertTypeFilter<"Alert"> | $Enums.AlertType
+    category?: EnumAlertCategoryFilter<"Alert"> | $Enums.AlertCategory
+    title?: StringFilter<"Alert"> | string
+    message?: StringFilter<"Alert"> | string
+    linkUrl?: StringNullableFilter<"Alert"> | string | null
+    referenceType?: StringNullableFilter<"Alert"> | string | null
+    referenceId?: IntNullableFilter<"Alert"> | number | null
+    triggerDate?: DateTimeFilter<"Alert"> | Date | string
+    expiresAt?: DateTimeNullableFilter<"Alert"> | Date | string | null
+    createdAt?: DateTimeFilter<"Alert"> | Date | string
+  }
+
+  export type ClubEmailSettingsUpsertWithoutClubInput = {
+    update: XOR<ClubEmailSettingsUpdateWithoutClubInput, ClubEmailSettingsUncheckedUpdateWithoutClubInput>
+    create: XOR<ClubEmailSettingsCreateWithoutClubInput, ClubEmailSettingsUncheckedCreateWithoutClubInput>
+    where?: ClubEmailSettingsWhereInput
+  }
+
+  export type ClubEmailSettingsUpdateToOneWithWhereWithoutClubInput = {
+    where?: ClubEmailSettingsWhereInput
+    data: XOR<ClubEmailSettingsUpdateWithoutClubInput, ClubEmailSettingsUncheckedUpdateWithoutClubInput>
+  }
+
+  export type ClubEmailSettingsUpdateWithoutClubInput = {
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    host?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    secure?: BoolFieldUpdateOperationsInput | boolean
+    user?: NullableStringFieldUpdateOperationsInput | string | null
+    passEncrypted?: NullableStringFieldUpdateOperationsInput | string | null
+    fromEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    fromName?: NullableStringFieldUpdateOperationsInput | string | null
+    replyTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubEmailSettingsUncheckedUpdateWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    enabled?: BoolFieldUpdateOperationsInput | boolean
+    host?: NullableStringFieldUpdateOperationsInput | string | null
+    port?: NullableIntFieldUpdateOperationsInput | number | null
+    secure?: BoolFieldUpdateOperationsInput | boolean
+    user?: NullableStringFieldUpdateOperationsInput | string | null
+    passEncrypted?: NullableStringFieldUpdateOperationsInput | string | null
+    fromEmail?: NullableStringFieldUpdateOperationsInput | string | null
+    fromName?: NullableStringFieldUpdateOperationsInput | string | null
+    replyTo?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubCreateWithoutEmailSettingsInput = {
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubCreateNestedManyWithoutClubInput
+    athletes?: AthleteCreateNestedManyWithoutClubInput
+    games?: GameCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
+    teams?: TeamCreateNestedManyWithoutClubInput
+    venues?: VenueCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutEmailSettingsInput = {
+    id?: number
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
+    athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
+    games?: GameUncheckedCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
+    teams?: TeamUncheckedCreateNestedManyWithoutClubInput
+    venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutEmailSettingsInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutEmailSettingsInput, ClubUncheckedCreateWithoutEmailSettingsInput>
+  }
+
+  export type ClubUpsertWithoutEmailSettingsInput = {
+    update: XOR<ClubUpdateWithoutEmailSettingsInput, ClubUncheckedUpdateWithoutEmailSettingsInput>
+    create: XOR<ClubCreateWithoutEmailSettingsInput, ClubUncheckedCreateWithoutEmailSettingsInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutEmailSettingsInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutEmailSettingsInput, ClubUncheckedUpdateWithoutEmailSettingsInput>
+  }
+
+  export type ClubUpdateWithoutEmailSettingsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUpdateManyWithoutClubNestedInput
+    games?: GameUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
+    teams?: TeamUpdateManyWithoutClubNestedInput
+    venues?: VenueUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutEmailSettingsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
+    games?: GameUncheckedUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type EquipmentColorCreateWithoutSeasonInput = {
@@ -54410,6 +60170,8 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutVenuesInput = {
@@ -54429,6 +60191,8 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutVenuesInput = {
@@ -54570,6 +60334,8 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutVenuesInput = {
@@ -54589,6 +60355,8 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type GameUpsertWithWhereUniqueWithoutVenueInput = {
@@ -54618,6 +60386,8 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    staffProfiles?: StaffCreateNestedManyWithoutAccountInput
+    alertRecipients?: AlertRecipientCreateNestedManyWithoutAccountInput
   }
 
   export type AccountUncheckedCreateWithoutClubsInput = {
@@ -54632,6 +60402,8 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    staffProfiles?: StaffUncheckedCreateNestedManyWithoutAccountInput
+    alertRecipients?: AlertRecipientUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type AccountCreateOrConnectWithoutClubsInput = {
@@ -54655,6 +60427,8 @@ export namespace Prisma {
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutAccountsInput = {
@@ -54674,6 +60448,8 @@ export namespace Prisma {
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutAccountsInput = {
@@ -54722,6 +60498,8 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    staffProfiles?: StaffUpdateManyWithoutAccountNestedInput
+    alertRecipients?: AlertRecipientUpdateManyWithoutAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutClubsInput = {
@@ -54736,6 +60514,8 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    staffProfiles?: StaffUncheckedUpdateManyWithoutAccountNestedInput
+    alertRecipients?: AlertRecipientUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type ClubUpsertWithoutAccountsInput = {
@@ -54765,6 +60545,8 @@ export namespace Prisma {
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAccountsInput = {
@@ -54784,6 +60566,8 @@ export namespace Prisma {
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type AccountClubRoleUpsertWithWhereUniqueWithoutAccountClubInput = {
@@ -54869,6 +60653,8 @@ export namespace Prisma {
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutTeamsInput = {
@@ -54888,6 +60674,8 @@ export namespace Prisma {
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutTeamsInput = {
@@ -55065,6 +60853,8 @@ export namespace Prisma {
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTeamsInput = {
@@ -55084,6 +60874,8 @@ export namespace Prisma {
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type EchelonUpsertWithoutTeamsInput = {
@@ -55364,6 +61156,8 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutStaffInput = {
@@ -55383,6 +61177,8 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutStaffInput = {
@@ -55409,6 +61205,42 @@ export namespace Prisma {
   export type TeamStaffCreateManyStaffInputEnvelope = {
     data: TeamStaffCreateManyStaffInput | TeamStaffCreateManyStaffInput[]
     skipDuplicates?: boolean
+  }
+
+  export type AccountCreateWithoutStaffProfilesInput = {
+    name?: string | null
+    email: string
+    password: string
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultClubId?: number
+    role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
+    clubs?: AccountClubCreateNestedManyWithoutAccountInput
+    alertRecipients?: AlertRecipientCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutStaffProfilesInput = {
+    id?: number
+    name?: string | null
+    email: string
+    password: string
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultClubId?: number
+    role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
+    clubs?: AccountClubUncheckedCreateNestedManyWithoutAccountInput
+    alertRecipients?: AlertRecipientUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutStaffProfilesInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutStaffProfilesInput, AccountUncheckedCreateWithoutStaffProfilesInput>
   }
 
   export type ClubUpsertWithoutStaffInput = {
@@ -55438,6 +61270,8 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutStaffInput = {
@@ -55457,6 +61291,8 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type TeamStaffUpsertWithWhereUniqueWithoutStaffInput = {
@@ -55473,6 +61309,48 @@ export namespace Prisma {
   export type TeamStaffUpdateManyWithWhereWithoutStaffInput = {
     where: TeamStaffScalarWhereInput
     data: XOR<TeamStaffUpdateManyMutationInput, TeamStaffUncheckedUpdateManyWithoutStaffInput>
+  }
+
+  export type AccountUpsertWithoutStaffProfilesInput = {
+    update: XOR<AccountUpdateWithoutStaffProfilesInput, AccountUncheckedUpdateWithoutStaffProfilesInput>
+    create: XOR<AccountCreateWithoutStaffProfilesInput, AccountUncheckedCreateWithoutStaffProfilesInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutStaffProfilesInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutStaffProfilesInput, AccountUncheckedUpdateWithoutStaffProfilesInput>
+  }
+
+  export type AccountUpdateWithoutStaffProfilesInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultClubId?: IntFieldUpdateOperationsInput | number
+    role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clubs?: AccountClubUpdateManyWithoutAccountNestedInput
+    alertRecipients?: AlertRecipientUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutStaffProfilesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultClubId?: IntFieldUpdateOperationsInput | number
+    role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clubs?: AccountClubUncheckedUpdateManyWithoutAccountNestedInput
+    alertRecipients?: AlertRecipientUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type TeamCreateWithoutStaffInput = {
@@ -55514,6 +61392,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutStaffInput
+    account?: AccountCreateNestedOneWithoutStaffProfilesInput
   }
 
   export type StaffUncheckedCreateWithoutTeamsInput = {
@@ -55526,6 +61405,7 @@ export namespace Prisma {
     role: $Enums.StaffRole
     active?: boolean
     clubId: number
+    accountId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -55591,6 +61471,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutStaffNestedInput
+    account?: AccountUpdateOneWithoutStaffProfilesNestedInput
   }
 
   export type StaffUncheckedUpdateWithoutTeamsInput = {
@@ -55603,6 +61484,7 @@ export namespace Prisma {
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
     active?: BoolFieldUpdateOperationsInput | boolean
     clubId?: IntFieldUpdateOperationsInput | number
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -56090,6 +61972,8 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutClubInput
     venues?: VenueCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutEquipmentColorsInput = {
@@ -56109,6 +61993,8 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutClubInput
     venues?: VenueUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutEquipmentColorsInput = {
@@ -56245,6 +62131,8 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutClubNestedInput
     venues?: VenueUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutEquipmentColorsInput = {
@@ -56264,6 +62152,8 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
     venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
   }
 
   export type SeasonUpsertWithoutEquipmentColorsInput = {
@@ -56833,6 +62723,299 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
+  }
+
+  export type ClubCreateWithoutAlertsInput = {
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubCreateNestedManyWithoutClubInput
+    athletes?: AthleteCreateNestedManyWithoutClubInput
+    games?: GameCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
+    teams?: TeamCreateNestedManyWithoutClubInput
+    venues?: VenueCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutAlertsInput = {
+    id?: number
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
+    athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
+    games?: GameUncheckedCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
+    teams?: TeamUncheckedCreateNestedManyWithoutClubInput
+    venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutAlertsInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutAlertsInput, ClubUncheckedCreateWithoutAlertsInput>
+  }
+
+  export type AlertRecipientCreateWithoutAlertInput = {
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+    account: AccountCreateNestedOneWithoutAlertRecipientsInput
+  }
+
+  export type AlertRecipientUncheckedCreateWithoutAlertInput = {
+    id?: number
+    accountId: number
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AlertRecipientCreateOrConnectWithoutAlertInput = {
+    where: AlertRecipientWhereUniqueInput
+    create: XOR<AlertRecipientCreateWithoutAlertInput, AlertRecipientUncheckedCreateWithoutAlertInput>
+  }
+
+  export type AlertRecipientCreateManyAlertInputEnvelope = {
+    data: AlertRecipientCreateManyAlertInput | AlertRecipientCreateManyAlertInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubUpsertWithoutAlertsInput = {
+    update: XOR<ClubUpdateWithoutAlertsInput, ClubUncheckedUpdateWithoutAlertsInput>
+    create: XOR<ClubCreateWithoutAlertsInput, ClubUncheckedCreateWithoutAlertsInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutAlertsInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutAlertsInput, ClubUncheckedUpdateWithoutAlertsInput>
+  }
+
+  export type ClubUpdateWithoutAlertsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUpdateManyWithoutClubNestedInput
+    games?: GameUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
+    teams?: TeamUpdateManyWithoutClubNestedInput
+    venues?: VenueUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutAlertsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
+    games?: GameUncheckedUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+  }
+
+  export type AlertRecipientUpsertWithWhereUniqueWithoutAlertInput = {
+    where: AlertRecipientWhereUniqueInput
+    update: XOR<AlertRecipientUpdateWithoutAlertInput, AlertRecipientUncheckedUpdateWithoutAlertInput>
+    create: XOR<AlertRecipientCreateWithoutAlertInput, AlertRecipientUncheckedCreateWithoutAlertInput>
+  }
+
+  export type AlertRecipientUpdateWithWhereUniqueWithoutAlertInput = {
+    where: AlertRecipientWhereUniqueInput
+    data: XOR<AlertRecipientUpdateWithoutAlertInput, AlertRecipientUncheckedUpdateWithoutAlertInput>
+  }
+
+  export type AlertRecipientUpdateManyWithWhereWithoutAlertInput = {
+    where: AlertRecipientScalarWhereInput
+    data: XOR<AlertRecipientUpdateManyMutationInput, AlertRecipientUncheckedUpdateManyWithoutAlertInput>
+  }
+
+  export type AlertCreateWithoutRecipientsInput = {
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl?: string | null
+    referenceType?: string | null
+    referenceId?: number | null
+    triggerDate: Date | string
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+    club: ClubCreateNestedOneWithoutAlertsInput
+  }
+
+  export type AlertUncheckedCreateWithoutRecipientsInput = {
+    id?: number
+    clubId: number
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl?: string | null
+    referenceType?: string | null
+    referenceId?: number | null
+    triggerDate: Date | string
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AlertCreateOrConnectWithoutRecipientsInput = {
+    where: AlertWhereUniqueInput
+    create: XOR<AlertCreateWithoutRecipientsInput, AlertUncheckedCreateWithoutRecipientsInput>
+  }
+
+  export type AccountCreateWithoutAlertRecipientsInput = {
+    name?: string | null
+    email: string
+    password: string
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultClubId?: number
+    role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
+    clubs?: AccountClubCreateNestedManyWithoutAccountInput
+    staffProfiles?: StaffCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutAlertRecipientsInput = {
+    id?: number
+    name?: string | null
+    email: string
+    password: string
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultClubId?: number
+    role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
+    clubs?: AccountClubUncheckedCreateNestedManyWithoutAccountInput
+    staffProfiles?: StaffUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutAlertRecipientsInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutAlertRecipientsInput, AccountUncheckedCreateWithoutAlertRecipientsInput>
+  }
+
+  export type AlertUpsertWithoutRecipientsInput = {
+    update: XOR<AlertUpdateWithoutRecipientsInput, AlertUncheckedUpdateWithoutRecipientsInput>
+    create: XOR<AlertCreateWithoutRecipientsInput, AlertUncheckedCreateWithoutRecipientsInput>
+    where?: AlertWhereInput
+  }
+
+  export type AlertUpdateToOneWithWhereWithoutRecipientsInput = {
+    where?: AlertWhereInput
+    data: XOR<AlertUpdateWithoutRecipientsInput, AlertUncheckedUpdateWithoutRecipientsInput>
+  }
+
+  export type AlertUpdateWithoutRecipientsInput = {
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutAlertsNestedInput
+  }
+
+  export type AlertUncheckedUpdateWithoutRecipientsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AccountUpsertWithoutAlertRecipientsInput = {
+    update: XOR<AccountUpdateWithoutAlertRecipientsInput, AccountUncheckedUpdateWithoutAlertRecipientsInput>
+    create: XOR<AccountCreateWithoutAlertRecipientsInput, AccountUncheckedCreateWithoutAlertRecipientsInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutAlertRecipientsInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutAlertRecipientsInput, AccountUncheckedUpdateWithoutAlertRecipientsInput>
+  }
+
+  export type AccountUpdateWithoutAlertRecipientsInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultClubId?: IntFieldUpdateOperationsInput | number
+    role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clubs?: AccountClubUpdateManyWithoutAccountNestedInput
+    staffProfiles?: StaffUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutAlertRecipientsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultClubId?: IntFieldUpdateOperationsInput | number
+    role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    clubs?: AccountClubUncheckedUpdateManyWithoutAccountNestedInput
+    staffProfiles?: StaffUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type AthleteReportCreateManyAthleteInput = {
@@ -57549,6 +63732,29 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type StaffCreateManyAccountInput = {
+    id?: number
+    name: string
+    birthdate?: Date | string | null
+    tptdNumber?: number | null
+    fpbLicense?: number | null
+    grade?: $Enums.CoachGrade | null
+    role: $Enums.StaffRole
+    active?: boolean
+    clubId: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type AlertRecipientCreateManyAccountInput = {
+    id?: number
+    alertId: number
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
   export type AccountClubUpdateWithoutAccountInput = {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutAccountsNestedInput
@@ -57565,6 +63771,75 @@ export namespace Prisma {
   export type AccountClubUncheckedUpdateManyWithoutAccountInput = {
     id?: IntFieldUpdateOperationsInput | number
     clubId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type StaffUpdateWithoutAccountInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutStaffNestedInput
+    teams?: TeamStaffUpdateManyWithoutStaffNestedInput
+  }
+
+  export type StaffUncheckedUpdateWithoutAccountInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamStaffUncheckedUpdateManyWithoutStaffNestedInput
+  }
+
+  export type StaffUncheckedUpdateManyWithoutAccountInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    tptdNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    fpbLicense?: NullableIntFieldUpdateOperationsInput | number | null
+    grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
+    role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
+    active?: BoolFieldUpdateOperationsInput | boolean
+    clubId?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlertRecipientUpdateWithoutAccountInput = {
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    alert?: AlertUpdateOneRequiredWithoutRecipientsNestedInput
+  }
+
+  export type AlertRecipientUncheckedUpdateWithoutAccountInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    alertId?: IntFieldUpdateOperationsInput | number
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlertRecipientUncheckedUpdateManyWithoutAccountInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    alertId?: IntFieldUpdateOperationsInput | number
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -57897,8 +64172,23 @@ export namespace Prisma {
     grade?: $Enums.CoachGrade | null
     role: $Enums.StaffRole
     active?: boolean
+    accountId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type AlertCreateManyClubInput = {
+    id?: number
+    type: $Enums.AlertType
+    category: $Enums.AlertCategory
+    title: string
+    message: string
+    linkUrl?: string | null
+    referenceType?: string | null
+    referenceId?: number | null
+    triggerDate: Date | string
+    expiresAt?: Date | string | null
+    createdAt?: Date | string
   }
 
   export type AccountClubUpdateWithoutClubInput = {
@@ -58201,6 +64491,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamStaffUpdateManyWithoutStaffNestedInput
+    account?: AccountUpdateOneWithoutStaffProfilesNestedInput
   }
 
   export type StaffUncheckedUpdateWithoutClubInput = {
@@ -58212,6 +64503,7 @@ export namespace Prisma {
     grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
     active?: BoolFieldUpdateOperationsInput | boolean
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamStaffUncheckedUpdateManyWithoutStaffNestedInput
@@ -58226,8 +64518,52 @@ export namespace Prisma {
     grade?: NullableEnumCoachGradeFieldUpdateOperationsInput | $Enums.CoachGrade | null
     role?: EnumStaffRoleFieldUpdateOperationsInput | $Enums.StaffRole
     active?: BoolFieldUpdateOperationsInput | boolean
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlertUpdateWithoutClubInput = {
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recipients?: AlertRecipientUpdateManyWithoutAlertNestedInput
+  }
+
+  export type AlertUncheckedUpdateWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recipients?: AlertRecipientUncheckedUpdateManyWithoutAlertNestedInput
+  }
+
+  export type AlertUncheckedUpdateManyWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    type?: EnumAlertTypeFieldUpdateOperationsInput | $Enums.AlertType
+    category?: EnumAlertCategoryFieldUpdateOperationsInput | $Enums.AlertCategory
+    title?: StringFieldUpdateOperationsInput | string
+    message?: StringFieldUpdateOperationsInput | string
+    linkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceType?: NullableStringFieldUpdateOperationsInput | string | null
+    referenceId?: NullableIntFieldUpdateOperationsInput | number | null
+    triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type EquipmentColorCreateManySeasonInput = {
@@ -58943,6 +65279,41 @@ export namespace Prisma {
     athleteId?: IntFieldUpdateOperationsInput | number
     equipmentColorId?: IntFieldUpdateOperationsInput | number
     manualOverride?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type AlertRecipientCreateManyAlertInput = {
+    id?: number
+    accountId: number
+    status?: $Enums.AlertRecipientStatus
+    readAt?: Date | string | null
+    deletedAt?: Date | string | null
+    createdAt?: Date | string
+  }
+
+  export type AlertRecipientUpdateWithoutAlertInput = {
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    account?: AccountUpdateOneRequiredWithoutAlertRecipientsNestedInput
+  }
+
+  export type AlertRecipientUncheckedUpdateWithoutAlertInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    accountId?: IntFieldUpdateOperationsInput | number
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type AlertRecipientUncheckedUpdateManyWithoutAlertInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    accountId?: IntFieldUpdateOperationsInput | number
+    status?: EnumAlertRecipientStatusFieldUpdateOperationsInput | $Enums.AlertRecipientStatus
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

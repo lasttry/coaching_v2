@@ -102,6 +102,46 @@
     "deselectAll": "Limpar Seleção"
   },
 
+  "alerts": {
+    "title": "Alertas",
+    "empty": "Sem alertas",
+    "emptyActive": "Não há alertas ativos",
+    "emptySeen": "Nenhum alerta visto",
+    "viewAll": "Ver tudo",
+    "tabs": {
+      "active": "Ativas",
+      "seen": "Vistas"
+    },
+    "types": {
+      "info": "Informação",
+      "attention": "Atenção",
+      "important": "Importante",
+      "priority": "Prioritário"
+    },
+    "actions": {
+      "markRead": "Marcar como vista",
+      "markUnread": "Marcar como não vista",
+      "delete": "Apagar",
+      "open": "Abrir detalhes",
+      "close": "Fechar"
+    },
+    "relative": {
+      "today": "hoje",
+      "inDays": "em {{count}} dia",
+      "inDays_plural": "em {{count}} dias",
+      "daysAgo": "há {{count}} dia",
+      "daysAgo_plural": "há {{count}} dias"
+    },
+    "fetch": {
+      "error": "Falha ao obter alertas"
+    },
+    "categories": {
+      "athleteBirthday": {
+        "label": "Aniversário de atleta"
+      }
+    }
+  },
+
   "gender": {
     "label": "Género",
     "coed": "Misto",
@@ -426,7 +466,15 @@
       "updateSuccess": "Membro atualizado com sucesso",
       "deleteSuccess": "Membro eliminado com sucesso"
     },
-    "confirmDelete": "Tem a certeza que quer eliminar {{name}}?"
+    "confirmDelete": "Tem a certeza que quer eliminar {{name}}?",
+    "account": {
+      "label": "Conta associada",
+      "header": "Conta",
+      "none": "Sem conta associada",
+      "helper": "Opcional. Liga este membro a uma conta do clube para permitir login e receber alertas.",
+      "alreadyLinked": "Já ligada a {{name}}",
+      "fetchError": "Falha ao obter contas disponíveis"
+    }
   },
 
   "cycles": {
@@ -741,5 +789,60 @@
     "echelonRequired": "O escalão é obrigatório",
     "echelonIdPositive": "O ID do escalão tem de ser positivo",
     "imageInvalid": "Imagem inválida"
+  },
+
+  "email": {
+    "settings": {
+      "title": "Servidor de Email (SMTP)",
+      "description": "Configura o servidor SMTP que este clube usa para enviar alertas por email. A password é encriptada antes de ser guardada."
+    },
+    "enabled": {
+      "label": "Envio de emails ativo"
+    },
+    "host": {
+      "label": "Servidor (host)"
+    },
+    "port": {
+      "label": "Porta"
+    },
+    "secure": {
+      "label": "TLS/SSL"
+    },
+    "user": {
+      "label": "Utilizador"
+    },
+    "password": {
+      "label": "Password",
+      "helperEmpty": "Introduz a password SMTP.",
+      "helperExisting": "Já existe uma password guardada. Só será substituída se introduzires uma nova.",
+      "clear": "Remover password guardada",
+      "cleared": "Password removida."
+    },
+    "fromEmail": {
+      "label": "Email remetente"
+    },
+    "fromName": {
+      "label": "Nome remetente"
+    },
+    "replyTo": {
+      "label": "Reply-To (opcional)"
+    },
+    "save": {
+      "success": "Definições de email guardadas com sucesso",
+      "error": "Falha ao guardar as definições de email"
+    },
+    "fetch": {
+      "error": "Falha ao obter as definições de email"
+    },
+    "test": {
+      "title": "Enviar email de teste",
+      "description": "Usa as definições atualmente guardadas para enviar um pequeno email de teste.",
+      "to": "Destinatário",
+      "send": "Enviar teste",
+      "success": "Email de teste enviado para {{to}}.",
+      "error": "Falha ao enviar email de teste",
+      "enableFirst": "Ativa o envio de emails para testar."
+    },
+    "saveClubFirst": "Guarda primeiro o clube para configurar o servidor de email."
   }
 }

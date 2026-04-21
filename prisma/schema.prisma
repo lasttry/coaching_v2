@@ -75,6 +75,23 @@ enum Size {
   XXL
 }
 
+enum AlertType {
+  INFO
+  ATTENTION
+  IMPORTANT
+  PRIORITY
+}
+
+enum AlertCategory {
+  ATHLETE_BIRTHDAY
+}
+
+enum AlertRecipientStatus {
+  UNREAD
+  READ
+  DELETED
+}
+
 // Models
 
 model Athlete {
@@ -170,18 +187,20 @@ model Opponent {
 }
 
 model Account {
-  id                 Int           @id @default(autoincrement())
-  name               String?       @db.VarChar(100)
-  email              String        @unique @db.VarChar(100)
+  id                 Int              @id @default(autoincrement())
+  name               String?          @db.VarChar(100)
+  email              String           @unique @db.VarChar(100)
   password           String
   image              String?
-  createdAt          DateTime      @default(now())
-  updatedAt          DateTime      @updatedAt
-  clubs              AccountClub[] @relation("AccountToClubs")
-  defaultClubId      Int           @default(0)
-  role               PlatformRole  @default(USER)
-  resetToken         String?       @unique
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  clubs              AccountClub[]    @relation("AccountToClubs")
+  defaultClubId      Int              @default(0)
+  role               PlatformRole     @default(USER)
+  resetToken         String?          @unique
   resetTokenExpiry   DateTime?
+  staffProfiles      Staff[]
+  alertRecipients    AlertRecipient[]
 }
 
 model Statistic {
@@ -335,9 +354,31 @@ model Club {
   venues          Venue[]
   equipmentColors EquipmentColor[]
   staff           Staff[]
+  alerts          Alert[]
+  emailSettings   ClubEmailSettings?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+/// SMTP settings used by a club to send outgoing emails (alerts, notifications).
+/// `passEncrypted` is encrypted with AES-256-GCM using EMAIL_ENCRYPTION_KEY from the
+/// environment. It is never returned as-is by any API; only `hasPassword` is exposed.
+model ClubEmailSettings {
+  id            Int      @id @default(autoincrement())
+  clubId        Int      @unique
+  club          Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  enabled       Boolean  @default(false)
+  host          String?  @db.VarChar(255)
+  port          Int?
+  secure        Boolean  @default(true)
+  user          String?  @db.VarChar(255)
+  passEncrypted String?  @db.Text
+  fromEmail     String?  @db.VarChar(255)
+  fromName      String?  @db.VarChar(100)
+  replyTo       String?  @db.VarChar(255)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Season {
@@ -419,8 +460,13 @@ model Staff {
   clubId      Int
   club        Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
   teams       TeamStaff[]
+  accountId   Int?
+  account     Account?    @relation(fields: [accountId], references: [id], onDelete: SetNull)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+
+  @@unique([clubId, accountId])
+  @@index([accountId])
 }
 
 model TeamStaff {
@@ -532,4 +578,42 @@ model GameEquipment {
   @@index([gameId])
   @@index([athleteId])
   @@index([equipmentColorId])
+}
+
+model Alert {
+  id            Int              @id @default(autoincrement())
+  clubId        Int
+  type          AlertType
+  category      AlertCategory
+  title         String           @db.VarChar(200)
+  message       String           @db.Text
+  linkUrl       String?          @db.VarChar(500)
+  referenceType String?          @db.VarChar(50)
+  referenceId   Int?
+  triggerDate   DateTime
+  expiresAt     DateTime?
+  createdAt     DateTime         @default(now())
+
+  club       Club             @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  recipients AlertRecipient[]
+
+  @@unique([clubId, category, referenceType, referenceId, triggerDate])
+  @@index([clubId])
+  @@index([triggerDate])
+}
+
+model AlertRecipient {
+  id        Int                  @id @default(autoincrement())
+  alertId   Int
+  accountId Int
+  status    AlertRecipientStatus @default(UNREAD)
+  readAt    DateTime?
+  deletedAt DateTime?
+  createdAt DateTime             @default(now())
+
+  alert   Alert   @relation(fields: [alertId], references: [id], onDelete: Cascade)
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+
+  @@unique([alertId, accountId])
+  @@index([accountId, status])
 }

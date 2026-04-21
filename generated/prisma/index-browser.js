@@ -320,6 +320,22 @@ exports.Prisma.ClubScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ClubEmailSettingsScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  enabled: 'enabled',
+  host: 'host',
+  port: 'port',
+  secure: 'secure',
+  user: 'user',
+  passEncrypted: 'passEncrypted',
+  fromEmail: 'fromEmail',
+  fromName: 'fromName',
+  replyTo: 'replyTo',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SeasonScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -377,6 +393,7 @@ exports.Prisma.StaffScalarFieldEnum = {
   role: 'role',
   active: 'active',
   clubId: 'clubId',
+  accountId: 'accountId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -442,6 +459,31 @@ exports.Prisma.GameEquipmentScalarFieldEnum = {
   equipmentId: 'equipmentId',
   equipmentColorId: 'equipmentColorId',
   manualOverride: 'manualOverride'
+};
+
+exports.Prisma.AlertScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  type: 'type',
+  category: 'category',
+  title: 'title',
+  message: 'message',
+  linkUrl: 'linkUrl',
+  referenceType: 'referenceType',
+  referenceId: 'referenceId',
+  triggerDate: 'triggerDate',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+};
+
+exports.Prisma.AlertRecipientScalarFieldEnum = {
+  id: 'id',
+  alertId: 'alertId',
+  accountId: 'accountId',
+  status: 'status',
+  readAt: 'readAt',
+  deletedAt: 'deletedAt',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.SortOrder = {
@@ -524,6 +566,23 @@ exports.StaffRole = exports.$Enums.StaffRole = {
   OTHER: 'OTHER'
 };
 
+exports.AlertType = exports.$Enums.AlertType = {
+  INFO: 'INFO',
+  ATTENTION: 'ATTENTION',
+  IMPORTANT: 'IMPORTANT',
+  PRIORITY: 'PRIORITY'
+};
+
+exports.AlertCategory = exports.$Enums.AlertCategory = {
+  ATHLETE_BIRTHDAY: 'ATHLETE_BIRTHDAY'
+};
+
+exports.AlertRecipientStatus = exports.$Enums.AlertRecipientStatus = {
+  UNREAD: 'UNREAD',
+  READ: 'READ',
+  DELETED: 'DELETED'
+};
+
 exports.Prisma.ModelName = {
   Athlete: 'Athlete',
   GameAthlete: 'GameAthlete',
@@ -541,6 +600,7 @@ exports.Prisma.ModelName = {
   Drill: 'Drill',
   Echelon: 'Echelon',
   Club: 'Club',
+  ClubEmailSettings: 'ClubEmailSettings',
   Season: 'Season',
   Venue: 'Venue',
   AccountClub: 'AccountClub',
@@ -554,7 +614,9 @@ exports.Prisma.ModelName = {
   AthletePreferredNumber: 'AthletePreferredNumber',
   EquipmentColor: 'EquipmentColor',
   Equipment: 'Equipment',
-  GameEquipment: 'GameEquipment'
+  GameEquipment: 'GameEquipment',
+  Alert: 'Alert',
+  AlertRecipient: 'AlertRecipient'
 };
 
 /**

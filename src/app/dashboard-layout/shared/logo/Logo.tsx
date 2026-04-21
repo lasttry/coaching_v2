@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement } from 'react';
+import React, { useState, useEffect, ReactElement, useRef } from 'react';
 import { Box, Typography } from '@mui/material';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
@@ -14,18 +14,31 @@ const Logo = (): ReactElement => {
   const [club, setClub] = useState<ClubInterface | null>(null);
   const [hasMultipleClubs, setHasMultipleClubs] = useState(false);
 
+  // Keep the latest `t` without re-running the data-loading effect when i18n re-renders.
+  const tRef = useRef(t);
   useEffect(() => {
-    async function fetchAccountData(): Promise<void> {
-      try {
-        if (!session?.user?.email) {
-          log.warn(t('account.emailMissing'));
-          return;
-        }
+    tRef.current = t;
+  }, [t]);
 
-        const response = await fetch(
-          `/api/accounts?email=${encodeURIComponent(session.user.email)}`
-        );
+  const email = session?.user?.email ?? null;
+  const selectedClubId = session?.user?.selectedClubId ?? null;
+
+  useEffect(() => {
+    if (!email) {
+      log.warn(tRef.current('account.emailMissing'));
+      return;
+    }
+
+    const controller = new AbortController();
+    let active = true;
+
+    const fetchAccountData = async (): Promise<void> => {
+      try {
+        const response = await fetch(`/api/accounts?email=${encodeURIComponent(email)}`, {
+          signal: controller.signal,
+        });
         const data = await response.json();
+        if (!active || controller.signal.aborted) return;
 
         if (!response.ok) {
           const errorText = data?.error || 'Failed to fetch account data';
@@ -37,10 +50,12 @@ const Logo = (): ReactElement => {
           setHasMultipleClubs(true);
         }
 
-        // Fetch the selected club data
-        if (session.user.selectedClubId) {
-          const clubResponse = await fetch(`/api/clubs/${session.user.selectedClubId}`);
+        if (selectedClubId) {
+          const clubResponse = await fetch(`/api/clubs/${selectedClubId}`, {
+            signal: controller.signal,
+          });
           const clubData = await clubResponse.json();
+          if (!active || controller.signal.aborted) return;
 
           if (clubResponse.ok) {
             setClub(clubData);
@@ -50,22 +65,22 @@ const Logo = (): ReactElement => {
           }
         }
       } catch (error) {
-        let errorText: string;
-
-        if (error instanceof Error) {
-          // If the error is an instance of Error, use its message
-          errorText = `Error fetching account or club data: ${error.message}`;
-        } else {
-          // Fallback for non-Error objects
-          errorText = 'An unknown error occurred while fetching account or club data.';
-        }
-
+        if ((error as { name?: string } | undefined)?.name === 'AbortError') return;
+        const errorText =
+          error instanceof Error
+            ? `Error fetching account or club data: ${error.message}`
+            : 'An unknown error occurred while fetching account or club data.';
         log.error(errorText);
       }
-    }
+    };
 
-    fetchAccountData();
-  }, [session, t]);
+    void fetchAccountData();
+
+    return (): void => {
+      active = false;
+      controller.abort();
+    };
+  }, [email, selectedClubId]);
 
   if (!club) {
     return (

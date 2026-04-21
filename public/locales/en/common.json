@@ -102,6 +102,46 @@
     "deselectAll": "Clear Selection"
   },
 
+  "alerts": {
+    "title": "Alerts",
+    "empty": "No alerts",
+    "emptyActive": "No active alerts",
+    "emptySeen": "No seen alerts",
+    "viewAll": "View all",
+    "tabs": {
+      "active": "Active",
+      "seen": "Seen"
+    },
+    "types": {
+      "info": "Information",
+      "attention": "Attention",
+      "important": "Important",
+      "priority": "Priority"
+    },
+    "actions": {
+      "markRead": "Mark as read",
+      "markUnread": "Mark as unread",
+      "delete": "Delete",
+      "open": "Open details",
+      "close": "Close"
+    },
+    "relative": {
+      "today": "today",
+      "inDays": "in {{count}} day",
+      "inDays_plural": "in {{count}} days",
+      "daysAgo": "{{count}} day ago",
+      "daysAgo_plural": "{{count}} days ago"
+    },
+    "fetch": {
+      "error": "Failed to load alerts"
+    },
+    "categories": {
+      "athleteBirthday": {
+        "label": "Athlete birthday"
+      }
+    }
+  },
+
   "gender": {
     "label": "Gender",
     "coed": "Coed",
@@ -426,7 +466,15 @@
       "updateSuccess": "Member updated successfully",
       "deleteSuccess": "Member deleted successfully"
     },
-    "confirmDelete": "Are you sure you want to delete {{name}}?"
+    "confirmDelete": "Are you sure you want to delete {{name}}?",
+    "account": {
+      "label": "Linked account",
+      "header": "Account",
+      "none": "No linked account",
+      "helper": "Optional. Link this member to a club account to enable login and receive alerts.",
+      "alreadyLinked": "Already linked to {{name}}",
+      "fetchError": "Failed to load available accounts"
+    }
   },
 
   "cycles": {
@@ -741,5 +789,60 @@
     "echelonRequired": "Echelon is required",
     "echelonIdPositive": "Echelon ID must be positive",
     "imageInvalid": "Invalid image"
+  },
+
+  "email": {
+    "settings": {
+      "title": "Email server (SMTP)",
+      "description": "Configure the SMTP server used by this club to send email alerts. The password is encrypted before being stored."
+    },
+    "enabled": {
+      "label": "Email sending enabled"
+    },
+    "host": {
+      "label": "Host"
+    },
+    "port": {
+      "label": "Port"
+    },
+    "secure": {
+      "label": "TLS/SSL"
+    },
+    "user": {
+      "label": "Username"
+    },
+    "password": {
+      "label": "Password",
+      "helperEmpty": "Enter the SMTP password.",
+      "helperExisting": "A password is already saved. It will only be replaced if you enter a new one.",
+      "clear": "Remove stored password",
+      "cleared": "Password removed."
+    },
+    "fromEmail": {
+      "label": "From email"
+    },
+    "fromName": {
+      "label": "From name"
+    },
+    "replyTo": {
+      "label": "Reply-To (optional)"
+    },
+    "save": {
+      "success": "Email settings saved successfully",
+      "error": "Failed to save email settings"
+    },
+    "fetch": {
+      "error": "Failed to load email settings"
+    },
+    "test": {
+      "title": "Send test email",
+      "description": "Use the currently saved settings to send a short test message.",
+      "to": "Recipient",
+      "send": "Send test",
+      "success": "Test email sent to {{to}}.",
+      "error": "Failed to send test email",
+      "enableFirst": "Enable email sending to test."
+    },
+    "saveClubFirst": "Save the club first to configure the email server."
   }
 }

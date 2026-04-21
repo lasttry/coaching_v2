@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import {
+  Autocomplete,
   Box,
   Button,
   Dialog,
@@ -31,7 +32,12 @@ import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
 import dayjs from 'dayjs';
 import { StaffRole, CoachGrade } from '@prisma/client';
-import { StaffInterface, STAFF_ROLE_LABELS, COACH_GRADE_LABELS } from '@/types/staff/types';
+import {
+  StaffInterface,
+  STAFF_ROLE_LABELS,
+  COACH_GRADE_LABELS,
+  AvailableAccount,
+} from '@/types/staff/types';
 import { TeamInterface } from '@/types/teams/types';
 
 const ITEM_HEIGHT = 48;
@@ -51,6 +57,7 @@ export default function StaffPage(): React.JSX.Element {
   const { t } = useTranslation();
   const [staff, setStaff] = useState<StaffInterface[]>([]);
   const [teams, setTeams] = useState<TeamInterface[]>([]);
+  const [accounts, setAccounts] = useState<AvailableAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -73,6 +80,7 @@ export default function StaffPage(): React.JSX.Element {
     grade: null,
     role: 'HEAD_COACH' as StaffRole,
     active: true,
+    accountId: null,
     teamIds: [],
   });
 
@@ -102,10 +110,23 @@ export default function StaffPage(): React.JSX.Element {
     }
   }, []);
 
+  const fetchAccounts = useCallback(async () => {
+    try {
+      const res = await fetch('/api/staff/accounts');
+      if (res.ok) {
+        const data = (await res.json()) as AvailableAccount[];
+        setAccounts(data);
+      }
+    } catch (error) {
+      console.error('Error fetching accounts:', error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchStaff();
     fetchTeams();
-  }, [fetchStaff, fetchTeams]);
+    fetchAccounts();
+  }, [fetchStaff, fetchTeams, fetchAccounts]);
 
   const handleAdd = useCallback(() => {
     setSelectedStaff(null);
@@ -117,6 +138,7 @@ export default function StaffPage(): React.JSX.Element {
       grade: null,
       role: 'HEAD_COACH' as StaffRole,
       active: true,
+      accountId: null,
       teamIds: [],
     });
     setDialogOpen(true);
@@ -132,6 +154,7 @@ export default function StaffPage(): React.JSX.Element {
       grade: staffMember.grade,
       role: staffMember.role,
       active: staffMember.active ?? true,
+      accountId: staffMember.accountId ?? null,
       teamIds: staffMember.teams?.map((ts) => ts.teamId) || [],
     });
     setDialogOpen(true);
@@ -161,11 +184,14 @@ export default function StaffPage(): React.JSX.Element {
         });
         setDialogOpen(false);
         fetchStaff();
+        fetchAccounts();
       } else {
-        throw new Error('Failed to save');
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(body?.error || 'Failed to save');
       }
     } catch (error) {
-      setSnackbar({ open: true, message: t('messages.errorSaving'), severity: 'error' });
+      const message = error instanceof Error ? error.message : t('messages.errorSaving');
+      setSnackbar({ open: true, message, severity: 'error' });
     }
   };
 
@@ -238,6 +264,30 @@ export default function StaffPage(): React.JSX.Element {
             ))}
           </Box>
         ),
+      },
+      {
+        field: 'account',
+        headerName: t('staff.account.header'),
+        width: 200,
+        sortable: false,
+        renderCell: (params) => {
+          const account = params.row.account as StaffInterface['account'];
+          if (!account) {
+            return (
+              <Typography variant="body2" sx={{ color: 'text.disabled', fontStyle: 'italic' }}>
+                {t('staff.account.none')}
+              </Typography>
+            );
+          }
+          return (
+            <Chip
+              label={account.name || account.email}
+              size="small"
+              variant="outlined"
+              color="primary"
+            />
+          );
+        },
       },
       {
         field: 'active',
@@ -404,6 +454,52 @@ export default function StaffPage(): React.JSX.Element {
                   ))}
               </Select>
             </FormControl>
+
+            <Autocomplete
+              options={accounts}
+              value={accounts.find((a) => a.id === formData.accountId) || null}
+              onChange={(_, newValue) =>
+                setFormData({ ...formData, accountId: newValue ? newValue.id : null })
+              }
+              getOptionLabel={(option) =>
+                option.name ? `${option.name} (${option.email})` : option.email
+              }
+              isOptionEqualToValue={(option, value) => option.id === value.id}
+              getOptionDisabled={(option) =>
+                option.linkedStaffId !== null && option.linkedStaffId !== selectedStaff?.id
+              }
+              renderOption={(props, option) => {
+                const { key, ...rest } = props as React.HTMLAttributes<HTMLLIElement> & {
+                  key: string;
+                };
+                const disabled =
+                  option.linkedStaffId !== null && option.linkedStaffId !== selectedStaff?.id;
+                return (
+                  <li key={key} {...rest}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                      <Typography variant="body2">{option.name || option.email}</Typography>
+                      <Typography
+                        variant="caption"
+                        sx={{ color: disabled ? 'error.main' : 'text.secondary' }}
+                      >
+                        {option.name ? option.email : ''}
+                        {disabled && option.linkedStaffName
+                          ? `${option.name ? ' · ' : ''}${t('staff.account.alreadyLinked', { name: option.linkedStaffName })}`
+                          : ''}
+                      </Typography>
+                    </Box>
+                  </li>
+                );
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={t('staff.account.label')}
+                  helperText={t('staff.account.helper')}
+                />
+              )}
+              clearOnEscape
+            />
 
             <FormControlLabel
               control={

@@ -463,12 +463,6 @@ const GameComponent: React.FC<GameProps> = ({
     setSuccessMessage('');
 
     switch (field) {
-      case 'number':
-        if (value === null || value === undefined || isNaN(Number(value)) || Number(value) <= 0) {
-          error = t('validation.numberPositive');
-        }
-        break;
-
       case 'date':
         if (!value) {
           error = t('validation.dateRequired');
@@ -1137,19 +1131,8 @@ const GameComponent: React.FC<GameProps> = ({
         </Box>
       </Grid>
 
-      {/* Row 1: Game Number, Date/Time */}
-      <Grid size={{ xs: 12, sm: 3 }}>
-        <TextField
-          fullWidth
-          label={t('game.number')}
-          value={game.number ?? ''}
-          onChange={handleChange('number')}
-          error={!!validationErrors['number']}
-          helperText={validationErrors['number']}
-          type="number"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, sm: 5 }}>
+      {/* Row 1: Date/Time */}
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
           fullWidth
           label={t('common.date')}
@@ -1165,7 +1148,7 @@ const GameComponent: React.FC<GameProps> = ({
           slotProps={{ inputLabel: { shrink: true } }}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 4 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <TextField
           fullWidth
           type="number"

@@ -413,6 +413,7 @@ const EquipmentsPage: React.FC = () => {
                     </Box>
                     <Box sx={{ display: 'flex', gap: 0.5 }} onClick={(e) => e.stopPropagation()}>
                       <IconButton
+                        component="span"
                         size="small"
                         onClick={() => {
                           setAddEquipmentColorId(ec.id);
@@ -423,6 +424,7 @@ const EquipmentsPage: React.FC = () => {
                         <AddIcon fontSize="small" />
                       </IconButton>
                       <IconButton
+                        component="span"
                         size="small"
                         onClick={() => {
                           setEditColor(ec);
@@ -433,6 +435,7 @@ const EquipmentsPage: React.FC = () => {
                         <EditIcon fontSize="small" />
                       </IconButton>
                       <IconButton
+                        component="span"
                         size="small"
                         color="error"
                         onClick={() => setDeleteColorId(ec.id)}

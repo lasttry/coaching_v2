@@ -261,6 +261,9 @@ const CompetitionsPage: React.FC = () => {
         pageSizeOptions={[5, 10, 20]}
         loading={loading}
         disableRowSelectionOnClick
+        initialState={{
+          pagination: { paginationModel: { pageSize: 10 } },
+        }}
         localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
       />
 

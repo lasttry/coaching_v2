@@ -1,0 +1,27 @@
+[Unit]
+Description=Generate coaching alerts (birthdays, etc.)
+Documentation=https://github.com/YOUR_ORG/coaching_v2
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+# Expects CRON_SECRET and BASE_URL to be defined in this file.
+# See deploy/cron/env.example for the expected format.
+EnvironmentFile=/etc/coaching/cron.env
+ExecStart=/usr/bin/curl \
+  --fail --silent --show-error \
+  --max-time 90 \
+  --retry 2 --retry-delay 10 \
+  -X POST \
+  -H "Authorization: Bearer ${CRON_SECRET}" \
+  ${BASE_URL}/api/alerts/generate
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

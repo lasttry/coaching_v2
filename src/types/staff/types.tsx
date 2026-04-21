@@ -11,9 +11,25 @@ export interface StaffInterface {
   role: StaffRole;
   active?: boolean;
   clubId?: number;
+  accountId?: number | null;
+  account?: StaffAccountSummary | null;
   teams?: TeamStaffInterface[];
   createdAt?: Date | string;
   updatedAt?: Date | string;
+}
+
+export interface StaffAccountSummary {
+  id: number;
+  name: string | null;
+  email: string;
+}
+
+export interface AvailableAccount {
+  id: number;
+  name: string | null;
+  email: string;
+  linkedStaffId: number | null;
+  linkedStaffName: string | null;
 }
 
 export interface TeamStaffInterface {
