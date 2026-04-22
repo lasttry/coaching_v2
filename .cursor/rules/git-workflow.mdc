@@ -1,5 +1,5 @@
 ---
-description: Rules for git operations and change tracking
+description: Rules for git operations, versioning and change tracking
 globs: ["**/*"]
 alwaysApply: true
 ---
@@ -7,12 +7,39 @@ alwaysApply: true
 # Git Workflow Rules
 
 ## Change Tracking
-- Save all changes made to files in the CHANGELOG.md file
+
+- Save all changes made to files in the `CHANGELOG.md` file
 - Each change entry must include the date and time when the change was made
 - Group changes by feature or fix
+- New entries always go at the top of the file (most recent first)
+
+## Semantic Versioning — MANDATORY on every push
+
+Every `git push` **must** bump the project version before pushing. No exceptions.
+
+### Rules
+
+- Version is stored in `package.json` (`"version"` field)
+- Follow [Semantic Versioning 2.0.0](https://semver.org) — `MAJOR.MINOR.PATCH`:
+  - **MAJOR** (`x.0.0`) — breaking changes, incompatible API changes, schema migrations that require manual intervention
+  - **MINOR** (`1.x.0`) — new features, new endpoints, new pages, significant UI additions (backward compatible)
+  - **PATCH** (`1.1.x`) — bug fixes, small tweaks, hotfixes, dependency bumps, refactors with no behaviour change
+- The version bump must be part of the same commit (or a dedicated `chore(release): vX.Y.Z` commit) that gets pushed
+- Never push without bumping the version. If you forget, bump it and create a follow-up `chore(release)` commit before pushing
+
+### Required steps on every push
+
+1. Identify the type of change since the last version (major / minor / patch)
+2. Update `"version"` in `package.json` accordingly
+3. Add an entry to the top of `CHANGELOG.md` with:
+   - Heading `## vX.Y.Z — YYYY-MM-DD HH:MM`
+   - Sub-sections grouping changes (features, fixes, breaking, etc.)
+4. Run `npm run build` to verify the build still passes
+5. Commit the bump + changelog entry together with the feature/fix commit (or as a final `chore(release): vX.Y.Z` commit right before the push)
+6. Push to remote
 
 ## Validation Before Push
-- Before any `git push`, always run the build command first
-- Command: `npm run build`
+
+- Before any `git push`, always run `npm run build`
 - Only push if the build completes without errors
-- Commit messages should be clear and descriptive
+- Commit messages should be clear and descriptive (prefer conventional commits: `feat:`, `fix:`, `chore:`, `refactor:`, `docs:`)

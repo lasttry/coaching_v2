@@ -1,5 +1,49 @@
 # Changelog
 
+## v1.2.0 — 2026-04-22 23:03
+
+### Integração FPB
+
+- Novos campos `Club.fpbClubId`, `Team.fpbTeamId` e `Game.fpbGameId` no schema + migrações correspondentes.
+- Parser que faz fetch de `https://www.fpb.pt/equipa/equipa_<id>/` e extrai o calendário.
+- Endpoint `POST /api/teams/[id]/fpb-import` que cria jogos em falta.
+- Botão "Importar da FPB" na página de jogos com diálogo de preview, seleção de jogos a importar (checkbox por jogo) e seleção/criação interativa de oponente, competição e série.
+- Campos "ID FPB" adicionados à edição de clube e de equipa.
+
+### Jogos
+
+- Novo estado `completed` (automático para datas passadas, alternável manualmente).
+- Validação: jogos não concluídos exigem data futura.
+- Diferenciação visual entre jogos passados e futuros na listagem, com destaque para o próximo jogo.
+
+### Equipamentos
+
+- Novas propriedades `backgroundColor` e `numberColorHex` em `EquipmentColor` (cor principal e cor do número).
+- Página de equipamentos redesenhada com acordeões aninhados agrupados por escalão, mantendo chips coloridos por item.
+
+### Redesenho de UI
+
+- **Atletas**: agrupamento por ano de nascimento, pesquisa, filtros de estado e tabela em acordeões.
+- **Oponentes**: paginação dinâmica, layout em cartões e filtros melhorados.
+- **Equipas**: ao selecionar uma equipa mostra os atletas associados e os jogos futuros.
+- **Escalões**: cartões com avatar de género, pesquisa e `ToggleButtonGroup` de filtro por género com contadores.
+- **Competições**: agrupadas por escalão em acordeões, com cartões, pesquisa e filtro.
+- **Definições de Clube**: selecção em grelha de cartões com pesquisa; edição em acordeões controlados (Identificação, Imagens, Cores, Pavilhões, Gerir Contas, Servidor de Email) — apenas um aberto de cada vez — com barra de ações sticky no rodapé.
+- **Gerir Contas**: tabela densa substituída por cartões por conta com chips clicáveis de role (com ícones e cores por role), pesquisa condicional e estado vazio melhorado.
+- **Pavilhões**: representados como chips com `onDelete` (mesmo padrão dos itens de equipamento).
+
+### i18n
+
+- Adicionadas todas as chaves pt/en para os novos textos (FPB, status de jogo, estado de email, pesquisa de contas, etc.) respeitando a estrutura hierárquica.
+
+### Correções de Tipos
+
+- Corrigidos erros pré-existentes de `MUI Select` em `competitions/page.tsx` e `equipments/page.tsx` (comparação entre `number` e `string`).
+
+### Regras do projeto
+
+- Regra `git-workflow.mdc` atualizada para impor bump semver obrigatório em cada push, com entrada correspondente no `CHANGELOG.md`.
+
 ## v1.1.1 — 2026-04-22 14:05
 
 ### Correções
