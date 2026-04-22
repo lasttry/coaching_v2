@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.1.1 — 2026-04-22 14:05
+
+### Correções
+
+- Adicionado `.npmrc` com `legacy-peer-deps=true` para resolver `ERESOLVE` em produção: `@auth/core@0.41.2` declara `peerOptional nodemailer@^7.0.7` mas usamos `nodemailer@^8.0.5` (peer opcional, não afeta o runtime). Sem isto, `npm install` falha em ambientes novos sem a flag manual.
+
 ## v1.1.0 — 2026-04-21 20:12
 
 ### Sistema de Alertas
