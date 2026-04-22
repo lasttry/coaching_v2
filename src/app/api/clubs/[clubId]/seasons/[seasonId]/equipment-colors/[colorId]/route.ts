@@ -42,6 +42,7 @@ export async function GET(
       : undefined,
     color: equipmentColor.color,
     colorHex: equipmentColor.colorHex,
+    numberColorHex: equipmentColor.numberColorHex,
     equipments: equipmentColor.equipments.map((e) => ({
       id: e.id,
       equipmentColorId: e.equipmentColorId,
@@ -62,7 +63,7 @@ export async function PUT(
   const params = await segmentData.params;
   const colorId = Number(params.colorId);
 
-  let data: { color?: string; colorHex?: string };
+  let data: { color?: string; colorHex?: string; numberColorHex?: string };
 
   try {
     data = await req.json();
@@ -70,13 +71,16 @@ export async function PUT(
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 
-  const updateData: { color?: string; colorHex?: string } = {};
+  const updateData: { color?: string; colorHex?: string; numberColorHex?: string } = {};
 
   if (data.color !== undefined) {
     updateData.color = data.color.trim();
   }
   if (data.colorHex !== undefined) {
     updateData.colorHex = data.colorHex.trim();
+  }
+  if (data.numberColorHex !== undefined) {
+    updateData.numberColorHex = data.numberColorHex.trim();
   }
 
   const updated = await prisma.equipmentColor.update({
@@ -107,6 +111,7 @@ export async function PUT(
       : undefined,
     color: updated.color,
     colorHex: updated.colorHex,
+    numberColorHex: updated.numberColorHex,
     equipments: updated.equipments.map((e) => ({
       id: e.id,
       equipmentColorId: e.equipmentColorId,

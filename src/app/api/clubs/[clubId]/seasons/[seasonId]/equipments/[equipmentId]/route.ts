@@ -11,6 +11,7 @@ interface EquipmentWithColorResponse {
   size: string;
   color: string;
   colorHex: string;
+  numberColorHex: string;
   echelonId: number;
   clubId: number;
   seasonId: number;
@@ -45,6 +46,7 @@ export async function GET(
     size: equipment.size,
     color: equipment.equipmentColor.color,
     colorHex: equipment.equipmentColor.colorHex,
+    numberColorHex: equipment.equipmentColor.numberColorHex,
     echelonId: equipment.equipmentColor.echelonId,
     clubId: equipment.equipmentColor.clubId,
     seasonId: equipment.equipmentColor.seasonId,
@@ -96,6 +98,7 @@ export async function PUT(
     size: updated.size,
     color: updated.equipmentColor.color,
     colorHex: updated.equipmentColor.colorHex,
+    numberColorHex: updated.equipmentColor.numberColorHex,
     echelonId: updated.equipmentColor.echelonId,
     clubId: updated.equipmentColor.clubId,
     seasonId: updated.equipmentColor.seasonId,

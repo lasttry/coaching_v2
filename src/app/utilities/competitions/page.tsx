@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
+  DialogContentText,
   DialogTitle,
   Typography,
   Alert,
@@ -14,23 +15,51 @@ import {
   Select,
   MenuItem,
   Stack,
-  Grid,
   Avatar,
   IconButton,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Card,
+  CardContent,
+  Paper,
+  Chip,
+  Tooltip,
+  InputAdornment,
+  FormControl,
+  InputLabel,
 } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { ptPT } from '@mui/x-data-grid/locales';
+import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 import { log } from '@/lib/logger';
 import { useMessage } from '@/hooks/useMessage';
 import { CompetitionInterface, CompetitionSerieInterface } from '@/types/competition/types';
 import { EchelonInterface } from '@/types/echelons/types';
 import { motion, AnimatePresence } from 'framer-motion';
-import Chip from '@mui/material/Chip';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { AddCircleOutlineOutlined } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
+import SportsBasketballIcon from '@mui/icons-material/SportsBasketball';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+
+const stringToColor = (str: string): string => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const h = Math.abs(hash) % 360;
+  return `hsl(${h}, 55%, 45%)`;
+};
+
+const getInitials = (name: string): string => {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '?';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
 
 const CompetitionsPage: React.FC = () => {
   const initialSeries: CompetitionSerieInterface = {
@@ -47,7 +76,10 @@ const CompetitionsPage: React.FC = () => {
   const [competitions, setCompetitions] = useState<CompetitionInterface[]>([]);
   const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
   const [filteredEchelon, setFilteredEchelon] = useState<number | ''>('');
+  const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const [expandedEchelon, setExpandedEchelon] = useState<string | false>(false);
+  const [initialExpandDone, setInitialExpandDone] = useState(false);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCompetition, setSelectedCompetition] = useState<CompetitionInterface | null>(null);
@@ -83,7 +115,6 @@ const CompetitionsPage: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
-  // ✅ Save Competition (Create/Update)
   const handleSaveCompetition = async (): Promise<void> => {
     if (!selectedCompetition) return;
     try {
@@ -112,7 +143,6 @@ const CompetitionsPage: React.FC = () => {
     }
   };
 
-  // ✅ Delete Competition
   const handleDeleteCompetition = async (id: number): Promise<void> => {
     try {
       const res = await fetch(`/api/competition/${id}`, { method: 'DELETE' });
@@ -125,7 +155,6 @@ const CompetitionsPage: React.FC = () => {
     }
   };
 
-  // ✅ Upload image
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
     if (file) {
@@ -136,20 +165,6 @@ const CompetitionsPage: React.FC = () => {
     }
   };
 
-  // ✅ Series management
-  //const handleAddSeries = (): void => {
-  //  const name = prompt(t('competition.seriesName') || 'Series name');
-  //  if (name && selectedCompetition) {
-  //    setSelectedCompetition((prev) => ({
-  //      ...prev!,
-  //      competitionSeries: [
-  //      ...(prev?.competitionSeries || []),
-  //        { id: Date.now(), name },
-  //      ],
-  //    }));
-  //  }
-  //};
-
   const handleRemoveSeries = (id: number): void => {
     setSelectedCompetition((prev) => ({
       ...prev!,
@@ -157,115 +172,325 @@ const CompetitionsPage: React.FC = () => {
     }));
   };
 
-  // ✅ Columns
-  const columns: GridColDef<CompetitionInterface>[] = [
-    {
-      field: 'image',
-      headerName: '',
-      flex: 0.5,
-      renderCell: (params) =>
-        params.row.image ? (
-          <Avatar src={params.row.image} alt={params.row.name} sx={{ width: 40, height: 40 }} />
-        ) : (
-          <Avatar sx={{ width: 40, height: 40 }}>{params.row.name.charAt(0)}</Avatar>
-        ),
-    },
-    { field: 'name', headerName: t('common.name'), flex: 2 },
-    { field: 'description', headerName: t('common.description'), flex: 3 },
-    {
-      field: 'echelon',
-      headerName: t('echelon.singular'),
-      flex: 1,
-      valueFormatter: (_value, row) => row.echelon?.name ?? '-',
-    },
-    {
-      field: 'actions',
-      headerName: t('common.actions'),
-      width: 120,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <>
-          <IconButton
-            onClick={() => {
-              setSelectedCompetition(params.row);
-              setOpenDialog(true);
-            }}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            color="error"
-            onClick={() => params.row.id !== undefined && setDeleteConfirmId(params.row.id)}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </>
-      ),
-    },
-  ];
+  const filteredCompetitions = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return competitions.filter((c) => {
+      if (filteredEchelon !== '' && c.echelonId !== filteredEchelon) return false;
+      if (!q) return true;
+      return (
+        c.name.toLowerCase().includes(q) ||
+        (c.description ?? '').toLowerCase().includes(q) ||
+        (c.echelon?.name ?? '').toLowerCase().includes(q) ||
+        (c.competitionSeries ?? []).some((s) => s.name.toLowerCase().includes(q))
+      );
+    });
+  }, [competitions, filteredEchelon, search]);
 
-  // ✅ Filter competitions
-  const filteredCompetitions = filteredEchelon
-    ? competitions.filter((c) => c.echelonId === filteredEchelon)
-    : competitions;
+  const groupedByEchelon = useMemo(() => {
+    const map = new Map<
+      string,
+      { key: string; name: string; competitions: CompetitionInterface[] }
+    >();
+    const UNASSIGNED = '__unassigned__';
+
+    for (const c of filteredCompetitions) {
+      const key = c.echelonId ? String(c.echelonId) : UNASSIGNED;
+      const name = c.echelon?.name ?? t('echelon.unknown');
+      if (!map.has(key)) {
+        map.set(key, { key, name, competitions: [] });
+      }
+      map.get(key)!.competitions.push(c);
+    }
+
+    return [...map.values()].sort((a, b) => {
+      if (a.key === UNASSIGNED) return 1;
+      if (b.key === UNASSIGNED) return -1;
+      return a.name.localeCompare(b.name, 'pt');
+    });
+  }, [filteredCompetitions, t]);
+
+  useEffect(() => {
+    if (!initialExpandDone && groupedByEchelon.length > 0) {
+      setExpandedEchelon(groupedByEchelon[0].key);
+      setInitialExpandDone(true);
+    }
+  }, [groupedByEchelon, initialExpandDone]);
+
+  const handleOpenNew = (): void => {
+    setSelectedCompetition({
+      id: null,
+      name: '',
+      description: '',
+      echelonId: null,
+      image: null,
+      competitionSeries: [],
+      echelon: null,
+    });
+    setOpenDialog(true);
+  };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h4">{t('competition.title')}</Typography>
-        <Stack direction="row" spacing={2}>
+    <Box>
+      {/* Header */}
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
+        <Box>
+          <Typography variant="h4" gutterBottom>
+            {t('competition.title')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {competitions.length} {t('competition.title').toLowerCase()}
+          </Typography>
+        </Box>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenNew}>
+          {t('competition.add')}
+        </Button>
+      </Box>
+
+      {successMessage && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {successMessage}
+        </Alert>
+      )}
+      {errorMessage && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errorMessage}
+        </Alert>
+      )}
+
+      {/* Toolbar */}
+      <Paper
+        variant="outlined"
+        sx={{
+          p: 2,
+          mb: 2,
+          display: 'flex',
+          gap: 2,
+          flexWrap: 'wrap',
+          alignItems: 'center',
+        }}
+      >
+        <TextField
+          size="small"
+          placeholder={t('common.search')}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
+          }}
+          sx={{ flex: 1, minWidth: 240 }}
+        />
+        <FormControl size="small" sx={{ minWidth: 200 }}>
+          <InputLabel>{t('echelon.singular')}</InputLabel>
           <Select
-            size="small"
+            label={t('echelon.singular')}
             value={filteredEchelon}
-            onChange={(e) => setFilteredEchelon(e.target.value as number | '')}
-            displayEmpty
-            sx={{ minWidth: 180 }}
+            onChange={(e) => {
+              const v = e.target.value as number | '';
+              setFilteredEchelon(v === '' ? '' : Number(v));
+            }}
           >
             <MenuItem value="">{t('echelon.all')}</MenuItem>
-            {echelons.map((e) => (
-              <MenuItem key={Number(e.id)} value={String(e.id)}>
-                {e.name}
+            {echelons.map((ech) => (
+              <MenuItem key={Number(ech.id)} value={Number(ech.id)}>
+                {ech.name}
               </MenuItem>
             ))}
           </Select>
-          <Button
-            variant="contained"
-            onClick={() => {
-              setSelectedCompetition({
-                id: null,
-                name: '',
-                description: '',
-                echelonId: null,
-                image: null,
-                competitionSeries: [],
-                echelon: null,
-              });
-              setOpenDialog(true);
-            }}
+        </FormControl>
+        <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+          {filteredCompetitions.length} {t('common.visible')}
+        </Typography>
+      </Paper>
+
+      {loading && <Typography color="text.secondary">{t('common.loading')}</Typography>}
+
+      {!loading && groupedByEchelon.length === 0 && (
+        <Typography color="text.secondary">{t('messages.noData')}</Typography>
+      )}
+
+      {/* Grouped by echelon */}
+      {!loading &&
+        groupedByEchelon.map((group) => (
+          <Accordion
+            key={group.key}
+            expanded={expandedEchelon === group.key}
+            onChange={(_, isExpanded) => setExpandedEchelon(isExpanded ? group.key : false)}
+            sx={{ mb: 1 }}
           >
-            {t('competition.add')}
-          </Button>
-        </Stack>
-      </Box>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, width: '100%', pr: 2 }}>
+                <EmojiEventsIcon color="primary" />
+                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                  {group.name}
+                </Typography>
+                <Chip
+                  size="small"
+                  label={`${group.competitions.length} ${t('competition.title').toLowerCase()}`}
+                  sx={{ ml: 'auto' }}
+                />
+              </Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container spacing={2}>
+                {group.competitions.map((c) => (
+                  <Grid key={c.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                    <Card
+                      variant="outlined"
+                      sx={{
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        transition: 'box-shadow 0.2s',
+                        '&:hover': { boxShadow: 3 },
+                      }}
+                    >
+                      <CardContent sx={{ flex: 1 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
+                          <Avatar
+                            src={c.image || undefined}
+                            sx={{
+                              width: 48,
+                              height: 48,
+                              bgcolor: c.image ? 'transparent' : stringToColor(c.name),
+                              fontWeight: 700,
+                            }}
+                          >
+                            {!c.image && getInitials(c.name)}
+                          </Avatar>
+                          <Box sx={{ flex: 1, minWidth: 0 }}>
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                fontWeight: 700,
+                                lineHeight: 1.2,
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                              }}
+                            >
+                              {c.name}
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                gap: 0.5,
+                                mt: 0.5,
+                                flexWrap: 'wrap',
+                                alignItems: 'center',
+                              }}
+                            >
+                              {c.echelon?.name && (
+                                <Chip
+                                  size="small"
+                                  label={c.echelon.name}
+                                  variant="outlined"
+                                  color="primary"
+                                />
+                              )}
+                              {c.fpbCompetitionId && (
+                                <Tooltip title={`${t('competition.fpbId')}: ${c.fpbCompetitionId}`}>
+                                  <Chip
+                                    size="small"
+                                    icon={<SportsBasketballIcon sx={{ fontSize: 14 }} />}
+                                    label="FPB"
+                                    color="primary"
+                                    variant="outlined"
+                                    sx={{ fontWeight: 700 }}
+                                  />
+                                </Tooltip>
+                              )}
+                            </Box>
+                          </Box>
+                        </Box>
 
-      {successMessage && <Alert severity="success">{successMessage}</Alert>}
-      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                        {c.description && (
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              mb: 1,
+                            }}
+                          >
+                            {c.description}
+                          </Typography>
+                        )}
 
-      <DataGrid
-        rows={filteredCompetitions}
-        columns={columns}
-        getRowId={(row) => row.id!}
-        autoHeight
-        pagination
-        pageSizeOptions={[5, 10, 20]}
-        loading={loading}
-        disableRowSelectionOnClick
-        initialState={{
-          pagination: { paginationModel: { pageSize: 10 } },
-        }}
-        localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
-      />
+                        {c.competitionSeries && c.competitionSeries.length > 0 ? (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {c.competitionSeries.map((s) => (
+                              <Chip
+                                key={s.id}
+                                label={formatSerie(s)}
+                                size="small"
+                                variant="outlined"
+                              />
+                            ))}
+                          </Box>
+                        ) : (
+                          <Typography variant="caption" color="text.secondary">
+                            {t('competition.noSeries')}
+                          </Typography>
+                        )}
+                      </CardContent>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          p: 1,
+                          borderTop: '1px solid',
+                          borderColor: 'divider',
+                        }}
+                      >
+                        <Tooltip title={t('actions.edit')}>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => {
+                              setSelectedCompetition(c);
+                              setOpenDialog(true);
+                            }}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title={t('actions.delete')}>
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() =>
+                              c.id !== null && c.id !== undefined && setDeleteConfirmId(c.id)
+                            }
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </AccordionDetails>
+          </Accordion>
+        ))}
 
       {/* Dialog Add/Edit */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
@@ -274,7 +499,7 @@ const CompetitionsPage: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           {selectedCompetition && (
-            <Grid container sx={{ spacing: 2, mt: 1 }}>
+            <Grid container spacing={2} sx={{ mt: 1 }}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   label={t('common.name')}
@@ -286,24 +511,27 @@ const CompetitionsPage: React.FC = () => {
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 6 }}>
-                <Select
-                  value={selectedCompetition.echelonId ?? ''}
-                  onChange={(e) =>
-                    setSelectedCompetition((prev) => ({
-                      ...prev!,
-                      echelonId: Number(e.target.value),
-                    }))
-                  }
-                  fullWidth
-                  displayEmpty
-                >
-                  <MenuItem value="">{t('echelon.select')}</MenuItem>
-                  {echelons.map((e) => (
-                    <MenuItem key={Number(e.id)} value={String(e.id)}>
-                      {e.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth>
+                  <InputLabel>{t('echelon.singular')}</InputLabel>
+                  <Select
+                    label={t('echelon.singular')}
+                    value={selectedCompetition.echelonId ?? ''}
+                    onChange={(e) => {
+                      const v = e.target.value as number | '';
+                      setSelectedCompetition((prev) => ({
+                        ...prev!,
+                        echelonId: v === '' ? null : Number(v),
+                      }));
+                    }}
+                  >
+                    <MenuItem value="">{t('echelon.select')}</MenuItem>
+                    {echelons.map((ech) => (
+                      <MenuItem key={Number(ech.id)} value={Number(ech.id)}>
+                        {ech.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField
@@ -317,6 +545,7 @@ const CompetitionsPage: React.FC = () => {
                     }))
                   }
                   slotProps={{ htmlInput: { min: 0 } }}
+                  fullWidth
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -334,7 +563,6 @@ const CompetitionsPage: React.FC = () => {
                 />
               </Grid>
 
-              {/* Image Upload */}
               <Grid size={{ xs: 12 }}>
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <Avatar
@@ -349,13 +577,11 @@ const CompetitionsPage: React.FC = () => {
                 </Stack>
               </Grid>
 
-              {/* Series Section */}
               <Grid size={{ xs: 12 }}>
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   {t('competition.series')}
                 </Typography>
 
-                {/* Lista animada de séries */}
                 <Stack
                   direction="row"
                   spacing={1}
@@ -386,11 +612,7 @@ const CompetitionsPage: React.FC = () => {
                             color="primary"
                             variant="outlined"
                             onDelete={() => handleRemoveSeries(Number(serie.id))}
-                            sx={{
-                              fontSize: '0.9rem',
-                              m: 0.5,
-                              px: 1.2,
-                            }}
+                            sx={{ fontSize: '0.9rem', m: 0.5, px: 1.2 }}
                           />
                           <IconButton onClick={() => setEditingSerie(serie)}>
                             <EditIcon />
@@ -412,7 +634,7 @@ const CompetitionsPage: React.FC = () => {
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
                   <TextField
                     label={t('competition.newSeries')}
-                    placeholder={t('competition.seriesName') as string}
+                    placeholder={t('competition.seriesName')}
                     value={newSeries.name}
                     onChange={(e) =>
                       setNewSeries((prev) => ({
@@ -443,7 +665,7 @@ const CompetitionsPage: React.FC = () => {
 
                       const serieToAdd: CompetitionSerieInterface = {
                         ...newSeries,
-                        id: Date.now(), // id local; o real virá do backend
+                        id: Date.now(),
                         name: serieName,
                       };
 
@@ -458,7 +680,7 @@ const CompetitionsPage: React.FC = () => {
                       setNewSeries(initialSeries);
                     }}
                   >
-                    <AddCircleOutlineOutlined fontSize="large" />
+                    <AddCircleOutlineIcon fontSize="large" />
                   </IconButton>
                 </Stack>
 
@@ -540,10 +762,11 @@ const CompetitionsPage: React.FC = () => {
       <Dialog open={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)}>
         <DialogTitle>{t('messages.confirmDelete')}</DialogTitle>
         <DialogContent>
-          <Typography>
-            {t('messages.deleteConfirmation')} <br />
+          <DialogContentText>
+            {t('messages.deleteConfirmation')}
+            <br />
             <strong>{competitions.find((c) => c.id === deleteConfirmId)?.name ?? ''}</strong>
-          </Typography>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmId(null)}>{t('actions.cancel')}</Button>

@@ -32,15 +32,20 @@ import {
   ListItemIcon,
   ListItemText,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EventIcon from '@mui/icons-material/Event';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { GameInterface } from '@/types/game/types';
 import { log } from '@/lib/logger';
 import GameComponent from './components/Game';
+import FpbImportDialog from './components/FpbImportDialog';
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import {
   generatePDF,
   generateRegistrationPDF,
@@ -72,6 +77,7 @@ const GamesPage: React.FC = () => {
   const [expandedSeries, setExpandedSeries] = useState<string | false>(false);
   const [initialExpandDone, setInitialExpandDone] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
+  const [fpbImportOpen, setFpbImportOpen] = useState(false);
 
   const [newGame, setNewGame] = useState<GameInterface>({
     id: null,
@@ -269,6 +275,18 @@ const GamesPage: React.FC = () => {
     return Object.values(series).reduce((acc, games) => acc + games.length, 0);
   };
 
+  // The id of the closest upcoming game (across the currently filtered set)
+  // so we can visually highlight it as the "next" game.
+  const nextUpcomingGameId = useMemo((): number | null => {
+    const now = Date.now();
+    const future = filteredGames.filter((g) => g.date && new Date(g.date).getTime() >= now);
+    if (future.length === 0) return null;
+    const next = future.reduce((closest, g) =>
+      new Date(g.date).getTime() < new Date(closest.date).getTime() ? g : closest
+    );
+    return next.id ?? null;
+  }, [filteredGames]);
+
   const handleTeamChange = (teamId: number) => {
     setSelectedTeamId(teamId);
     setExpandedCompetition(false);
@@ -282,9 +300,21 @@ const GamesPage: React.FC = () => {
         <Typography variant="h4" gutterBottom>
           {t('game.management')}
         </Typography>
-        <Button variant="contained" color="primary" onClick={() => setOpenAddDialog(true)}>
-          {t('game.add')}
-        </Button>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<CloudDownloadIcon />}
+            disabled={selectedTeamId === null}
+            onClick={() => setFpbImportOpen(true)}
+            title={t('fpbImport.button')}
+          >
+            {t('fpbImport.button')}
+          </Button>
+          <Button variant="contained" color="primary" onClick={() => setOpenAddDialog(true)}>
+            {t('game.add')}
+          </Button>
+        </Box>
       </Box>
 
       {teamsWithCounts.length > 0 && (
@@ -381,54 +411,117 @@ const GamesPage: React.FC = () => {
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {groupedGames[competitionName][serieName].map((game) => (
-                                <TableRow key={game.id} hover>
-                                  <TableCell>
-                                    {game.date ? dayjs(game.date).format('DD/MM/YYYY HH:mm') : '-'}
-                                  </TableCell>
-                                  <TableCell>{game.team?.name || '-'}</TableCell>
-                                  <TableCell>{game.opponent?.name || '-'}</TableCell>
-                                  <TableCell>{game.venue?.name || '-'}</TableCell>
-                                  <TableCell align="right">
-                                    <IconButton
-                                      size="small"
-                                      color="primary"
-                                      title={t('game.sheet')}
-                                      onClick={(e) => {
-                                        setPdfSelectedGame(game);
-                                        setPdfMenuAnchor(e.currentTarget);
-                                      }}
-                                    >
-                                      <PictureAsPdfIcon fontSize="small" />
-                                    </IconButton>
-                                    <IconButton
-                                      size="small"
-                                      color="secondary"
-                                      title={t('game.registrationSheet')}
-                                      onClick={() => generateRegistrationPDF(game)}
-                                      disabled={!game.teamId}
-                                    >
-                                      <AssignmentIcon fontSize="small" />
-                                    </IconButton>
-                                    <IconButton
-                                      size="small"
-                                      color="primary"
-                                      title={t('actions.edit')}
-                                      onClick={() => setEditGame(game)}
-                                    >
-                                      <EditIcon fontSize="small" />
-                                    </IconButton>
-                                    <IconButton
-                                      size="small"
-                                      color="error"
-                                      title={t('actions.delete')}
-                                      onClick={() => setDeleteConfirmId(Number(game.id))}
-                                    >
-                                      <DeleteIcon fontSize="small" />
-                                    </IconButton>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
+                              {groupedGames[competitionName][serieName].map((game) => {
+                                const gameTime = game.date ? new Date(game.date).getTime() : 0;
+                                const isPast = gameTime > 0 && gameTime < Date.now();
+                                const isNext = game.id === nextUpcomingGameId;
+                                return (
+                                  <TableRow
+                                    key={game.id}
+                                    hover
+                                    sx={{
+                                      ...(isPast && {
+                                        opacity: 0.6,
+                                        backgroundColor: 'action.disabledBackground',
+                                      }),
+                                      ...(isNext && {
+                                        borderLeft: '4px solid',
+                                        borderLeftColor: 'primary.main',
+                                        backgroundColor: (theme) =>
+                                          alpha(theme.palette.primary.main, 0.08),
+                                      }),
+                                    }}
+                                  >
+                                    <TableCell>
+                                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        {game.completed ? (
+                                          <CheckCircleIcon
+                                            fontSize="small"
+                                            color="success"
+                                            titleAccess={t('game.completed')}
+                                          />
+                                        ) : (
+                                          <EventIcon
+                                            fontSize="small"
+                                            color={isNext ? 'primary' : 'action'}
+                                            titleAccess={t('game.upcoming')}
+                                          />
+                                        )}
+                                        <Box
+                                          sx={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                          }}
+                                        >
+                                          <span
+                                            style={{
+                                              fontWeight: isNext ? 600 : 400,
+                                            }}
+                                          >
+                                            {game.date
+                                              ? dayjs(game.date).format('DD/MM/YYYY HH:mm')
+                                              : '-'}
+                                          </span>
+                                          {isNext && (
+                                            <Chip
+                                              label={t('game.next')}
+                                              size="small"
+                                              color="primary"
+                                              sx={{
+                                                mt: 0.25,
+                                                alignSelf: 'flex-start',
+                                                height: 18,
+                                                fontSize: '0.65rem',
+                                              }}
+                                            />
+                                          )}
+                                        </Box>
+                                      </Box>
+                                    </TableCell>
+                                    <TableCell>{game.team?.name || '-'}</TableCell>
+                                    <TableCell>{game.opponent?.name || '-'}</TableCell>
+                                    <TableCell>{game.venue?.name || '-'}</TableCell>
+                                    <TableCell align="right">
+                                      <IconButton
+                                        size="small"
+                                        color="primary"
+                                        title={t('game.sheet')}
+                                        onClick={(e) => {
+                                          setPdfSelectedGame(game);
+                                          setPdfMenuAnchor(e.currentTarget);
+                                        }}
+                                      >
+                                        <PictureAsPdfIcon fontSize="small" />
+                                      </IconButton>
+                                      <IconButton
+                                        size="small"
+                                        color="secondary"
+                                        title={t('game.registrationSheet')}
+                                        onClick={() => generateRegistrationPDF(game)}
+                                        disabled={!game.teamId}
+                                      >
+                                        <AssignmentIcon fontSize="small" />
+                                      </IconButton>
+                                      <IconButton
+                                        size="small"
+                                        color="primary"
+                                        title={t('actions.edit')}
+                                        onClick={() => setEditGame(game)}
+                                      >
+                                        <EditIcon fontSize="small" />
+                                      </IconButton>
+                                      <IconButton
+                                        size="small"
+                                        color="error"
+                                        title={t('actions.delete')}
+                                        onClick={() => setDeleteConfirmId(Number(game.id))}
+                                      >
+                                        <DeleteIcon fontSize="small" />
+                                      </IconButton>
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              })}
                             </TableBody>
                           </Table>
                         </TableContainer>
@@ -553,6 +646,16 @@ const GamesPage: React.FC = () => {
             ));
           })()}
       </Menu>
+
+      <FpbImportDialog
+        open={fpbImportOpen}
+        teamId={selectedTeamId}
+        teamName={teamsWithCounts.find((x) => x.id === selectedTeamId)?.name}
+        onClose={() => setFpbImportOpen(false)}
+        onImported={() => {
+          fetchGames();
+        }}
+      />
     </Box>
   );
 };

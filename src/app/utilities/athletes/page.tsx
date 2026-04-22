@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
   Typography,
   Alert,
@@ -15,12 +16,63 @@ import {
   TextField,
   MenuItem,
   Chip,
-  Divider,
   Avatar,
   IconButton,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  InputAdornment,
+  Tooltip,
+  ToggleButton,
+  ToggleButtonGroup,
 } from '@mui/material';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { IconUpload, IconTrash } from '@tabler/icons-react';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SearchIcon from '@mui/icons-material/Search';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import RefreshIcon from '@mui/icons-material/Refresh';
+import AddIcon from '@mui/icons-material/Add';
+
+const getInitials = (name: string): string => {
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return '?';
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
+const stringToColor = (str: string): string => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const h = Math.abs(hash) % 360;
+  return `hsl(${h}, 55%, 45%)`;
+};
+
+const isLightHex = (hex: string): boolean => {
+  const clean = hex.replace('#', '');
+  if (clean.length !== 3 && clean.length !== 6) return false;
+  const expanded =
+    clean.length === 3
+      ? clean
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : clean;
+  const r = parseInt(expanded.substring(0, 2), 16);
+  const g = parseInt(expanded.substring(2, 4), 16);
+  const b = parseInt(expanded.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.7;
+};
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
@@ -62,6 +114,11 @@ const AthletesPage: React.FC = () => {
   const [equipmentColors, setEquipmentColors] = useState<{ color: string; colorHex: string }[]>([]);
   const [newPrefColor, setNewPrefColor] = useState<string>('');
   const [newPrefNumber, setNewPrefNumber] = useState<string>('');
+
+  const [search, setSearch] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('active');
+  const [expandedYear, setExpandedYear] = useState<string | false>(false);
+  const [initialExpandDone, setInitialExpandDone] = useState(false);
 
   const validateField = (
     field: keyof AthleteInterface,
@@ -306,10 +363,24 @@ const AthletesPage: React.FC = () => {
     }
   };
 
+  const filteredAthletes = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return athletes.filter((a) => {
+      if (statusFilter === 'active' && !a.active) return false;
+      if (statusFilter === 'inactive' && a.active) return false;
+      if (!q) return true;
+      return (
+        a.name.toLowerCase().includes(q) ||
+        (a.number ?? '').toString().toLowerCase().includes(q) ||
+        (a.fpbNumber ?? '').toString().toLowerCase().includes(q)
+      );
+    });
+  }, [athletes, search, statusFilter]);
+
   const athletesGroupedByYear = useMemo(() => {
     const grouped: Record<string, AthleteInterface[]> = {};
 
-    athletes.forEach((athlete) => {
+    filteredAthletes.forEach((athlete) => {
       const year = athlete.birthdate
         ? dayjs(athlete.birthdate).format('YYYY')
         : t('common.unknown');
@@ -329,7 +400,25 @@ const AthletesPage: React.FC = () => {
       year,
       athletes: grouped[year],
     }));
-  }, [athletes, t]);
+  }, [filteredAthletes, t]);
+
+  useEffect(() => {
+    if (initialExpandDone) return;
+    if (athletesGroupedByYear.length === 0) return;
+    setExpandedYear(athletesGroupedByYear[0].year);
+    setInitialExpandDone(true);
+  }, [athletesGroupedByYear, initialExpandDone]);
+
+  const getAgeFromBirthdate = (birthdate: string | null | undefined): number | null => {
+    if (!birthdate) return null;
+    const b = dayjs(birthdate);
+    if (!b.isValid()) return null;
+    return dayjs().diff(b, 'year');
+  };
+
+  const totalVisible = filteredAthletes.length;
+  const totalActive = athletes.filter((a) => a.active).length;
+  const totalInactive = athletes.length - totalActive;
 
   return (
     <Box sx={{ p: 3 }}>
@@ -345,17 +434,24 @@ const AthletesPage: React.FC = () => {
         }}
       >
         <Box>
-          <Typography variant="h4">{t('athlete.management')}</Typography>
+          <Typography variant="h4" gutterBottom>
+            {t('athlete.management')}
+          </Typography>
           <Typography variant="body2" color="text.secondary">
             {t('athlete.managementSubtitle')}
           </Typography>
         </Box>
 
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <Button variant="outlined" onClick={fetchAthletes} disabled={loading}>
+          <Button
+            variant="outlined"
+            startIcon={<RefreshIcon />}
+            onClick={fetchAthletes}
+            disabled={loading}
+          >
             {t('actions.refresh')}
           </Button>
-          <Button variant="contained" onClick={handleOpenNewAthleteDialog}>
+          <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenNewAthleteDialog}>
             {t('athlete.add')}
           </Button>
         </Box>
@@ -373,130 +469,252 @@ const AthletesPage: React.FC = () => {
         </Box>
       )}
 
-      {/* Lista agrupada por ano */}
-      <Paper elevation={1} sx={{ p: 2 }}>
-        {loading && <Typography color="text.secondary">{t('common.loading')}</Typography>}
+      {/* Toolbar: search + status filter + counters */}
+      <Paper
+        variant="outlined"
+        sx={{
+          p: 2,
+          mb: 2,
+          display: 'flex',
+          gap: 2,
+          alignItems: 'center',
+          flexWrap: 'wrap',
+        }}
+      >
+        <TextField
+          size="small"
+          placeholder={t('common.search')}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          sx={{ flex: 1, minWidth: 240 }}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
+          }}
+        />
+        <ToggleButtonGroup
+          size="small"
+          exclusive
+          value={statusFilter}
+          onChange={(_, val) => val && setStatusFilter(val)}
+        >
+          <ToggleButton value="all">
+            {t('common.all')} ({athletes.length})
+          </ToggleButton>
+          <ToggleButton value="active">
+            {t('common.active')} ({totalActive})
+          </ToggleButton>
+          <ToggleButton value="inactive">
+            {t('common.inactive')} ({totalInactive})
+          </ToggleButton>
+        </ToggleButtonGroup>
+        <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+          {totalVisible} {t('athlete.title').toLowerCase()}
+        </Typography>
+      </Paper>
 
-        {!loading && athletes.length === 0 && (
-          <Typography color="text.secondary">{t('athlete.fetch.notFound')}</Typography>
-        )}
+      {loading && <Typography color="text.secondary">{t('common.loading')}</Typography>}
 
-        {!loading &&
-          athletesGroupedByYear.map((group, groupIndex) => (
-            <Box key={group.year}>
-              {groupIndex > 0 && <Divider sx={{ my: 2 }} />}
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5 }}>
-                <Chip
-                  label={group.year}
-                  size="small"
-                  color="primary"
-                  sx={{ fontWeight: 'bold', mr: 1 }}
-                />
-                <Typography variant="caption" color="text.secondary">
-                  ({group.athletes.length}{' '}
-                  {group.athletes.length === 1 ? t('athlete') : t('athlete.title').toLowerCase()})
-                </Typography>
-              </Box>
+      {!loading && athletesGroupedByYear.length === 0 && (
+        <Typography color="text.secondary">{t('athlete.fetch.notFound')}</Typography>
+      )}
 
-              {group.athletes.map((athlete) => (
-                <Box
-                  key={athlete.id}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    py: 1,
-                    px: 1.5,
-                    mb: 0.5,
-                    borderRadius: 1,
-                    backgroundColor: athlete.active ? 'grey.50' : 'action.disabledBackground',
-                    '&:hover': { backgroundColor: 'grey.100' },
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1 }}>
-                    <Typography
-                      variant="body2"
-                      sx={{ minWidth: 35, fontWeight: 'bold', color: 'primary.main' }}
-                    >
-                      {athlete.number || '-'}
+      {!loading &&
+        athletesGroupedByYear.map((group) => {
+          const parsedYear = Number(group.year);
+          const groupAge = Number.isFinite(parsedYear) ? dayjs().year() - parsedYear : null;
+          return (
+            <Accordion
+              key={group.year}
+              expanded={expandedYear === group.year}
+              onChange={(_, isExpanded) => setExpandedYear(isExpanded ? group.year : false)}
+              sx={{ mb: 1 }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    {group.year}
+                  </Typography>
+                  {groupAge !== null && group.year !== t('common.unknown') && (
+                    <Typography variant="body2" color="text.secondary">
+                      ({groupAge} {t('common.age').toLowerCase()})
                     </Typography>
-                    <Typography variant="body1" sx={{ minWidth: 180 }}>
-                      {athlete.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ minWidth: 90 }}>
-                      {athlete.birthdate ? dayjs(athlete.birthdate).format('DD/MM/YYYY') : '-'}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ minWidth: 40 }}>
-                      {athlete.shirtSize || '-'}
-                    </Typography>
-                    {/* Preferred Numbers */}
-                    <Box sx={{ display: 'flex', gap: 0.5, minWidth: 120 }}>
-                      {(athlete.preferredNumbers ?? []).map((pref) => {
-                        const colorHex =
-                          equipmentColors.find((c) => c.color === pref.color)?.colorHex || '#ccc';
-                        return (
-                          <Box
-                            key={pref.color}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              gap: 0.5,
-                              px: 0.75,
-                              py: 0.25,
-                              borderRadius: 1,
-                              backgroundColor: colorHex,
-                              border: '1px solid rgba(0,0,0,0.2)',
-                            }}
-                            title={pref.color}
-                          >
-                            <Typography
-                              variant="caption"
+                  )}
+                  <Chip
+                    label={`${group.athletes.length} ${group.athletes.length === 1 ? t('athlete.singular').toLowerCase() : t('athlete.title').toLowerCase()}`}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                  />
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer component={Paper} variant="outlined">
+                  <Table size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell sx={{ width: 72 }} />
+                        <TableCell sx={{ width: 60 }}>{t('common.number')}</TableCell>
+                        <TableCell>{t('common.name')}</TableCell>
+                        <TableCell sx={{ width: 140 }}>{t('common.birthdate')}</TableCell>
+                        <TableCell sx={{ width: 80 }} align="center">
+                          {t('equipment.size.title')}
+                        </TableCell>
+                        <TableCell>{t('equipment.preferredNumbers')}</TableCell>
+                        <TableCell sx={{ width: 100 }} align="center">
+                          {t('common.status')}
+                        </TableCell>
+                        <TableCell sx={{ width: 110 }} align="right">
+                          {t('common.actions')}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {group.athletes.map((athlete) => (
+                        <TableRow
+                          key={athlete.id}
+                          hover
+                          sx={{
+                            opacity: athlete.active ? 1 : 0.6,
+                          }}
+                        >
+                          <TableCell>
+                            <Avatar
+                              src={athlete.photo || undefined}
+                              variant="rounded"
                               sx={{
-                                fontWeight: 'bold',
-                                color:
-                                  colorHex.toLowerCase() === '#ffffff' ||
-                                  colorHex.toLowerCase() === '#fff'
-                                    ? '#000'
-                                    : '#fff',
-                                textShadow:
-                                  colorHex.toLowerCase() === '#ffffff' ||
-                                  colorHex.toLowerCase() === '#fff'
-                                    ? 'none'
-                                    : '0 0 2px rgba(0,0,0,0.5)',
+                                width: 44,
+                                height: 52,
+                                bgcolor: athlete.photo
+                                  ? 'transparent'
+                                  : stringToColor(athlete.name || ''),
+                                color: '#fff',
+                                fontWeight: 600,
+                                fontSize: 14,
                               }}
                             >
-                              {pref.number}
+                              {!athlete.photo && getInitials(athlete.name || '')}
+                            </Avatar>
+                          </TableCell>
+                          <TableCell>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: 700, color: 'primary.main' }}
+                            >
+                              {athlete.number || '—'}
                             </Typography>
-                          </Box>
-                        );
-                      })}
-                    </Box>
-                    {!athlete.active && (
-                      <Chip label={t('common.inactive')} size="small" color="default" />
-                    )}
-                  </Box>
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => handleOpenEditAthleteDialog(athlete)}
-                    >
-                      {t('actions.edit')}
-                    </Button>
-                    <Button
-                      size="small"
-                      color="error"
-                      variant="outlined"
-                      onClick={() => athlete.id !== undefined && setDeleteConfirmId(athlete.id)}
-                    >
-                      {t('actions.delete')}
-                    </Button>
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-          ))}
-      </Paper>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                              {athlete.name}
+                            </Typography>
+                            {athlete.fpbNumber && (
+                              <Typography variant="caption" color="text.secondary">
+                                {t('fpb.number')}: {athlete.fpbNumber}
+                              </Typography>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant="body2">
+                              {athlete.birthdate
+                                ? dayjs(athlete.birthdate).format('DD/MM/YYYY')
+                                : '—'}
+                            </Typography>
+                            {athlete.birthdate && (
+                              <Typography variant="caption" color="text.secondary">
+                                {getAgeFromBirthdate(athlete.birthdate)}{' '}
+                                {t('common.age').toLowerCase()}
+                              </Typography>
+                            )}
+                          </TableCell>
+                          <TableCell align="center">
+                            <Chip
+                              label={athlete.shirtSize || '—'}
+                              size="small"
+                              variant="outlined"
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
+                              {(athlete.preferredNumbers ?? []).map((pref) => {
+                                const colorHex =
+                                  equipmentColors.find((c) => c.color === pref.color)?.colorHex ||
+                                  '#ccc';
+                                const light = isLightHex(colorHex);
+                                return (
+                                  <Tooltip key={pref.color} title={pref.color}>
+                                    <Box
+                                      sx={{
+                                        minWidth: 34,
+                                        height: 28,
+                                        px: 1,
+                                        borderRadius: 1,
+                                        backgroundColor: colorHex,
+                                        color: light ? '#000' : '#fff',
+                                        border: '1px solid rgba(0,0,0,0.2)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        fontWeight: 700,
+                                        fontSize: 13,
+                                      }}
+                                    >
+                                      {pref.number}
+                                    </Box>
+                                  </Tooltip>
+                                );
+                              })}
+                              {(athlete.preferredNumbers ?? []).length === 0 && (
+                                <Typography variant="caption" color="text.disabled">
+                                  —
+                                </Typography>
+                              )}
+                            </Box>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Chip
+                              label={athlete.active ? t('common.active') : t('common.inactive')}
+                              size="small"
+                              color={athlete.active ? 'success' : 'default'}
+                              variant={athlete.active ? 'filled' : 'outlined'}
+                            />
+                          </TableCell>
+                          <TableCell align="right">
+                            <Tooltip title={t('actions.edit')}>
+                              <IconButton
+                                size="small"
+                                color="primary"
+                                onClick={() => handleOpenEditAthleteDialog(athlete)}
+                              >
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title={t('actions.delete')}>
+                              <IconButton
+                                size="small"
+                                color="error"
+                                onClick={() =>
+                                  athlete.id !== undefined && setDeleteConfirmId(athlete.id)
+                                }
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
+          );
+        })}
 
       {/* Dialog Add/Edit */}
       <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
@@ -734,11 +952,11 @@ const AthletesPage: React.FC = () => {
       <Dialog open={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)}>
         <DialogTitle>{t('messages.confirmDelete')}</DialogTitle>
         <DialogContent>
-          <Typography>
+          <DialogContentText>
             {t('messages.deleteConfirmation')}
             <br />
             <strong>{athletes.find((a) => a.id === deleteConfirmId)?.name}</strong>
-          </Typography>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmId(null)}>{t('actions.cancel')}</Button>

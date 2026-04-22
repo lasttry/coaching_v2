@@ -44,6 +44,9 @@ export interface GameInterface {
   shotClock?: string;
   opponentResultsCount?: number;
   speech?: string | null;
+  completed?: boolean;
+
+  fpbGameId?: number | null;
 
   createdAt?: Date;
   updatedAt?: Date;

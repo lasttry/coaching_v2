@@ -32,6 +32,17 @@ export async function POST(req: Request): Promise<NextResponse> {
 
   try {
     const data = await req.json();
+
+    const gameDate = new Date(data.date);
+    const isPast = gameDate.getTime() < Date.now();
+    const completed = typeof data.completed === 'boolean' ? data.completed : isPast;
+    if (completed === false && isPast) {
+      return NextResponse.json(
+        { error: 'Cannot mark a past game as not completed. Pick a future date.' },
+        { status: 400 }
+      );
+    }
+
     const image1 = data.image1 ? await resizeBase64Image(data.image1) : null;
     const image2 = data.image2 ? await resizeBase64Image(data.image2) : null;
     const image3 = data.image3 ? await resizeBase64Image(data.image3) : null;
@@ -43,8 +54,9 @@ export async function POST(req: Request): Promise<NextResponse> {
           connect: { id: session.user.selectedClubId },
         },
         number: data.number ? Number(data.number) : null,
-        date: new Date(data.date),
+        date: gameDate,
         away: Boolean(data.away),
+        completed,
         notes: data.notes ?? null,
         opponentResultsCount: data.opponentResultsCount ? Number(data.opponentResultsCount) : 5,
         speech: data.speech ?? null,

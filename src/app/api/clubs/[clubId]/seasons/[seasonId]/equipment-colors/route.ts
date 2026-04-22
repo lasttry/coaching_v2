@@ -47,6 +47,7 @@ export async function GET(
       : undefined,
     color: ec.color,
     colorHex: ec.colorHex,
+    numberColorHex: ec.numberColorHex,
     equipments: ec.equipments.map((e) => ({
       id: e.id,
       equipmentColorId: e.equipmentColorId,
@@ -68,7 +69,12 @@ export async function POST(
   const clubId = Number(params.clubId);
   const seasonId = Number(params.seasonId);
 
-  let data: { color: string; colorHex?: string; echelonId: number };
+  let data: {
+    color: string;
+    colorHex?: string;
+    numberColorHex?: string;
+    echelonId: number;
+  };
 
   try {
     data = await req.json();
@@ -78,6 +84,7 @@ export async function POST(
 
   const color = data.color?.trim();
   const colorHex = data.colorHex?.trim() || '#000000';
+  const numberColorHex = data.numberColorHex?.trim() || '#FFFFFF';
   const echelonId = Number(data.echelonId);
 
   if (!color) {
@@ -106,6 +113,7 @@ export async function POST(
       echelon: { connect: { id: echelonId } },
       color,
       colorHex,
+      numberColorHex,
     },
     include: {
       echelon: true,
@@ -130,6 +138,7 @@ export async function POST(
       : undefined,
     color: created.color,
     colorHex: created.colorHex,
+    numberColorHex: created.numberColorHex,
     equipments: [],
     createdAt: created.createdAt.toISOString(),
     updatedAt: created.updatedAt.toISOString(),

@@ -8,6 +8,7 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   CircularProgress,
   FormControlLabel,
   Grid,
@@ -19,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useTranslation } from 'react-i18next';
@@ -65,9 +67,11 @@ const EMPTY_FORM: FormState = {
 
 interface Props {
   clubId: number;
+  expanded?: boolean;
+  onExpandedChange?: (isExpanded: boolean) => void;
 }
 
-const ClubEmailSettings: React.FC<Props> = ({ clubId }) => {
+const ClubEmailSettings: React.FC<Props> = ({ clubId, expanded, onExpandedChange }) => {
   const { t } = useTranslation();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [loading, setLoading] = useState(false);
@@ -215,12 +219,33 @@ const ClubEmailSettings: React.FC<Props> = ({ clubId }) => {
     );
   }
 
+  const isControlled = expanded !== undefined;
+  const accordionProps = isControlled
+    ? {
+        expanded,
+        onChange: (_event: React.SyntheticEvent, isExpanded: boolean): void => {
+          onExpandedChange?.(isExpanded);
+        },
+      }
+    : {};
+
   return (
-    <Accordion sx={{ mt: 2 }}>
+    <Accordion {...accordionProps} sx={{ mb: 1 }}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-          {t('email.settings.title')}
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, width: '100%', pr: 2 }}>
+          <EmailOutlinedIcon color="primary" />
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+            {t('email.settings.title')}
+          </Typography>
+          <Box sx={{ ml: 'auto' }}>
+            <Chip
+              size="small"
+              label={form.enabled ? t('email.status.enabled') : t('email.status.disabled')}
+              color={form.enabled ? 'success' : 'default'}
+              variant={form.enabled ? 'filled' : 'outlined'}
+            />
+          </Box>
+        </Box>
       </AccordionSummary>
       <AccordionDetails>
         {loading ? (

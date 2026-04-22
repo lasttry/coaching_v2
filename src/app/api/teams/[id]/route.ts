@@ -87,7 +87,7 @@ export async function PUT(
     }
 
     // ✅ CASE 2: Update team fields
-    const { name, type, clubId, echelonId } = body;
+    const { name, type, clubId, echelonId, fpbTeamId } = body;
 
     const updatedTeam = await prisma.team.update({
       where: { id: teamId },
@@ -96,6 +96,9 @@ export async function PUT(
         ...(type && { type }),
         ...(clubId && { clubId }),
         ...(echelonId && { echelonId }),
+        ...(fpbTeamId !== undefined && {
+          fpbTeamId: fpbTeamId === null || fpbTeamId === '' ? null : Number(fpbTeamId),
+        }),
       },
       include: { athletes: { include: { athlete: true } }, echelon: true },
     });

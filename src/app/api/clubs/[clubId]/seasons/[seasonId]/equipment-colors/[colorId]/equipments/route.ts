@@ -31,6 +31,7 @@ export async function GET(
           echelonId: e.equipmentColor.echelonId,
           color: e.equipmentColor.color,
           colorHex: e.equipmentColor.colorHex,
+          numberColorHex: e.equipmentColor.numberColorHex,
         }
       : undefined,
     number: e.number,
@@ -90,6 +91,7 @@ export async function POST(
           echelonId: created.equipmentColor.echelonId,
           color: created.equipmentColor.color,
           colorHex: created.equipmentColor.colorHex,
+          numberColorHex: created.equipmentColor.numberColorHex,
         }
       : undefined,
     number: created.number,

@@ -7,6 +7,7 @@ export interface EquipmentColorBasicInterface {
   echelonId: number;
   color: string;
   colorHex: string;
+  numberColorHex: string;
 }
 
 export interface EquipmentInterface {
@@ -20,6 +21,7 @@ export interface EquipmentInterface {
   // Flattened fields from equipmentColor (for backward compatibility)
   color?: string;
   colorHex?: string;
+  numberColorHex?: string;
   echelonId?: number;
   clubId?: number;
   seasonId?: number;

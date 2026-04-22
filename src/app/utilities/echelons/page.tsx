@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
   TextField,
   Typography,
@@ -17,10 +18,27 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Paper,
+  Chip,
+  Tooltip,
+  InputAdornment,
+  Card,
+  CardContent,
+  ToggleButton,
+  ToggleButtonGroup,
+  Avatar,
 } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { ptPT } from '@mui/x-data-grid/locales';
-import { Add as AddIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import Grid from '@mui/material/Grid';
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Search as SearchIcon,
+  Male as MaleIcon,
+  Female as FemaleIcon,
+  Wc as CoedIcon,
+  Cake as CakeIcon,
+} from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
 import { EchelonInterface } from '@/types/echelons/types';
@@ -36,13 +54,27 @@ const initialEchelon: EchelonInterface = {
   gender: null,
 };
 
+const genderIcon = (gender: Gender | null): React.JSX.Element => {
+  if (gender === 'MALE') return <MaleIcon fontSize="small" sx={{ color: '#1976d2' }} />;
+  if (gender === 'FEMALE') return <FemaleIcon fontSize="small" sx={{ color: '#d81b60' }} />;
+  if (gender === 'COED') return <CoedIcon fontSize="small" sx={{ color: '#6a1b9a' }} />;
+  return <CoedIcon fontSize="small" color="disabled" />;
+};
+
+const genderColorHex = (gender: Gender | null): string => {
+  if (gender === 'MALE') return '#1976d2';
+  if (gender === 'FEMALE') return '#d81b60';
+  if (gender === 'COED') return '#6a1b9a';
+  return '#9e9e9e';
+};
+
 export default function EchelonsPage(): React.JSX.Element {
   const { t } = useTranslation();
 
-  // State
   const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
   const [loading, setLoading] = useState(true);
-  const [genderFilter, setGenderFilter] = useState<Gender | ''>('');
+  const [genderFilter, setGenderFilter] = useState<Gender | 'ALL'>('ALL');
+  const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingEchelon, setEditingEchelon] = useState<EchelonInterface | null>(null);
   const [formData, setFormData] = useState<EchelonInterface>(initialEchelon);
@@ -51,7 +83,16 @@ export default function EchelonsPage(): React.JSX.Element {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Fetch data
+  const genderLabel = useCallback(
+    (gender: Gender | null): string => {
+      if (gender === 'MALE') return t('gender.male');
+      if (gender === 'FEMALE') return t('gender.female');
+      if (gender === 'COED') return t('gender.coed');
+      return t('common.unknown');
+    },
+    [t]
+  );
+
   useEffect(() => {
     const fetchEchelons = async (): Promise<void> => {
       try {
@@ -69,7 +110,6 @@ export default function EchelonsPage(): React.JSX.Element {
     fetchEchelons();
   }, [t]);
 
-  // Handlers
   const handleOpenDialog = useCallback((echelon?: EchelonInterface): void => {
     if (echelon) {
       setEditingEchelon(echelon);
@@ -121,13 +161,17 @@ export default function EchelonsPage(): React.JSX.Element {
       });
 
       setSuccessMessage(
-        t('echelon.success', { status: editingEchelon ? t('status.updated') : t('status.created') })
+        t('echelon.save.success', {
+          status: editingEchelon ? t('status.updated') : t('status.created'),
+        })
       );
       handleCloseDialog();
     } catch (err) {
       log.error('Error saving echelon:', err);
       setErrorMessage(
-        t('echelon.failed', { status: editingEchelon ? t('actions.update') : t('actions.create') })
+        t('echelon.save.error', {
+          status: editingEchelon ? t('actions.update') : t('actions.create'),
+        })
       );
     }
   };
@@ -138,13 +182,34 @@ export default function EchelonsPage(): React.JSX.Element {
     setDeleteConfirmOpen(true);
   }, []);
 
-  // Filtered echelons based on gender filter
   const filteredEchelons = useMemo(() => {
-    if (genderFilter === '') {
-      return echelons;
-    }
-    return echelons.filter((e) => e.gender === genderFilter);
-  }, [echelons, genderFilter]);
+    const q = search.trim().toLowerCase();
+    return echelons.filter((e) => {
+      if (genderFilter !== 'ALL' && e.gender !== genderFilter) return false;
+      if (!q) return true;
+      return e.name.toLowerCase().includes(q) || (e.description ?? '').toLowerCase().includes(q);
+    });
+  }, [echelons, genderFilter, search]);
+
+  const sortedEchelons = useMemo(
+    () =>
+      [...filteredEchelons].sort((a, b) => {
+        const minA = a.minAge ?? 999;
+        const minB = b.minAge ?? 999;
+        if (minA !== minB) return minA - minB;
+        return a.name.localeCompare(b.name, 'pt');
+      }),
+    [filteredEchelons]
+  );
+
+  const counts = useMemo(() => {
+    return {
+      ALL: echelons.length,
+      MALE: echelons.filter((e) => e.gender === 'MALE').length,
+      FEMALE: echelons.filter((e) => e.gender === 'FEMALE').length,
+      COED: echelons.filter((e) => e.gender === 'COED').length,
+    };
+  }, [echelons]);
 
   const handleDelete = async (): Promise<void> => {
     if (!deleteId) return;
@@ -154,52 +219,17 @@ export default function EchelonsPage(): React.JSX.Element {
       if (!res.ok) throw new Error(await res.text());
 
       setEchelons((prev) => prev.filter((e) => e.id !== deleteId));
-      setSuccessMessage(t('echelon.success', { status: t('status.deleted') }));
+      setSuccessMessage(t('echelon.save.success', { status: t('status.deleted') }));
       setDeleteConfirmOpen(false);
       setDeleteId(null);
     } catch (err) {
       log.error('Error deleting echelon:', err);
-      setErrorMessage(t('echelon.failed', { status: t('actions.delete') }));
+      setErrorMessage(t('echelon.save.error', { status: t('actions.delete') }));
     }
   };
 
-  // DataGrid columns
-  const columns: GridColDef[] = useMemo(
-    () => [
-      { field: 'name', headerName: t('common.name'), flex: 1 },
-      { field: 'minAge', headerName: t('echelon.minAge'), width: 100 },
-      { field: 'maxAge', headerName: t('echelon.maxAge'), width: 100 },
-      {
-        field: 'gender',
-        headerName: t('gender.label'),
-        width: 120,
-        valueGetter: (value: string) => t(value || 'unknown'),
-      },
-      { field: 'description', headerName: t('common.description'), flex: 1 },
-      {
-        field: 'actions',
-        headerName: t('common.actions'),
-        width: 120,
-        sortable: false,
-        filterable: false,
-        renderCell: (params) => (
-          <>
-            <IconButton onClick={() => handleOpenDialog(params.row as EchelonInterface)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton color="error" onClick={() => confirmDelete(params.row.id)}>
-              <DeleteIcon />
-            </IconButton>
-          </>
-        ),
-      },
-    ],
-    [t, handleOpenDialog, confirmDelete]
-  );
-
   return (
     <Box>
-      {/* Notifications */}
       <Snackbar
         open={!!errorMessage}
         autoHideDuration={5000}
@@ -222,47 +252,193 @@ export default function EchelonsPage(): React.JSX.Element {
       </Snackbar>
 
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h5">{t('echelon.management')}</Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2,
+          flexWrap: 'wrap',
+          gap: 2,
+        }}
+      >
+        <Box>
+          <Typography variant="h4" gutterBottom>
+            {t('echelon.management')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {echelons.length} {t('echelon.title').toLowerCase()}
+          </Typography>
+        </Box>
         <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenDialog()}>
           {t('echelon.addNew')}
         </Button>
       </Box>
 
-      {/* Gender Filter */}
-      <Box sx={{ mb: 2 }}>
+      {/* Toolbar */}
+      <Paper
+        variant="outlined"
+        sx={{
+          p: 2,
+          mb: 2,
+          display: 'flex',
+          gap: 2,
+          flexWrap: 'wrap',
+          alignItems: 'center',
+        }}
+      >
         <TextField
-          select
           size="small"
-          label={t('gender.label')}
-          value={genderFilter}
-          onChange={(e) => setGenderFilter(e.target.value as Gender | '')}
-          sx={{ minWidth: 200 }}
-        >
-          <MenuItem value="">{t('common.all')}</MenuItem>
-          {Object.entries(Gender).map(([key, value]) => (
-            <MenuItem key={key} value={value}>
-              {t(key)}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Box>
-
-      {/* DataGrid */}
-      <Box sx={{ height: 500, width: '100%' }}>
-        <DataGrid
-          rows={filteredEchelons}
-          columns={columns}
-          loading={loading}
-          getRowId={(row) => row.id!}
-          pageSizeOptions={[5, 10, 25]}
-          localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
-          initialState={{
-            pagination: { paginationModel: { pageSize: 10 } },
-            sorting: { sortModel: [{ field: 'minAge', sort: 'asc' }] },
+          placeholder={t('common.search')}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
           }}
+          sx={{ flex: 1, minWidth: 240 }}
         />
-      </Box>
+        <ToggleButtonGroup
+          size="small"
+          exclusive
+          value={genderFilter}
+          onChange={(_, value) => {
+            if (value !== null) setGenderFilter(value as Gender | 'ALL');
+          }}
+        >
+          <ToggleButton value="ALL">
+            {t('common.all')} ({counts.ALL})
+          </ToggleButton>
+          <ToggleButton value="MALE">
+            <MaleIcon fontSize="small" sx={{ mr: 0.5, color: '#1976d2' }} />
+            {t('gender.male')} ({counts.MALE})
+          </ToggleButton>
+          <ToggleButton value="FEMALE">
+            <FemaleIcon fontSize="small" sx={{ mr: 0.5, color: '#d81b60' }} />
+            {t('gender.female')} ({counts.FEMALE})
+          </ToggleButton>
+          <ToggleButton value="COED">
+            <CoedIcon fontSize="small" sx={{ mr: 0.5, color: '#6a1b9a' }} />
+            {t('gender.coed')} ({counts.COED})
+          </ToggleButton>
+        </ToggleButtonGroup>
+        <Typography variant="body2" color="text.secondary" sx={{ ml: 'auto' }}>
+          {sortedEchelons.length} {t('common.visible')}
+        </Typography>
+      </Paper>
+
+      {loading && <Typography color="text.secondary">{t('common.loading')}</Typography>}
+
+      {!loading && sortedEchelons.length === 0 && (
+        <Typography color="text.secondary">{t('echelon.fetch.error')}</Typography>
+      )}
+
+      {/* Card grid */}
+      <Grid container spacing={2}>
+        {sortedEchelons.map((e) => {
+          const color = genderColorHex(e.gender);
+          return (
+            <Grid key={e.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+              <Card
+                variant="outlined"
+                sx={{
+                  height: '100%',
+                  borderLeft: `4px solid ${color}`,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  transition: 'box-shadow 0.2s',
+                  '&:hover': { boxShadow: 3 },
+                }}
+              >
+                <CardContent sx={{ flex: 1 }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      mb: 1,
+                    }}
+                  >
+                    <Avatar sx={{ width: 36, height: 36, bgcolor: color }}>
+                      {genderIcon(e.gender)}
+                    </Avatar>
+                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                      <Typography
+                        variant="h6"
+                        sx={{
+                          fontWeight: 700,
+                          lineHeight: 1.2,
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {e.name}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {genderLabel(e.gender)}
+                      </Typography>
+                    </Box>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mb: 1 }}>
+                    <Tooltip title={t('common.age')}>
+                      <Chip
+                        size="small"
+                        icon={<CakeIcon sx={{ fontSize: 14 }} />}
+                        label={
+                          e.maxAge ? `${e.minAge ?? '?'} – ${e.maxAge}` : `${e.minAge ?? '?'}+`
+                        }
+                        variant="outlined"
+                      />
+                    </Tooltip>
+                  </Box>
+
+                  {e.description && (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{
+                        display: '-webkit-box',
+                        WebkitLineClamp: 3,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {e.description}
+                    </Typography>
+                  )}
+                </CardContent>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    p: 1,
+                    borderTop: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                >
+                  <Tooltip title={t('actions.edit')}>
+                    <IconButton size="small" color="primary" onClick={() => handleOpenDialog(e)}>
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title={t('actions.delete')}>
+                    <IconButton size="small" color="error" onClick={() => confirmDelete(e.id)}>
+                      <DeleteIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              </Card>
+            </Grid>
+          );
+        })}
+      </Grid>
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog} fullWidth maxWidth="sm">
@@ -272,7 +448,7 @@ export default function EchelonsPage(): React.JSX.Element {
             <TextField
               label={t('common.name')}
               value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              onChange={(event) => setFormData({ ...formData, name: event.target.value })}
               required
               fullWidth
             />
@@ -281,10 +457,10 @@ export default function EchelonsPage(): React.JSX.Element {
                 label={t('echelon.minAge')}
                 type="number"
                 value={formData.minAge ?? ''}
-                onChange={(e) =>
+                onChange={(event) =>
                   setFormData({
                     ...formData,
-                    minAge: e.target.value === '' ? null : Number(e.target.value),
+                    minAge: event.target.value === '' ? null : Number(event.target.value),
                   })
                 }
                 required
@@ -294,10 +470,10 @@ export default function EchelonsPage(): React.JSX.Element {
                 label={t('echelon.maxAge')}
                 type="number"
                 value={formData.maxAge ?? ''}
-                onChange={(e) =>
+                onChange={(event) =>
                   setFormData({
                     ...formData,
-                    maxAge: e.target.value === '' ? null : Number(e.target.value),
+                    maxAge: event.target.value === '' ? null : Number(event.target.value),
                   })
                 }
                 fullWidth
@@ -308,11 +484,13 @@ export default function EchelonsPage(): React.JSX.Element {
               <Select
                 value={formData.gender ?? ''}
                 label={t('gender.label')}
-                onChange={(e) => setFormData({ ...formData, gender: e.target.value as Gender })}
+                onChange={(event) =>
+                  setFormData({ ...formData, gender: event.target.value as Gender })
+                }
               >
-                {Object.entries(Gender).map(([key, value]) => (
-                  <MenuItem key={key} value={value}>
-                    {t(key)}
+                {Object.values(Gender).map((value) => (
+                  <MenuItem key={value} value={value}>
+                    {genderLabel(value)}
                   </MenuItem>
                 ))}
               </Select>
@@ -320,7 +498,7 @@ export default function EchelonsPage(): React.JSX.Element {
             <TextField
               label={t('common.description')}
               value={formData.description ?? ''}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(event) => setFormData({ ...formData, description: event.target.value })}
               multiline
               rows={2}
               fullWidth
@@ -339,7 +517,7 @@ export default function EchelonsPage(): React.JSX.Element {
       <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>
         <DialogTitle>{t('messages.confirmDelete')}</DialogTitle>
         <DialogContent>
-          <Typography>{t('messages.deleteConfirmation')}</Typography>
+          <DialogContentText>{t('messages.deleteConfirmation')}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmOpen(false)}>{t('actions.cancel')}</Button>

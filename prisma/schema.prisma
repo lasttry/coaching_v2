@@ -166,6 +166,9 @@ model Game {
   shotClock             String?
   opponentResultsCount  Int     @default(5)
   speech                String? @db.Text
+  completed             Boolean @default(false)
+
+  fpbGameId Int? @unique
 
   image1 String?
   image2 String?
@@ -346,6 +349,7 @@ model Club {
   federationLogo  String?       @db.Text
   backgroundColor String?       @db.VarChar(7)
   foregroundColor String?       @db.VarChar(7)
+  fpbClubId       Int?
   accounts        AccountClub[] @relation("ClubToAccounts")
   athletes        Athlete[]
   games           Game[]
@@ -431,6 +435,7 @@ model Team {
   club      Club          @relation(fields: [clubId], references: [id], onDelete: Cascade)
   echelonId Int
   echelon   Echelon       @relation(fields: [echelonId], references: [id], onDelete: Cascade)
+  fpbTeamId Int?
   athletes  TeamAthlete[]
   staff     TeamStaff[]
   createdAt DateTime      @default(now())
@@ -529,8 +534,9 @@ model EquipmentColor {
   season  Season  @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   echelon Echelon @relation(fields: [echelonId], references: [id], onDelete: Cascade)
 
-  color    String
-  colorHex String @default("#000000")
+  color           String
+  colorHex        String @default("#000000")
+  numberColorHex  String @default("#FFFFFF")
 
   equipments     Equipment[]
   gameEquipments GameEquipment[]

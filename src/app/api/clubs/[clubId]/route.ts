@@ -111,6 +111,10 @@ export async function PUT(
       federationLogo: clubPayload.federationLogo || null,
       backgroundColor: clubPayload.backgroundColor || '#ffffff',
       foregroundColor: clubPayload.foregroundColor || '#000000',
+      fpbClubId:
+        clubPayload.fpbClubId === undefined || clubPayload.fpbClubId === null
+          ? null
+          : Number(clubPayload.fpbClubId),
     };
 
     // First, update the club itself (without nested venues write)

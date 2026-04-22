@@ -34,6 +34,7 @@ export async function GET(
           echelonId: equipment.equipmentColor.echelonId,
           color: equipment.equipmentColor.color,
           colorHex: equipment.equipmentColor.colorHex,
+          numberColorHex: equipment.equipmentColor.numberColorHex,
         }
       : undefined,
     number: equipment.number,
@@ -88,6 +89,7 @@ export async function PUT(
           echelonId: updated.equipmentColor.echelonId,
           color: updated.equipmentColor.color,
           colorHex: updated.equipmentColor.colorHex,
+          numberColorHex: updated.equipmentColor.numberColorHex,
         }
       : undefined,
     number: updated.number,

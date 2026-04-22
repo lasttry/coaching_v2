@@ -38,7 +38,10 @@
     "other": "Outro",
     "team": "Equipa",
     "opponent": "Adversário",
-    "venue": "Pavilhão"
+    "venue": "Pavilhão",
+    "status": "Estado",
+    "search": "Pesquisar...",
+    "visible": "visível(is)"
   },
 
   "actions": {
@@ -56,7 +59,8 @@
     "hide": "Ocultar",
     "viewDetails": "Ver Detalhes",
     "confirm": "Confirmar",
-    "close": "Fechar"
+    "close": "Fechar",
+    "back": "Voltar"
   },
 
   "status": {
@@ -82,7 +86,8 @@
     "errorDeleting": "Erro ao eliminar",
     "errorUnknown": "Ocorreu um erro desconhecido",
     "confirmDelete": "Tem a certeza que quer apagar?",
-    "deleteConfirmation": "Tem a certeza que deseja apagar? Esta ação é irreversível."
+    "deleteConfirmation": "Tem a certeza que deseja apagar? Esta ação é irreversível.",
+    "noData": "Sem dados para mostrar"
   },
 
   "images": {
@@ -230,6 +235,7 @@
 
   "team": {
     "title": "Equipas",
+    "plural": "Equipas",
     "singular": "Equipa",
     "management": "Gestão de Equipas",
     "add": "Adicionar Equipa",
@@ -238,11 +244,18 @@
     "unknown": "Equipa desconhecida",
     "teamA": "Equipa A",
     "teamB": "Equipa B",
+    "fpbTeamId": "ID Equipa FPB",
+    "fpbTeamIdHelper": "Número que aparece na URL fpb.pt/equipa/equipa_<ID>",
     "fetch": {
-      "error": "Falha ao obter equipas"
+      "error": "Falha ao obter equipas",
+      "notFound": "Nenhuma equipa encontrada"
     },
     "save": {
-      "createError": "Falha ao criar equipa"
+      "createError": "Falha ao criar equipa",
+      "error": "Falha ao guardar equipa"
+    },
+    "delete": {
+      "error": "Falha ao eliminar equipa"
     }
   },
 
@@ -265,6 +278,8 @@
     "federationLogoHelper": "Imagem que aparece no cabeçalho dos documentos oficiais",
     "backgroundColor": "Cor de Fundo",
     "foregroundColor": "Cor do Texto",
+    "fpbClubId": "ID Clube FPB",
+    "fpbClubIdHelper": "ID do clube no site da FPB (opcional)",
     "save": {
       "createSuccess": "Clube criado com sucesso",
       "updateSuccess": "Clube guardado com sucesso",
@@ -334,6 +349,9 @@
     "sheet": "Folha de jogo",
     "registrationSheet": "Ficha de Inscrição",
     "away": "Fora",
+    "completed": "Terminado",
+    "upcoming": "Por jogar",
+    "next": "Próximo",
     "total": "Total de Jogos",
     "average": "Média",
     "byCompetition": "Por Competição",
@@ -582,7 +600,8 @@
       "error": "Falha ao obter as contas do clube",
       "networkError": "Erro ao obter as contas: {{error}}",
       "autocompleteError": "Falha ao obter contas para autocomplete",
-      "autocompleteNetworkError": "Erro ao obter contas para autocomplete: {{error}}"
+      "autocompleteNetworkError": "Erro ao obter contas para autocomplete: {{error}}",
+      "notFound": "Nenhuma conta encontrada"
     },
     "save": {
       "addError": "Falha ao adicionar a conta ao clube",
@@ -678,7 +697,8 @@
     "license": "Licença FPB",
     "competitionId": "ID Competição FPB",
     "serieId": "ID Série FPB",
-    "getInfos": "Obter Infos"
+    "getInfos": "Obter Infos",
+    "linked": "Ligado à FPB"
   },
 
   "equipment": {
@@ -697,6 +717,9 @@
       "add": "Adicionar Cor",
       "edit": "Editar Cor",
       "hex": "Cor (hex)",
+      "backgroundLabel": "Cor de fundo",
+      "numberLabel": "Cor do número",
+      "preview": "Pré-visualização",
       "select": "Selecionar cor",
       "selectFirst": "Selecione uma cor primeiro",
       "unknown": "Cor desconhecida",
@@ -777,6 +800,7 @@
     "numberPositive": "O número tem de ser positivo",
     "dateRequired": "A data é obrigatória",
     "dateInvalid": "A data não é válida",
+    "dateMustBeFuture": "Para marcar como não terminado, a data tem de estar no futuro",
     "timeRequired": "A hora é obrigatória",
     "awayBoolean": "O campo 'Fora' tem de ser verdadeiro/falso",
     "subCompetitionMaxLength": "O nome da sub-competição é demasiado longo",
@@ -798,6 +822,10 @@
     },
     "enabled": {
       "label": "Envio de emails ativo"
+    },
+    "status": {
+      "enabled": "Ativo",
+      "disabled": "Inativo"
     },
     "host": {
       "label": "Servidor (host)"
@@ -844,5 +872,28 @@
       "enableFirst": "Ativa o envio de emails para testar."
     },
     "saveClubFirst": "Guarda primeiro o clube para configurar o servidor de email."
+  },
+
+  "fpbImport": {
+    "title": "Importar jogos da FPB",
+    "button": "Importar da FPB",
+    "missingFpbTeamId": "A equipa não tem ID FPB configurado. Edita a equipa e preenche o ID.",
+    "fetchError": "Falha ao obter o calendário da FPB",
+    "importError": "Falha ao importar jogos da FPB",
+    "previewSummary": "{{total}} jogos no calendário FPB, {{toCreate}} por importar.",
+    "resultSummary": "Importados: {{imported}} · Ignorados: {{skipped}} · Erros: {{errors}}",
+    "imported": "Jogos importados",
+    "errors": "Erros",
+    "away": "fora",
+    "fpbOpponent": "Adversário (FPB)",
+    "noSeries": "Sem série",
+    "importCount": "Importar {{count}} jogos",
+    "action": {
+      "create": "A criar",
+      "skip-existing": "Já existe",
+      "skip-date": "Data inválida",
+      "skip-own-team": "Sem equipa do clube",
+      "error": "Erro"
+    }
   }
 }

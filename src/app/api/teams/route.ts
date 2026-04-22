@@ -36,7 +36,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     if (!session.user.selectedClubId || isNaN(Number(session.user.selectedClubId))) {
       throw new Error(i18next.t('club.validation.invalidId'));
     }
-    const { name, type, echelonId } = await req.json();
+    const { name, type, echelonId, fpbTeamId } = await req.json();
 
     if (!name || !type || !echelonId) {
       log.error('Missing required fields');
@@ -44,7 +44,16 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     const team = await prisma.team.create({
-      data: { name, type, clubId: session.user.selectedClubId, echelonId },
+      data: {
+        name,
+        type,
+        clubId: session.user.selectedClubId,
+        echelonId,
+        fpbTeamId:
+          fpbTeamId === undefined || fpbTeamId === null || fpbTeamId === ''
+            ? null
+            : Number(fpbTeamId),
+      },
     });
 
     return NextResponse.json(team, { status: 201 });

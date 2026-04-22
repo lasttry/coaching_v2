@@ -7,6 +7,7 @@ export interface TeamInterface {
   type: 'A' | 'B' | 'C' | 'OTHER';
   clubId: number;
   echelonId: number;
+  fpbTeamId?: number | null;
   createdAt?: string | null;
   updatedAt?: string | null;
   athletes: Array<{

@@ -1,43 +1,60 @@
 import React, { useState } from 'react';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Avatar,
   Box,
   Button,
-  IconButton,
-  Typography,
+  Chip,
   Stack,
   TextField,
-  Divider,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
+  Typography,
 } from '@mui/material';
-import { IconUpload, IconTrash } from '@tabler/icons-react';
+import Grid from '@mui/material/Grid';
+import {
+  UploadFile as UploadIcon,
+  DeleteOutlined as DeleteIcon,
+  Place as PlaceIcon,
+  AddCircleOutlined as AddCircleIcon,
+  Business as BusinessIcon,
+  Palette as PaletteIcon,
+  Image as ImageIcon,
+} from '@mui/icons-material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CompactPicker } from 'react-color';
 import { ClubInterface } from '@/types/club/types';
-import { Grid } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
 
 interface ClubDetailsProps {
   selectedClub: ClubInterface;
   onEditChange: (field: keyof ClubInterface, value: ClubInterface[keyof ClubInterface]) => void;
-  onSave: () => void;
-  onCancel: () => void;
-  onDelete: () => void;
+  expanded: string | false;
+  onExpandedChange: (section: string | false) => void;
 }
+
+const SectionHeader: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  badge?: React.ReactNode;
+}> = ({ icon, title, badge }) => (
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, width: '100%', pr: 2 }}>
+    <Box sx={{ color: 'primary.main', display: 'flex', alignItems: 'center' }}>{icon}</Box>
+    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+      {title}
+    </Typography>
+    {badge && <Box sx={{ ml: 'auto' }}>{badge}</Box>}
+  </Box>
+);
 
 const ClubDetails: React.FC<ClubDetailsProps> = ({
   selectedClub,
   onEditChange,
-  onSave,
-  onCancel,
-  onDelete,
+  expanded,
+  onExpandedChange,
 }) => {
   const { t } = useTranslation();
-  const [deleteOverlayVisible, setDeleteOverlayVisible] = useState(false);
   const [newVenue, setNewVenue] = useState('');
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -49,6 +66,10 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleRemoveImage = (): void => {
+    onEditChange('image', '');
   };
 
   const handleFederationLogoUpload = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -66,84 +87,67 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
     onEditChange('federationLogo', '');
   };
 
-  const handleDelete = (): void => {
-    setDeleteOverlayVisible(false);
-    onDelete();
-  };
-
   const handleAddVenue = (): void => {
     if (!newVenue.trim()) return;
     const updatedVenues = [...(selectedClub.venues || []), { name: newVenue.trim() }];
-    onEditChange('venues', updatedVenues); // ✅ no any, no warning
+    onEditChange('venues', updatedVenues);
     setNewVenue('');
   };
 
   const handleRemoveVenue = (index: number): void => {
     const updatedVenues = [...(selectedClub.venues || [])];
     updatedVenues.splice(index, 1);
-    onEditChange('venues', updatedVenues); // ✅ no warning
+    onEditChange('venues', updatedVenues);
   };
 
+  const handleChange =
+    (section: string) =>
+    (_event: React.SyntheticEvent, isExpanded: boolean): void => {
+      onExpandedChange(isExpanded ? section : false);
+    };
+
+  const bg = selectedClub.backgroundColor || '#ffffff';
+  const fg = selectedClub.foregroundColor || '#000000';
+  const venuesCount = (selectedClub.venues || []).length;
+  const hasImage = !!selectedClub.image;
+  const hasFedLogo = !!selectedClub.federationLogo;
+
   return (
-    <>
-      <Box sx={{ marginTop: 4 }}>
-        <Divider sx={{ marginY: 2 }} />
-        <Stack spacing={3}>
-          {/* Federation Logo - at the top */}
-          <Box>
-            <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 600 }}>
-              {t('club.federationLogo')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              {t('club.federationLogoHelper')}
-            </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <Avatar
-                src={selectedClub.federationLogo || undefined}
-                variant="rounded"
-                sx={{ width: 120, height: 120, bgcolor: 'grey.200' }}
-              >
-                {!selectedClub.federationLogo && 'FPB'}
-              </Avatar>
-              <Stack direction="column" spacing={1}>
-                <Button
-                  component="label"
-                  variant="outlined"
-                  startIcon={<IconUpload size={18} />}
+    <Box sx={{ mt: 2 }}>
+      {/* Identificação */}
+      <Accordion
+        expanded={expanded === 'identity'}
+        onChange={handleChange('identity')}
+        sx={{ mb: 1 }}
+      >
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <SectionHeader
+            icon={<BusinessIcon />}
+            title={t('club.singular')}
+            badge={
+              selectedClub.fpbClubId ? (
+                <Chip
                   size="small"
-                >
-                  {t('images.upload')}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={handleFederationLogoUpload}
-                  />
-                </Button>
-                {selectedClub.federationLogo && (
-                  <IconButton
-                    color="error"
-                    onClick={handleRemoveFederationLogo}
-                    size="small"
-                    title={t('images.remove')}
-                  >
-                    <IconTrash size={18} />
-                  </IconButton>
-                )}
-              </Stack>
-            </Box>
-          </Box>
-
-          <Divider />
-
-          <TextField
-            label={t('common.name')}
-            value={selectedClub.name}
-            onChange={(e) => onEditChange('name', e.target.value)}
-            fullWidth
+                  label={`FPB · ${selectedClub.fpbClubId}`}
+                  color="primary"
+                  variant="outlined"
+                />
+              ) : undefined
+            }
           />
+        </AccordionSummary>
+        <AccordionDetails>
           <Grid container spacing={2}>
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField
+                label={t('common.name')}
+                value={selectedClub.name}
+                onChange={(e) => onEditChange('name', e.target.value)}
+                fullWidth
+                required
+              />
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
                 label={t('common.shortName')}
                 value={selectedClub.shortName || ''}
@@ -151,109 +155,322 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
                 fullWidth
               />
             </Grid>
-          </Grid>
-
-          {/* Venues */}
-          <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {t('venues')}
-            </Typography>
-            <Stack direction="row" spacing={2} sx={{ alignItems: 'center', mt: 1 }}>
+            <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
-                label={t('venue.new')}
-                value={newVenue}
-                onChange={(e) => setNewVenue(e.target.value)}
+                label={t('club.fpbClubId')}
+                helperText={t('club.fpbClubIdHelper')}
+                value={selectedClub.fpbClubId ?? ''}
+                onChange={(e) => {
+                  const v = e.target.value.trim();
+                  onEditChange('fpbClubId', v === '' ? null : Number(v));
+                }}
+                slotProps={{ htmlInput: { inputMode: 'numeric', pattern: '[0-9]*' } }}
                 fullWidth
               />
-              <Button variant="outlined" onClick={handleAddVenue}>
-                {t('actions.add')}
-              </Button>
-            </Stack>
-            <Stack spacing={1} sx={{ mt: 2 }}>
-              {(selectedClub.venues || []).map((venue, index) => (
-                <Stack
-                  direction="row"
-                  key={index}
-                  sx={{ justifyContent: 'space-between', alignItems: 'center' }}
-                >
-                  <Typography>{venue.name}</Typography>
-                  <Button size="small" color="error" onClick={() => handleRemoveVenue(index)}>
-                    {t('actions.remove')}
-                  </Button>
-                </Stack>
-              ))}
-            </Stack>
-          </Box>
+            </Grid>
+          </Grid>
+        </AccordionDetails>
+      </Accordion>
 
-          <Box>
-            <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-              {t('club.image')}
-            </Typography>
-            <input type="file" accept="image/*" onChange={handleImageUpload} />
-          </Box>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 6 }}>
-              <Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {t('club.backgroundColor')}
-                </Typography>
+      {/* Imagens */}
+      <Accordion expanded={expanded === 'images'} onChange={handleChange('images')} sx={{ mb: 1 }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <SectionHeader
+            icon={<ImageIcon />}
+            title={t('common.images')}
+            badge={
+              <Stack direction="row" spacing={0.5}>
+                <Chip
+                  size="small"
+                  label={t('club.image')}
+                  color={hasImage ? 'primary' : 'default'}
+                  variant={hasImage ? 'filled' : 'outlined'}
+                />
+                <Chip
+                  size="small"
+                  label="FPB"
+                  color={hasFedLogo ? 'primary' : 'default'}
+                  variant={hasFedLogo ? 'filled' : 'outlined'}
+                />
+              </Stack>
+            }
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                {t('club.image')}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Avatar
+                  src={selectedClub.image || undefined}
+                  variant="rounded"
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    bgcolor: bg,
+                    color: fg,
+                    fontWeight: 700,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                >
+                  {!selectedClub.image &&
+                    (selectedClub.shortName || selectedClub.name || '?').slice(0, 2).toUpperCase()}
+                </Avatar>
+                <Stack spacing={1}>
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    size="small"
+                    startIcon={<UploadIcon />}
+                  >
+                    {t('images.upload')}
+                    <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
+                  </Button>
+                  {hasImage && (
+                    <Button
+                      size="small"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      onClick={handleRemoveImage}
+                    >
+                      {t('images.remove')}
+                    </Button>
+                  )}
+                </Stack>
+              </Box>
+            </Grid>
+
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                {t('club.federationLogo')}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                {t('club.federationLogoHelper')}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Avatar
+                  src={selectedClub.federationLogo || undefined}
+                  variant="rounded"
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    bgcolor: 'grey.100',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                >
+                  {!selectedClub.federationLogo && 'FPB'}
+                </Avatar>
+                <Stack spacing={1}>
+                  <Button
+                    component="label"
+                    variant="outlined"
+                    size="small"
+                    startIcon={<UploadIcon />}
+                  >
+                    {t('images.upload')}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={handleFederationLogoUpload}
+                    />
+                  </Button>
+                  {hasFedLogo && (
+                    <Button
+                      size="small"
+                      color="error"
+                      startIcon={<DeleteIcon />}
+                      onClick={handleRemoveFederationLogo}
+                    >
+                      {t('images.remove')}
+                    </Button>
+                  )}
+                </Stack>
+              </Box>
+            </Grid>
+          </Grid>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Cores */}
+      <Accordion expanded={expanded === 'colors'} onChange={handleChange('colors')} sx={{ mb: 1 }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <SectionHeader
+            icon={<PaletteIcon />}
+            title={t('club.backgroundColor') + ' / ' + t('club.foregroundColor')}
+            badge={
+              <Stack direction="row" spacing={0.5}>
+                <Box
+                  sx={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 0.5,
+                    backgroundColor: bg,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 0.5,
+                    backgroundColor: fg,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                />
+              </Stack>
+            }
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                {t('club.backgroundColor')}
+              </Typography>
+              <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 1,
+                    backgroundColor: bg,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                />
                 <CompactPicker
-                  color={selectedClub.backgroundColor || '#ffffff'}
+                  color={bg}
                   onChangeComplete={(color) => onEditChange('backgroundColor', color.hex)}
                 />
-              </Box>
+              </Stack>
             </Grid>
-            <Grid size={{ xs: 6 }}>
-              <Box>
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {t('club.foregroundColor')}
-                </Typography>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                {t('club.foregroundColor')}
+              </Typography>
+              <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                <Box
+                  sx={{
+                    width: 48,
+                    height: 48,
+                    borderRadius: 1,
+                    backgroundColor: fg,
+                    border: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                />
                 <CompactPicker
-                  color={selectedClub.foregroundColor || '#000000'}
+                  color={fg}
                   onChangeComplete={(color) => onEditChange('foregroundColor', color.hex)}
                 />
+              </Stack>
+            </Grid>
+            <Grid size={{ xs: 12 }}>
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: 1,
+                  backgroundColor: bg,
+                  color: fg,
+                  textAlign: 'center',
+                  border: '1px solid',
+                  borderColor: 'divider',
+                }}
+              >
+                <Typography variant="h6" sx={{ color: 'inherit', fontWeight: 700 }}>
+                  {selectedClub.name || t('club.singular')}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'inherit', opacity: 0.8 }}>
+                  {bg} / {fg}
+                </Typography>
               </Box>
             </Grid>
           </Grid>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 4 }}>
-              <Button variant="contained" color="primary" onClick={onSave} sx={{ width: '100%' }}>
-                {t('actions.save')}
-              </Button>
-            </Grid>
-            <Grid size={{ xs: 4 }}>
-              <Button variant="outlined" onClick={onCancel} sx={{ width: '100%' }}>
-                {t('actions.cancel')}
-              </Button>
-            </Grid>
-            <Grid size={{ xs: 4 }}>
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={() => setDeleteOverlayVisible(true)}
-                sx={{ width: '100%' }}
-              >
-                {t('club.delete')}
-              </Button>
-            </Grid>
-          </Grid>
-        </Stack>
-      </Box>
-      <Dialog open={deleteOverlayVisible} onClose={() => setDeleteOverlayVisible(false)}>
-        <DialogTitle>{t('club.delete')}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>{t('club.deleteConfirmation')}</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteOverlayVisible(false)} color="primary">
-            {t('actions.cancel')}
-          </Button>
-          <Button onClick={handleDelete} color="secondary">
-            {t('actions.delete')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Pavilhões */}
+      <Accordion expanded={expanded === 'venues'} onChange={handleChange('venues')} sx={{ mb: 1 }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <SectionHeader
+            icon={<PlaceIcon />}
+            title={t('venue.title')}
+            badge={<Chip size="small" label={venuesCount} variant="outlined" />}
+          />
+        </AccordionSummary>
+        <AccordionDetails>
+          <Stack direction="row" spacing={2} sx={{ alignItems: 'stretch', mb: 2 }}>
+            <TextField
+              label={t('venue.new')}
+              value={newVenue}
+              onChange={(e) => setNewVenue(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleAddVenue();
+                }
+              }}
+              size="small"
+              fullWidth
+            />
+            <Button
+              variant="contained"
+              startIcon={<AddCircleIcon />}
+              onClick={handleAddVenue}
+              disabled={!newVenue.trim()}
+            >
+              {t('actions.add')}
+            </Button>
+          </Stack>
+
+          {venuesCount === 0 ? (
+            <Typography variant="body2" color="text.secondary">
+              {t('venue.none')}
+            </Typography>
+          ) : (
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {(selectedClub.venues || []).map((venue, index) => (
+                <Chip
+                  key={index}
+                  icon={<PlaceIcon sx={{ fontSize: 18 }} />}
+                  label={venue.name}
+                  onDelete={() => handleRemoveVenue(index)}
+                  deleteIcon={<DeleteIcon />}
+                  sx={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    height: 36,
+                    px: 0.5,
+                    backgroundColor: 'primary.50',
+                    color: 'primary.main',
+                    border: '1px solid',
+                    borderColor: 'primary.light',
+                    '& .MuiChip-icon': {
+                      color: 'primary.main',
+                    },
+                    '& .MuiChip-deleteIcon': {
+                      color: 'error.main',
+                      opacity: 0.7,
+                      '&:hover': {
+                        opacity: 1,
+                        color: 'error.main',
+                      },
+                    },
+                  }}
+                />
+              ))}
+            </Box>
+          )}
+        </AccordionDetails>
+      </Accordion>
+    </Box>
   );
 };
 

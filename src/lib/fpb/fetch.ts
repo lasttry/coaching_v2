@@ -1,6 +1,7 @@
 import { FpbGameOfficialInterface } from '@/types/fpb/gameOfficial/types';
 import { FpbResultInterface } from '@/types/fpb/result/types';
 import { FpbStandingInterface } from '@/types/fpb/standing/types';
+import { FpbCalendarGame } from '@/types/fpb/calendar/types';
 import * as cheerio from 'cheerio';
 
 export async function fetchFpbLatestResults(
@@ -202,6 +203,131 @@ export async function fetchFpbPhaseStandings(
   });
 
   return rows;
+}
+
+const FPB_MONTHS_PT: Record<string, number> = {
+  JAN: 1,
+  FEV: 2,
+  MAR: 3,
+  ABR: 4,
+  MAI: 5,
+  JUN: 6,
+  JUL: 7,
+  AGO: 8,
+  SET: 9,
+  OUT: 10,
+  NOV: 11,
+  DEZ: 12,
+};
+
+function parseFpbDateTime(dateText: string, timeText: string): Date | null {
+  // e.g. "25 ABR 2026" + "18H30"
+  const dateMatch = /^(\d{1,2})\s+([A-Za-zÀ-ÿ]+)\s+(\d{4})$/.exec(dateText.trim());
+  if (!dateMatch) return null;
+
+  const day = Number(dateMatch[1]);
+  const monthKey = dateMatch[2].toUpperCase().replace(/\./g, '').slice(0, 3);
+  const year = Number(dateMatch[3]);
+  const month = FPB_MONTHS_PT[monthKey];
+  if (!month) return null;
+
+  let hour = 0;
+  let minute = 0;
+  const timeMatch = /(\d{1,2})\s*H\s*(\d{1,2})?/i.exec(timeText.trim());
+  if (timeMatch) {
+    hour = Number(timeMatch[1]);
+    minute = timeMatch[2] ? Number(timeMatch[2]) : 0;
+  }
+
+  const d = new Date(year, month - 1, day, hour, minute, 0, 0);
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+/**
+ * Scrapes the "Calendário" (upcoming games) block for a given FPB team page.
+ * Returns one entry per scheduled game.
+ */
+export async function fetchFpbTeamCalendar(fpbTeamId: number): Promise<FpbCalendarGame[]> {
+  const url = `https://www.fpb.pt/equipa/equipa_${fpbTeamId}/`;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`FPB calendar fetch failed: ${res.status} ${res.statusText}`);
+  }
+
+  const html = await res.text();
+  const $ = cheerio.load(html);
+
+  const games: FpbCalendarGame[] = [];
+
+  const calendarWrapper = $('.team-wrapper')
+    .filter((_, el) => {
+      const title = $(el).find('h2.title').first().text().trim();
+      return title === 'Calendário';
+    })
+    .first();
+
+  if (!calendarWrapper.length) {
+    return games;
+  }
+
+  calendarWrapper.find('.day-wrapper').each((_, dayEl) => {
+    const day = $(dayEl);
+
+    const dateText = day.find('h3.date').first().text().trim();
+
+    const link = day.find('a.game-wrapper-a').first();
+    const href = link.attr('href') ?? null;
+    const detailUrl = href ? new URL(href, 'https://www.fpb.pt').toString() : null;
+
+    let fpbGameId: number | null = null;
+    if (href) {
+      const m = /internalID=(\d+)/i.exec(href);
+      if (m) fpbGameId = Number(m[1]);
+    }
+
+    const teamsWrapper = day.find('.teams-wrapper').first();
+    if (!teamsWrapper.length) return;
+
+    const homeContainer = teamsWrapper.find('.team-container').not('.right').first();
+    const awayContainer = teamsWrapper.find('.team-container.right').first();
+
+    const homeTeamName = homeContainer.find('.fullName').first().text().trim();
+    const awayTeamName = awayContainer.find('.fullName').first().text().trim();
+
+    const timeText = teamsWrapper.find('.hour h3').first().text().trim();
+
+    const location = day.find('.location-wrapper .wrapper').first();
+    const venueName = location.find('b').first().text().trim();
+
+    const competitionRaw = location.find('.competition span').first().text().trim();
+    let echelonLabel: string | null = null;
+    let competitionLabel: string | null = null;
+    if (competitionRaw) {
+      const parts = competitionRaw.split('|').map((s) => s.trim());
+      if (parts.length >= 2) {
+        echelonLabel = parts[0] || null;
+        competitionLabel = parts.slice(1).join(' | ') || null;
+      } else {
+        competitionLabel = competitionRaw;
+      }
+    }
+
+    games.push({
+      dateText,
+      date: parseFpbDateTime(dateText, timeText),
+      timeText,
+      homeTeamName,
+      awayTeamName,
+      venueName,
+      echelonLabel,
+      competitionLabel,
+      fpbGameId,
+      detailUrl,
+    });
+  });
+
+  return games;
 }
 
 /**

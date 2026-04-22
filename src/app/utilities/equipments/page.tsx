@@ -7,6 +7,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
   TextField,
   Typography,
@@ -17,6 +18,9 @@ import {
   MenuItem,
   IconButton,
   Chip,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSession } from 'next-auth/react';
@@ -48,7 +52,11 @@ const EquipmentsPage: React.FC = () => {
 
   // Add color dialog
   const [openAddColorDialog, setOpenAddColorDialog] = useState<boolean>(false);
-  const [newColor, setNewColor] = useState({ color: '', colorHex: '#000000' });
+  const [newColor, setNewColor] = useState({
+    color: '',
+    colorHex: '#000000',
+    numberColorHex: '#FFFFFF',
+  });
 
   // Edit color dialog
   const [openEditColorDialog, setOpenEditColorDialog] = useState<boolean>(false);
@@ -72,6 +80,11 @@ const EquipmentsPage: React.FC = () => {
     colorId: number;
     equipmentId: number;
   } | null>(null);
+
+  // Expanded accordions (like games page)
+  const [expandedEchelon, setExpandedEchelon] = useState<string | false>(false);
+  const [expandedColor, setExpandedColor] = useState<string | false>(false);
+  const [initialExpandDone, setInitialExpandDone] = useState<boolean>(false);
 
   const fetchEquipmentColors = useCallback(async (): Promise<void> => {
     if (status !== 'authenticated') return;
@@ -138,6 +151,30 @@ const EquipmentsPage: React.FC = () => {
     return grouped;
   }, [equipmentColors, t]);
 
+  const getEchelonItemCount = (echelonName: string): number => {
+    const colors = groupedByEchelon[echelonName] ?? [];
+    return colors.reduce((acc, c) => acc + (c.equipments?.length ?? 0), 0);
+  };
+
+  useEffect(() => {
+    if (initialExpandDone) return;
+    const echelonNames = Object.keys(groupedByEchelon);
+    if (echelonNames.length === 0) return;
+
+    const firstEchelon = echelonNames.sort()[0];
+    const firstColor = (groupedByEchelon[firstEchelon] ?? [])[0];
+    setExpandedEchelon(firstEchelon);
+    if (firstColor) setExpandedColor(`${firstEchelon}-${firstColor.id}`);
+    setInitialExpandDone(true);
+  }, [groupedByEchelon, initialExpandDone]);
+
+  const handleEchelonChange = (value: number | ''): void => {
+    setSelectedEchelonId(value);
+    setExpandedEchelon(false);
+    setExpandedColor(false);
+    setInitialExpandDone(false);
+  };
+
   // Add color
   const handleAddColor = async (): Promise<void> => {
     if (!newColor.color.trim()) {
@@ -156,6 +193,7 @@ const EquipmentsPage: React.FC = () => {
         body: JSON.stringify({
           color: newColor.color.trim(),
           colorHex: newColor.colorHex,
+          numberColorHex: newColor.numberColorHex,
           echelonId: selectedEchelonId,
         }),
       });
@@ -167,7 +205,7 @@ const EquipmentsPage: React.FC = () => {
       }
 
       setSuccessMessage(t('equipment.color.createdSuccess'));
-      setNewColor({ color: '', colorHex: '#000000' });
+      setNewColor({ color: '', colorHex: '#000000', numberColorHex: '#FFFFFF' });
       setOpenAddColorDialog(false);
       void fetchEquipmentColors();
     } catch {
@@ -188,6 +226,7 @@ const EquipmentsPage: React.FC = () => {
           body: JSON.stringify({
             color: editColor.color,
             colorHex: editColor.colorHex,
+            numberColorHex: editColor.numberColorHex,
           }),
         }
       );
@@ -335,27 +374,27 @@ const EquipmentsPage: React.FC = () => {
         </Button>
       </Box>
 
-      <Box sx={{ mb: 2, display: 'flex', gap: 2, alignItems: 'center' }}>
-        <TextField
-          select
-          size="small"
-          label={t('equipment.echelon.title')}
-          value={selectedEchelonId === '' ? '' : selectedEchelonId}
-          onChange={(e) => {
-            const val = e.target.value;
-            setSelectedEchelonId(val === '' ? '' : Number(val));
-          }}
-          sx={{ minWidth: 220 }}
-          disabled={echelons.length === 0}
-        >
-          <MenuItem value="">{t('equipment.echelon.all')}</MenuItem>
-          {echelons.map((ech) => (
-            <MenuItem key={ech.id} value={ech.id}>
-              {ech.name}
-            </MenuItem>
-          ))}
-        </TextField>
-      </Box>
+      {echelons.length > 0 && (
+        <FormControl sx={{ mb: 2, minWidth: 250 }} size="small">
+          <InputLabel id="echelon-filter-label">{t('equipment.echelon.title')}</InputLabel>
+          <Select
+            labelId="echelon-filter-label"
+            value={selectedEchelonId === '' ? '' : selectedEchelonId}
+            label={t('equipment.echelon.title')}
+            onChange={(e) => {
+              const val = e.target.value as number | '';
+              handleEchelonChange(val === '' ? '' : Number(val));
+            }}
+          >
+            <MenuItem value="">{t('equipment.echelon.all')}</MenuItem>
+            {echelons.map((ech) => (
+              <MenuItem key={ech.id} value={ech.id}>
+                {ech.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      )}
 
       {errorMessage && (
         <Alert severity="error" sx={{ mb: 2 }} onClose={() => setErrorMessage(null)}>
@@ -372,109 +411,170 @@ const EquipmentsPage: React.FC = () => {
       {loading && <Typography variant="body2">{t('equipment.list.loading')}</Typography>}
 
       {!loading && equipmentColors.length === 0 && !errorMessage && (
-        <Typography variant="body2">{t('equipment.list.empty')}</Typography>
+        <Typography color="text.secondary">{t('equipment.list.empty')}</Typography>
       )}
 
       {!loading &&
-        Object.entries(groupedByEchelon).map(([echelonName, colors]) => (
-          <Box key={echelonName} sx={{ mb: 3 }}>
-            <Typography variant="h6" sx={{ mb: 1, color: 'text.secondary' }}>
-              {echelonName}
-            </Typography>
-            {colors.map((ec) => (
-              <Accordion key={ec.id} defaultExpanded sx={{ mb: 1 }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      width: '100%',
-                      pr: 2,
-                    }}
-                  >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Box
-                        sx={{
-                          width: 28,
-                          height: 28,
-                          backgroundColor: ec.colorHex || '#ccc',
-                          border: '1px solid #999',
-                          borderRadius: 1,
-                        }}
-                      />
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                        {ec.color}
-                      </Typography>
-                      <Chip
-                        size="small"
-                        label={`${ec.equipments?.length || 0} ${t('equipment.items')}`}
-                      />
-                    </Box>
-                    <Box sx={{ display: 'flex', gap: 0.5 }} onClick={(e) => e.stopPropagation()}>
-                      <IconButton
-                        component="span"
-                        size="small"
-                        onClick={() => {
-                          setAddEquipmentColorId(ec.id);
-                          setOpenAddEquipmentDialog(true);
-                        }}
-                        title={t('equipment.item.add')}
-                      >
-                        <AddIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        component="span"
-                        size="small"
-                        onClick={() => {
-                          setEditColor(ec);
-                          setOpenEditColorDialog(true);
-                        }}
-                        title={t('actions.edit')}
-                      >
-                        <EditIcon fontSize="small" />
-                      </IconButton>
-                      <IconButton
-                        component="span"
-                        size="small"
-                        color="error"
-                        onClick={() => setDeleteColorId(ec.id)}
-                        title={t('actions.delete')}
-                      >
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
-                    </Box>
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails>
-                  {ec.equipments && ec.equipments.length > 0 ? (
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                      {ec.equipments.map((eq) => (
-                        <Chip
-                          key={eq.id}
-                          label={`Nº ${eq.number} — ${eq.size}`}
-                          variant="outlined"
-                          onDelete={() =>
-                            setDeleteEquipmentInfo({ colorId: ec.id, equipmentId: eq.id })
-                          }
-                          onClick={() => {
-                            setEditEquipment({ colorId: ec.id, equipment: { ...eq } });
-                            setOpenEditEquipmentDialog(true);
+        Object.keys(groupedByEchelon)
+          .sort()
+          .map((echelonName) => (
+            <Accordion
+              key={echelonName}
+              expanded={expandedEchelon === echelonName}
+              onChange={(_, isExpanded) => {
+                setExpandedEchelon(isExpanded ? echelonName : false);
+                setExpandedColor(false);
+              }}
+              sx={{ mb: 1 }}
+            >
+              <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, width: '100%' }}>
+                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    {echelonName}
+                  </Typography>
+                  <Chip
+                    label={`${getEchelonItemCount(echelonName)} ${t('equipment.items')}`}
+                    size="small"
+                    color="primary"
+                    variant="outlined"
+                  />
+                </Box>
+              </AccordionSummary>
+              <AccordionDetails>
+                {groupedByEchelon[echelonName].map((ec) => {
+                  const colorKey = `${echelonName}-${ec.id}`;
+                  return (
+                    <Accordion
+                      key={ec.id}
+                      expanded={expandedColor === colorKey}
+                      onChange={(_, isExpanded) => setExpandedColor(isExpanded ? colorKey : false)}
+                      sx={{ mb: 1 }}
+                    >
+                      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            width: '100%',
+                            pr: 2,
                           }}
-                          sx={{ cursor: 'pointer' }}
-                        />
-                      ))}
-                    </Box>
-                  ) : (
-                    <Typography variant="body2" color="text.secondary">
-                      {t('equipment.item.noItems')}
-                    </Typography>
-                  )}
-                </AccordionDetails>
-              </Accordion>
-            ))}
-          </Box>
-        ))}
+                        >
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                            <Box
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                backgroundColor: ec.colorHex || '#ccc',
+                                color: ec.numberColorHex || '#FFFFFF',
+                                border: '1px solid #999',
+                                borderRadius: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                fontWeight: 700,
+                                fontSize: 14,
+                              }}
+                            >
+                              7
+                            </Box>
+                            <Typography sx={{ fontWeight: 'medium' }}>{ec.color}</Typography>
+                            <Chip
+                              label={`${ec.equipments?.length || 0} ${t('equipment.items')}`}
+                              size="small"
+                              variant="outlined"
+                            />
+                          </Box>
+                          <Box
+                            sx={{ display: 'flex', gap: 0.5 }}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <IconButton
+                              component="span"
+                              size="small"
+                              color="primary"
+                              onClick={() => {
+                                setAddEquipmentColorId(ec.id);
+                                setOpenAddEquipmentDialog(true);
+                              }}
+                              title={t('equipment.item.add')}
+                            >
+                              <AddIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              component="span"
+                              size="small"
+                              color="primary"
+                              onClick={() => {
+                                setEditColor(ec);
+                                setOpenEditColorDialog(true);
+                              }}
+                              title={t('actions.edit')}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                            <IconButton
+                              component="span"
+                              size="small"
+                              color="error"
+                              onClick={() => setDeleteColorId(ec.id)}
+                              title={t('actions.delete')}
+                            >
+                              <DeleteIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {ec.equipments && ec.equipments.length > 0 ? (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {ec.equipments.map((eq) => (
+                              <Chip
+                                key={eq.id}
+                                label={`Nº ${eq.number} — ${eq.size}`}
+                                onDelete={() =>
+                                  setDeleteEquipmentInfo({
+                                    colorId: ec.id,
+                                    equipmentId: eq.id,
+                                  })
+                                }
+                                onClick={() => {
+                                  setEditEquipment({
+                                    colorId: ec.id,
+                                    equipment: { ...eq },
+                                  });
+                                  setOpenEditEquipmentDialog(true);
+                                }}
+                                sx={{
+                                  cursor: 'pointer',
+                                  backgroundColor: ec.colorHex || '#ccc',
+                                  color: ec.numberColorHex || '#FFFFFF',
+                                  fontWeight: 600,
+                                  border: '1px solid rgba(0,0,0,0.2)',
+                                  '& .MuiChip-deleteIcon': {
+                                    color: ec.numberColorHex || '#FFFFFF',
+                                    opacity: 0.8,
+                                    '&:hover': {
+                                      opacity: 1,
+                                      color: ec.numberColorHex || '#FFFFFF',
+                                    },
+                                  },
+                                }}
+                              />
+                            ))}
+                          </Box>
+                        ) : (
+                          <Typography variant="body2" color="text.secondary">
+                            {t('equipment.item.noItems')}
+                          </Typography>
+                        )}
+                      </AccordionDetails>
+                    </Accordion>
+                  );
+                })}
+              </AccordionDetails>
+            </Accordion>
+          ))}
 
       {/* Add Color Dialog */}
       <Dialog
@@ -485,22 +585,71 @@ const EquipmentsPage: React.FC = () => {
       >
         <DialogTitle>{t('equipment.color.add')}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <TextField
+            label={t('equipment.color.title')}
+            fullWidth
+            size="small"
+            value={newColor.color}
+            onChange={(e) => setNewColor({ ...newColor, color: e.target.value })}
+          />
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
             <TextField
-              label={t('equipment.color.title')}
-              fullWidth
-              size="small"
-              value={newColor.color}
-              onChange={(e) => setNewColor({ ...newColor, color: e.target.value })}
-            />
-            <TextField
+              label={t('equipment.color.backgroundLabel')}
               type="color"
               size="small"
               value={newColor.colorHex}
               onChange={(e) => setNewColor({ ...newColor, colorHex: e.target.value })}
-              sx={{ width: 60 }}
-              slotProps={{ input: { sx: { p: 0.5, height: 40 } } }}
+              sx={{ flex: 1 }}
+              slotProps={{
+                input: { sx: { p: 0.5, height: 40 } },
+                inputLabel: { shrink: true },
+              }}
             />
+            <TextField
+              label={t('equipment.color.numberLabel')}
+              type="color"
+              size="small"
+              value={newColor.numberColorHex}
+              onChange={(e) => setNewColor({ ...newColor, numberColorHex: e.target.value })}
+              sx={{ flex: 1 }}
+              slotProps={{
+                input: { sx: { p: 0.5, height: 40 } },
+                inputLabel: { shrink: true },
+              }}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 2,
+              p: 2,
+              borderRadius: 1,
+              border: '1px dashed',
+              borderColor: 'divider',
+            }}
+          >
+            <Typography variant="caption" color="text.secondary">
+              {t('equipment.color.preview')}
+            </Typography>
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                backgroundColor: newColor.colorHex,
+                color: newColor.numberColorHex,
+                border: '1px solid rgba(0,0,0,0.3)',
+                borderRadius: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 700,
+                fontSize: 28,
+              }}
+            >
+              7
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -520,24 +669,75 @@ const EquipmentsPage: React.FC = () => {
       >
         <DialogTitle>{t('equipment.color.edit')}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <TextField
+            label={t('equipment.color.title')}
+            fullWidth
+            size="small"
+            value={editColor?.color ?? ''}
+            onChange={(e) => editColor && setEditColor({ ...editColor, color: e.target.value })}
+          />
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
             <TextField
-              label={t('equipment.color.title')}
-              fullWidth
-              size="small"
-              value={editColor?.color ?? ''}
-              onChange={(e) => editColor && setEditColor({ ...editColor, color: e.target.value })}
-            />
-            <TextField
+              label={t('equipment.color.backgroundLabel')}
               type="color"
               size="small"
               value={editColor?.colorHex ?? '#000000'}
               onChange={(e) =>
                 editColor && setEditColor({ ...editColor, colorHex: e.target.value })
               }
-              sx={{ width: 60 }}
-              slotProps={{ input: { sx: { p: 0.5, height: 40 } } }}
+              sx={{ flex: 1 }}
+              slotProps={{
+                input: { sx: { p: 0.5, height: 40 } },
+                inputLabel: { shrink: true },
+              }}
             />
+            <TextField
+              label={t('equipment.color.numberLabel')}
+              type="color"
+              size="small"
+              value={editColor?.numberColorHex ?? '#FFFFFF'}
+              onChange={(e) =>
+                editColor && setEditColor({ ...editColor, numberColorHex: e.target.value })
+              }
+              sx={{ flex: 1 }}
+              slotProps={{
+                input: { sx: { p: 0.5, height: 40 } },
+                inputLabel: { shrink: true },
+              }}
+            />
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 2,
+              p: 2,
+              borderRadius: 1,
+              border: '1px dashed',
+              borderColor: 'divider',
+            }}
+          >
+            <Typography variant="caption" color="text.secondary">
+              {t('equipment.color.preview')}
+            </Typography>
+            <Box
+              sx={{
+                width: 56,
+                height: 56,
+                backgroundColor: editColor?.colorHex ?? '#000000',
+                color: editColor?.numberColorHex ?? '#FFFFFF',
+                border: '1px solid rgba(0,0,0,0.3)',
+                borderRadius: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 700,
+                fontSize: 28,
+              }}
+            >
+              7
+            </Box>
           </Box>
         </DialogContent>
         <DialogActions>
@@ -644,7 +844,7 @@ const EquipmentsPage: React.FC = () => {
       <Dialog open={deleteColorId !== null} onClose={() => setDeleteColorId(null)}>
         <DialogTitle>{t('equipment.delete.confirmTitle')}</DialogTitle>
         <DialogContent>
-          <Typography>{t('equipment.color.confirmDeleteMessage')}</Typography>
+          <DialogContentText>{t('equipment.color.confirmDeleteMessage')}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteColorId(null)}>{t('actions.cancel')}</Button>
@@ -667,7 +867,7 @@ const EquipmentsPage: React.FC = () => {
       <Dialog open={deleteEquipmentInfo !== null} onClose={() => setDeleteEquipmentInfo(null)}>
         <DialogTitle>{t('equipment.delete.confirmTitle')}</DialogTitle>
         <DialogContent>
-          <Typography>{t('equipment.delete.confirmMessage')}</Typography>
+          <DialogContentText>{t('equipment.delete.confirmMessage')}</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteEquipmentInfo(null)}>{t('actions.cancel')}</Button>

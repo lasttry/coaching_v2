@@ -10,6 +10,7 @@ export interface EquipmentColorInterface {
 
   color: string;
   colorHex: string;
+  numberColorHex: string;
 
   equipments?: EquipmentItemInterface[];
 

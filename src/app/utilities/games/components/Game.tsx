@@ -153,6 +153,17 @@ const GameComponent: React.FC<GameProps> = ({
     }
   }, [game.gameEquipments]);
 
+  // Automatic default for "completed": when the field has never been set
+  // (new game or legacy record), derive it from the scheduled date.
+  useEffect(() => {
+    if (game.completed === undefined && game.date) {
+      const isPast = new Date(game.date).getTime() < Date.now();
+      setGame((prev) => ({ ...prev, completed: isPast }));
+    }
+    // intentionally only on first date resolution
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     const fetchEquipments = async (): Promise<void> => {
       if (!session?.user?.selectedClubId || !session?.user?.selectedSeasonId) {
@@ -475,8 +486,16 @@ const GameComponent: React.FC<GameProps> = ({
             const timePart = isoString.split('T')[1]?.slice(0, 5);
             if (!timePart || timePart === '00:00') {
               error = t('validation.timeRequired');
+            } else if (game.completed === false && date.getTime() < Date.now()) {
+              error = t('validation.dateMustBeFuture');
             }
           }
+        }
+        break;
+
+      case 'completed':
+        if (value === false && game.date && new Date(game.date).getTime() < Date.now()) {
+          error = t('validation.dateMustBeFuture');
         }
         break;
 
@@ -607,6 +626,8 @@ const GameComponent: React.FC<GameProps> = ({
     setGame((prev) => ({ ...prev, [field]: value }));
   };
   const handleCheckboxChange = (field: string, checked: boolean): void => {
+    const error = validateField(field, checked);
+    setValidationErrors((prev) => ({ ...prev, [field]: error }));
     setGame((prev) => ({
       ...prev,
       [field]: checked,
@@ -1290,8 +1311,8 @@ const GameComponent: React.FC<GameProps> = ({
         </FormControl>
       </Grid>
 
-      {/* Row 4: Away, Venue */}
-      <Grid size={{ xs: 12, sm: 3 }}>
+      {/* Row 4: Away, Completed, Venue */}
+      <Grid size={{ xs: 6, sm: 3 }}>
         <FormControlLabel
           control={
             <Checkbox
@@ -1302,7 +1323,23 @@ const GameComponent: React.FC<GameProps> = ({
           label={t('game.away')}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 9 }}>
+      <Grid size={{ xs: 6, sm: 3 }}>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={!!game.completed}
+              onChange={(e) => handleCheckboxChange('completed', e.target.checked)}
+            />
+          }
+          label={t('game.completed')}
+        />
+        {validationErrors['completed'] && (
+          <Typography variant="caption" color="error" sx={{ display: 'block' }}>
+            {validationErrors['completed']}
+          </Typography>
+        )}
+      </Grid>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <FormControl fullWidth>
           <InputLabel>{t('venue.singular')}</InputLabel>
           <Select

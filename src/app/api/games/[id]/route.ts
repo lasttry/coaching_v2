@@ -96,7 +96,33 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
     if (data === null) {
       return NextResponse.json({}, { status: 200 });
     }
-    // Update the game details with `gameNumber` for each athlete
+
+    // Only allow "not completed" when the date is in the future. We compare
+    // against the incoming date if present, otherwise against the stored one.
+    let completedToPersist: boolean | undefined;
+    if (data.completed !== undefined || data.date !== undefined) {
+      const existing = await prisma.game.findUnique({
+        where: { id: gameId },
+        select: { date: true, completed: true },
+      });
+      if (!existing) {
+        return NextResponse.json({ error: 'Game not found' }, { status: 404 });
+      }
+      const newDate = data.date ? new Date(data.date) : existing.date;
+      const isPast = newDate.getTime() < Date.now();
+      const nextCompleted =
+        typeof data.completed === 'boolean' ? data.completed : existing.completed;
+      if (nextCompleted === false && isPast) {
+        return NextResponse.json(
+          { error: 'Cannot mark a past game as not completed. Pick a future date.' },
+          { status: 400 }
+        );
+      }
+      if (typeof data.completed === 'boolean') {
+        completedToPersist = data.completed;
+      }
+    }
+
     const payload = {
       where: { id: gameId },
       data: {
@@ -106,6 +132,7 @@ export async function PUT(req: Request, segmentData: { params: Params }): Promis
         ...(data.number !== undefined && { number: Number(data.number) }),
         ...(data.date && { date: new Date(data.date) }),
         ...(data.away !== undefined && { away: data.away }),
+        ...(completedToPersist !== undefined && { completed: completedToPersist }),
         ...(data.notes !== undefined && { notes: data.notes || null }),
         ...(data.opponentResultsCount !== undefined && {
           opponentResultsCount: Number(data.opponentResultsCount) || 5,

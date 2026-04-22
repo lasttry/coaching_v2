@@ -55,6 +55,10 @@ export async function POST(request: Request): Promise<NextResponse> {
         federationLogo: clubData.federationLogo,
         backgroundColor: clubData.backgroundColor,
         foregroundColor: clubData.foregroundColor,
+        fpbClubId:
+          clubData.fpbClubId === undefined || clubData.fpbClubId === null
+            ? null
+            : Number(clubData.fpbClubId),
         ...(venues &&
           venues.length > 0 && {
             venues: {

@@ -38,7 +38,10 @@
     "other": "Other",
     "team": "Team",
     "opponent": "Opponent",
-    "venue": "Venue"
+    "venue": "Venue",
+    "status": "Status",
+    "search": "Search...",
+    "visible": "visible"
   },
 
   "actions": {
@@ -56,7 +59,8 @@
     "hide": "Hide",
     "viewDetails": "View Details",
     "confirm": "Confirm",
-    "close": "Close"
+    "close": "Close",
+    "back": "Back"
   },
 
   "status": {
@@ -82,7 +86,8 @@
     "errorDeleting": "Error deleting",
     "errorUnknown": "An unknown error occurred",
     "confirmDelete": "Are you sure you want to delete?",
-    "deleteConfirmation": "Are you sure you want to delete? This action cannot be undone."
+    "deleteConfirmation": "Are you sure you want to delete? This action cannot be undone.",
+    "noData": "No data to display"
   },
 
   "images": {
@@ -230,6 +235,7 @@
 
   "team": {
     "title": "Teams",
+    "plural": "Teams",
     "singular": "Team",
     "management": "Teams Management",
     "add": "Add Team",
@@ -238,11 +244,18 @@
     "unknown": "Unknown team",
     "teamA": "Team A",
     "teamB": "Team B",
+    "fpbTeamId": "FPB Team ID",
+    "fpbTeamIdHelper": "Number shown in the URL fpb.pt/equipa/equipa_<ID>",
     "fetch": {
-      "error": "Failed to fetch teams"
+      "error": "Failed to fetch teams",
+      "notFound": "No teams found"
     },
     "save": {
-      "createError": "Failed to create team"
+      "createError": "Failed to create team",
+      "error": "Failed to save team"
+    },
+    "delete": {
+      "error": "Failed to delete team"
     }
   },
 
@@ -265,6 +278,8 @@
     "federationLogoHelper": "Image that appears in the header of official documents",
     "backgroundColor": "Background Color",
     "foregroundColor": "Text Color",
+    "fpbClubId": "FPB Club ID",
+    "fpbClubIdHelper": "Club ID on the FPB website (optional)",
     "save": {
       "createSuccess": "Club created successfully",
       "updateSuccess": "Club saved successfully",
@@ -334,6 +349,9 @@
     "sheet": "Game sheet",
     "registrationSheet": "Registration Sheet",
     "away": "Away",
+    "completed": "Completed",
+    "upcoming": "Upcoming",
+    "next": "Next",
     "total": "Total Games",
     "average": "Average",
     "byCompetition": "By Competition",
@@ -582,7 +600,8 @@
       "error": "Failed to fetch club accounts",
       "networkError": "Error fetching accounts: {{error}}",
       "autocompleteError": "Failed to fetch accounts for autocomplete",
-      "autocompleteNetworkError": "Error fetching accounts for autocomplete: {{error}}"
+      "autocompleteNetworkError": "Error fetching accounts for autocomplete: {{error}}",
+      "notFound": "No accounts found"
     },
     "save": {
       "addError": "Failed to add account to club",
@@ -678,7 +697,8 @@
     "license": "FPB License",
     "competitionId": "FPB Competition ID",
     "serieId": "FPB Serie ID",
-    "getInfos": "Get Infos"
+    "getInfos": "Get Infos",
+    "linked": "Linked to FPB"
   },
 
   "equipment": {
@@ -697,6 +717,9 @@
       "add": "Add Color",
       "edit": "Edit Color",
       "hex": "Color (hex)",
+      "backgroundLabel": "Background color",
+      "numberLabel": "Number color",
+      "preview": "Preview",
       "select": "Select color",
       "selectFirst": "Select a color first",
       "unknown": "Unknown color",
@@ -777,6 +800,7 @@
     "numberPositive": "Number must be positive",
     "dateRequired": "Date is required",
     "dateInvalid": "Date is not valid",
+    "dateMustBeFuture": "To mark as not completed the date must be in the future",
     "timeRequired": "Time is required",
     "awayBoolean": "Away field must be true/false",
     "subCompetitionMaxLength": "Sub-competition name is too long",
@@ -798,6 +822,10 @@
     },
     "enabled": {
       "label": "Email sending enabled"
+    },
+    "status": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
     },
     "host": {
       "label": "Host"
@@ -844,5 +872,28 @@
       "enableFirst": "Enable email sending to test."
     },
     "saveClubFirst": "Save the club first to configure the email server."
+  },
+
+  "fpbImport": {
+    "title": "Import games from FPB",
+    "button": "Import from FPB",
+    "missingFpbTeamId": "This team has no FPB ID configured. Edit the team and fill in the ID.",
+    "fetchError": "Failed to fetch the FPB calendar",
+    "importError": "Failed to import games from FPB",
+    "previewSummary": "{{total}} games in the FPB calendar, {{toCreate}} to import.",
+    "resultSummary": "Imported: {{imported}} · Skipped: {{skipped}} · Errors: {{errors}}",
+    "imported": "Imported games",
+    "errors": "Errors",
+    "away": "away",
+    "fpbOpponent": "Opponent (FPB)",
+    "noSeries": "No series",
+    "importCount": "Import {{count}} games",
+    "action": {
+      "create": "Will create",
+      "skip-existing": "Already exists",
+      "skip-date": "Invalid date",
+      "skip-own-team": "Club team not found",
+      "error": "Error"
+    }
   }
 }

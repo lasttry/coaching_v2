@@ -167,6 +167,8 @@ exports.Prisma.GameScalarFieldEnum = {
   shotClock: 'shotClock',
   opponentResultsCount: 'opponentResultsCount',
   speech: 'speech',
+  completed: 'completed',
+  fpbGameId: 'fpbGameId',
   image1: 'image1',
   image2: 'image2',
   image3: 'image3',
@@ -316,6 +318,7 @@ exports.Prisma.ClubScalarFieldEnum = {
   federationLogo: 'federationLogo',
   backgroundColor: 'backgroundColor',
   foregroundColor: 'foregroundColor',
+  fpbClubId: 'fpbClubId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -373,6 +376,7 @@ exports.Prisma.TeamScalarFieldEnum = {
   type: 'type',
   clubId: 'clubId',
   echelonId: 'echelonId',
+  fpbTeamId: 'fpbTeamId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -439,6 +443,7 @@ exports.Prisma.EquipmentColorScalarFieldEnum = {
   echelonId: 'echelonId',
   color: 'color',
   colorHex: 'colorHex',
+  numberColorHex: 'numberColorHex',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

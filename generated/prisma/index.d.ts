@@ -7397,6 +7397,7 @@ export namespace Prisma {
     opponentId: number | null
     venueId: number | null
     opponentResultsCount: number | null
+    fpbGameId: number | null
   }
 
   export type GameSumAggregateOutputType = {
@@ -7409,6 +7410,7 @@ export namespace Prisma {
     opponentId: number | null
     venueId: number | null
     opponentResultsCount: number | null
+    fpbGameId: number | null
   }
 
   export type GameMinAggregateOutputType = {
@@ -7432,6 +7434,8 @@ export namespace Prisma {
     shotClock: string | null
     opponentResultsCount: number | null
     speech: string | null
+    completed: boolean | null
+    fpbGameId: number | null
     image1: string | null
     image2: string | null
     image3: string | null
@@ -7459,6 +7463,8 @@ export namespace Prisma {
     shotClock: string | null
     opponentResultsCount: number | null
     speech: string | null
+    completed: boolean | null
+    fpbGameId: number | null
     image1: string | null
     image2: string | null
     image3: string | null
@@ -7486,6 +7492,8 @@ export namespace Prisma {
     shotClock: number
     opponentResultsCount: number
     speech: number
+    completed: number
+    fpbGameId: number
     image1: number
     image2: number
     image3: number
@@ -7504,6 +7512,7 @@ export namespace Prisma {
     opponentId?: true
     venueId?: true
     opponentResultsCount?: true
+    fpbGameId?: true
   }
 
   export type GameSumAggregateInputType = {
@@ -7516,6 +7525,7 @@ export namespace Prisma {
     opponentId?: true
     venueId?: true
     opponentResultsCount?: true
+    fpbGameId?: true
   }
 
   export type GameMinAggregateInputType = {
@@ -7539,6 +7549,8 @@ export namespace Prisma {
     shotClock?: true
     opponentResultsCount?: true
     speech?: true
+    completed?: true
+    fpbGameId?: true
     image1?: true
     image2?: true
     image3?: true
@@ -7566,6 +7578,8 @@ export namespace Prisma {
     shotClock?: true
     opponentResultsCount?: true
     speech?: true
+    completed?: true
+    fpbGameId?: true
     image1?: true
     image2?: true
     image3?: true
@@ -7593,6 +7607,8 @@ export namespace Prisma {
     shotClock?: true
     opponentResultsCount?: true
     speech?: true
+    completed?: true
+    fpbGameId?: true
     image1?: true
     image2?: true
     image3?: true
@@ -7707,6 +7723,8 @@ export namespace Prisma {
     shotClock: string | null
     opponentResultsCount: number
     speech: string | null
+    completed: boolean
+    fpbGameId: number | null
     image1: string | null
     image2: string | null
     image3: string | null
@@ -7753,6 +7771,8 @@ export namespace Prisma {
     shotClock?: boolean
     opponentResultsCount?: boolean
     speech?: boolean
+    completed?: boolean
+    fpbGameId?: boolean
     image1?: boolean
     image2?: boolean
     image3?: boolean
@@ -7793,6 +7813,8 @@ export namespace Prisma {
     shotClock?: boolean
     opponentResultsCount?: boolean
     speech?: boolean
+    completed?: boolean
+    fpbGameId?: boolean
     image1?: boolean
     image2?: boolean
     image3?: boolean
@@ -7826,6 +7848,8 @@ export namespace Prisma {
     shotClock?: boolean
     opponentResultsCount?: boolean
     speech?: boolean
+    completed?: boolean
+    fpbGameId?: boolean
     image1?: boolean
     image2?: boolean
     image3?: boolean
@@ -7859,13 +7883,15 @@ export namespace Prisma {
     shotClock?: boolean
     opponentResultsCount?: boolean
     speech?: boolean
+    completed?: boolean
+    fpbGameId?: boolean
     image1?: boolean
     image2?: boolean
     image3?: boolean
     image4?: boolean
   }
 
-  export type GameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "number" | "date" | "away" | "notes" | "clubId" | "teamId" | "competitionId" | "competitionSerieId" | "opponentId" | "venueId" | "refereeMain" | "referee1" | "scorer" | "timer" | "shotClock" | "opponentResultsCount" | "speech" | "image1" | "image2" | "image3" | "image4", ExtArgs["result"]["game"]>
+  export type GameOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "number" | "date" | "away" | "notes" | "clubId" | "teamId" | "competitionId" | "competitionSerieId" | "opponentId" | "venueId" | "refereeMain" | "referee1" | "scorer" | "timer" | "shotClock" | "opponentResultsCount" | "speech" | "completed" | "fpbGameId" | "image1" | "image2" | "image3" | "image4", ExtArgs["result"]["game"]>
   export type GameInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
     team?: boolean | Game$teamArgs<ExtArgs>
@@ -7935,6 +7961,8 @@ export namespace Prisma {
       shotClock: string | null
       opponentResultsCount: number
       speech: string | null
+      completed: boolean
+      fpbGameId: number | null
       image1: string | null
       image2: string | null
       image3: string | null
@@ -8394,6 +8422,8 @@ export namespace Prisma {
     readonly shotClock: FieldRef<"Game", 'String'>
     readonly opponentResultsCount: FieldRef<"Game", 'Int'>
     readonly speech: FieldRef<"Game", 'String'>
+    readonly completed: FieldRef<"Game", 'Boolean'>
+    readonly fpbGameId: FieldRef<"Game", 'Int'>
     readonly image1: FieldRef<"Game", 'String'>
     readonly image2: FieldRef<"Game", 'String'>
     readonly image3: FieldRef<"Game", 'String'>
@@ -23140,10 +23170,12 @@ export namespace Prisma {
 
   export type ClubAvgAggregateOutputType = {
     id: number | null
+    fpbClubId: number | null
   }
 
   export type ClubSumAggregateOutputType = {
     id: number | null
+    fpbClubId: number | null
   }
 
   export type ClubMinAggregateOutputType = {
@@ -23154,6 +23186,7 @@ export namespace Prisma {
     federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
+    fpbClubId: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -23166,6 +23199,7 @@ export namespace Prisma {
     federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
+    fpbClubId: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -23178,6 +23212,7 @@ export namespace Prisma {
     federationLogo: number
     backgroundColor: number
     foregroundColor: number
+    fpbClubId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -23186,10 +23221,12 @@ export namespace Prisma {
 
   export type ClubAvgAggregateInputType = {
     id?: true
+    fpbClubId?: true
   }
 
   export type ClubSumAggregateInputType = {
     id?: true
+    fpbClubId?: true
   }
 
   export type ClubMinAggregateInputType = {
@@ -23200,6 +23237,7 @@ export namespace Prisma {
     federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
+    fpbClubId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -23212,6 +23250,7 @@ export namespace Prisma {
     federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
+    fpbClubId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -23224,6 +23263,7 @@ export namespace Prisma {
     federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
+    fpbClubId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -23323,6 +23363,7 @@ export namespace Prisma {
     federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
+    fpbClubId: number | null
     createdAt: Date
     updatedAt: Date
     _count: ClubCountAggregateOutputType | null
@@ -23354,6 +23395,7 @@ export namespace Prisma {
     federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
+    fpbClubId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     accounts?: boolean | Club$accountsArgs<ExtArgs>
@@ -23377,6 +23419,7 @@ export namespace Prisma {
     federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
+    fpbClubId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["club"]>
@@ -23389,6 +23432,7 @@ export namespace Prisma {
     federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
+    fpbClubId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["club"]>
@@ -23401,11 +23445,12 @@ export namespace Prisma {
     federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
+    fpbClubId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortName" | "image" | "federationLogo" | "backgroundColor" | "foregroundColor" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
+  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortName" | "image" | "federationLogo" | "backgroundColor" | "foregroundColor" | "fpbClubId" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
   export type ClubInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | Club$accountsArgs<ExtArgs>
     athletes?: boolean | Club$athletesArgs<ExtArgs>
@@ -23444,6 +23489,7 @@ export namespace Prisma {
       federationLogo: string | null
       backgroundColor: string | null
       foregroundColor: string | null
+      fpbClubId: number | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["club"]>
@@ -23886,6 +23932,7 @@ export namespace Prisma {
     readonly federationLogo: FieldRef<"Club", 'String'>
     readonly backgroundColor: FieldRef<"Club", 'String'>
     readonly foregroundColor: FieldRef<"Club", 'String'>
+    readonly fpbClubId: FieldRef<"Club", 'Int'>
     readonly createdAt: FieldRef<"Club", 'DateTime'>
     readonly updatedAt: FieldRef<"Club", 'DateTime'>
   }
@@ -30280,12 +30327,14 @@ export namespace Prisma {
     id: number | null
     clubId: number | null
     echelonId: number | null
+    fpbTeamId: number | null
   }
 
   export type TeamSumAggregateOutputType = {
     id: number | null
     clubId: number | null
     echelonId: number | null
+    fpbTeamId: number | null
   }
 
   export type TeamMinAggregateOutputType = {
@@ -30294,6 +30343,7 @@ export namespace Prisma {
     type: $Enums.TeamType | null
     clubId: number | null
     echelonId: number | null
+    fpbTeamId: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -30304,6 +30354,7 @@ export namespace Prisma {
     type: $Enums.TeamType | null
     clubId: number | null
     echelonId: number | null
+    fpbTeamId: number | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -30314,6 +30365,7 @@ export namespace Prisma {
     type: number
     clubId: number
     echelonId: number
+    fpbTeamId: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -30324,12 +30376,14 @@ export namespace Prisma {
     id?: true
     clubId?: true
     echelonId?: true
+    fpbTeamId?: true
   }
 
   export type TeamSumAggregateInputType = {
     id?: true
     clubId?: true
     echelonId?: true
+    fpbTeamId?: true
   }
 
   export type TeamMinAggregateInputType = {
@@ -30338,6 +30392,7 @@ export namespace Prisma {
     type?: true
     clubId?: true
     echelonId?: true
+    fpbTeamId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -30348,6 +30403,7 @@ export namespace Prisma {
     type?: true
     clubId?: true
     echelonId?: true
+    fpbTeamId?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -30358,6 +30414,7 @@ export namespace Prisma {
     type?: true
     clubId?: true
     echelonId?: true
+    fpbTeamId?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -30455,6 +30512,7 @@ export namespace Prisma {
     type: $Enums.TeamType | null
     clubId: number
     echelonId: number
+    fpbTeamId: number | null
     createdAt: Date
     updatedAt: Date
     _count: TeamCountAggregateOutputType | null
@@ -30484,6 +30542,7 @@ export namespace Prisma {
     type?: boolean
     clubId?: boolean
     echelonId?: boolean
+    fpbTeamId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
@@ -30500,6 +30559,7 @@ export namespace Prisma {
     type?: boolean
     clubId?: boolean
     echelonId?: boolean
+    fpbTeamId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
@@ -30512,6 +30572,7 @@ export namespace Prisma {
     type?: boolean
     clubId?: boolean
     echelonId?: boolean
+    fpbTeamId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
@@ -30524,11 +30585,12 @@ export namespace Prisma {
     type?: boolean
     clubId?: boolean
     echelonId?: boolean
+    fpbTeamId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "clubId" | "echelonId" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
+  export type TeamOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "type" | "clubId" | "echelonId" | "fpbTeamId" | "createdAt" | "updatedAt", ExtArgs["result"]["team"]>
   export type TeamInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
     echelon?: boolean | EchelonDefaultArgs<ExtArgs>
@@ -30561,6 +30623,7 @@ export namespace Prisma {
       type: $Enums.TeamType | null
       clubId: number
       echelonId: number
+      fpbTeamId: number | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["team"]>
@@ -30996,6 +31059,7 @@ export namespace Prisma {
     readonly type: FieldRef<"Team", 'TeamType'>
     readonly clubId: FieldRef<"Team", 'Int'>
     readonly echelonId: FieldRef<"Team", 'Int'>
+    readonly fpbTeamId: FieldRef<"Team", 'Int'>
     readonly createdAt: FieldRef<"Team", 'DateTime'>
     readonly updatedAt: FieldRef<"Team", 'DateTime'>
   }
@@ -38412,6 +38476,7 @@ export namespace Prisma {
     echelonId: number | null
     color: string | null
     colorHex: string | null
+    numberColorHex: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -38423,6 +38488,7 @@ export namespace Prisma {
     echelonId: number | null
     color: string | null
     colorHex: string | null
+    numberColorHex: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -38434,6 +38500,7 @@ export namespace Prisma {
     echelonId: number
     color: number
     colorHex: number
+    numberColorHex: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -38461,6 +38528,7 @@ export namespace Prisma {
     echelonId?: true
     color?: true
     colorHex?: true
+    numberColorHex?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -38472,6 +38540,7 @@ export namespace Prisma {
     echelonId?: true
     color?: true
     colorHex?: true
+    numberColorHex?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -38483,6 +38552,7 @@ export namespace Prisma {
     echelonId?: true
     color?: true
     colorHex?: true
+    numberColorHex?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -38581,6 +38651,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex: string
+    numberColorHex: string
     createdAt: Date
     updatedAt: Date
     _count: EquipmentColorCountAggregateOutputType | null
@@ -38611,6 +38682,7 @@ export namespace Prisma {
     echelonId?: boolean
     color?: boolean
     colorHex?: boolean
+    numberColorHex?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
@@ -38628,6 +38700,7 @@ export namespace Prisma {
     echelonId?: boolean
     color?: boolean
     colorHex?: boolean
+    numberColorHex?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
@@ -38642,6 +38715,7 @@ export namespace Prisma {
     echelonId?: boolean
     color?: boolean
     colorHex?: boolean
+    numberColorHex?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
@@ -38656,11 +38730,12 @@ export namespace Prisma {
     echelonId?: boolean
     color?: boolean
     colorHex?: boolean
+    numberColorHex?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type EquipmentColorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "seasonId" | "echelonId" | "color" | "colorHex" | "createdAt" | "updatedAt", ExtArgs["result"]["equipmentColor"]>
+  export type EquipmentColorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "seasonId" | "echelonId" | "color" | "colorHex" | "numberColorHex" | "createdAt" | "updatedAt", ExtArgs["result"]["equipmentColor"]>
   export type EquipmentColorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
     season?: boolean | SeasonDefaultArgs<ExtArgs>
@@ -38696,6 +38771,7 @@ export namespace Prisma {
       echelonId: number
       color: string
       colorHex: string
+      numberColorHex: string
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["equipmentColor"]>
@@ -39132,6 +39208,7 @@ export namespace Prisma {
     readonly echelonId: FieldRef<"EquipmentColor", 'Int'>
     readonly color: FieldRef<"EquipmentColor", 'String'>
     readonly colorHex: FieldRef<"EquipmentColor", 'String'>
+    readonly numberColorHex: FieldRef<"EquipmentColor", 'String'>
     readonly createdAt: FieldRef<"EquipmentColor", 'DateTime'>
     readonly updatedAt: FieldRef<"EquipmentColor", 'DateTime'>
   }
@@ -44331,6 +44408,8 @@ export namespace Prisma {
     shotClock: 'shotClock',
     opponentResultsCount: 'opponentResultsCount',
     speech: 'speech',
+    completed: 'completed',
+    fpbGameId: 'fpbGameId',
     image1: 'image1',
     image2: 'image2',
     image3: 'image3',
@@ -44519,6 +44598,7 @@ export namespace Prisma {
     federationLogo: 'federationLogo',
     backgroundColor: 'backgroundColor',
     foregroundColor: 'foregroundColor',
+    fpbClubId: 'fpbClubId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -44594,6 +44674,7 @@ export namespace Prisma {
     type: 'type',
     clubId: 'clubId',
     echelonId: 'echelonId',
+    fpbTeamId: 'fpbTeamId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -44681,6 +44762,7 @@ export namespace Prisma {
     echelonId: 'echelonId',
     color: 'color',
     colorHex: 'colorHex',
+    numberColorHex: 'numberColorHex',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -45222,6 +45304,8 @@ export namespace Prisma {
     shotClock?: StringNullableFilter<"Game"> | string | null
     opponentResultsCount?: IntFilter<"Game"> | number
     speech?: StringNullableFilter<"Game"> | string | null
+    completed?: BoolFilter<"Game"> | boolean
+    fpbGameId?: IntNullableFilter<"Game"> | number | null
     image1?: StringNullableFilter<"Game"> | string | null
     image2?: StringNullableFilter<"Game"> | string | null
     image3?: StringNullableFilter<"Game"> | string | null
@@ -45261,6 +45345,8 @@ export namespace Prisma {
     shotClock?: SortOrderInput | SortOrder
     opponentResultsCount?: SortOrder
     speech?: SortOrderInput | SortOrder
+    completed?: SortOrder
+    fpbGameId?: SortOrderInput | SortOrder
     image1?: SortOrderInput | SortOrder
     image2?: SortOrderInput | SortOrder
     image3?: SortOrderInput | SortOrder
@@ -45281,6 +45367,7 @@ export namespace Prisma {
 
   export type GameWhereUniqueInput = Prisma.AtLeast<{
     id?: number
+    fpbGameId?: number
     AND?: GameWhereInput | GameWhereInput[]
     OR?: GameWhereInput[]
     NOT?: GameWhereInput | GameWhereInput[]
@@ -45303,6 +45390,7 @@ export namespace Prisma {
     shotClock?: StringNullableFilter<"Game"> | string | null
     opponentResultsCount?: IntFilter<"Game"> | number
     speech?: StringNullableFilter<"Game"> | string | null
+    completed?: BoolFilter<"Game"> | boolean
     image1?: StringNullableFilter<"Game"> | string | null
     image2?: StringNullableFilter<"Game"> | string | null
     image3?: StringNullableFilter<"Game"> | string | null
@@ -45319,7 +45407,7 @@ export namespace Prisma {
     athleteReports?: AthleteReportListRelationFilter
     statistics?: StatisticListRelationFilter
     timeEntries?: TimeEntryListRelationFilter
-  }, "id">
+  }, "id" | "fpbGameId">
 
   export type GameOrderByWithAggregationInput = {
     id?: SortOrder
@@ -45342,6 +45430,8 @@ export namespace Prisma {
     shotClock?: SortOrderInput | SortOrder
     opponentResultsCount?: SortOrder
     speech?: SortOrderInput | SortOrder
+    completed?: SortOrder
+    fpbGameId?: SortOrderInput | SortOrder
     image1?: SortOrderInput | SortOrder
     image2?: SortOrderInput | SortOrder
     image3?: SortOrderInput | SortOrder
@@ -45377,6 +45467,8 @@ export namespace Prisma {
     shotClock?: StringNullableWithAggregatesFilter<"Game"> | string | null
     opponentResultsCount?: IntWithAggregatesFilter<"Game"> | number
     speech?: StringNullableWithAggregatesFilter<"Game"> | string | null
+    completed?: BoolWithAggregatesFilter<"Game"> | boolean
+    fpbGameId?: IntNullableWithAggregatesFilter<"Game"> | number | null
     image1?: StringNullableWithAggregatesFilter<"Game"> | string | null
     image2?: StringNullableWithAggregatesFilter<"Game"> | string | null
     image3?: StringNullableWithAggregatesFilter<"Game"> | string | null
@@ -46308,6 +46400,7 @@ export namespace Prisma {
     federationLogo?: StringNullableFilter<"Club"> | string | null
     backgroundColor?: StringNullableFilter<"Club"> | string | null
     foregroundColor?: StringNullableFilter<"Club"> | string | null
+    fpbClubId?: IntNullableFilter<"Club"> | number | null
     createdAt?: DateTimeFilter<"Club"> | Date | string
     updatedAt?: DateTimeFilter<"Club"> | Date | string
     accounts?: AccountClubListRelationFilter
@@ -46330,6 +46423,7 @@ export namespace Prisma {
     federationLogo?: SortOrderInput | SortOrder
     backgroundColor?: SortOrderInput | SortOrder
     foregroundColor?: SortOrderInput | SortOrder
+    fpbClubId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     accounts?: AccountClubOrderByRelationAggregateInput
@@ -46355,6 +46449,7 @@ export namespace Prisma {
     federationLogo?: StringNullableFilter<"Club"> | string | null
     backgroundColor?: StringNullableFilter<"Club"> | string | null
     foregroundColor?: StringNullableFilter<"Club"> | string | null
+    fpbClubId?: IntNullableFilter<"Club"> | number | null
     createdAt?: DateTimeFilter<"Club"> | Date | string
     updatedAt?: DateTimeFilter<"Club"> | Date | string
     accounts?: AccountClubListRelationFilter
@@ -46377,6 +46472,7 @@ export namespace Prisma {
     federationLogo?: SortOrderInput | SortOrder
     backgroundColor?: SortOrderInput | SortOrder
     foregroundColor?: SortOrderInput | SortOrder
+    fpbClubId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ClubCountOrderByAggregateInput
@@ -46397,6 +46493,7 @@ export namespace Prisma {
     federationLogo?: StringNullableWithAggregatesFilter<"Club"> | string | null
     backgroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
     foregroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    fpbClubId?: IntNullableWithAggregatesFilter<"Club"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
   }
@@ -46743,6 +46840,7 @@ export namespace Prisma {
     type?: EnumTeamTypeNullableFilter<"Team"> | $Enums.TeamType | null
     clubId?: IntFilter<"Team"> | number
     echelonId?: IntFilter<"Team"> | number
+    fpbTeamId?: IntNullableFilter<"Team"> | number | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
@@ -46758,6 +46856,7 @@ export namespace Prisma {
     type?: SortOrderInput | SortOrder
     clubId?: SortOrder
     echelonId?: SortOrder
+    fpbTeamId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     club?: ClubOrderByWithRelationInput
@@ -46776,6 +46875,7 @@ export namespace Prisma {
     type?: EnumTeamTypeNullableFilter<"Team"> | $Enums.TeamType | null
     clubId?: IntFilter<"Team"> | number
     echelonId?: IntFilter<"Team"> | number
+    fpbTeamId?: IntNullableFilter<"Team"> | number | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
@@ -46791,6 +46891,7 @@ export namespace Prisma {
     type?: SortOrderInput | SortOrder
     clubId?: SortOrder
     echelonId?: SortOrder
+    fpbTeamId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: TeamCountOrderByAggregateInput
@@ -46809,6 +46910,7 @@ export namespace Prisma {
     type?: EnumTeamTypeNullableWithAggregatesFilter<"Team"> | $Enums.TeamType | null
     clubId?: IntWithAggregatesFilter<"Team"> | number
     echelonId?: IntWithAggregatesFilter<"Team"> | number
+    fpbTeamId?: IntNullableWithAggregatesFilter<"Team"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Team"> | Date | string
   }
@@ -47225,6 +47327,7 @@ export namespace Prisma {
     echelonId?: IntFilter<"EquipmentColor"> | number
     color?: StringFilter<"EquipmentColor"> | string
     colorHex?: StringFilter<"EquipmentColor"> | string
+    numberColorHex?: StringFilter<"EquipmentColor"> | string
     createdAt?: DateTimeFilter<"EquipmentColor"> | Date | string
     updatedAt?: DateTimeFilter<"EquipmentColor"> | Date | string
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
@@ -47241,6 +47344,7 @@ export namespace Prisma {
     echelonId?: SortOrder
     color?: SortOrder
     colorHex?: SortOrder
+    numberColorHex?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     club?: ClubOrderByWithRelationInput
@@ -47261,6 +47365,7 @@ export namespace Prisma {
     echelonId?: IntFilter<"EquipmentColor"> | number
     color?: StringFilter<"EquipmentColor"> | string
     colorHex?: StringFilter<"EquipmentColor"> | string
+    numberColorHex?: StringFilter<"EquipmentColor"> | string
     createdAt?: DateTimeFilter<"EquipmentColor"> | Date | string
     updatedAt?: DateTimeFilter<"EquipmentColor"> | Date | string
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
@@ -47277,6 +47382,7 @@ export namespace Prisma {
     echelonId?: SortOrder
     color?: SortOrder
     colorHex?: SortOrder
+    numberColorHex?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: EquipmentColorCountOrderByAggregateInput
@@ -47296,6 +47402,7 @@ export namespace Prisma {
     echelonId?: IntWithAggregatesFilter<"EquipmentColor"> | number
     color?: StringWithAggregatesFilter<"EquipmentColor"> | string
     colorHex?: StringWithAggregatesFilter<"EquipmentColor"> | string
+    numberColorHex?: StringWithAggregatesFilter<"EquipmentColor"> | string
     createdAt?: DateTimeWithAggregatesFilter<"EquipmentColor"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"EquipmentColor"> | Date | string
   }
@@ -47826,6 +47933,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -47865,6 +47974,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -47891,6 +48002,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47930,6 +48043,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -47963,6 +48078,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -47983,6 +48100,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48010,6 +48129,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -48964,6 +49085,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -48986,6 +49108,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -49007,6 +49130,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -49029,6 +49153,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -49051,6 +49176,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -49062,6 +49188,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49074,6 +49201,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49401,6 +49529,7 @@ export namespace Prisma {
   export type TeamCreateInput = {
     name: string
     type?: $Enums.TeamType | null
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutTeamsInput
@@ -49416,6 +49545,7 @@ export namespace Prisma {
     type?: $Enums.TeamType | null
     clubId: number
     echelonId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
@@ -49426,6 +49556,7 @@ export namespace Prisma {
   export type TeamUpdateInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
@@ -49441,6 +49572,7 @@ export namespace Prisma {
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     clubId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
@@ -49454,6 +49586,7 @@ export namespace Prisma {
     type?: $Enums.TeamType | null
     clubId: number
     echelonId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -49461,6 +49594,7 @@ export namespace Prisma {
   export type TeamUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49471,6 +49605,7 @@ export namespace Prisma {
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     clubId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49853,6 +49988,7 @@ export namespace Prisma {
   export type EquipmentColorCreateInput = {
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutEquipmentColorsInput
@@ -49869,6 +50005,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
@@ -49878,6 +50015,7 @@ export namespace Prisma {
   export type EquipmentColorUpdateInput = {
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
@@ -49894,6 +50032,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
@@ -49907,6 +50046,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -49914,6 +50054,7 @@ export namespace Prisma {
   export type EquipmentColorUpdateManyMutationInput = {
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -49925,6 +50066,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -50701,6 +50843,8 @@ export namespace Prisma {
     shotClock?: SortOrder
     opponentResultsCount?: SortOrder
     speech?: SortOrder
+    completed?: SortOrder
+    fpbGameId?: SortOrder
     image1?: SortOrder
     image2?: SortOrder
     image3?: SortOrder
@@ -50717,6 +50861,7 @@ export namespace Prisma {
     opponentId?: SortOrder
     venueId?: SortOrder
     opponentResultsCount?: SortOrder
+    fpbGameId?: SortOrder
   }
 
   export type GameMaxOrderByAggregateInput = {
@@ -50740,6 +50885,8 @@ export namespace Prisma {
     shotClock?: SortOrder
     opponentResultsCount?: SortOrder
     speech?: SortOrder
+    completed?: SortOrder
+    fpbGameId?: SortOrder
     image1?: SortOrder
     image2?: SortOrder
     image3?: SortOrder
@@ -50767,6 +50914,8 @@ export namespace Prisma {
     shotClock?: SortOrder
     opponentResultsCount?: SortOrder
     speech?: SortOrder
+    completed?: SortOrder
+    fpbGameId?: SortOrder
     image1?: SortOrder
     image2?: SortOrder
     image3?: SortOrder
@@ -50783,6 +50932,7 @@ export namespace Prisma {
     opponentId?: SortOrder
     venueId?: SortOrder
     opponentResultsCount?: SortOrder
+    fpbGameId?: SortOrder
   }
 
   export type GameListRelationFilter = {
@@ -51602,12 +51752,14 @@ export namespace Prisma {
     federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
+    fpbClubId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ClubAvgOrderByAggregateInput = {
     id?: SortOrder
+    fpbClubId?: SortOrder
   }
 
   export type ClubMaxOrderByAggregateInput = {
@@ -51618,6 +51770,7 @@ export namespace Prisma {
     federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
+    fpbClubId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51630,12 +51783,14 @@ export namespace Prisma {
     federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
+    fpbClubId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type ClubSumOrderByAggregateInput = {
     id?: SortOrder
+    fpbClubId?: SortOrder
   }
 
   export type ClubEmailSettingsCountOrderByAggregateInput = {
@@ -51913,6 +52068,7 @@ export namespace Prisma {
     type?: SortOrder
     clubId?: SortOrder
     echelonId?: SortOrder
+    fpbTeamId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51921,6 +52077,7 @@ export namespace Prisma {
     id?: SortOrder
     clubId?: SortOrder
     echelonId?: SortOrder
+    fpbTeamId?: SortOrder
   }
 
   export type TeamMaxOrderByAggregateInput = {
@@ -51929,6 +52086,7 @@ export namespace Prisma {
     type?: SortOrder
     clubId?: SortOrder
     echelonId?: SortOrder
+    fpbTeamId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51939,6 +52097,7 @@ export namespace Prisma {
     type?: SortOrder
     clubId?: SortOrder
     echelonId?: SortOrder
+    fpbTeamId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -51947,6 +52106,7 @@ export namespace Prisma {
     id?: SortOrder
     clubId?: SortOrder
     echelonId?: SortOrder
+    fpbTeamId?: SortOrder
   }
 
   export type EnumTeamTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -52313,6 +52473,7 @@ export namespace Prisma {
     echelonId?: SortOrder
     color?: SortOrder
     colorHex?: SortOrder
+    numberColorHex?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52331,6 +52492,7 @@ export namespace Prisma {
     echelonId?: SortOrder
     color?: SortOrder
     colorHex?: SortOrder
+    numberColorHex?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -52342,6 +52504,7 @@ export namespace Prisma {
     echelonId?: SortOrder
     color?: SortOrder
     colorHex?: SortOrder
+    numberColorHex?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -55920,6 +56083,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -55941,6 +56105,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -56204,6 +56369,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -56225,6 +56391,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -56475,6 +56642,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -56513,6 +56682,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -56604,6 +56775,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56642,6 +56815,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -56716,6 +56891,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -56737,6 +56913,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -56758,6 +56935,7 @@ export namespace Prisma {
   export type TeamCreateWithoutGamesInput = {
     name: string
     type?: $Enums.TeamType | null
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutTeamsInput
@@ -56772,6 +56950,7 @@ export namespace Prisma {
     type?: $Enums.TeamType | null
     clubId: number
     echelonId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
@@ -57088,6 +57267,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -57109,6 +57289,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -57136,6 +57317,7 @@ export namespace Prisma {
   export type TeamUpdateWithoutGamesInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
@@ -57150,6 +57332,7 @@ export namespace Prisma {
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     clubId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
@@ -57405,6 +57588,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -57442,6 +57627,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -57533,6 +57720,8 @@ export namespace Prisma {
     shotClock?: StringNullableFilter<"Game"> | string | null
     opponentResultsCount?: IntFilter<"Game"> | number
     speech?: StringNullableFilter<"Game"> | string | null
+    completed?: BoolFilter<"Game"> | boolean
+    fpbGameId?: IntNullableFilter<"Game"> | number | null
     image1?: StringNullableFilter<"Game"> | string | null
     image2?: StringNullableFilter<"Game"> | string | null
     image3?: StringNullableFilter<"Game"> | string | null
@@ -57810,6 +57999,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -57848,6 +58039,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -57945,6 +58138,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -57983,6 +58178,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58058,6 +58255,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -58096,6 +58295,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -58193,6 +58394,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58231,6 +58434,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58306,6 +58511,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -58344,6 +58551,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -58491,6 +58700,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58529,6 +58740,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -58603,6 +58816,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -58624,6 +58838,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -58689,6 +58904,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -58710,6 +58926,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -59042,6 +59259,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -59080,6 +59299,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -59121,6 +59342,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -59159,6 +59382,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -59173,6 +59398,7 @@ export namespace Prisma {
   export type TeamCreateWithoutEchelonInput = {
     name: string
     type?: $Enums.TeamType | null
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutTeamsInput
@@ -59186,6 +59412,7 @@ export namespace Prisma {
     name: string
     type?: $Enums.TeamType | null
     clubId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
@@ -59239,6 +59466,7 @@ export namespace Prisma {
   export type EquipmentColorCreateWithoutEchelonInput = {
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutEquipmentColorsInput
@@ -59253,6 +59481,7 @@ export namespace Prisma {
     seasonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
@@ -59294,6 +59523,7 @@ export namespace Prisma {
     type?: EnumTeamTypeNullableFilter<"Team"> | $Enums.TeamType | null
     clubId?: IntFilter<"Team"> | number
     echelonId?: IntFilter<"Team"> | number
+    fpbTeamId?: IntNullableFilter<"Team"> | number | null
     createdAt?: DateTimeFilter<"Team"> | Date | string
     updatedAt?: DateTimeFilter<"Team"> | Date | string
   }
@@ -59354,6 +59584,7 @@ export namespace Prisma {
     echelonId?: IntFilter<"EquipmentColor"> | number
     color?: StringFilter<"EquipmentColor"> | string
     colorHex?: StringFilter<"EquipmentColor"> | string
+    numberColorHex?: StringFilter<"EquipmentColor"> | string
     createdAt?: DateTimeFilter<"EquipmentColor"> | Date | string
     updatedAt?: DateTimeFilter<"EquipmentColor"> | Date | string
   }
@@ -59450,6 +59681,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -59487,6 +59720,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -59541,6 +59776,7 @@ export namespace Prisma {
   export type TeamCreateWithoutClubInput = {
     name: string
     type?: $Enums.TeamType | null
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     echelon: EchelonCreateNestedOneWithoutTeamsInput
@@ -59554,6 +59790,7 @@ export namespace Prisma {
     name: string
     type?: $Enums.TeamType | null
     echelonId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
@@ -59603,6 +59840,7 @@ export namespace Prisma {
   export type EquipmentColorCreateWithoutClubInput = {
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     season: SeasonCreateNestedOneWithoutEquipmentColorsInput
@@ -59617,6 +59855,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
@@ -59986,6 +60225,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -60007,6 +60247,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -60043,6 +60284,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -60064,6 +60306,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -60080,6 +60323,7 @@ export namespace Prisma {
   export type EquipmentColorCreateWithoutSeasonInput = {
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutEquipmentColorsInput
@@ -60094,6 +60338,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
@@ -60161,6 +60406,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -60182,6 +60428,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -60214,6 +60461,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -60251,6 +60500,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -60325,6 +60576,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -60346,6 +60598,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -60418,6 +60671,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: AthleteCreateNestedManyWithoutClubInput
@@ -60439,6 +60693,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
@@ -60536,6 +60791,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: AthleteUpdateManyWithoutClubNestedInput
@@ -60557,6 +60813,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
@@ -60644,6 +60901,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -60665,6 +60923,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -60767,6 +61026,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -60804,6 +61065,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -60844,6 +61107,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -60865,6 +61129,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -60975,6 +61240,7 @@ export namespace Prisma {
   export type TeamCreateWithoutAthletesInput = {
     name: string
     type?: $Enums.TeamType | null
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutTeamsInput
@@ -60989,6 +61255,7 @@ export namespace Prisma {
     type?: $Enums.TeamType | null
     clubId: number
     echelonId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
@@ -61064,6 +61331,7 @@ export namespace Prisma {
   export type TeamUpdateWithoutAthletesInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
@@ -61078,6 +61346,7 @@ export namespace Prisma {
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     clubId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
@@ -61147,6 +61416,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -61168,6 +61438,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -61261,6 +61532,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -61282,6 +61554,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -61356,6 +61629,7 @@ export namespace Prisma {
   export type TeamCreateWithoutStaffInput = {
     name: string
     type?: $Enums.TeamType | null
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutTeamsInput
@@ -61370,6 +61644,7 @@ export namespace Prisma {
     type?: $Enums.TeamType | null
     clubId: number
     echelonId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
@@ -61429,6 +61704,7 @@ export namespace Prisma {
   export type TeamUpdateWithoutStaffInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
@@ -61443,6 +61719,7 @@ export namespace Prisma {
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     clubId?: IntFieldUpdateOperationsInput | number
     echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
@@ -61560,6 +61837,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -61597,6 +61876,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -61741,6 +62022,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -61778,6 +62061,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -61963,6 +62248,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -61984,6 +62270,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -62122,6 +62409,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -62143,6 +62431,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -62265,6 +62554,7 @@ export namespace Prisma {
   export type EquipmentColorCreateWithoutEquipmentsInput = {
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutEquipmentColorsInput
@@ -62280,6 +62570,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
@@ -62329,6 +62620,7 @@ export namespace Prisma {
   export type EquipmentColorUpdateWithoutEquipmentsInput = {
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
@@ -62344,6 +62636,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
@@ -62379,6 +62672,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -62417,6 +62712,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -62508,6 +62805,7 @@ export namespace Prisma {
   export type EquipmentColorCreateWithoutGameEquipmentsInput = {
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     club: ClubCreateNestedOneWithoutEquipmentColorsInput
@@ -62523,6 +62821,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     equipments?: EquipmentUncheckedCreateNestedManyWithoutEquipmentColorInput
@@ -62558,6 +62857,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62596,6 +62897,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -62705,6 +63008,7 @@ export namespace Prisma {
   export type EquipmentColorUpdateWithoutGameEquipmentsInput = {
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
@@ -62720,6 +63024,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
@@ -62732,6 +63037,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubCreateNestedManyWithoutClubInput
@@ -62753,6 +63059,7 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
@@ -62816,6 +63123,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUpdateManyWithoutClubNestedInput
@@ -62837,6 +63145,7 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
@@ -63594,6 +63903,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -63623,6 +63934,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63660,6 +63973,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63692,6 +64007,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -63957,6 +64274,7 @@ export namespace Prisma {
     name: string
     type?: $Enums.TeamType | null
     clubId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -63977,6 +64295,7 @@ export namespace Prisma {
     seasonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -63984,6 +64303,7 @@ export namespace Prisma {
   export type TeamUpdateWithoutEchelonInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
@@ -63997,6 +64317,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     clubId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
@@ -64009,6 +64330,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     clubId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64049,6 +64371,7 @@ export namespace Prisma {
   export type EquipmentColorUpdateWithoutEchelonInput = {
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
@@ -64063,6 +64386,7 @@ export namespace Prisma {
     seasonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
@@ -64075,6 +64399,7 @@ export namespace Prisma {
     seasonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64120,6 +64445,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -64140,6 +64467,7 @@ export namespace Prisma {
     name: string
     type?: $Enums.TeamType | null
     echelonId: number
+    fpbTeamId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -64159,6 +64487,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -64284,6 +64613,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64321,6 +64652,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64353,6 +64686,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64390,6 +64725,7 @@ export namespace Prisma {
   export type TeamUpdateWithoutClubInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
@@ -64403,6 +64739,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
@@ -64415,6 +64752,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
     echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64450,6 +64788,7 @@ export namespace Prisma {
   export type EquipmentColorUpdateWithoutClubInput = {
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     season?: SeasonUpdateOneRequiredWithoutEquipmentColorsNestedInput
@@ -64464,6 +64803,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
@@ -64476,6 +64816,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64572,6 +64913,7 @@ export namespace Prisma {
     echelonId: number
     color: string
     colorHex?: string
+    numberColorHex?: string
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -64579,6 +64921,7 @@ export namespace Prisma {
   export type EquipmentColorUpdateWithoutSeasonInput = {
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutEquipmentColorsNestedInput
@@ -64593,6 +64936,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     equipments?: EquipmentUncheckedUpdateManyWithoutEquipmentColorNestedInput
@@ -64605,6 +64949,7 @@ export namespace Prisma {
     echelonId?: IntFieldUpdateOperationsInput | number
     color?: StringFieldUpdateOperationsInput | string
     colorHex?: StringFieldUpdateOperationsInput | string
+    numberColorHex?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -64629,6 +64974,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -64649,6 +64996,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64686,6 +65035,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64718,6 +65069,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64774,6 +65127,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -64825,6 +65180,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64862,6 +65219,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64894,6 +65253,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -64951,6 +65312,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -64996,6 +65359,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65033,6 +65398,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65065,6 +65432,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65091,6 +65460,8 @@ export namespace Prisma {
     shotClock?: string | null
     opponentResultsCount?: number
     speech?: string | null
+    completed?: boolean
+    fpbGameId?: number | null
     image1?: string | null
     image2?: string | null
     image3?: string | null
@@ -65111,6 +65482,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65148,6 +65521,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
@@ -65180,6 +65555,8 @@ export namespace Prisma {
     shotClock?: NullableStringFieldUpdateOperationsInput | string | null
     opponentResultsCount?: IntFieldUpdateOperationsInput | number
     speech?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    fpbGameId?: NullableIntFieldUpdateOperationsInput | number | null
     image1?: NullableStringFieldUpdateOperationsInput | string | null
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
