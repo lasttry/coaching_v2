@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -22,12 +22,20 @@ import StarIcon from '@mui/icons-material/Star';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { ptPT } from '@mui/x-data-grid/locales';
 import { useTranslation } from 'react-i18next';
+import '@/lib/i18n.client';
 import type { SeasonInterface } from '@/types/season/types';
+import {
+  useCreateSeason,
+  useDeleteSeason,
+  useSeasons,
+  useSetCurrentSeason,
+} from '@/hooks/useSeasons';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 interface NewSeasonState {
   name: string;
-  startDate: string; // YYYY-MM-DD
-  endDate: string; // YYYY-MM-DD
+  startDate: string;
+  endDate: string;
   isCurrent: boolean;
 }
 
@@ -41,40 +49,18 @@ const defaultNewSeason = (): NewSeasonState => ({
 const SeasonsPage: React.FC = () => {
   const { t } = useTranslation();
 
-  const [seasons, setSeasons] = useState<SeasonInterface[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const { data: seasons = [], isFetching, error: fetchError } = useSeasons();
+  const createMutation = useCreateSeason();
+  const deleteMutation = useDeleteSeason();
+  const setCurrentMutation = useSetCurrentSeason();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [openAddDialog, setOpenAddDialog] = useState<boolean>(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
   const [newSeason, setNewSeason] = useState<NewSeasonState>(defaultNewSeason);
 
-  const fetchSeasons = async (): Promise<void> => {
-    setLoading(true);
-    setErrorMessage(null);
-
-    try {
-      const res = await fetch('/api/seasons', { cache: 'no-store' });
-      const data = await res.json();
-
-      if (!res.ok) {
-        const msg = (data as { error?: string }).error ?? t('season.load.error');
-        setErrorMessage(msg);
-        setLoading(false);
-        return;
-      }
-
-      setSeasons(data as SeasonInterface[]);
-    } catch {
-      setErrorMessage(t('season.load.networkError'));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    void fetchSeasons();
-  }, []);
+  const isAddDirty = useFormSnapshotDirty(openAddDialog, newSeason);
 
   const toIsoDate = (date: string, endOfDay = false): string => {
     if (!date) return '';
@@ -82,95 +68,51 @@ const SeasonsPage: React.FC = () => {
   };
 
   const handleFieldChange = (field: keyof NewSeasonState, value: string | boolean): void => {
-    setNewSeason((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+    setNewSeason((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleAddSeason = async (): Promise<void> => {
+  const handleAddSeason = (): void => {
     if (!newSeason.name.trim() || !newSeason.startDate || !newSeason.endDate) {
       setErrorMessage(t('season.form.requiredFields'));
       return;
     }
-
     setErrorMessage(null);
-
-    try {
-      const res = await fetch('/api/seasons', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newSeason.name.trim(),
-          startDate: toIsoDate(newSeason.startDate, false),
-          endDate: toIsoDate(newSeason.endDate, true),
-          isCurrent: newSeason.isCurrent,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        const msg = (data as { error?: string }).error ?? t('season.create.error');
-        setErrorMessage(msg);
-        return;
+    createMutation.mutate(
+      {
+        name: newSeason.name.trim(),
+        startDate: toIsoDate(newSeason.startDate, false),
+        endDate: toIsoDate(newSeason.endDate, true),
+        isCurrent: newSeason.isCurrent,
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage(t('season.create.success'));
+          setNewSeason(defaultNewSeason());
+          setOpenAddDialog(false);
+        },
+        onError: (err) => {
+          setErrorMessage(err instanceof Error ? err.message : t('season.create.error'));
+        },
       }
-
-      setSuccessMessage(t('season.create.success'));
-      setNewSeason(defaultNewSeason());
-      setOpenAddDialog(false);
-      void fetchSeasons();
-    } catch {
-      setErrorMessage(t('season.create.networkError'));
-    }
+    );
   };
 
-  const handleDeleteSeason = async (id: number): Promise<void> => {
+  const handleDeleteSeason = (id: number): void => {
     setErrorMessage(null);
-
-    try {
-      const res = await fetch(`/api/seasons/${id}`, {
-        method: 'DELETE',
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !(data as { success?: boolean }).success) {
-        const msg = (data as { error?: string }).error ?? t('season.delete.error');
-        setErrorMessage(msg);
-        return;
-      }
-
-      setSuccessMessage(t('season.delete.success'));
-      void fetchSeasons();
-    } catch {
-      setErrorMessage(t('season.delete.networkError'));
-    }
+    deleteMutation.mutate(id, {
+      onSuccess: () => setSuccessMessage(t('season.delete.success')),
+      onError: (err) =>
+        setErrorMessage(err instanceof Error ? err.message : t('season.delete.error')),
+    });
   };
 
-  const handleSetCurrent = async (id: number): Promise<void> => {
+  const handleSetCurrent = (id: number): void => {
     setErrorMessage(null);
-
-    try {
-      const res = await fetch(`/api/seasons/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isCurrent: true }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        const msg = (data as { error?: string }).error ?? t('season.setCurrent.error');
-        setErrorMessage(msg);
-        return;
-      }
-
-      setSuccessMessage(t('season.setCurrent.success'));
-      void fetchSeasons();
-    } catch {
-      setErrorMessage(t('season.setCurrent.networkError'));
-    }
+    setCurrentMutation.mutate(id, {
+      onSuccess: () => setSuccessMessage(t('season.setCurrent.success')),
+      onError: (err) =>
+        setErrorMessage(err instanceof Error ? err.message : t('season.setCurrent.error')),
+    });
   };
 
   const columns: GridColDef<SeasonInterface>[] = [
@@ -223,6 +165,8 @@ const SeasonsPage: React.FC = () => {
     },
   ];
 
+  const combinedError = errorMessage || (fetchError instanceof Error ? fetchError.message : null);
+
   return (
     <Box sx={{ height: 700, width: '100%' }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -234,13 +178,13 @@ const SeasonsPage: React.FC = () => {
         </Button>
       </Box>
 
-      {errorMessage && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {errorMessage}
+      {combinedError && (
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setErrorMessage(null)}>
+          {combinedError}
         </Alert>
       )}
       {successMessage && (
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccessMessage(null)}>
           {successMessage}
         </Alert>
       )}
@@ -248,7 +192,7 @@ const SeasonsPage: React.FC = () => {
       <DataGrid
         rows={seasons}
         columns={columns}
-        loading={loading}
+        loading={isFetching}
         getRowId={(row) => row.id ?? 0}
         pageSizeOptions={[5, 10, 20]}
         pagination
@@ -259,8 +203,13 @@ const SeasonsPage: React.FC = () => {
         localeText={ptPT.components.MuiDataGrid.defaultProps.localeText}
       />
 
-      {/* Add Season Dialog */}
-      <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} maxWidth="sm" fullWidth>
+      <GuardedDialog
+        open={openAddDialog}
+        onClose={() => setOpenAddDialog(false)}
+        isDirty={isAddDirty}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>{t('season.add')}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField
@@ -300,14 +249,20 @@ const SeasonsPage: React.FC = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenAddDialog(false)}>{t('actions.cancel')}</Button>
-          <Button onClick={() => void handleAddSeason()} variant="contained" color="primary">
+          <Button onClick={() => setOpenAddDialog(false)} disabled={createMutation.isPending}>
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            onClick={handleAddSeason}
+            variant="contained"
+            color="primary"
+            disabled={createMutation.isPending}
+          >
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
-      {/* Confirm Delete Dialog */}
       <Dialog open={deleteConfirmId !== null} onClose={() => setDeleteConfirmId(null)}>
         <DialogTitle>{t('season.confirmDelete')}</DialogTitle>
         <DialogContent>
@@ -318,12 +273,13 @@ const SeasonsPage: React.FC = () => {
           <Button
             onClick={() => {
               if (deleteConfirmId !== null) {
-                void handleDeleteSeason(deleteConfirmId);
+                handleDeleteSeason(deleteConfirmId);
                 setDeleteConfirmId(null);
               }
             }}
             color="error"
             variant="contained"
+            disabled={deleteMutation.isPending}
           >
             {t('actions.delete')}
           </Button>

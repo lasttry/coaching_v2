@@ -14,18 +14,12 @@ import {
   IconRocket,
   IconUsers,
   IconChartBar,
+  IconCalendarEvent,
 } from '@tabler/icons-react';
 import { uniqueId } from 'lodash';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
-
-const openDrillsPage = (): void => {
-  const url = '/utilities/drills_v2'; // Update with the correct path to the Drills_v2 page
-  const windowFeatures =
-    'width=800,height=600,menubar=no,toolbar=no,location=no,status=no,resizable=no,scrollbars=no';
-  window.open(url, 'Drills_v2', windowFeatures);
-};
 
 type MenuItem = {
   id?: string;
@@ -58,35 +52,21 @@ const MenuItemsComponent = (): MenuItem[] => {
     { navlabel: true, subheader: t('menu.practices') },
     {
       id: uniqueId(),
-      title: t('menu.drills'),
+      title: t('practice.title'),
+      icon: IconCalendarEvent,
+      href: '/utilities/practices',
+    },
+    {
+      id: uniqueId(),
+      title: t('drill.title'),
       icon: IconBallBasketball,
-      href: '',
-      onClick: openDrillsPage,
+      href: '/utilities/drills',
     },
     {
       id: uniqueId(),
       title: t('menu.cycles'),
       icon: IconRefresh,
-      children: [
-        {
-          id: uniqueId(),
-          title: t('cycles.microcycle.title'),
-          icon: IconBallBasketball,
-          href: '/utilities/cycles/microcycles',
-        },
-        {
-          id: uniqueId(),
-          title: t('cycles.mesocycle.title'),
-          icon: IconBallBasketball,
-          href: '/utilities/cycles/mesocycles',
-        },
-        {
-          id: uniqueId(),
-          title: t('cycles.macrocycle.title'),
-          icon: IconBallBasketball,
-          href: '/utilities/cycles/macrocycles',
-        },
-      ],
+      href: '/utilities/cycles',
     },
     { navlabel: true, subheader: t('menu.statistics') },
     {

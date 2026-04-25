@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { log } from '@/lib/logger';
+import { auth } from '@/lib/auth';
 
 type Params = Promise<{ id: string }>;
 
@@ -15,7 +16,10 @@ export async function GET(request: Request, { params }: { params: Params }): Pro
   try {
     const macrocycle = await prisma.macrocycle.findUnique({
       where: { id: Number(id) },
-      include: { mesocycles: true },
+      include: {
+        mesocycles: true,
+        team: { select: { id: true, name: true } },
+      },
     });
 
     if (!macrocycle) {
@@ -38,8 +42,28 @@ export async function PUT(request: Request, { params }: { params: Params }): Pro
   }
 
   try {
+    const session = await auth();
+    if (
+      !session?.user ||
+      !session.user.selectedClubId ||
+      isNaN(Number(session.user.selectedClubId))
+    ) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const clubId = Number(session.user.selectedClubId);
+
     const data = await request.json();
-    const { name, number, startDate, endDate, notes } = data;
+    const { name, number, startDate, endDate, notes, teamId } = data;
+
+    if (teamId != null) {
+      const team = await prisma.team.findUnique({
+        where: { id: Number(teamId) },
+        select: { clubId: true },
+      });
+      if (!team || team.clubId !== clubId) {
+        return NextResponse.json({ error: 'Team does not belong to this club' }, { status: 400 });
+      }
+    }
 
     const updatedMacrocycle = await prisma.macrocycle.update({
       where: { id: Number(id) },
@@ -49,6 +73,11 @@ export async function PUT(request: Request, { params }: { params: Params }): Pro
         startDate: startDate ? new Date(startDate) : undefined,
         endDate: endDate ? new Date(endDate) : undefined,
         notes,
+        teamId: teamId != null ? Number(teamId) : null,
+      },
+      include: {
+        mesocycles: true,
+        team: { select: { id: true, name: true } },
       },
     });
 

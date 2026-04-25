@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect, useMemo } from 'react';
-import { log } from '@/lib/logger';
 import {
   Box,
   Button,
@@ -44,13 +43,17 @@ import { ptPT } from '@mui/x-data-grid/locales';
 import dayjs from 'dayjs';
 
 import { TeamInterface } from '@/types/teams/types';
-import { EchelonInterface } from '@/types/echelons/types';
-import { SeasonInterface } from '@/types/season/types';
 import { GameInterface } from '@/types/game/types';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
 import { AthleteInterface } from '@/types/athlete/types';
+import { useTeams, useSaveTeam, useDeleteTeam } from '@/hooks/useTeams';
+import { useEchelons } from '@/hooks/useEchelons';
+import { useAthletes } from '@/hooks/useAthletes';
+import { useCurrentSeason } from '@/hooks/useSeasons';
+import { useGames } from '@/hooks/useGames';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 const getInitials = (name: string): string => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -71,12 +74,16 @@ const stringToColor = (str: string): string => {
 export default function TeamsPage(): React.JSX.Element {
   const { t } = useTranslation();
 
-  const [teams, setTeams] = useState<TeamInterface[]>([]);
-  const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
-  const [athletes, setAthletes] = useState<AthleteInterface[]>([]);
-  const [games, setGames] = useState<GameInterface[]>([]);
-  const [currentSeason, setCurrentSeason] = useState<SeasonInterface | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: teams = [], isLoading: teamsLoading, error: teamsError } = useTeams();
+  const { data: echelons = [] } = useEchelons();
+  const { data: athletes = [] } = useAthletes();
+  const { data: games = [] } = useGames();
+  const { data: currentSeason = null } = useCurrentSeason();
+
+  const saveTeamMutation = useSaveTeam();
+  const deleteTeamMutation = useDeleteTeam();
+
+  const loading = teamsLoading;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [search, setSearch] = useState('');
@@ -99,86 +106,35 @@ export default function TeamsPage(): React.JSX.Element {
 
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
 
-  const fetchTeams = async (): Promise<void> => {
-    try {
-      const res = await fetch('/api/teams');
-      const data = await res.json();
-      setTeams(data);
-    } catch (err) {
-      log.error('Error fetching teams:', err);
-      setErrorMessage(t('team.fetch.error'));
-    }
-  };
+  const isTeamFormDirty = useFormSnapshotDirty(dialogOpen, formTeam);
+  // Sets are not directly serialisable; convert to array snapshot before
+  // diffing so the guard catches roster edits in the athletes dialog.
+  const isAthletesDirty = useFormSnapshotDirty(athletesDialogOpen, {
+    selection: Array.from(selectedAthletes.ids ?? []).sort(),
+  });
 
   useEffect(() => {
-    let active = true;
+    if (teamsError) {
+      setErrorMessage((teamsError as Error).message || t('team.fetch.error'));
+    }
+  }, [teamsError, t]);
 
-    const load = async (): Promise<void> => {
-      try {
-        const [teamsRes, echelonsRes, athletesRes, seasonRes, gamesRes] = await Promise.all([
-          fetch('/api/teams'),
-          fetch('/api/echelons'),
-          fetch('/api/athletes'),
-          fetch('/api/seasons/current'),
-          fetch('/api/games'),
-        ]);
-        if (!active) return;
-
-        const [teamsData, echelonsData, athletesData] = await Promise.all([
-          teamsRes.json(),
-          echelonsRes.json(),
-          athletesRes.json(),
-        ]);
-
-        const season = seasonRes.ok ? await seasonRes.json() : null;
-        const gamesPayload = gamesRes.ok ? await gamesRes.json() : { games: [] };
-
-        setTeams(teamsData);
-        setEchelons(echelonsData);
-        setAthletes(athletesData);
-        setCurrentSeason(season);
-        setGames(gamesPayload.games ?? []);
-      } catch (err) {
-        log.error('Error loading teams data:', err);
-        setErrorMessage(t('team.fetch.error'));
-      } finally {
-        if (active) setLoading(false);
-      }
-    };
-
-    load();
-
-    return () => {
-      active = false;
-    };
-  }, [t]);
-
-  // CRUD Team
-  const handleSave = async (): Promise<void> => {
+  const handleSave = (): void => {
     if (!formTeam.name || !formTeam.echelonId) return;
 
-    try {
-      if (editingTeam) {
-        await fetch(`/api/teams/${editingTeam.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formTeam),
-        });
-      } else {
-        await fetch('/api/teams', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formTeam),
-        });
+    saveTeamMutation.mutate(
+      { id: editingTeam?.id, payload: formTeam },
+      {
+        onSuccess: () => {
+          setDialogOpen(false);
+          setEditingTeam(null);
+          setFormTeam({ name: '', type: 'OTHER', echelonId: 0 });
+        },
+        onError: (err) => {
+          setErrorMessage((err as Error).message || t('team.save.error'));
+        },
       }
-      setDialogOpen(false);
-      setEditingTeam(null);
-      setFormTeam({ name: '', type: 'OTHER', echelonId: 0 });
-      await fetchTeams();
-    } catch (err) {
-      log.error('Error saving team:', err);
-      setErrorMessage(t('team.save.error'));
-    }
+    );
   };
 
   const handleEdit = (team: TeamInterface): void => {
@@ -187,18 +143,15 @@ export default function TeamsPage(): React.JSX.Element {
     setDialogOpen(true);
   };
 
-  const handleDelete = async (id: number | null): Promise<void> => {
+  const handleDelete = (id: number | null): void => {
     if (id === null) return;
-    try {
-      await fetch(`/api/teams/${id}`, { method: 'DELETE' });
-      setTeams((prev) => prev.filter((t) => t.id !== id));
-    } catch (err) {
-      log.error('Error deleting team:', err);
-      setErrorMessage(t('team.delete.error'));
-    }
+    deleteTeamMutation.mutate(id, {
+      onError: (err) => {
+        setErrorMessage((err as Error).message || t('team.delete.error'));
+      },
+    });
   };
 
-  // Manage Athletes
   const openAthletesDialog = (team: TeamInterface): void => {
     setSelectedTeam(team);
     const preselected = team.athletes?.map((a) => a.athleteId) ?? [];
@@ -206,23 +159,25 @@ export default function TeamsPage(): React.JSX.Element {
     setAthletesDialogOpen(true);
   };
 
-  const handleSaveAthletes = async (): Promise<void> => {
-    if (!selectedTeam) return;
-    try {
-      await fetch(`/api/teams/${selectedTeam.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+  const handleSaveAthletes = (): void => {
+    if (!selectedTeam?.id) return;
+    saveTeamMutation.mutate(
+      {
+        id: selectedTeam.id,
+        payload: {
           athleteIds: Array.from(selectedAthletes.ids).map((id) => Number(id)),
-        }),
-      });
-      setAthletesDialogOpen(false);
-      setSelectedTeam(null);
-      await fetchTeams();
-    } catch (err) {
-      log.error('Error saving team athletes:', err);
-      setErrorMessage(t('team.save.error'));
-    }
+        },
+      },
+      {
+        onSuccess: () => {
+          setAthletesDialogOpen(false);
+          setSelectedTeam(null);
+        },
+        onError: (err) => {
+          setErrorMessage((err as Error).message || t('team.save.error'));
+        },
+      }
+    );
   };
 
   const getFederativeAge = (birthdate: string): number => {
@@ -701,7 +656,13 @@ export default function TeamsPage(): React.JSX.Element {
         })}
 
       {/* Add/Edit Team Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="sm">
+      <GuardedDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        isDirty={isTeamFormDirty}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>{editingTeam ? t('team.edit') : t('team.add')}</DialogTitle>
         <DialogContent>
           <TextField
@@ -755,12 +716,13 @@ export default function TeamsPage(): React.JSX.Element {
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Athletes Manager Dialog */}
-      <Dialog
+      <GuardedDialog
         open={athletesDialogOpen}
         onClose={() => setAthletesDialogOpen(false)}
+        isDirty={isAthletesDirty}
         fullWidth
         maxWidth="md"
       >
@@ -805,7 +767,7 @@ export default function TeamsPage(): React.JSX.Element {
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Delete confirmation */}
       <Dialog open={deleteConfirmId !== null} onClose={() => setDeleteConfirmId(null)}>
@@ -820,7 +782,7 @@ export default function TeamsPage(): React.JSX.Element {
             variant="contained"
             onClick={() => {
               if (deleteConfirmId !== null) {
-                void handleDelete(deleteConfirmId);
+                handleDelete(deleteConfirmId);
                 setDeleteConfirmId(null);
               }
             }}

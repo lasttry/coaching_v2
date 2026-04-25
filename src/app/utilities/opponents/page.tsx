@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   Box,
   Button,
@@ -34,6 +34,8 @@ import { OpponentInterface } from '@/types/opponent/types';
 import { log } from '@/lib/logger';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
+import { useDeleteOpponent, useOpponents, useSaveOpponent } from '@/hooks/useOpponents';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 const getInitials = (name: string): string => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -61,8 +63,9 @@ const initialOpponent: OpponentInterface = {
 
 export default function OpponentManagement(): React.JSX.Element {
   const { t } = useTranslation();
-  const [opponents, setOpponents] = useState<OpponentInterface[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: opponents = [], isLoading: loading, error: fetchError } = useOpponents();
+  const saveMutation = useSaveOpponent();
+  const deleteMutation = useDeleteOpponent();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingOpponent, setEditingOpponent] = useState<OpponentInterface | null>(null);
   const [formOpponent, setFormOpponent] = useState<OpponentInterface>(initialOpponent);
@@ -73,71 +76,32 @@ export default function OpponentManagement(): React.JSX.Element {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    const fetchOpponents = async (): Promise<void> => {
-      try {
-        const res = await fetch('/api/opponents');
-        if (!res.ok) {
-          throw new Error('Failed to fetch opponents');
-        }
-        const data = await res.json();
-        setOpponents(data);
-      } catch (err) {
-        log.error('Error fetching opponents:', err);
-        setErrorMessage(t('opponent.fetch.error'));
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchOpponents();
-  }, []);
+  const isFormDirty = useFormSnapshotDirty(dialogOpen, { formOpponent, newVenue });
 
-  const handleSave = async (): Promise<void> => {
+  useEffect(() => {
+    if (fetchError) {
+      log.error('Error fetching opponents:', fetchError);
+      setErrorMessage(fetchError instanceof Error ? fetchError.message : t('opponent.fetch.error'));
+    }
+  }, [fetchError, t]);
+
+  const handleSave = (): void => {
     if (!formOpponent.name.trim() || !formOpponent.shortName.trim()) {
       return;
     }
 
-    try {
-      let res: Response;
-
-      if (editingOpponent && editingOpponent.id !== null) {
-        // Update existing opponent
-        res = await fetch(`/api/opponents/${editingOpponent.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formOpponent),
-        });
-      } else {
-        // Create new opponent
-        res = await fetch('/api/opponents', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formOpponent),
-        });
-      }
-
-      if (!res.ok) throw new Error(await res.text());
-      const saved: OpponentInterface = await res.json();
-
-      setOpponents((prev) => {
-        // If it has an id that already exists, update; otherwise, append
-        if (saved.id !== null) {
-          const exists = prev.some((o) => o.id === saved.id);
-          if (exists) {
-            return prev.map((o) => (o.id === saved.id ? saved : o));
-          }
-        }
-        return [...prev, saved];
-      });
-
-      setDialogOpen(false);
-      setFormOpponent(initialOpponent);
-      setNewVenue('');
-      setEditingOpponent(null);
-    } catch (err) {
-      log.error('Error saving opponent:', err);
-      setErrorMessage(t('opponent.save.error'));
-    }
+    saveMutation.mutate(formOpponent, {
+      onSuccess: () => {
+        setDialogOpen(false);
+        setFormOpponent(initialOpponent);
+        setNewVenue('');
+        setEditingOpponent(null);
+      },
+      onError: (err) => {
+        log.error('Error saving opponent:', err);
+        setErrorMessage(err instanceof Error ? err.message : t('opponent.save.error'));
+      },
+    });
   };
 
   const handleEdit = useCallback((opponent: OpponentInterface): void => {
@@ -151,25 +115,19 @@ export default function OpponentManagement(): React.JSX.Element {
     setDeleteConfirmOpen(true);
   }, []);
 
-  const handleDelete = async (): Promise<void> => {
+  const handleDelete = (): void => {
     if (!deleteId) return;
 
-    try {
-      const res = await fetch(`/api/opponents/${deleteId}`, {
-        method: 'DELETE',
-      });
-
-      if (!res.ok) throw new Error(await res.text());
-
-      // Remove from UI state
-      setOpponents((prev) => prev.filter((o) => o.id !== deleteId));
-
-      setDeleteConfirmOpen(false);
-      setDeleteId(undefined);
-    } catch (err) {
-      log.error('Error deleting opponent:', err);
-      setErrorMessage(t('opponent.delete.error'));
-    }
+    deleteMutation.mutate(deleteId, {
+      onSuccess: () => {
+        setDeleteConfirmOpen(false);
+        setDeleteId(undefined);
+      },
+      onError: (err) => {
+        log.error('Error deleting opponent:', err);
+        setErrorMessage(err instanceof Error ? err.message : t('opponent.delete.error'));
+      },
+    });
   };
 
   // Client-side filtering based on search input
@@ -452,7 +410,13 @@ export default function OpponentManagement(): React.JSX.Element {
       </Box>
 
       {/* Create/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} fullWidth maxWidth="sm">
+      <GuardedDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        isDirty={isFormDirty}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>{editingOpponent ? t('opponent.edit') : t('opponent.add')}</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
@@ -585,7 +549,7 @@ export default function OpponentManagement(): React.JSX.Element {
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Delete confirm dialog */}
       <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>

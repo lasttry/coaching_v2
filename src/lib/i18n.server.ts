@@ -17,7 +17,7 @@ if (!i18next.isInitialized) {
       backend: {
         loadPath: `${localesPath}/{{lng}}/{{ns}}.json`,
       },
-      debug: process.env.NODE_ENV === 'development',
+      debug: false,
     })
     .then(() => log.info('✅ i18next server initialized'))
     .catch((err) => log.error('❌ Error initializing server i18next:', err));

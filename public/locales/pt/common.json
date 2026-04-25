@@ -1,4 +1,69 @@
 {
+  "chooseClub": {
+    "title": "Escolher Clube",
+    "description": "Seleciona o clube com que vais trabalhar",
+    "subtitle": "Estes são os clubes a que tens acesso",
+    "pickOneHint": "Clica para escolher",
+    "enter": "Entrar",
+    "defaultBadge": "Padrão",
+    "noDefaultAlert": "Ainda não tens um clube padrão. Escolhe um dos teus clubes para começar.",
+    "noRoles": "Sem funções atribuídas",
+    "clearDefault": "Remover padrão",
+    "clearDefaultHint": "Deixa de ter um clube selecionado automaticamente no login",
+    "setAsDefault": {
+      "title": "Definir como clube padrão",
+      "hint": "Entrarás automaticamente neste clube nos próximos logins"
+    },
+    "empty": {
+      "title": "Sem clubes associados",
+      "description": "A tua conta ainda não está associada a nenhum clube. Contacta um administrador."
+    }
+  },
+  "roles": {
+    "ADMIN": "Administrador",
+    "DIRECTOR": "Diretor",
+    "COACH": "Treinador",
+    "PLAYER": "Atleta",
+    "PARENT": "Encarregado",
+    "TEAM_MANAGER": "Gestor de Equipa"
+  },
+  "home": {
+    "title": "Início",
+    "description": "Painel inicial do clube",
+    "subtitle": "Uma visão rápida do que está a acontecer no teu clube",
+    "goTo": "Ir para o Início",
+    "fetch": {
+      "error": "Falha ao obter dados da home"
+    },
+    "stats": {
+      "athletes": "Atletas ativos",
+      "teams": "Equipas",
+      "upcomingGames": "Próximos jogos"
+    },
+    "upcomingGames": {
+      "title": "Próximos jogos",
+      "subtitle": "Os próximos 10 jogos agendados",
+      "none": "Não há jogos agendados.",
+      "next": "Próximo"
+    },
+    "birthdays": {
+      "title": "Próximos aniversários",
+      "subtitle": "Atletas que fazem anos nos próximos 60 dias",
+      "none": "Nenhum aniversário nos próximos dias.",
+      "today": "Hoje!",
+      "tomorrow": "Amanhã",
+      "inDays": "Em {{days}} dias",
+      "turning": "Faz {{age}} anos"
+    },
+    "chart": {
+      "title": "Atletas por ano de nascimento",
+      "subtitle": "Distribuição do plantel ativo por ano de nascimento",
+      "none": "Sem dados suficientes para apresentar.",
+      "xAxis": "Ano",
+      "yAxis": "Atletas",
+      "series": "Atletas"
+    }
+  },
   "common": {
     "loading": "A carregar",
     "name": "Nome",
@@ -11,6 +76,8 @@
     "start": "Início",
     "end": "Fim",
     "current": "Atual",
+    "weeks": "semanas",
+    "sessions": "sessões",
     "active": "Ativo",
     "inactive": "Inativo",
     "role": "Função",
@@ -36,6 +103,7 @@
     "all": "Todos",
     "none": "Nenhum",
     "other": "Outro",
+    "today": "Hoje",
     "team": "Equipa",
     "opponent": "Adversário",
     "venue": "Pavilhão",
@@ -43,7 +111,6 @@
     "search": "Pesquisar...",
     "visible": "visível(is)"
   },
-
   "actions": {
     "add": "Adicionar",
     "edit": "Editar",
@@ -62,7 +129,6 @@
     "close": "Fechar",
     "back": "Voltar"
   },
-
   "status": {
     "created": "criado",
     "updated": "atualizado",
@@ -73,7 +139,6 @@
     "success": "Sucesso",
     "error": "Erro"
   },
-
   "messages": {
     "missingFields": "Campos obrigatórios em falta",
     "saveSuccess": "Guardado com sucesso",
@@ -89,7 +154,12 @@
     "deleteConfirmation": "Tem a certeza que deseja apagar? Esta ação é irreversível.",
     "noData": "Sem dados para mostrar"
   },
-
+  "discardChanges": {
+    "title": "Descartar alterações?",
+    "message": "Tem alterações por guardar. Se sair agora vai perdê-las.",
+    "confirm": "Descartar alterações",
+    "keepEditing": "Continuar a editar"
+  },
   "images": {
     "remove": "Remover Imagem",
     "notSelected": "Nenhuma imagem selecionada",
@@ -97,7 +167,6 @@
     "uploadPhoto": "Carregar Foto",
     "invalid": "Imagem inválida"
   },
-
   "filters": {
     "title": "Filtros",
     "startDate": "Data Início",
@@ -106,7 +175,6 @@
     "selectAll": "Selecionar Todos",
     "deselectAll": "Limpar Seleção"
   },
-
   "alerts": {
     "title": "Alertas",
     "empty": "Sem alertas",
@@ -146,14 +214,12 @@
       }
     }
   },
-
   "gender": {
     "label": "Género",
     "coed": "Misto",
     "female": "Feminino",
     "male": "Masculino"
   },
-
   "menu": {
     "configuration": "Configuração",
     "settings": "Definições",
@@ -163,7 +229,367 @@
     "practices": "Treinos",
     "drills": "Exercícios"
   },
-
+  "drill": {
+    "title": "Exercícios",
+    "singular": "Exercício",
+    "plural": "Exercícios",
+    "description": "Biblioteca de exercícios e jogadas",
+    "add": "Novo Exercício",
+    "new": "Novo Exercício",
+    "edit": "Editar Exercício",
+    "backToList": "Voltar à lista",
+    "author": "Autor",
+    "createdAt": "Criado em",
+    "updatedAt": "Atualizado em",
+    "status": {
+      "createdModified": "Criado / Modificado",
+      "created": "Criado"
+    },
+    "fields": {
+      "title": "Título",
+      "titleRequired": "O título é obrigatório",
+      "description": "Descrição",
+      "goals": "Objetivos / competências",
+      "variations": "Variações",
+      "tips": "Dicas / Ênfase",
+      "defaultText": "Texto padrão para planos de treino",
+      "ageGroup": "Escalão",
+      "type": "Tipo",
+      "position": "Posição",
+      "equipment": "Equipamento",
+      "balls": "Bolas",
+      "baskets": "Cestos",
+      "cones": "Cones",
+      "extra": "Outros",
+      "playersCoaches": "Jogadores / Treinadores",
+      "players": "Jogadores",
+      "coaches": "Treinadores",
+      "noEchelon": "Sem escalão"
+    },
+    "type": {
+      "fundamental": "Fundamental",
+      "individual": "Individual",
+      "team": "Equipa"
+    },
+    "position": {
+      "guard": "Base",
+      "forward": "Extremo",
+      "center": "Poste"
+    },
+    "filters": {
+      "search": "Pesquisar por título ou descrição",
+      "topic": "Tópico",
+      "allTopics": "Todos os tópicos",
+      "echelon": "Escalão",
+      "allEchelons": "Todos",
+      "type": "Tipo",
+      "allTypes": "Todos",
+      "position": "Posição",
+      "allPositions": "Todas",
+      "clear": "Limpar filtros"
+    },
+    "list": {
+      "empty": "Ainda não existem exercícios. Cria o primeiro!",
+      "emptyFiltered": "Nenhum exercício corresponde aos filtros.",
+      "columns": {
+        "title": "Título",
+        "topics": "Tópicos",
+        "date": "Data",
+        "author": "Autor",
+        "age": "Idade",
+        "position": "Pos.",
+        "type": "Tipo",
+        "graphics": "Grf.",
+        "actions": "Ações"
+      }
+    },
+    "topics": {
+      "title": "Tópicos",
+      "none": "Sem tópicos",
+      "picker": "Escolher tópicos",
+      "save": "Guardar tópicos",
+      "addPlaceholder": "Novo tópico...",
+      "deleteConfirm": "Remover este tópico?"
+    },
+    "topicNames": {
+      "transition": "Transição",
+      "individual_position": "Treino Individual por Posição",
+      "defence": "Defesa",
+      "screens": "Bloqueios",
+      "rebounding": "Ressalto",
+      "ballhandling": "Manuseamento / Drible",
+      "passing": "Passe / Recepção",
+      "shooting": "Lançamento",
+      "warmup": "Aquecimento",
+      "conditioning": "Condição Física",
+      "mini": "Minibasquete",
+      "little_games": "Pequenos Jogos"
+    },
+    "graphics": {
+      "title": "Gráficos",
+      "empty": "Ainda não há gráficos. Adiciona o primeiro.",
+      "add": "Adicionar gráfico",
+      "edit": "Editar gráfico",
+      "delete": "Apagar gráfico",
+      "number": "Gráfico #{{n}}",
+      "svgInput": "Código SVG",
+      "svgPlaceholder": "Cola aqui o código SVG do gráfico...",
+      "notes": "Notas",
+      "preview": "Pré-visualização",
+      "noPreview": "Sem pré-visualização",
+      "openFull": "Abrir em página completa",
+      "downloadAll": "Descarregar todos",
+      "deleteConfirmTitle": "Apagar gráfico?",
+      "deleteConfirm": "Esta ação não pode ser desfeita."
+    },
+    "delete": {
+      "confirm": "Tens a certeza que queres apagar este exercício?",
+      "title": "Apagar exercício"
+    },
+    "save": {
+      "createSuccess": "Exercício criado com sucesso",
+      "updateSuccess": "Exercício guardado",
+      "deleteSuccess": "Exercício apagado",
+      "error": "Falha ao guardar exercício",
+      "deleteError": "Falha ao apagar exercício",
+      "notFound": "Exercício não encontrado"
+    },
+    "graphicSave": {
+      "success": "Gráfico guardado",
+      "addSuccess": "Gráfico adicionado",
+      "deleteSuccess": "Gráfico apagado",
+      "error": "Falha ao guardar gráfico"
+    }
+  },
+  "drillEditor": {
+    "undo": "Anular (⌘Z)",
+    "zoomIn": "Aumentar zoom",
+    "zoomOut": "Reduzir zoom",
+    "zoomReset": "Repor zoom (100%)",
+    "toggleCourt": "Meio / campo inteiro",
+    "menu": "Menu",
+    "color": "Cor",
+    "basicColors": "Básicas",
+    "recentColors": "Últimas usadas",
+    "recentColorsHint": "As cores personalizadas só são guardadas depois de as usares num elemento.",
+    "clearRecent": "Limpar",
+    "customColor": "Personalizada",
+    "pinColor": "Fixar cor",
+    "unpinColor": "Desafixar cor",
+    "removeColor": "Remover cor",
+    "arrowVariant": "Tipo de linha",
+    "finishArrow": "Terminar linha (Enter)",
+    "selection": "Selecionado",
+    "objects": "Objetos",
+    "noObjects": "Sem objetos",
+    "size": "Tamanho",
+    "width": "Largura",
+    "height": "Altura",
+    "clubLogoCenter": "Logótipo do clube no centro",
+    "saveClubTheme": "Gravar cores no clube",
+    "courtThemeHint": "Edita as cores do campo nas definições do clube.",
+    "goToClubSettings": "Abrir definições do clube",
+    "courtTheme": "Cores do campo",
+    "courtCourt": "Fundo",
+    "courtKey": "Área restritiva",
+    "courtCenter": "Círculo central",
+    "number": "Número",
+    "rotation": "Rotação (°)",
+    "rotationHint": "0° aponta para cima. Também podes arrastar o triângulo azul no campo para rodar.",
+    "textLabel": "Texto",
+    "textMultilineHint": "Enter para quebrar linha.",
+    "fontSize": "Tamanho",
+    "dragToMove": "Arrasta no campo para mover",
+    "downloadSvg": "Descarregar SVG",
+    "changeOffenseColor": "Mudar cor ofensiva",
+    "changeDefenseColor": "Mudar cor defensiva",
+    "newOffenseColor": "Nova cor ofensiva (hex)",
+    "newDefenseColor": "Nova cor defensiva (hex)",
+    "changeLineColor": "Mudar cor das linhas",
+    "newLineColor": "Nova cor das linhas (hex)",
+    "linePointsHint": "Espaço para adicionar um ponto sob o rato · Alt-clique num ponto (ou −) para remover",
+    "tools": {
+      "select": "Selecionar",
+      "eraser": "Apagar",
+      "offense": "Atacante",
+      "defense": "Defensor",
+      "ball": "Bola",
+      "cone": "Cone",
+      "coach": "Treinador",
+      "text": "Texto",
+      "area": "Área (círculo/quadrado/triângulo)",
+      "movement": "Movimento",
+      "passing": "Passe",
+      "dribbling": "Drible",
+      "screen": "Bloqueio",
+      "line": "Linha",
+      "shooting": "Remate",
+      "handoff": "Handoff"
+    },
+    "variants": {
+      "movement": "Movimento",
+      "passing": "Passe",
+      "dribbling": "Drible",
+      "screen": "Bloqueio",
+      "line": "Linha"
+    }
+  },
+  "practice": {
+    "title": "Treinos",
+    "singular": "Treino",
+    "description": "Calendário de treinos e planos",
+    "add": "Adicionar Treino",
+    "edit": "Editar Treino",
+    "topic": "Tópico",
+    "subtitle": "Subtítulo",
+    "startTime": "Início",
+    "endTime": "Fim",
+    "offensiveGoals": "Objetivos Ofensivos",
+    "defensiveGoals": "Objetivos Defensivos",
+    "notes": "Notas",
+    "completed": "Plano concluído",
+    "attendance": {
+      "title": "Atletas Presentes",
+      "rosterTitle": "Assiduidade",
+      "playerCol": "Atleta",
+      "hasToAttend": "Tem de estar",
+      "attended": "Esteve presente",
+      "notAttended": "Não esteve presente",
+      "markAttended": "Marcar presente",
+      "markAbsent": "Marcar ausente",
+      "lateBy": "Atrasado",
+      "min": "min",
+      "reason": "Motivo",
+      "notePlaceholder": "Observações...",
+      "expectedCount": "Esperados: {{count}} de {{total}}",
+      "attendedCount": "Presentes: {{count}} de {{total}}",
+      "selectAll": "Selecionar Todos",
+      "deselectAll": "Desselecionar Todos",
+      "noAthletes": "A equipa não tem atletas associados",
+      "selectTeamFirst": "Selecione primeiro a equipa",
+      "reasons": {
+        "injured": "Lesionado",
+        "sick": "Doente",
+        "excused": "Dispensado",
+        "school": "Escola / Estudos",
+        "family": "Motivo familiar",
+        "work": "Trabalho",
+        "personal": "Motivo pessoal",
+        "unexcused": "Sem justificação",
+        "other": "Outro"
+      },
+      "settings": {
+        "title": "Motivos de falta",
+        "description": "Motivos disponíveis para os atletas ausentes. Os motivos por defeito podem ser renomeados.",
+        "addPlaceholder": "Novo motivo",
+        "deleteConfirm": "Eliminar o motivo \"{{name}}\"?"
+      }
+    },
+    "delete": {
+      "title": "Eliminar Treino",
+      "confirm": "Tem a certeza que quer eliminar o treino de {{date}}?",
+      "success": "Treino eliminado com sucesso",
+      "error": "Falha ao eliminar treino"
+    },
+    "copy": {
+      "button": "Duplicar",
+      "title": "Duplicar Treino",
+      "confirm": "Duplicar",
+      "sourceInfo": "A duplicar treino de {{team}} em {{date}}",
+      "copyItems": "Copiar itens do plano",
+      "copyAttendance": "Copiar presenças",
+      "success": "Treino duplicado com sucesso",
+      "error": "Falha ao duplicar treino"
+    },
+    "save": {
+      "createSuccess": "Treino criado com sucesso",
+      "updateSuccess": "Treino atualizado com sucesso",
+      "error": "Falha ao guardar treino"
+    },
+    "validation": {
+      "teamRequired": "A equipa é obrigatória",
+      "dateRequired": "A data é obrigatória",
+      "topicRequired": "O tópico é obrigatório",
+      "endBeforeStart": "A hora de fim tem de ser depois da hora de início"
+    },
+    "settings": {
+      "button": "Definições",
+      "title": "Definições de Treinos",
+      "description": "Define o estado por defeito da presença dos atletas de acordo com o género do escalão da equipa",
+      "defaultAll": "Todos selecionados",
+      "defaultNone": "Todos desselecionados",
+      "coed": "Misto",
+      "saveSuccess": "Definições guardadas com sucesso",
+      "saveError": "Falha ao guardar definições"
+    },
+    "items": {
+      "title": "Plano de Treino",
+      "add": "Adicionar item",
+      "addFreetext": "Texto livre",
+      "addDrill": "Adicionar exercício",
+      "pickDrill": "Escolher exercício",
+      "searchDrill": "Pesquisar na minha biblioteca...",
+      "remaining": "Restam {{minutes}} min",
+      "overBy": "Ultrapassa {{minutes}} min",
+      "empty": "Sem itens no plano. Adicione o primeiro para começar.",
+      "availableAfterSave": "Guarde o treino primeiro para poder adicionar itens ao plano.",
+      "time": "Tempo",
+      "min": "Min",
+      "details": "Detalhes",
+      "graphics": "Gráficos",
+      "moveUp": "Mover para cima",
+      "moveDown": "Mover para baixo",
+      "dragHint": "Arrastar para reordenar",
+      "titlePlaceholder": "Título...",
+      "detailsPlaceholder": "Descrição...",
+      "graphicCaptionPlaceholder": "Texto para esta imagem...",
+      "printFirstPage": "Imprimir na primeira página",
+      "printOtherPages": "Imprimir nas outras páginas",
+      "addSuccess": "Item adicionado",
+      "addError": "Falha ao adicionar item",
+      "saveError": "Falha ao guardar item",
+      "deleteSuccess": "Item removido",
+      "deleteError": "Falha ao remover item",
+      "reorderError": "Falha ao reordenar itens",
+      "types": {
+        "FREETEXT": "Texto livre",
+        "DRILL": "Exercício",
+        "PLAY": "Jogada",
+        "BREAKDOWN": "Breakdown",
+        "MY_DRILL": "Meu Exercício"
+      }
+    },
+    "groups": {
+      "title": "Grupos de treino",
+      "addGroup": "Adicionar grupo",
+      "numberOfGroups": "Número de grupos",
+      "playersPerGroup": "Atletas por grupo",
+      "groupName": "Grupo {{number}}",
+      "playerSlot": "Atleta {{number}}",
+      "selectPlayer": "Selecionar atleta",
+      "noAthletes": "Sem atletas disponíveis para criar grupos.",
+      "capacityWarning": "Capacidade atual: {{count}} de {{total}} atletas.",
+      "hint": "Cada atleta só pode ser escolhido uma vez entre os grupos.",
+      "groupSize": "Atletas nesta equipa",
+      "autoBalance": "Distribuir igualmente",
+      "assignedCount": "Atribuídos: {{count}} de {{total}}",
+      "capacityCount": "Capacidade: {{count}}",
+      "addSet": "Adicionar conjunto",
+      "setName": "Conjunto {{number}}",
+      "noSets": "Sem conjuntos. Crie o primeiro conjunto de equipas.",
+      "hintUnsaved": "Cada atleta só pode ser escolhido uma vez. Os grupos são guardados ao gravar o treino."
+    },
+    "cycleSummary": {
+      "title": "Ciclo atual",
+      "selectTeamFirst": "Selecione uma equipa para ver o ciclo atual.",
+      "noActive": "Nenhum ciclo ativo cobre esta data para a equipa escolhida.",
+      "macrocycle": "Macrociclo",
+      "mesocycle": "Mesociclo",
+      "microcycle": "Microciclo",
+      "noNotes": "Sem notas",
+      "dateRange": "{{start}} – {{end}}"
+    }
+  },
   "echelon": {
     "title": "Escalões",
     "singular": "Escalão",
@@ -192,7 +618,6 @@
       "minAgePositive": "A Idade mínima precisa de ser positiva"
     }
   },
-
   "athlete": {
     "title": "Atletas",
     "singular": "Atleta",
@@ -232,7 +657,6 @@
       "birthdateRequired": "Data de nascimento é obrigatória"
     }
   },
-
   "team": {
     "title": "Equipas",
     "plural": "Equipas",
@@ -258,11 +682,11 @@
       "error": "Falha ao eliminar equipa"
     }
   },
-
   "club": {
     "title": "Clubes",
     "singular": "Clube",
     "settings": "Definições do Clube",
+    "switch": "Trocar de clube",
     "create": "Criar Clube",
     "fetch": {
       "error": "Erro ao obter clubes"
@@ -280,6 +704,30 @@
     "foregroundColor": "Cor do Texto",
     "fpbClubId": "ID Clube FPB",
     "fpbClubIdHelper": "ID do clube no site da FPB (opcional)",
+    "appearance": {
+      "title": "Cores e aspeto do clube",
+      "brandSection": "Cores do clube",
+      "courtSection": "Aspeto do campo"
+    },
+    "courtTheme": {
+      "title": "Aspeto do campo",
+      "backgroundHint": "Escolhe um padrão ou define uma cor sólida para o piso.",
+      "backgroundColor": "Cor do piso",
+      "backgroundColorHint": "Deixa por escolher para usar o padrão selecionado.",
+      "lineColor": "Cor das linhas do campo",
+      "marginColor": "Cor de fora do campo",
+      "keyFill": "Área restritiva",
+      "centerFill": "Círculo central",
+      "showLogo": "Mostrar o símbolo do clube no círculo central",
+      "logoRotation": "Rotação do símbolo",
+      "patternDefault": "Madeira (padrão)",
+      "patterns": {
+        "wood": "Madeira",
+        "parquet": "Parquet",
+        "concrete": "Cimento",
+        "clay": "Barro"
+      }
+    },
     "save": {
       "createSuccess": "Clube criado com sucesso",
       "updateSuccess": "Clube guardado com sucesso",
@@ -292,7 +740,6 @@
       "invalidId": "ID de clube inválido na sessão"
     }
   },
-
   "opponent": {
     "title": "Adversários",
     "singular": "Adversário",
@@ -319,7 +766,6 @@
     "noVenues": "Sem pavilhões",
     "newVenue": "Novo Pavilhão"
   },
-
   "game": {
     "title": "Jogos",
     "singular": "Jogo",
@@ -336,6 +782,8 @@
     "updatedSuccess": "Jogo atualizado com sucesso",
     "deletedSuccess": "Jogo eliminado com sucesso",
     "home": "Casa",
+    "vs": "vs",
+    "awayShort": "(F)",
     "management": "Gestão de Jogos",
     "pageTitle": "Jogos",
     "pageDescription": "Gerir todos os jogos",
@@ -345,7 +793,6 @@
     "add": "Adicionar Jogo",
     "edit": "Editar Jogo",
     "id": "ID do Jogo",
-    "number": "Nº Jogo",
     "sheet": "Folha de jogo",
     "registrationSheet": "Ficha de Inscrição",
     "away": "Fora",
@@ -389,7 +836,6 @@
       "notFound": "O jogo não foi encontrado"
     }
   },
-
   "competition": {
     "title": "Competições",
     "singular": "Competição",
@@ -406,7 +852,6 @@
     "fpbId": "ID Competição FPB",
     "fpbSerieId": "ID Série FPB"
   },
-
   "season": {
     "title": "Épocas",
     "management": "Gestão das Épocas",
@@ -460,7 +905,6 @@
       "formRequired": "Nome, data de início e data de fim são obrigatórios"
     }
   },
-
   "venue": {
     "title": "Pavilhões",
     "singular": "Pavilhão",
@@ -468,7 +912,6 @@
     "add": "Adicionar Pavilhão",
     "new": "Novo Pavilhão"
   },
-
   "staff": {
     "title": "Equipa Técnica",
     "singular": "Membro",
@@ -494,9 +937,9 @@
       "fetchError": "Falha ao obter contas disponíveis"
     }
   },
-
   "cycles": {
     "title": "Ciclos",
+    "description": "Planeamento de Macrociclos, Mesociclos e Microciclos",
     "macrocycle": {
       "title": "Macrociclos",
       "singular": "Macrociclo",
@@ -521,8 +964,10 @@
         "error": "Erro ao apagar macrociclo"
       },
       "validation": {
-        "datesRequired": "Data de início e data de fim são obrigatórias"
-      }
+        "datesRequired": "Data de início e data de fim são obrigatórias",
+        "teamRequired": "A equipa é obrigatória"
+      },
+      "noTeam": "Sem equipa"
     },
     "mesocycle": {
       "title": "Mesociclos",
@@ -577,7 +1022,6 @@
       }
     }
   },
-
   "account": {
     "management": "Gestão de Contas",
     "manage": "Gerir contas",
@@ -614,7 +1058,6 @@
       "removeNetworkError": "Erro ao remover a conta do clube: {{error}}"
     }
   },
-
   "profile": {
     "title": "Perfil do Utilizador",
     "my": "O meu perfil",
@@ -630,6 +1073,8 @@
     "update": "Atualizar Perfil",
     "passwordMismatch": "As passwords não coincidem",
     "selectedClub": "Clube selecionado (ID)",
+    "currentClub": "Clube atual",
+    "language": "Idioma",
     "currentLanguage": "Idioma atual",
     "languagePortuguese": "Português",
     "languageEnglish": "Inglês",
@@ -648,7 +1093,6 @@
     "updateError": "Erro ao atualizar perfil",
     "updatedSuccess": "Perfil atualizado com sucesso"
   },
-
   "deploy": {
     "title": "Deploy e Atualizações",
     "statusTitle": "Estado Atual",
@@ -689,7 +1133,6 @@
     "lastCommitInProduction": "Último commit em produção",
     "streamNotAvailable": "Stream não disponível"
   },
-
   "fpb": {
     "clubId": "ID Clube FPB",
     "teamId": "ID Equipa FPB",
@@ -700,7 +1143,6 @@
     "getInfos": "Obter Infos",
     "linked": "Ligado à FPB"
   },
-
   "equipment": {
     "title": "Equipamentos",
     "managementTitle": "Gestão de Equipamentos",
@@ -790,7 +1232,6 @@
       "confirmMessage": "Tem a certeza que pretende eliminar este equipamento?"
     }
   },
-
   "validation": {
     "nameRequired": "O Nome é obrigatório",
     "nameMaxLength": "O Nome não pode exceder os 50 carateres",
@@ -814,7 +1255,6 @@
     "echelonIdPositive": "O ID do escalão tem de ser positivo",
     "imageInvalid": "Imagem inválida"
   },
-
   "email": {
     "settings": {
       "title": "Servidor de Email (SMTP)",
@@ -873,7 +1313,6 @@
     },
     "saveClubFirst": "Guarda primeiro o clube para configurar o servidor de email."
   },
-
   "fpbImport": {
     "title": "Importar jogos da FPB",
     "button": "Importar da FPB",

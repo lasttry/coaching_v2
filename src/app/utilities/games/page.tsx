@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSession } from 'next-auth/react';
 import {
   Box,
@@ -42,9 +42,11 @@ import EventIcon from '@mui/icons-material/Event';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { GameInterface } from '@/types/game/types';
-import { log } from '@/lib/logger';
+import { useGames, useSaveGame, useDeleteGame, gamesKeys } from '@/hooks/useGames';
+import { useQueryClient } from '@tanstack/react-query';
 import GameComponent from './components/Game';
 import FpbImportDialog from './components/FpbImportDialog';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import {
   generatePDF,
@@ -64,8 +66,11 @@ const GamesPage: React.FC = () => {
 
   const { data: session } = useSession();
 
-  const [games, setGames] = useState<GameInterface[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const queryClient = useQueryClient();
+  const { data: games = [], isLoading: loading, error: gamesError } = useGames();
+  const saveGameMutation = useSaveGame();
+  const deleteGameMutation = useDeleteGame();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
@@ -86,6 +91,13 @@ const GamesPage: React.FC = () => {
     gameAthletes: [],
     clubId: 0,
   });
+
+  // Snapshot dirty tracking for the add/edit game dialogs. We compare the
+  // entire current game state against the value captured when the dialog
+  // opened so the discard prompt fires for any kind of edit (athletes,
+  // equipment, scores, ...).
+  const isAddGameDirty = useFormSnapshotDirty(openAddDialog, newGame);
+  const isEditGameDirty = useFormSnapshotDirty(!!editGame, editGame);
 
   // Get unique teams with game counts
   const teamsWithCounts = useMemo(() => {
@@ -187,87 +199,50 @@ const GamesPage: React.FC = () => {
     setInitialExpandDone(true);
   }, [filteredGames, initialExpandDone, selectedTeamId, t]);
 
-  const fetchGames = useCallback(async (): Promise<void> => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/games');
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || 'Failed to fetch games');
-      setGames(
-        data.games.sort(
-          (a: GameInterface, b: GameInterface) =>
-            new Date(b.date).getTime() - new Date(a.date).getTime()
-        )
-      );
-    } catch (err) {
-      log.error('Error fetching games:', err);
-      setErrorMessage(t('game.fetch.error'));
-    } finally {
-      setLoading(false);
-    }
-  }, [t]);
-
   useEffect(() => {
-    fetchGames();
-  }, [fetchGames]);
-
-  const handleDeleteGame = async (id: number): Promise<void> => {
-    try {
-      const res = await fetch(`/api/games/${id}`, { method: 'DELETE' });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error);
-
-      setSuccessMessage(t('game.delete.success'));
-      fetchGames();
-    } catch (err) {
-      log.error('Error deleting game:', err);
-      setErrorMessage(t('game.delete.error'));
+    if (gamesError) {
+      setErrorMessage((gamesError as Error).message || t('game.fetch.error'));
     }
+  }, [gamesError, t]);
+
+  const handleDeleteGame = (id: number): void => {
+    deleteGameMutation.mutate(id, {
+      onSuccess: () => setSuccessMessage(t('game.delete.success')),
+      onError: (err) => setErrorMessage((err as Error).message || t('game.delete.error')),
+    });
   };
 
   const handleAddGame = async (game: GameInterface): Promise<void> => {
-    try {
-      const res = await fetch('/api/games', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(game),
+    await new Promise<void>((resolve) => {
+      saveGameMutation.mutate(game, {
+        onSuccess: () => {
+          setSuccessMessage(t('game.save.addSuccess'));
+          setOpenAddDialog(false);
+          setNewGame({ id: null, date: new Date(), away: false, gameAthletes: [], clubId: 0 });
+          resolve();
+        },
+        onError: (err) => {
+          setErrorMessage((err as Error).message || t('game.save.createError'));
+          resolve();
+        },
       });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || 'Failed to save game');
-      setSuccessMessage(t('game.save.addSuccess'));
-
-      // reset state
-      setOpenAddDialog(false);
-      setNewGame({ id: null, date: new Date(), away: false, gameAthletes: [], clubId: 0 });
-
-      fetchGames();
-    } catch (err) {
-      log.error('Error creating game:', err);
-      setErrorMessage(t('game.save.createError'));
-    }
+    });
   };
 
   const handleUpdateGame = async (game: GameInterface): Promise<void> => {
-    try {
-      const res = await fetch(`/api/games/${game.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(game),
+    await new Promise<void>((resolve) => {
+      saveGameMutation.mutate(game, {
+        onSuccess: () => {
+          setSuccessMessage(t('game.save.updateSuccess'));
+          setEditGame(null);
+          resolve();
+        },
+        onError: (err) => {
+          setErrorMessage((err as Error).message || t('game.save.updateError'));
+          resolve();
+        },
       });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || 'Failed to update game');
-      setSuccessMessage(t('game.save.updateSuccess'));
-
-      setEditGame(null); // fecha dialog
-      fetchGames(); // refaz lista
-    } catch (err) {
-      log.error('Error updating game:', err);
-      setErrorMessage(t('game.save.updateError'));
-    }
+    });
   };
 
   const getGameCount = (competitionName: string): number => {
@@ -557,22 +532,34 @@ const GamesPage: React.FC = () => {
       </Dialog>
 
       {/* Add Game Dialog */}
-      <Dialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} maxWidth="md" fullWidth>
+      <GuardedDialog
+        open={openAddDialog}
+        onClose={() => setOpenAddDialog(false)}
+        isDirty={isAddGameDirty}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle>{t('game.add')}</DialogTitle>
         <DialogContent>
           <GameComponent
             game={newGame}
-            setGame={setNewGame} // ✅ agora o state é real
+            setGame={setNewGame}
             setErrorMessage={setErrorMessage}
             setSuccessMessage={setSuccessMessage}
             onSave={handleAddGame}
             onCancel={() => setOpenAddDialog(false)}
           />
         </DialogContent>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Edit Game Dialog */}
-      <Dialog open={!!editGame} onClose={() => setEditGame(null)} maxWidth="md" fullWidth>
+      <GuardedDialog
+        open={!!editGame}
+        onClose={() => setEditGame(null)}
+        isDirty={isEditGameDirty}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle>{t('game.edit')}</DialogTitle>
         <DialogContent>
           {editGame && (
@@ -587,7 +574,7 @@ const GamesPage: React.FC = () => {
             />
           )}
         </DialogContent>
-      </Dialog>
+      </GuardedDialog>
 
       {/* PDF Color Selection Menu */}
       <Menu
@@ -653,7 +640,7 @@ const GamesPage: React.FC = () => {
         teamName={teamsWithCounts.find((x) => x.id === selectedTeamId)?.name}
         onClose={() => setFpbImportOpen(false)}
         onImported={() => {
-          fetchGames();
+          void queryClient.invalidateQueries({ queryKey: gamesKeys.list() });
         }}
       />
     </Box>

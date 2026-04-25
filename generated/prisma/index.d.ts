@@ -84,6 +84,28 @@ export type Objective = $Result.DefaultSelection<Prisma.$ObjectivePayload>
  */
 export type Drill = $Result.DefaultSelection<Prisma.$DrillPayload>
 /**
+ * Model DrillGraphic
+ * 
+ */
+export type DrillGraphic = $Result.DefaultSelection<Prisma.$DrillGraphicPayload>
+/**
+ * Model DrillTopic
+ * Drill topic / category. Every topic belongs to a club — the defaults
+ * are auto-seeded the first time a club's topics are read, and club
+ * admins are free to add/rename/delete additional ones.
+ * 
+ * `key` is a stable identifier only present on seeded defaults, so the
+ * UI can localise their name (e.g. `drill.topicNames.transition`).
+ * Admin-created topics have `key = null` and the raw `name` is shown
+ * verbatim.
+ */
+export type DrillTopic = $Result.DefaultSelection<Prisma.$DrillTopicPayload>
+/**
+ * Model DrillTopicLink
+ * 
+ */
+export type DrillTopicLink = $Result.DefaultSelection<Prisma.$DrillTopicLinkPayload>
+/**
  * Model Echelon
  * 
  */
@@ -180,6 +202,33 @@ export type Alert = $Result.DefaultSelection<Prisma.$AlertPayload>
  * 
  */
 export type AlertRecipient = $Result.DefaultSelection<Prisma.$AlertRecipientPayload>
+/**
+ * Model Practice
+ * 
+ */
+export type Practice = $Result.DefaultSelection<Prisma.$PracticePayload>
+/**
+ * Model PracticeItem
+ * 
+ */
+export type PracticeItem = $Result.DefaultSelection<Prisma.$PracticeItemPayload>
+/**
+ * Model PracticeAthlete
+ * 
+ */
+export type PracticeAthlete = $Result.DefaultSelection<Prisma.$PracticeAthletePayload>
+/**
+ * Model ClubAttendanceReason
+ * Club-scoped list of pre-canned reasons for absence. Seeded with a
+ * default set (Injured / Sick / Unexcused / Other) the first time it is
+ * read; clubs can add, rename and remove entries.
+ */
+export type ClubAttendanceReason = $Result.DefaultSelection<Prisma.$ClubAttendanceReasonPayload>
+/**
+ * Model ClubPracticeSettings
+ * 
+ */
+export type ClubPracticeSettings = $Result.DefaultSelection<Prisma.$ClubPracticeSettingsPayload>
 
 /**
  * Enums
@@ -303,6 +352,25 @@ export const AlertRecipientStatus: {
 
 export type AlertRecipientStatus = (typeof AlertRecipientStatus)[keyof typeof AlertRecipientStatus]
 
+
+export const AttendanceDefault: {
+  ALL: 'ALL',
+  NONE: 'NONE'
+};
+
+export type AttendanceDefault = (typeof AttendanceDefault)[keyof typeof AttendanceDefault]
+
+
+export const PracticeItemType: {
+  FREETEXT: 'FREETEXT',
+  DRILL: 'DRILL',
+  PLAY: 'PLAY',
+  BREAKDOWN: 'BREAKDOWN',
+  MY_DRILL: 'MY_DRILL'
+};
+
+export type PracticeItemType = (typeof PracticeItemType)[keyof typeof PracticeItemType]
+
 }
 
 export type IdType = $Enums.IdType
@@ -352,6 +420,14 @@ export const AlertCategory: typeof $Enums.AlertCategory
 export type AlertRecipientStatus = $Enums.AlertRecipientStatus
 
 export const AlertRecipientStatus: typeof $Enums.AlertRecipientStatus
+
+export type AttendanceDefault = $Enums.AttendanceDefault
+
+export const AttendanceDefault: typeof $Enums.AttendanceDefault
+
+export type PracticeItemType = $Enums.PracticeItemType
+
+export const PracticeItemType: typeof $Enums.PracticeItemType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -466,7 +542,7 @@ export class PrismaClient<
    * 
    * Read more in our [docs](https://www.prisma.io/docs/orm/prisma-client/queries/transactions).
    */
-  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
+  $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
 
   $transaction<R>(fn: (prisma: Omit<PrismaClient, runtime.ITXClientDenyList>) => $Utils.JsPromise<R>, options?: { maxWait?: number, timeout?: number, isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<R>
 
@@ -613,6 +689,36 @@ export class PrismaClient<
     * ```
     */
   get drill(): Prisma.DrillDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.drillGraphic`: Exposes CRUD operations for the **DrillGraphic** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DrillGraphics
+    * const drillGraphics = await prisma.drillGraphic.findMany()
+    * ```
+    */
+  get drillGraphic(): Prisma.DrillGraphicDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.drillTopic`: Exposes CRUD operations for the **DrillTopic** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DrillTopics
+    * const drillTopics = await prisma.drillTopic.findMany()
+    * ```
+    */
+  get drillTopic(): Prisma.DrillTopicDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.drillTopicLink`: Exposes CRUD operations for the **DrillTopicLink** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more DrillTopicLinks
+    * const drillTopicLinks = await prisma.drillTopicLink.findMany()
+    * ```
+    */
+  get drillTopicLink(): Prisma.DrillTopicLinkDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.echelon`: Exposes CRUD operations for the **Echelon** model.
@@ -803,6 +909,56 @@ export class PrismaClient<
     * ```
     */
   get alertRecipient(): Prisma.AlertRecipientDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.practice`: Exposes CRUD operations for the **Practice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Practices
+    * const practices = await prisma.practice.findMany()
+    * ```
+    */
+  get practice(): Prisma.PracticeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.practiceItem`: Exposes CRUD operations for the **PracticeItem** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PracticeItems
+    * const practiceItems = await prisma.practiceItem.findMany()
+    * ```
+    */
+  get practiceItem(): Prisma.PracticeItemDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.practiceAthlete`: Exposes CRUD operations for the **PracticeAthlete** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PracticeAthletes
+    * const practiceAthletes = await prisma.practiceAthlete.findMany()
+    * ```
+    */
+  get practiceAthlete(): Prisma.PracticeAthleteDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.clubAttendanceReason`: Exposes CRUD operations for the **ClubAttendanceReason** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClubAttendanceReasons
+    * const clubAttendanceReasons = await prisma.clubAttendanceReason.findMany()
+    * ```
+    */
+  get clubAttendanceReason(): Prisma.ClubAttendanceReasonDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.clubPracticeSettings`: Exposes CRUD operations for the **ClubPracticeSettings** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ClubPracticeSettings
+    * const clubPracticeSettings = await prisma.clubPracticeSettings.findMany()
+    * ```
+    */
+  get clubPracticeSettings(): Prisma.ClubPracticeSettingsDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -853,8 +1009,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 7.7.0
-   * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
+   * Prisma Client JS version: 7.8.0
+   * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
    */
   export type PrismaVersion = {
     client: string
@@ -1251,6 +1407,9 @@ export namespace Prisma {
     SessionGoal: 'SessionGoal',
     Objective: 'Objective',
     Drill: 'Drill',
+    DrillGraphic: 'DrillGraphic',
+    DrillTopic: 'DrillTopic',
+    DrillTopicLink: 'DrillTopicLink',
     Echelon: 'Echelon',
     Club: 'Club',
     ClubEmailSettings: 'ClubEmailSettings',
@@ -1269,7 +1428,12 @@ export namespace Prisma {
     Equipment: 'Equipment',
     GameEquipment: 'GameEquipment',
     Alert: 'Alert',
-    AlertRecipient: 'AlertRecipient'
+    AlertRecipient: 'AlertRecipient',
+    Practice: 'Practice',
+    PracticeItem: 'PracticeItem',
+    PracticeAthlete: 'PracticeAthlete',
+    ClubAttendanceReason: 'ClubAttendanceReason',
+    ClubPracticeSettings: 'ClubPracticeSettings'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1285,7 +1449,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "athlete" | "gameAthlete" | "game" | "opponent" | "account" | "statistic" | "timeEntry" | "athleteReport" | "macrocycle" | "mesocycle" | "microcycle" | "sessionGoal" | "objective" | "drill" | "echelon" | "club" | "clubEmailSettings" | "season" | "venue" | "accountClub" | "accountClubRole" | "team" | "teamAthlete" | "staff" | "teamStaff" | "competition" | "competitionSerie" | "athletePreferredNumber" | "equipmentColor" | "equipment" | "gameEquipment" | "alert" | "alertRecipient"
+      modelProps: "athlete" | "gameAthlete" | "game" | "opponent" | "account" | "statistic" | "timeEntry" | "athleteReport" | "macrocycle" | "mesocycle" | "microcycle" | "sessionGoal" | "objective" | "drill" | "drillGraphic" | "drillTopic" | "drillTopicLink" | "echelon" | "club" | "clubEmailSettings" | "season" | "venue" | "accountClub" | "accountClubRole" | "team" | "teamAthlete" | "staff" | "teamStaff" | "competition" | "competitionSerie" | "athletePreferredNumber" | "equipmentColor" | "equipment" | "gameEquipment" | "alert" | "alertRecipient" | "practice" | "practiceItem" | "practiceAthlete" | "clubAttendanceReason" | "clubPracticeSettings"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -2322,6 +2486,228 @@ export namespace Prisma {
           count: {
             args: Prisma.DrillCountArgs<ExtArgs>
             result: $Utils.Optional<DrillCountAggregateOutputType> | number
+          }
+        }
+      }
+      DrillGraphic: {
+        payload: Prisma.$DrillGraphicPayload<ExtArgs>
+        fields: Prisma.DrillGraphicFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DrillGraphicFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DrillGraphicFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>
+          }
+          findFirst: {
+            args: Prisma.DrillGraphicFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DrillGraphicFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>
+          }
+          findMany: {
+            args: Prisma.DrillGraphicFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>[]
+          }
+          create: {
+            args: Prisma.DrillGraphicCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>
+          }
+          createMany: {
+            args: Prisma.DrillGraphicCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DrillGraphicCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>[]
+          }
+          delete: {
+            args: Prisma.DrillGraphicDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>
+          }
+          update: {
+            args: Prisma.DrillGraphicUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>
+          }
+          deleteMany: {
+            args: Prisma.DrillGraphicDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DrillGraphicUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DrillGraphicUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>[]
+          }
+          upsert: {
+            args: Prisma.DrillGraphicUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillGraphicPayload>
+          }
+          aggregate: {
+            args: Prisma.DrillGraphicAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDrillGraphic>
+          }
+          groupBy: {
+            args: Prisma.DrillGraphicGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DrillGraphicGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DrillGraphicCountArgs<ExtArgs>
+            result: $Utils.Optional<DrillGraphicCountAggregateOutputType> | number
+          }
+        }
+      }
+      DrillTopic: {
+        payload: Prisma.$DrillTopicPayload<ExtArgs>
+        fields: Prisma.DrillTopicFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DrillTopicFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DrillTopicFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>
+          }
+          findFirst: {
+            args: Prisma.DrillTopicFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DrillTopicFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>
+          }
+          findMany: {
+            args: Prisma.DrillTopicFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>[]
+          }
+          create: {
+            args: Prisma.DrillTopicCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>
+          }
+          createMany: {
+            args: Prisma.DrillTopicCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DrillTopicCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>[]
+          }
+          delete: {
+            args: Prisma.DrillTopicDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>
+          }
+          update: {
+            args: Prisma.DrillTopicUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>
+          }
+          deleteMany: {
+            args: Prisma.DrillTopicDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DrillTopicUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DrillTopicUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>[]
+          }
+          upsert: {
+            args: Prisma.DrillTopicUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicPayload>
+          }
+          aggregate: {
+            args: Prisma.DrillTopicAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDrillTopic>
+          }
+          groupBy: {
+            args: Prisma.DrillTopicGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DrillTopicGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DrillTopicCountArgs<ExtArgs>
+            result: $Utils.Optional<DrillTopicCountAggregateOutputType> | number
+          }
+        }
+      }
+      DrillTopicLink: {
+        payload: Prisma.$DrillTopicLinkPayload<ExtArgs>
+        fields: Prisma.DrillTopicLinkFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.DrillTopicLinkFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.DrillTopicLinkFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>
+          }
+          findFirst: {
+            args: Prisma.DrillTopicLinkFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.DrillTopicLinkFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>
+          }
+          findMany: {
+            args: Prisma.DrillTopicLinkFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>[]
+          }
+          create: {
+            args: Prisma.DrillTopicLinkCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>
+          }
+          createMany: {
+            args: Prisma.DrillTopicLinkCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.DrillTopicLinkCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>[]
+          }
+          delete: {
+            args: Prisma.DrillTopicLinkDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>
+          }
+          update: {
+            args: Prisma.DrillTopicLinkUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>
+          }
+          deleteMany: {
+            args: Prisma.DrillTopicLinkDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.DrillTopicLinkUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.DrillTopicLinkUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>[]
+          }
+          upsert: {
+            args: Prisma.DrillTopicLinkUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$DrillTopicLinkPayload>
+          }
+          aggregate: {
+            args: Prisma.DrillTopicLinkAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateDrillTopicLink>
+          }
+          groupBy: {
+            args: Prisma.DrillTopicLinkGroupByArgs<ExtArgs>
+            result: $Utils.Optional<DrillTopicLinkGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.DrillTopicLinkCountArgs<ExtArgs>
+            result: $Utils.Optional<DrillTopicLinkCountAggregateOutputType> | number
           }
         }
       }
@@ -3731,6 +4117,376 @@ export namespace Prisma {
           }
         }
       }
+      Practice: {
+        payload: Prisma.$PracticePayload<ExtArgs>
+        fields: Prisma.PracticeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PracticeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PracticeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>
+          }
+          findFirst: {
+            args: Prisma.PracticeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PracticeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>
+          }
+          findMany: {
+            args: Prisma.PracticeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>[]
+          }
+          create: {
+            args: Prisma.PracticeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>
+          }
+          createMany: {
+            args: Prisma.PracticeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PracticeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>[]
+          }
+          delete: {
+            args: Prisma.PracticeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>
+          }
+          update: {
+            args: Prisma.PracticeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>
+          }
+          deleteMany: {
+            args: Prisma.PracticeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PracticeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PracticeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>[]
+          }
+          upsert: {
+            args: Prisma.PracticeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticePayload>
+          }
+          aggregate: {
+            args: Prisma.PracticeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePractice>
+          }
+          groupBy: {
+            args: Prisma.PracticeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PracticeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PracticeCountArgs<ExtArgs>
+            result: $Utils.Optional<PracticeCountAggregateOutputType> | number
+          }
+        }
+      }
+      PracticeItem: {
+        payload: Prisma.$PracticeItemPayload<ExtArgs>
+        fields: Prisma.PracticeItemFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PracticeItemFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PracticeItemFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>
+          }
+          findFirst: {
+            args: Prisma.PracticeItemFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PracticeItemFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>
+          }
+          findMany: {
+            args: Prisma.PracticeItemFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>[]
+          }
+          create: {
+            args: Prisma.PracticeItemCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>
+          }
+          createMany: {
+            args: Prisma.PracticeItemCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PracticeItemCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>[]
+          }
+          delete: {
+            args: Prisma.PracticeItemDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>
+          }
+          update: {
+            args: Prisma.PracticeItemUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>
+          }
+          deleteMany: {
+            args: Prisma.PracticeItemDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PracticeItemUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PracticeItemUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>[]
+          }
+          upsert: {
+            args: Prisma.PracticeItemUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeItemPayload>
+          }
+          aggregate: {
+            args: Prisma.PracticeItemAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePracticeItem>
+          }
+          groupBy: {
+            args: Prisma.PracticeItemGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PracticeItemGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PracticeItemCountArgs<ExtArgs>
+            result: $Utils.Optional<PracticeItemCountAggregateOutputType> | number
+          }
+        }
+      }
+      PracticeAthlete: {
+        payload: Prisma.$PracticeAthletePayload<ExtArgs>
+        fields: Prisma.PracticeAthleteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PracticeAthleteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PracticeAthleteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>
+          }
+          findFirst: {
+            args: Prisma.PracticeAthleteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PracticeAthleteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>
+          }
+          findMany: {
+            args: Prisma.PracticeAthleteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>[]
+          }
+          create: {
+            args: Prisma.PracticeAthleteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>
+          }
+          createMany: {
+            args: Prisma.PracticeAthleteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PracticeAthleteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>[]
+          }
+          delete: {
+            args: Prisma.PracticeAthleteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>
+          }
+          update: {
+            args: Prisma.PracticeAthleteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>
+          }
+          deleteMany: {
+            args: Prisma.PracticeAthleteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PracticeAthleteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PracticeAthleteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>[]
+          }
+          upsert: {
+            args: Prisma.PracticeAthleteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PracticeAthletePayload>
+          }
+          aggregate: {
+            args: Prisma.PracticeAthleteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePracticeAthlete>
+          }
+          groupBy: {
+            args: Prisma.PracticeAthleteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PracticeAthleteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PracticeAthleteCountArgs<ExtArgs>
+            result: $Utils.Optional<PracticeAthleteCountAggregateOutputType> | number
+          }
+        }
+      }
+      ClubAttendanceReason: {
+        payload: Prisma.$ClubAttendanceReasonPayload<ExtArgs>
+        fields: Prisma.ClubAttendanceReasonFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClubAttendanceReasonFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClubAttendanceReasonFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>
+          }
+          findFirst: {
+            args: Prisma.ClubAttendanceReasonFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClubAttendanceReasonFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>
+          }
+          findMany: {
+            args: Prisma.ClubAttendanceReasonFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>[]
+          }
+          create: {
+            args: Prisma.ClubAttendanceReasonCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>
+          }
+          createMany: {
+            args: Prisma.ClubAttendanceReasonCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClubAttendanceReasonCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>[]
+          }
+          delete: {
+            args: Prisma.ClubAttendanceReasonDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>
+          }
+          update: {
+            args: Prisma.ClubAttendanceReasonUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClubAttendanceReasonDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClubAttendanceReasonUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClubAttendanceReasonUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClubAttendanceReasonUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubAttendanceReasonPayload>
+          }
+          aggregate: {
+            args: Prisma.ClubAttendanceReasonAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClubAttendanceReason>
+          }
+          groupBy: {
+            args: Prisma.ClubAttendanceReasonGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClubAttendanceReasonGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClubAttendanceReasonCountArgs<ExtArgs>
+            result: $Utils.Optional<ClubAttendanceReasonCountAggregateOutputType> | number
+          }
+        }
+      }
+      ClubPracticeSettings: {
+        payload: Prisma.$ClubPracticeSettingsPayload<ExtArgs>
+        fields: Prisma.ClubPracticeSettingsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ClubPracticeSettingsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ClubPracticeSettingsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>
+          }
+          findFirst: {
+            args: Prisma.ClubPracticeSettingsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ClubPracticeSettingsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>
+          }
+          findMany: {
+            args: Prisma.ClubPracticeSettingsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>[]
+          }
+          create: {
+            args: Prisma.ClubPracticeSettingsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>
+          }
+          createMany: {
+            args: Prisma.ClubPracticeSettingsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ClubPracticeSettingsCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>[]
+          }
+          delete: {
+            args: Prisma.ClubPracticeSettingsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>
+          }
+          update: {
+            args: Prisma.ClubPracticeSettingsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>
+          }
+          deleteMany: {
+            args: Prisma.ClubPracticeSettingsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ClubPracticeSettingsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ClubPracticeSettingsUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>[]
+          }
+          upsert: {
+            args: Prisma.ClubPracticeSettingsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ClubPracticeSettingsPayload>
+          }
+          aggregate: {
+            args: Prisma.ClubPracticeSettingsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateClubPracticeSettings>
+          }
+          groupBy: {
+            args: Prisma.ClubPracticeSettingsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ClubPracticeSettingsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ClubPracticeSettingsCountArgs<ExtArgs>
+            result: $Utils.Optional<ClubPracticeSettingsCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -3853,6 +4609,9 @@ export namespace Prisma {
     sessionGoal?: SessionGoalOmit
     objective?: ObjectiveOmit
     drill?: DrillOmit
+    drillGraphic?: DrillGraphicOmit
+    drillTopic?: DrillTopicOmit
+    drillTopicLink?: DrillTopicLinkOmit
     echelon?: EchelonOmit
     club?: ClubOmit
     clubEmailSettings?: ClubEmailSettingsOmit
@@ -3872,6 +4631,11 @@ export namespace Prisma {
     gameEquipment?: GameEquipmentOmit
     alert?: AlertOmit
     alertRecipient?: AlertRecipientOmit
+    practice?: PracticeOmit
+    practiceItem?: PracticeItemOmit
+    practiceAthlete?: PracticeAthleteOmit
+    clubAttendanceReason?: ClubAttendanceReasonOmit
+    clubPracticeSettings?: ClubPracticeSettingsOmit
   }
 
   /* Types for Logging */
@@ -3960,6 +4724,7 @@ export namespace Prisma {
     teams: number
     preferredNumbers: number
     gameEquipments: number
+    practiceAttendances: number
   }
 
   export type AthleteCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3971,6 +4736,7 @@ export namespace Prisma {
     teams?: boolean | AthleteCountOutputTypeCountTeamsArgs
     preferredNumbers?: boolean | AthleteCountOutputTypeCountPreferredNumbersArgs
     gameEquipments?: boolean | AthleteCountOutputTypeCountGameEquipmentsArgs
+    practiceAttendances?: boolean | AthleteCountOutputTypeCountPracticeAttendancesArgs
   }
 
   // Custom InputTypes
@@ -4038,6 +4804,13 @@ export namespace Prisma {
    */
   export type AthleteCountOutputTypeCountGameEquipmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GameEquipmentWhereInput
+  }
+
+  /**
+   * AthleteCountOutputType without action
+   */
+  export type AthleteCountOutputTypeCountPracticeAttendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeAthleteWhereInput
   }
 
 
@@ -4165,12 +4938,14 @@ export namespace Prisma {
     clubs: number
     staffProfiles: number
     alertRecipients: number
+    drills: number
   }
 
   export type AccountCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     clubs?: boolean | AccountCountOutputTypeCountClubsArgs
     staffProfiles?: boolean | AccountCountOutputTypeCountStaffProfilesArgs
     alertRecipients?: boolean | AccountCountOutputTypeCountAlertRecipientsArgs
+    drills?: boolean | AccountCountOutputTypeCountDrillsArgs
   }
 
   // Custom InputTypes
@@ -4203,6 +4978,13 @@ export namespace Prisma {
    */
   export type AccountCountOutputTypeCountAlertRecipientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AlertRecipientWhereInput
+  }
+
+  /**
+   * AccountCountOutputType without action
+   */
+  export type AccountCountOutputTypeCountDrillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillWhereInput
   }
 
 
@@ -4300,6 +5082,86 @@ export namespace Prisma {
 
 
   /**
+   * Count Type DrillCountOutputType
+   */
+
+  export type DrillCountOutputType = {
+    graphics: number
+    topics: number
+    practiceItems: number
+  }
+
+  export type DrillCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    graphics?: boolean | DrillCountOutputTypeCountGraphicsArgs
+    topics?: boolean | DrillCountOutputTypeCountTopicsArgs
+    practiceItems?: boolean | DrillCountOutputTypeCountPracticeItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DrillCountOutputType without action
+   */
+  export type DrillCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillCountOutputType
+     */
+    select?: DrillCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DrillCountOutputType without action
+   */
+  export type DrillCountOutputTypeCountGraphicsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillGraphicWhereInput
+  }
+
+  /**
+   * DrillCountOutputType without action
+   */
+  export type DrillCountOutputTypeCountTopicsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillTopicLinkWhereInput
+  }
+
+  /**
+   * DrillCountOutputType without action
+   */
+  export type DrillCountOutputTypeCountPracticeItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeItemWhereInput
+  }
+
+
+  /**
+   * Count Type DrillTopicCountOutputType
+   */
+
+  export type DrillTopicCountOutputType = {
+    drills: number
+  }
+
+  export type DrillTopicCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    drills?: boolean | DrillTopicCountOutputTypeCountDrillsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * DrillTopicCountOutputType without action
+   */
+  export type DrillTopicCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicCountOutputType
+     */
+    select?: DrillTopicCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * DrillTopicCountOutputType without action
+   */
+  export type DrillTopicCountOutputTypeCountDrillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillTopicLinkWhereInput
+  }
+
+
+  /**
    * Count Type EchelonCountOutputType
    */
 
@@ -4307,12 +5169,14 @@ export namespace Prisma {
     teams: number
     competitions: number
     equipmentColors: number
+    drills: number
   }
 
   export type EchelonCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     teams?: boolean | EchelonCountOutputTypeCountTeamsArgs
     competitions?: boolean | EchelonCountOutputTypeCountCompetitionsArgs
     equipmentColors?: boolean | EchelonCountOutputTypeCountEquipmentColorsArgs
+    drills?: boolean | EchelonCountOutputTypeCountDrillsArgs
   }
 
   // Custom InputTypes
@@ -4347,6 +5211,13 @@ export namespace Prisma {
     where?: EquipmentColorWhereInput
   }
 
+  /**
+   * EchelonCountOutputType without action
+   */
+  export type EchelonCountOutputTypeCountDrillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillWhereInput
+  }
+
 
   /**
    * Count Type ClubCountOutputType
@@ -4362,6 +5233,10 @@ export namespace Prisma {
     equipmentColors: number
     staff: number
     alerts: number
+    practices: number
+    attendanceReasons: number
+    drills: number
+    drillTopics: number
   }
 
   export type ClubCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4374,6 +5249,10 @@ export namespace Prisma {
     equipmentColors?: boolean | ClubCountOutputTypeCountEquipmentColorsArgs
     staff?: boolean | ClubCountOutputTypeCountStaffArgs
     alerts?: boolean | ClubCountOutputTypeCountAlertsArgs
+    practices?: boolean | ClubCountOutputTypeCountPracticesArgs
+    attendanceReasons?: boolean | ClubCountOutputTypeCountAttendanceReasonsArgs
+    drills?: boolean | ClubCountOutputTypeCountDrillsArgs
+    drillTopics?: boolean | ClubCountOutputTypeCountDrillTopicsArgs
   }
 
   // Custom InputTypes
@@ -4448,6 +5327,34 @@ export namespace Prisma {
    */
   export type ClubCountOutputTypeCountAlertsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AlertWhereInput
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountPracticesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeWhereInput
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountAttendanceReasonsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClubAttendanceReasonWhereInput
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountDrillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillWhereInput
+  }
+
+  /**
+   * ClubCountOutputType without action
+   */
+  export type ClubCountOutputTypeCountDrillTopicsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillTopicWhereInput
   }
 
 
@@ -4552,12 +5459,16 @@ export namespace Prisma {
     athletes: number
     staff: number
     games: number
+    macrocycles: number
+    practices: number
   }
 
   export type TeamCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     athletes?: boolean | TeamCountOutputTypeCountAthletesArgs
     staff?: boolean | TeamCountOutputTypeCountStaffArgs
     games?: boolean | TeamCountOutputTypeCountGamesArgs
+    macrocycles?: boolean | TeamCountOutputTypeCountMacrocyclesArgs
+    practices?: boolean | TeamCountOutputTypeCountPracticesArgs
   }
 
   // Custom InputTypes
@@ -4590,6 +5501,20 @@ export namespace Prisma {
    */
   export type TeamCountOutputTypeCountGamesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GameWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountMacrocyclesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MacrocycleWhereInput
+  }
+
+  /**
+   * TeamCountOutputType without action
+   */
+  export type TeamCountOutputTypeCountPracticesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeWhereInput
   }
 
 
@@ -4794,6 +5719,77 @@ export namespace Prisma {
    */
   export type AlertCountOutputTypeCountRecipientsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: AlertRecipientWhereInput
+  }
+
+
+  /**
+   * Count Type PracticeCountOutputType
+   */
+
+  export type PracticeCountOutputType = {
+    attendances: number
+    items: number
+  }
+
+  export type PracticeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attendances?: boolean | PracticeCountOutputTypeCountAttendancesArgs
+    items?: boolean | PracticeCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PracticeCountOutputType without action
+   */
+  export type PracticeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeCountOutputType
+     */
+    select?: PracticeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PracticeCountOutputType without action
+   */
+  export type PracticeCountOutputTypeCountAttendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeAthleteWhereInput
+  }
+
+  /**
+   * PracticeCountOutputType without action
+   */
+  export type PracticeCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeItemWhereInput
+  }
+
+
+  /**
+   * Count Type ClubAttendanceReasonCountOutputType
+   */
+
+  export type ClubAttendanceReasonCountOutputType = {
+    athletes: number
+  }
+
+  export type ClubAttendanceReasonCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    athletes?: boolean | ClubAttendanceReasonCountOutputTypeCountAthletesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ClubAttendanceReasonCountOutputType without action
+   */
+  export type ClubAttendanceReasonCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReasonCountOutputType
+     */
+    select?: ClubAttendanceReasonCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ClubAttendanceReasonCountOutputType without action
+   */
+  export type ClubAttendanceReasonCountOutputTypeCountAthletesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeAthleteWhereInput
   }
 
 
@@ -5084,6 +6080,7 @@ export namespace Prisma {
     teams?: boolean | Athlete$teamsArgs<ExtArgs>
     preferredNumbers?: boolean | Athlete$preferredNumbersArgs<ExtArgs>
     gameEquipments?: boolean | Athlete$gameEquipmentsArgs<ExtArgs>
+    practiceAttendances?: boolean | Athlete$practiceAttendancesArgs<ExtArgs>
     _count?: boolean | AthleteCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["athlete"]>
 
@@ -5148,6 +6145,7 @@ export namespace Prisma {
     teams?: boolean | Athlete$teamsArgs<ExtArgs>
     preferredNumbers?: boolean | Athlete$preferredNumbersArgs<ExtArgs>
     gameEquipments?: boolean | Athlete$gameEquipmentsArgs<ExtArgs>
+    practiceAttendances?: boolean | Athlete$practiceAttendancesArgs<ExtArgs>
     _count?: boolean | AthleteCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AthleteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -5169,6 +6167,7 @@ export namespace Prisma {
       teams: Prisma.$TeamAthletePayload<ExtArgs>[]
       preferredNumbers: Prisma.$AthletePreferredNumberPayload<ExtArgs>[]
       gameEquipments: Prisma.$GameEquipmentPayload<ExtArgs>[]
+      practiceAttendances: Prisma.$PracticeAthletePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -5587,6 +6586,7 @@ export namespace Prisma {
     teams<T extends Athlete$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Athlete$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamAthletePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     preferredNumbers<T extends Athlete$preferredNumbersArgs<ExtArgs> = {}>(args?: Subset<T, Athlete$preferredNumbersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AthletePreferredNumberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     gameEquipments<T extends Athlete$gameEquipmentsArgs<ExtArgs> = {}>(args?: Subset<T, Athlete$gameEquipmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GameEquipmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    practiceAttendances<T extends Athlete$practiceAttendancesArgs<ExtArgs> = {}>(args?: Subset<T, Athlete$practiceAttendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6219,6 +7219,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GameEquipmentScalarFieldEnum | GameEquipmentScalarFieldEnum[]
+  }
+
+  /**
+   * Athlete.practiceAttendances
+   */
+  export type Athlete$practiceAttendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    where?: PracticeAthleteWhereInput
+    orderBy?: PracticeAthleteOrderByWithRelationInput | PracticeAthleteOrderByWithRelationInput[]
+    cursor?: PracticeAthleteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PracticeAthleteScalarFieldEnum | PracticeAthleteScalarFieldEnum[]
   }
 
   /**
@@ -10313,6 +11337,7 @@ export namespace Prisma {
     role: number
     resetToken: number
     resetTokenExpiry: number
+    drillRecentColors: number
     _all: number
   }
 
@@ -10367,6 +11392,7 @@ export namespace Prisma {
     role?: true
     resetToken?: true
     resetTokenExpiry?: true
+    drillRecentColors?: true
     _all?: true
   }
 
@@ -10468,6 +11494,7 @@ export namespace Prisma {
     role: $Enums.PlatformRole
     resetToken: string | null
     resetTokenExpiry: Date | null
+    drillRecentColors: JsonValue | null
     _count: AccountCountAggregateOutputType | null
     _avg: AccountAvgAggregateOutputType | null
     _sum: AccountSumAggregateOutputType | null
@@ -10501,9 +11528,11 @@ export namespace Prisma {
     role?: boolean
     resetToken?: boolean
     resetTokenExpiry?: boolean
+    drillRecentColors?: boolean
     clubs?: boolean | Account$clubsArgs<ExtArgs>
     staffProfiles?: boolean | Account$staffProfilesArgs<ExtArgs>
     alertRecipients?: boolean | Account$alertRecipientsArgs<ExtArgs>
+    drills?: boolean | Account$drillsArgs<ExtArgs>
     _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["account"]>
 
@@ -10519,6 +11548,7 @@ export namespace Prisma {
     role?: boolean
     resetToken?: boolean
     resetTokenExpiry?: boolean
+    drillRecentColors?: boolean
   }, ExtArgs["result"]["account"]>
 
   export type AccountSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -10533,6 +11563,7 @@ export namespace Prisma {
     role?: boolean
     resetToken?: boolean
     resetTokenExpiry?: boolean
+    drillRecentColors?: boolean
   }, ExtArgs["result"]["account"]>
 
   export type AccountSelectScalar = {
@@ -10547,13 +11578,15 @@ export namespace Prisma {
     role?: boolean
     resetToken?: boolean
     resetTokenExpiry?: boolean
+    drillRecentColors?: boolean
   }
 
-  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "image" | "createdAt" | "updatedAt" | "defaultClubId" | "role" | "resetToken" | "resetTokenExpiry", ExtArgs["result"]["account"]>
+  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "password" | "image" | "createdAt" | "updatedAt" | "defaultClubId" | "role" | "resetToken" | "resetTokenExpiry" | "drillRecentColors", ExtArgs["result"]["account"]>
   export type AccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     clubs?: boolean | Account$clubsArgs<ExtArgs>
     staffProfiles?: boolean | Account$staffProfilesArgs<ExtArgs>
     alertRecipients?: boolean | Account$alertRecipientsArgs<ExtArgs>
+    drills?: boolean | Account$drillsArgs<ExtArgs>
     _count?: boolean | AccountCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type AccountIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -10565,6 +11598,7 @@ export namespace Prisma {
       clubs: Prisma.$AccountClubPayload<ExtArgs>[]
       staffProfiles: Prisma.$StaffPayload<ExtArgs>[]
       alertRecipients: Prisma.$AlertRecipientPayload<ExtArgs>[]
+      drills: Prisma.$DrillPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -10578,6 +11612,11 @@ export namespace Prisma {
       role: $Enums.PlatformRole
       resetToken: string | null
       resetTokenExpiry: Date | null
+      /**
+       * List of the last custom colours the user has applied in the drill
+       * editor. Stored as JSON `{ color: string, pinned: boolean }[]`.
+       */
+      drillRecentColors: Prisma.JsonValue | null
     }, ExtArgs["result"]["account"]>
     composites: {}
   }
@@ -10975,6 +12014,7 @@ export namespace Prisma {
     clubs<T extends Account$clubsArgs<ExtArgs> = {}>(args?: Subset<T, Account$clubsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountClubPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     staffProfiles<T extends Account$staffProfilesArgs<ExtArgs> = {}>(args?: Subset<T, Account$staffProfilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     alertRecipients<T extends Account$alertRecipientsArgs<ExtArgs> = {}>(args?: Subset<T, Account$alertRecipientsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertRecipientPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    drills<T extends Account$drillsArgs<ExtArgs> = {}>(args?: Subset<T, Account$drillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -11015,6 +12055,7 @@ export namespace Prisma {
     readonly role: FieldRef<"Account", 'PlatformRole'>
     readonly resetToken: FieldRef<"Account", 'String'>
     readonly resetTokenExpiry: FieldRef<"Account", 'DateTime'>
+    readonly drillRecentColors: FieldRef<"Account", 'Json'>
   }
     
 
@@ -11477,6 +12518,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: AlertRecipientScalarFieldEnum | AlertRecipientScalarFieldEnum[]
+  }
+
+  /**
+   * Account.drills
+   */
+  export type Account$drillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Drill
+     */
+    select?: DrillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Drill
+     */
+    omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+    where?: DrillWhereInput
+    orderBy?: DrillOrderByWithRelationInput | DrillOrderByWithRelationInput[]
+    cursor?: DrillWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DrillScalarFieldEnum | DrillScalarFieldEnum[]
   }
 
   /**
@@ -15194,12 +16259,14 @@ export namespace Prisma {
     id: number | null
     number: number | null
     clubId: number | null
+    teamId: number | null
   }
 
   export type MacrocycleSumAggregateOutputType = {
     id: number | null
     number: number | null
     clubId: number | null
+    teamId: number | null
   }
 
   export type MacrocycleMinAggregateOutputType = {
@@ -15210,6 +16277,7 @@ export namespace Prisma {
     number: number | null
     name: string | null
     clubId: number | null
+    teamId: number | null
   }
 
   export type MacrocycleMaxAggregateOutputType = {
@@ -15220,6 +16288,7 @@ export namespace Prisma {
     number: number | null
     name: string | null
     clubId: number | null
+    teamId: number | null
   }
 
   export type MacrocycleCountAggregateOutputType = {
@@ -15230,6 +16299,7 @@ export namespace Prisma {
     number: number
     name: number
     clubId: number
+    teamId: number
     _all: number
   }
 
@@ -15238,12 +16308,14 @@ export namespace Prisma {
     id?: true
     number?: true
     clubId?: true
+    teamId?: true
   }
 
   export type MacrocycleSumAggregateInputType = {
     id?: true
     number?: true
     clubId?: true
+    teamId?: true
   }
 
   export type MacrocycleMinAggregateInputType = {
@@ -15254,6 +16326,7 @@ export namespace Prisma {
     number?: true
     name?: true
     clubId?: true
+    teamId?: true
   }
 
   export type MacrocycleMaxAggregateInputType = {
@@ -15264,6 +16337,7 @@ export namespace Prisma {
     number?: true
     name?: true
     clubId?: true
+    teamId?: true
   }
 
   export type MacrocycleCountAggregateInputType = {
@@ -15274,6 +16348,7 @@ export namespace Prisma {
     number?: true
     name?: true
     clubId?: true
+    teamId?: true
     _all?: true
   }
 
@@ -15371,6 +16446,7 @@ export namespace Prisma {
     number: number | null
     name: string | null
     clubId: number
+    teamId: number | null
     _count: MacrocycleCountAggregateOutputType | null
     _avg: MacrocycleAvgAggregateOutputType | null
     _sum: MacrocycleSumAggregateOutputType | null
@@ -15400,7 +16476,9 @@ export namespace Prisma {
     number?: boolean
     name?: boolean
     clubId?: boolean
+    teamId?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Macrocycle$teamArgs<ExtArgs>
     mesocycles?: boolean | Macrocycle$mesocyclesArgs<ExtArgs>
     _count?: boolean | MacrocycleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["macrocycle"]>
@@ -15413,7 +16491,9 @@ export namespace Prisma {
     number?: boolean
     name?: boolean
     clubId?: boolean
+    teamId?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Macrocycle$teamArgs<ExtArgs>
   }, ExtArgs["result"]["macrocycle"]>
 
   export type MacrocycleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -15424,7 +16504,9 @@ export namespace Prisma {
     number?: boolean
     name?: boolean
     clubId?: boolean
+    teamId?: boolean
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Macrocycle$teamArgs<ExtArgs>
   }, ExtArgs["result"]["macrocycle"]>
 
   export type MacrocycleSelectScalar = {
@@ -15435,25 +16517,30 @@ export namespace Prisma {
     number?: boolean
     name?: boolean
     clubId?: boolean
+    teamId?: boolean
   }
 
-  export type MacrocycleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "startDate" | "endDate" | "notes" | "number" | "name" | "clubId", ExtArgs["result"]["macrocycle"]>
+  export type MacrocycleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "startDate" | "endDate" | "notes" | "number" | "name" | "clubId" | "teamId", ExtArgs["result"]["macrocycle"]>
   export type MacrocycleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Macrocycle$teamArgs<ExtArgs>
     mesocycles?: boolean | Macrocycle$mesocyclesArgs<ExtArgs>
     _count?: boolean | MacrocycleCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type MacrocycleIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Macrocycle$teamArgs<ExtArgs>
   }
   export type MacrocycleIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | Macrocycle$teamArgs<ExtArgs>
   }
 
   export type $MacrocyclePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Macrocycle"
     objects: {
       club: Prisma.$ClubPayload<ExtArgs>
+      team: Prisma.$TeamPayload<ExtArgs> | null
       mesocycles: Prisma.$MesocyclePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -15464,6 +16551,7 @@ export namespace Prisma {
       number: number | null
       name: string | null
       clubId: number
+      teamId: number | null
     }, ExtArgs["result"]["macrocycle"]>
     composites: {}
   }
@@ -15859,6 +16947,7 @@ export namespace Prisma {
   export interface Prisma__MacrocycleClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    team<T extends Macrocycle$teamArgs<ExtArgs> = {}>(args?: Subset<T, Macrocycle$teamArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     mesocycles<T extends Macrocycle$mesocyclesArgs<ExtArgs> = {}>(args?: Subset<T, Macrocycle$mesocyclesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MesocyclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -15896,6 +16985,7 @@ export namespace Prisma {
     readonly number: FieldRef<"Macrocycle", 'Int'>
     readonly name: FieldRef<"Macrocycle", 'String'>
     readonly clubId: FieldRef<"Macrocycle", 'Int'>
+    readonly teamId: FieldRef<"Macrocycle", 'Int'>
   }
     
 
@@ -16294,6 +17384,25 @@ export namespace Prisma {
      * Limit how many Macrocycles to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Macrocycle.team
+   */
+  export type Macrocycle$teamArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Team
+     */
+    select?: TeamSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Team
+     */
+    omit?: TeamOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: TeamInclude<ExtArgs> | null
+    where?: TeamWhereInput
   }
 
   /**
@@ -20937,62 +22046,226 @@ export namespace Prisma {
 
   export type DrillAvgAggregateOutputType = {
     id: number | null
+    clubId: number | null
+    accountId: number | null
+    echelonId: number | null
+    ballsCount: number | null
+    basketsCount: number | null
+    conesCount: number | null
+    playersCount: number | null
+    coachesCount: number | null
   }
 
   export type DrillSumAggregateOutputType = {
     id: number | null
+    clubId: number | null
+    accountId: number | null
+    echelonId: number | null
+    ballsCount: number | null
+    basketsCount: number | null
+    conesCount: number | null
+    playersCount: number | null
+    coachesCount: number | null
   }
 
   export type DrillMinAggregateOutputType = {
     id: number | null
     name: string | null
+    title: string | null
     svg: string | null
     createdAt: Date | null
+    updatedAt: Date | null
+    clubId: number | null
+    accountId: number | null
+    echelonId: number | null
+    description: string | null
+    goals: string | null
+    variations: string | null
+    tips: string | null
+    defaultText: string | null
+    ballsCount: number | null
+    basketsCount: number | null
+    conesCount: number | null
+    extraEquipment: string | null
+    playersCount: number | null
+    coachesCount: number | null
+    typeFundamental: boolean | null
+    typeIndividual: boolean | null
+    typeTeam: boolean | null
+    posGuard: boolean | null
+    posForward: boolean | null
+    posCenter: boolean | null
   }
 
   export type DrillMaxAggregateOutputType = {
     id: number | null
     name: string | null
+    title: string | null
     svg: string | null
     createdAt: Date | null
+    updatedAt: Date | null
+    clubId: number | null
+    accountId: number | null
+    echelonId: number | null
+    description: string | null
+    goals: string | null
+    variations: string | null
+    tips: string | null
+    defaultText: string | null
+    ballsCount: number | null
+    basketsCount: number | null
+    conesCount: number | null
+    extraEquipment: string | null
+    playersCount: number | null
+    coachesCount: number | null
+    typeFundamental: boolean | null
+    typeIndividual: boolean | null
+    typeTeam: boolean | null
+    posGuard: boolean | null
+    posForward: boolean | null
+    posCenter: boolean | null
   }
 
   export type DrillCountAggregateOutputType = {
     id: number
     name: number
+    title: number
     svg: number
     createdAt: number
+    updatedAt: number
+    clubId: number
+    accountId: number
+    echelonId: number
+    description: number
+    goals: number
+    variations: number
+    tips: number
+    defaultText: number
+    ballsCount: number
+    basketsCount: number
+    conesCount: number
+    extraEquipment: number
+    playersCount: number
+    coachesCount: number
+    typeFundamental: number
+    typeIndividual: number
+    typeTeam: number
+    posGuard: number
+    posForward: number
+    posCenter: number
     _all: number
   }
 
 
   export type DrillAvgAggregateInputType = {
     id?: true
+    clubId?: true
+    accountId?: true
+    echelonId?: true
+    ballsCount?: true
+    basketsCount?: true
+    conesCount?: true
+    playersCount?: true
+    coachesCount?: true
   }
 
   export type DrillSumAggregateInputType = {
     id?: true
+    clubId?: true
+    accountId?: true
+    echelonId?: true
+    ballsCount?: true
+    basketsCount?: true
+    conesCount?: true
+    playersCount?: true
+    coachesCount?: true
   }
 
   export type DrillMinAggregateInputType = {
     id?: true
     name?: true
+    title?: true
     svg?: true
     createdAt?: true
+    updatedAt?: true
+    clubId?: true
+    accountId?: true
+    echelonId?: true
+    description?: true
+    goals?: true
+    variations?: true
+    tips?: true
+    defaultText?: true
+    ballsCount?: true
+    basketsCount?: true
+    conesCount?: true
+    extraEquipment?: true
+    playersCount?: true
+    coachesCount?: true
+    typeFundamental?: true
+    typeIndividual?: true
+    typeTeam?: true
+    posGuard?: true
+    posForward?: true
+    posCenter?: true
   }
 
   export type DrillMaxAggregateInputType = {
     id?: true
     name?: true
+    title?: true
     svg?: true
     createdAt?: true
+    updatedAt?: true
+    clubId?: true
+    accountId?: true
+    echelonId?: true
+    description?: true
+    goals?: true
+    variations?: true
+    tips?: true
+    defaultText?: true
+    ballsCount?: true
+    basketsCount?: true
+    conesCount?: true
+    extraEquipment?: true
+    playersCount?: true
+    coachesCount?: true
+    typeFundamental?: true
+    typeIndividual?: true
+    typeTeam?: true
+    posGuard?: true
+    posForward?: true
+    posCenter?: true
   }
 
   export type DrillCountAggregateInputType = {
     id?: true
     name?: true
+    title?: true
     svg?: true
     createdAt?: true
+    updatedAt?: true
+    clubId?: true
+    accountId?: true
+    echelonId?: true
+    description?: true
+    goals?: true
+    variations?: true
+    tips?: true
+    defaultText?: true
+    ballsCount?: true
+    basketsCount?: true
+    conesCount?: true
+    extraEquipment?: true
+    playersCount?: true
+    coachesCount?: true
+    typeFundamental?: true
+    typeIndividual?: true
+    typeTeam?: true
+    posGuard?: true
+    posForward?: true
+    posCenter?: true
     _all?: true
   }
 
@@ -21085,8 +22358,30 @@ export namespace Prisma {
   export type DrillGroupByOutputType = {
     id: number
     name: string | null
-    svg: string
+    title: string | null
+    svg: string | null
     createdAt: Date
+    updatedAt: Date
+    clubId: number | null
+    accountId: number | null
+    echelonId: number | null
+    description: string | null
+    goals: string | null
+    variations: string | null
+    tips: string | null
+    defaultText: string | null
+    ballsCount: number
+    basketsCount: number
+    conesCount: number
+    extraEquipment: string | null
+    playersCount: number
+    coachesCount: number
+    typeFundamental: boolean
+    typeIndividual: boolean
+    typeTeam: boolean
+    posGuard: boolean
+    posForward: boolean
+    posCenter: boolean
     _count: DrillCountAggregateOutputType | null
     _avg: DrillAvgAggregateOutputType | null
     _sum: DrillSumAggregateOutputType | null
@@ -21111,41 +22406,190 @@ export namespace Prisma {
   export type DrillSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    title?: boolean
     svg?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    clubId?: boolean
+    accountId?: boolean
+    echelonId?: boolean
+    description?: boolean
+    goals?: boolean
+    variations?: boolean
+    tips?: boolean
+    defaultText?: boolean
+    ballsCount?: boolean
+    basketsCount?: boolean
+    conesCount?: boolean
+    extraEquipment?: boolean
+    playersCount?: boolean
+    coachesCount?: boolean
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: boolean | Drill$clubArgs<ExtArgs>
+    account?: boolean | Drill$accountArgs<ExtArgs>
+    echelon?: boolean | Drill$echelonArgs<ExtArgs>
+    graphics?: boolean | Drill$graphicsArgs<ExtArgs>
+    topics?: boolean | Drill$topicsArgs<ExtArgs>
+    practiceItems?: boolean | Drill$practiceItemsArgs<ExtArgs>
+    _count?: boolean | DrillCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["drill"]>
 
   export type DrillSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    title?: boolean
     svg?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    clubId?: boolean
+    accountId?: boolean
+    echelonId?: boolean
+    description?: boolean
+    goals?: boolean
+    variations?: boolean
+    tips?: boolean
+    defaultText?: boolean
+    ballsCount?: boolean
+    basketsCount?: boolean
+    conesCount?: boolean
+    extraEquipment?: boolean
+    playersCount?: boolean
+    coachesCount?: boolean
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: boolean | Drill$clubArgs<ExtArgs>
+    account?: boolean | Drill$accountArgs<ExtArgs>
+    echelon?: boolean | Drill$echelonArgs<ExtArgs>
   }, ExtArgs["result"]["drill"]>
 
   export type DrillSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     name?: boolean
+    title?: boolean
     svg?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    clubId?: boolean
+    accountId?: boolean
+    echelonId?: boolean
+    description?: boolean
+    goals?: boolean
+    variations?: boolean
+    tips?: boolean
+    defaultText?: boolean
+    ballsCount?: boolean
+    basketsCount?: boolean
+    conesCount?: boolean
+    extraEquipment?: boolean
+    playersCount?: boolean
+    coachesCount?: boolean
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: boolean | Drill$clubArgs<ExtArgs>
+    account?: boolean | Drill$accountArgs<ExtArgs>
+    echelon?: boolean | Drill$echelonArgs<ExtArgs>
   }, ExtArgs["result"]["drill"]>
 
   export type DrillSelectScalar = {
     id?: boolean
     name?: boolean
+    title?: boolean
     svg?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    clubId?: boolean
+    accountId?: boolean
+    echelonId?: boolean
+    description?: boolean
+    goals?: boolean
+    variations?: boolean
+    tips?: boolean
+    defaultText?: boolean
+    ballsCount?: boolean
+    basketsCount?: boolean
+    conesCount?: boolean
+    extraEquipment?: boolean
+    playersCount?: boolean
+    coachesCount?: boolean
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
   }
 
-  export type DrillOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "svg" | "createdAt", ExtArgs["result"]["drill"]>
+  export type DrillOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "title" | "svg" | "createdAt" | "updatedAt" | "clubId" | "accountId" | "echelonId" | "description" | "goals" | "variations" | "tips" | "defaultText" | "ballsCount" | "basketsCount" | "conesCount" | "extraEquipment" | "playersCount" | "coachesCount" | "typeFundamental" | "typeIndividual" | "typeTeam" | "posGuard" | "posForward" | "posCenter", ExtArgs["result"]["drill"]>
+  export type DrillInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | Drill$clubArgs<ExtArgs>
+    account?: boolean | Drill$accountArgs<ExtArgs>
+    echelon?: boolean | Drill$echelonArgs<ExtArgs>
+    graphics?: boolean | Drill$graphicsArgs<ExtArgs>
+    topics?: boolean | Drill$topicsArgs<ExtArgs>
+    practiceItems?: boolean | Drill$practiceItemsArgs<ExtArgs>
+    _count?: boolean | DrillCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DrillIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | Drill$clubArgs<ExtArgs>
+    account?: boolean | Drill$accountArgs<ExtArgs>
+    echelon?: boolean | Drill$echelonArgs<ExtArgs>
+  }
+  export type DrillIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | Drill$clubArgs<ExtArgs>
+    account?: boolean | Drill$accountArgs<ExtArgs>
+    echelon?: boolean | Drill$echelonArgs<ExtArgs>
+  }
 
   export type $DrillPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Drill"
-    objects: {}
+    objects: {
+      club: Prisma.$ClubPayload<ExtArgs> | null
+      account: Prisma.$AccountPayload<ExtArgs> | null
+      echelon: Prisma.$EchelonPayload<ExtArgs> | null
+      graphics: Prisma.$DrillGraphicPayload<ExtArgs>[]
+      topics: Prisma.$DrillTopicLinkPayload<ExtArgs>[]
+      practiceItems: Prisma.$PracticeItemPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: number
       name: string | null
-      svg: string
+      title: string | null
+      svg: string | null
       createdAt: Date
+      updatedAt: Date
+      clubId: number | null
+      accountId: number | null
+      echelonId: number | null
+      description: string | null
+      goals: string | null
+      variations: string | null
+      tips: string | null
+      defaultText: string | null
+      ballsCount: number
+      basketsCount: number
+      conesCount: number
+      extraEquipment: string | null
+      playersCount: number
+      coachesCount: number
+      typeFundamental: boolean
+      typeIndividual: boolean
+      typeTeam: boolean
+      posGuard: boolean
+      posForward: boolean
+      posCenter: boolean
     }, ExtArgs["result"]["drill"]>
     composites: {}
   }
@@ -21540,6 +22984,12 @@ export namespace Prisma {
    */
   export interface Prisma__DrillClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends Drill$clubArgs<ExtArgs> = {}>(args?: Subset<T, Drill$clubArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    account<T extends Drill$accountArgs<ExtArgs> = {}>(args?: Subset<T, Drill$accountArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    echelon<T extends Drill$echelonArgs<ExtArgs> = {}>(args?: Subset<T, Drill$echelonArgs<ExtArgs>>): Prisma__EchelonClient<$Result.GetResult<Prisma.$EchelonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    graphics<T extends Drill$graphicsArgs<ExtArgs> = {}>(args?: Subset<T, Drill$graphicsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    topics<T extends Drill$topicsArgs<ExtArgs> = {}>(args?: Subset<T, Drill$topicsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    practiceItems<T extends Drill$practiceItemsArgs<ExtArgs> = {}>(args?: Subset<T, Drill$practiceItemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21571,8 +23021,30 @@ export namespace Prisma {
   interface DrillFieldRefs {
     readonly id: FieldRef<"Drill", 'Int'>
     readonly name: FieldRef<"Drill", 'String'>
+    readonly title: FieldRef<"Drill", 'String'>
     readonly svg: FieldRef<"Drill", 'String'>
     readonly createdAt: FieldRef<"Drill", 'DateTime'>
+    readonly updatedAt: FieldRef<"Drill", 'DateTime'>
+    readonly clubId: FieldRef<"Drill", 'Int'>
+    readonly accountId: FieldRef<"Drill", 'Int'>
+    readonly echelonId: FieldRef<"Drill", 'Int'>
+    readonly description: FieldRef<"Drill", 'String'>
+    readonly goals: FieldRef<"Drill", 'String'>
+    readonly variations: FieldRef<"Drill", 'String'>
+    readonly tips: FieldRef<"Drill", 'String'>
+    readonly defaultText: FieldRef<"Drill", 'String'>
+    readonly ballsCount: FieldRef<"Drill", 'Int'>
+    readonly basketsCount: FieldRef<"Drill", 'Int'>
+    readonly conesCount: FieldRef<"Drill", 'Int'>
+    readonly extraEquipment: FieldRef<"Drill", 'String'>
+    readonly playersCount: FieldRef<"Drill", 'Int'>
+    readonly coachesCount: FieldRef<"Drill", 'Int'>
+    readonly typeFundamental: FieldRef<"Drill", 'Boolean'>
+    readonly typeIndividual: FieldRef<"Drill", 'Boolean'>
+    readonly typeTeam: FieldRef<"Drill", 'Boolean'>
+    readonly posGuard: FieldRef<"Drill", 'Boolean'>
+    readonly posForward: FieldRef<"Drill", 'Boolean'>
+    readonly posCenter: FieldRef<"Drill", 'Boolean'>
   }
     
 
@@ -21589,6 +23061,10 @@ export namespace Prisma {
      * Omit specific fields from the Drill
      */
     omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
     /**
      * Filter, which Drill to fetch.
      */
@@ -21608,6 +23084,10 @@ export namespace Prisma {
      */
     omit?: DrillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+    /**
      * Filter, which Drill to fetch.
      */
     where: DrillWhereUniqueInput
@@ -21625,6 +23105,10 @@ export namespace Prisma {
      * Omit specific fields from the Drill
      */
     omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
     /**
      * Filter, which Drill to fetch.
      */
@@ -21674,6 +23158,10 @@ export namespace Prisma {
      */
     omit?: DrillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+    /**
      * Filter, which Drill to fetch.
      */
     where?: DrillWhereInput
@@ -21721,6 +23209,10 @@ export namespace Prisma {
      * Omit specific fields from the Drill
      */
     omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
     /**
      * Filter, which Drills to fetch.
      */
@@ -21770,9 +23262,13 @@ export namespace Prisma {
      */
     omit?: DrillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+    /**
      * The data needed to create a Drill.
      */
-    data: XOR<DrillCreateInput, DrillUncheckedCreateInput>
+    data?: XOR<DrillCreateInput, DrillUncheckedCreateInput>
   }
 
   /**
@@ -21803,6 +23299,10 @@ export namespace Prisma {
      */
     data: DrillCreateManyInput | DrillCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -21817,6 +23317,10 @@ export namespace Prisma {
      * Omit specific fields from the Drill
      */
     omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
     /**
      * The data needed to update a Drill.
      */
@@ -21869,6 +23373,10 @@ export namespace Prisma {
      * Limit how many Drills to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -21883,6 +23391,10 @@ export namespace Prisma {
      * Omit specific fields from the Drill
      */
     omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
     /**
      * The filter to search for the Drill to update in case it exists.
      */
@@ -21910,6 +23422,10 @@ export namespace Prisma {
      */
     omit?: DrillOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+    /**
      * Filter which Drill to delete.
      */
     where: DrillWhereUniqueInput
@@ -21930,6 +23446,135 @@ export namespace Prisma {
   }
 
   /**
+   * Drill.club
+   */
+  export type Drill$clubArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Club
+     */
+    select?: ClubSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Club
+     */
+    omit?: ClubOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubInclude<ExtArgs> | null
+    where?: ClubWhereInput
+  }
+
+  /**
+   * Drill.account
+   */
+  export type Drill$accountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Account
+     */
+    select?: AccountSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Account
+     */
+    omit?: AccountOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: AccountInclude<ExtArgs> | null
+    where?: AccountWhereInput
+  }
+
+  /**
+   * Drill.echelon
+   */
+  export type Drill$echelonArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Echelon
+     */
+    select?: EchelonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Echelon
+     */
+    omit?: EchelonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: EchelonInclude<ExtArgs> | null
+    where?: EchelonWhereInput
+  }
+
+  /**
+   * Drill.graphics
+   */
+  export type Drill$graphicsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    where?: DrillGraphicWhereInput
+    orderBy?: DrillGraphicOrderByWithRelationInput | DrillGraphicOrderByWithRelationInput[]
+    cursor?: DrillGraphicWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DrillGraphicScalarFieldEnum | DrillGraphicScalarFieldEnum[]
+  }
+
+  /**
+   * Drill.topics
+   */
+  export type Drill$topicsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    where?: DrillTopicLinkWhereInput
+    orderBy?: DrillTopicLinkOrderByWithRelationInput | DrillTopicLinkOrderByWithRelationInput[]
+    cursor?: DrillTopicLinkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DrillTopicLinkScalarFieldEnum | DrillTopicLinkScalarFieldEnum[]
+  }
+
+  /**
+   * Drill.practiceItems
+   */
+  export type Drill$practiceItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    where?: PracticeItemWhereInput
+    orderBy?: PracticeItemOrderByWithRelationInput | PracticeItemOrderByWithRelationInput[]
+    cursor?: PracticeItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PracticeItemScalarFieldEnum | PracticeItemScalarFieldEnum[]
+  }
+
+  /**
    * Drill without action
    */
   export type DrillDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -21941,6 +23586,3346 @@ export namespace Prisma {
      * Omit specific fields from the Drill
      */
     omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DrillGraphic
+   */
+
+  export type AggregateDrillGraphic = {
+    _count: DrillGraphicCountAggregateOutputType | null
+    _avg: DrillGraphicAvgAggregateOutputType | null
+    _sum: DrillGraphicSumAggregateOutputType | null
+    _min: DrillGraphicMinAggregateOutputType | null
+    _max: DrillGraphicMaxAggregateOutputType | null
+  }
+
+  export type DrillGraphicAvgAggregateOutputType = {
+    id: number | null
+    drillId: number | null
+    order: number | null
+  }
+
+  export type DrillGraphicSumAggregateOutputType = {
+    id: number | null
+    drillId: number | null
+    order: number | null
+  }
+
+  export type DrillGraphicMinAggregateOutputType = {
+    id: number | null
+    drillId: number | null
+    order: number | null
+    svg: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DrillGraphicMaxAggregateOutputType = {
+    id: number | null
+    drillId: number | null
+    order: number | null
+    svg: string | null
+    notes: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type DrillGraphicCountAggregateOutputType = {
+    id: number
+    drillId: number
+    order: number
+    svg: number
+    notes: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type DrillGraphicAvgAggregateInputType = {
+    id?: true
+    drillId?: true
+    order?: true
+  }
+
+  export type DrillGraphicSumAggregateInputType = {
+    id?: true
+    drillId?: true
+    order?: true
+  }
+
+  export type DrillGraphicMinAggregateInputType = {
+    id?: true
+    drillId?: true
+    order?: true
+    svg?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DrillGraphicMaxAggregateInputType = {
+    id?: true
+    drillId?: true
+    order?: true
+    svg?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type DrillGraphicCountAggregateInputType = {
+    id?: true
+    drillId?: true
+    order?: true
+    svg?: true
+    notes?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type DrillGraphicAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DrillGraphic to aggregate.
+     */
+    where?: DrillGraphicWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillGraphics to fetch.
+     */
+    orderBy?: DrillGraphicOrderByWithRelationInput | DrillGraphicOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DrillGraphicWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillGraphics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillGraphics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DrillGraphics
+    **/
+    _count?: true | DrillGraphicCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DrillGraphicAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DrillGraphicSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DrillGraphicMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DrillGraphicMaxAggregateInputType
+  }
+
+  export type GetDrillGraphicAggregateType<T extends DrillGraphicAggregateArgs> = {
+        [P in keyof T & keyof AggregateDrillGraphic]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDrillGraphic[P]>
+      : GetScalarType<T[P], AggregateDrillGraphic[P]>
+  }
+
+
+
+
+  export type DrillGraphicGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillGraphicWhereInput
+    orderBy?: DrillGraphicOrderByWithAggregationInput | DrillGraphicOrderByWithAggregationInput[]
+    by: DrillGraphicScalarFieldEnum[] | DrillGraphicScalarFieldEnum
+    having?: DrillGraphicScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DrillGraphicCountAggregateInputType | true
+    _avg?: DrillGraphicAvgAggregateInputType
+    _sum?: DrillGraphicSumAggregateInputType
+    _min?: DrillGraphicMinAggregateInputType
+    _max?: DrillGraphicMaxAggregateInputType
+  }
+
+  export type DrillGraphicGroupByOutputType = {
+    id: number
+    drillId: number
+    order: number
+    svg: string
+    notes: string | null
+    createdAt: Date
+    updatedAt: Date
+    _count: DrillGraphicCountAggregateOutputType | null
+    _avg: DrillGraphicAvgAggregateOutputType | null
+    _sum: DrillGraphicSumAggregateOutputType | null
+    _min: DrillGraphicMinAggregateOutputType | null
+    _max: DrillGraphicMaxAggregateOutputType | null
+  }
+
+  type GetDrillGraphicGroupByPayload<T extends DrillGraphicGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DrillGraphicGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DrillGraphicGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DrillGraphicGroupByOutputType[P]>
+            : GetScalarType<T[P], DrillGraphicGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DrillGraphicSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    drillId?: boolean
+    order?: boolean
+    svg?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillGraphic"]>
+
+  export type DrillGraphicSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    drillId?: boolean
+    order?: boolean
+    svg?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillGraphic"]>
+
+  export type DrillGraphicSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    drillId?: boolean
+    order?: boolean
+    svg?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillGraphic"]>
+
+  export type DrillGraphicSelectScalar = {
+    id?: boolean
+    drillId?: boolean
+    order?: boolean
+    svg?: boolean
+    notes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type DrillGraphicOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "drillId" | "order" | "svg" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["drillGraphic"]>
+  export type DrillGraphicInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+  }
+  export type DrillGraphicIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+  }
+  export type DrillGraphicIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+  }
+
+  export type $DrillGraphicPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DrillGraphic"
+    objects: {
+      drill: Prisma.$DrillPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      drillId: number
+      order: number
+      svg: string
+      notes: string | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["drillGraphic"]>
+    composites: {}
+  }
+
+  type DrillGraphicGetPayload<S extends boolean | null | undefined | DrillGraphicDefaultArgs> = $Result.GetResult<Prisma.$DrillGraphicPayload, S>
+
+  type DrillGraphicCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DrillGraphicFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DrillGraphicCountAggregateInputType | true
+    }
+
+  export interface DrillGraphicDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DrillGraphic'], meta: { name: 'DrillGraphic' } }
+    /**
+     * Find zero or one DrillGraphic that matches the filter.
+     * @param {DrillGraphicFindUniqueArgs} args - Arguments to find a DrillGraphic
+     * @example
+     * // Get one DrillGraphic
+     * const drillGraphic = await prisma.drillGraphic.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DrillGraphicFindUniqueArgs>(args: SelectSubset<T, DrillGraphicFindUniqueArgs<ExtArgs>>): Prisma__DrillGraphicClient<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DrillGraphic that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DrillGraphicFindUniqueOrThrowArgs} args - Arguments to find a DrillGraphic
+     * @example
+     * // Get one DrillGraphic
+     * const drillGraphic = await prisma.drillGraphic.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DrillGraphicFindUniqueOrThrowArgs>(args: SelectSubset<T, DrillGraphicFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DrillGraphicClient<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DrillGraphic that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillGraphicFindFirstArgs} args - Arguments to find a DrillGraphic
+     * @example
+     * // Get one DrillGraphic
+     * const drillGraphic = await prisma.drillGraphic.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DrillGraphicFindFirstArgs>(args?: SelectSubset<T, DrillGraphicFindFirstArgs<ExtArgs>>): Prisma__DrillGraphicClient<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DrillGraphic that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillGraphicFindFirstOrThrowArgs} args - Arguments to find a DrillGraphic
+     * @example
+     * // Get one DrillGraphic
+     * const drillGraphic = await prisma.drillGraphic.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DrillGraphicFindFirstOrThrowArgs>(args?: SelectSubset<T, DrillGraphicFindFirstOrThrowArgs<ExtArgs>>): Prisma__DrillGraphicClient<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DrillGraphics that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillGraphicFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DrillGraphics
+     * const drillGraphics = await prisma.drillGraphic.findMany()
+     * 
+     * // Get first 10 DrillGraphics
+     * const drillGraphics = await prisma.drillGraphic.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const drillGraphicWithIdOnly = await prisma.drillGraphic.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DrillGraphicFindManyArgs>(args?: SelectSubset<T, DrillGraphicFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DrillGraphic.
+     * @param {DrillGraphicCreateArgs} args - Arguments to create a DrillGraphic.
+     * @example
+     * // Create one DrillGraphic
+     * const DrillGraphic = await prisma.drillGraphic.create({
+     *   data: {
+     *     // ... data to create a DrillGraphic
+     *   }
+     * })
+     * 
+     */
+    create<T extends DrillGraphicCreateArgs>(args: SelectSubset<T, DrillGraphicCreateArgs<ExtArgs>>): Prisma__DrillGraphicClient<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DrillGraphics.
+     * @param {DrillGraphicCreateManyArgs} args - Arguments to create many DrillGraphics.
+     * @example
+     * // Create many DrillGraphics
+     * const drillGraphic = await prisma.drillGraphic.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DrillGraphicCreateManyArgs>(args?: SelectSubset<T, DrillGraphicCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DrillGraphics and returns the data saved in the database.
+     * @param {DrillGraphicCreateManyAndReturnArgs} args - Arguments to create many DrillGraphics.
+     * @example
+     * // Create many DrillGraphics
+     * const drillGraphic = await prisma.drillGraphic.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DrillGraphics and only return the `id`
+     * const drillGraphicWithIdOnly = await prisma.drillGraphic.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DrillGraphicCreateManyAndReturnArgs>(args?: SelectSubset<T, DrillGraphicCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DrillGraphic.
+     * @param {DrillGraphicDeleteArgs} args - Arguments to delete one DrillGraphic.
+     * @example
+     * // Delete one DrillGraphic
+     * const DrillGraphic = await prisma.drillGraphic.delete({
+     *   where: {
+     *     // ... filter to delete one DrillGraphic
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DrillGraphicDeleteArgs>(args: SelectSubset<T, DrillGraphicDeleteArgs<ExtArgs>>): Prisma__DrillGraphicClient<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DrillGraphic.
+     * @param {DrillGraphicUpdateArgs} args - Arguments to update one DrillGraphic.
+     * @example
+     * // Update one DrillGraphic
+     * const drillGraphic = await prisma.drillGraphic.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DrillGraphicUpdateArgs>(args: SelectSubset<T, DrillGraphicUpdateArgs<ExtArgs>>): Prisma__DrillGraphicClient<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DrillGraphics.
+     * @param {DrillGraphicDeleteManyArgs} args - Arguments to filter DrillGraphics to delete.
+     * @example
+     * // Delete a few DrillGraphics
+     * const { count } = await prisma.drillGraphic.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DrillGraphicDeleteManyArgs>(args?: SelectSubset<T, DrillGraphicDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DrillGraphics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillGraphicUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DrillGraphics
+     * const drillGraphic = await prisma.drillGraphic.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DrillGraphicUpdateManyArgs>(args: SelectSubset<T, DrillGraphicUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DrillGraphics and returns the data updated in the database.
+     * @param {DrillGraphicUpdateManyAndReturnArgs} args - Arguments to update many DrillGraphics.
+     * @example
+     * // Update many DrillGraphics
+     * const drillGraphic = await prisma.drillGraphic.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DrillGraphics and only return the `id`
+     * const drillGraphicWithIdOnly = await prisma.drillGraphic.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DrillGraphicUpdateManyAndReturnArgs>(args: SelectSubset<T, DrillGraphicUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DrillGraphic.
+     * @param {DrillGraphicUpsertArgs} args - Arguments to update or create a DrillGraphic.
+     * @example
+     * // Update or create a DrillGraphic
+     * const drillGraphic = await prisma.drillGraphic.upsert({
+     *   create: {
+     *     // ... data to create a DrillGraphic
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DrillGraphic we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DrillGraphicUpsertArgs>(args: SelectSubset<T, DrillGraphicUpsertArgs<ExtArgs>>): Prisma__DrillGraphicClient<$Result.GetResult<Prisma.$DrillGraphicPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DrillGraphics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillGraphicCountArgs} args - Arguments to filter DrillGraphics to count.
+     * @example
+     * // Count the number of DrillGraphics
+     * const count = await prisma.drillGraphic.count({
+     *   where: {
+     *     // ... the filter for the DrillGraphics we want to count
+     *   }
+     * })
+    **/
+    count<T extends DrillGraphicCountArgs>(
+      args?: Subset<T, DrillGraphicCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DrillGraphicCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DrillGraphic.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillGraphicAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DrillGraphicAggregateArgs>(args: Subset<T, DrillGraphicAggregateArgs>): Prisma.PrismaPromise<GetDrillGraphicAggregateType<T>>
+
+    /**
+     * Group by DrillGraphic.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillGraphicGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DrillGraphicGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DrillGraphicGroupByArgs['orderBy'] }
+        : { orderBy?: DrillGraphicGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DrillGraphicGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDrillGraphicGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DrillGraphic model
+   */
+  readonly fields: DrillGraphicFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DrillGraphic.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DrillGraphicClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    drill<T extends DrillDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DrillDefaultArgs<ExtArgs>>): Prisma__DrillClient<$Result.GetResult<Prisma.$DrillPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DrillGraphic model
+   */
+  interface DrillGraphicFieldRefs {
+    readonly id: FieldRef<"DrillGraphic", 'Int'>
+    readonly drillId: FieldRef<"DrillGraphic", 'Int'>
+    readonly order: FieldRef<"DrillGraphic", 'Int'>
+    readonly svg: FieldRef<"DrillGraphic", 'String'>
+    readonly notes: FieldRef<"DrillGraphic", 'String'>
+    readonly createdAt: FieldRef<"DrillGraphic", 'DateTime'>
+    readonly updatedAt: FieldRef<"DrillGraphic", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DrillGraphic findUnique
+   */
+  export type DrillGraphicFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillGraphic to fetch.
+     */
+    where: DrillGraphicWhereUniqueInput
+  }
+
+  /**
+   * DrillGraphic findUniqueOrThrow
+   */
+  export type DrillGraphicFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillGraphic to fetch.
+     */
+    where: DrillGraphicWhereUniqueInput
+  }
+
+  /**
+   * DrillGraphic findFirst
+   */
+  export type DrillGraphicFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillGraphic to fetch.
+     */
+    where?: DrillGraphicWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillGraphics to fetch.
+     */
+    orderBy?: DrillGraphicOrderByWithRelationInput | DrillGraphicOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DrillGraphics.
+     */
+    cursor?: DrillGraphicWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillGraphics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillGraphics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillGraphics.
+     */
+    distinct?: DrillGraphicScalarFieldEnum | DrillGraphicScalarFieldEnum[]
+  }
+
+  /**
+   * DrillGraphic findFirstOrThrow
+   */
+  export type DrillGraphicFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillGraphic to fetch.
+     */
+    where?: DrillGraphicWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillGraphics to fetch.
+     */
+    orderBy?: DrillGraphicOrderByWithRelationInput | DrillGraphicOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DrillGraphics.
+     */
+    cursor?: DrillGraphicWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillGraphics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillGraphics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillGraphics.
+     */
+    distinct?: DrillGraphicScalarFieldEnum | DrillGraphicScalarFieldEnum[]
+  }
+
+  /**
+   * DrillGraphic findMany
+   */
+  export type DrillGraphicFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillGraphics to fetch.
+     */
+    where?: DrillGraphicWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillGraphics to fetch.
+     */
+    orderBy?: DrillGraphicOrderByWithRelationInput | DrillGraphicOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DrillGraphics.
+     */
+    cursor?: DrillGraphicWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillGraphics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillGraphics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillGraphics.
+     */
+    distinct?: DrillGraphicScalarFieldEnum | DrillGraphicScalarFieldEnum[]
+  }
+
+  /**
+   * DrillGraphic create
+   */
+  export type DrillGraphicCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DrillGraphic.
+     */
+    data: XOR<DrillGraphicCreateInput, DrillGraphicUncheckedCreateInput>
+  }
+
+  /**
+   * DrillGraphic createMany
+   */
+  export type DrillGraphicCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DrillGraphics.
+     */
+    data: DrillGraphicCreateManyInput | DrillGraphicCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DrillGraphic createManyAndReturn
+   */
+  export type DrillGraphicCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * The data used to create many DrillGraphics.
+     */
+    data: DrillGraphicCreateManyInput | DrillGraphicCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DrillGraphic update
+   */
+  export type DrillGraphicUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DrillGraphic.
+     */
+    data: XOR<DrillGraphicUpdateInput, DrillGraphicUncheckedUpdateInput>
+    /**
+     * Choose, which DrillGraphic to update.
+     */
+    where: DrillGraphicWhereUniqueInput
+  }
+
+  /**
+   * DrillGraphic updateMany
+   */
+  export type DrillGraphicUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DrillGraphics.
+     */
+    data: XOR<DrillGraphicUpdateManyMutationInput, DrillGraphicUncheckedUpdateManyInput>
+    /**
+     * Filter which DrillGraphics to update
+     */
+    where?: DrillGraphicWhereInput
+    /**
+     * Limit how many DrillGraphics to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DrillGraphic updateManyAndReturn
+   */
+  export type DrillGraphicUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * The data used to update DrillGraphics.
+     */
+    data: XOR<DrillGraphicUpdateManyMutationInput, DrillGraphicUncheckedUpdateManyInput>
+    /**
+     * Filter which DrillGraphics to update
+     */
+    where?: DrillGraphicWhereInput
+    /**
+     * Limit how many DrillGraphics to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DrillGraphic upsert
+   */
+  export type DrillGraphicUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DrillGraphic to update in case it exists.
+     */
+    where: DrillGraphicWhereUniqueInput
+    /**
+     * In case the DrillGraphic found by the `where` argument doesn't exist, create a new DrillGraphic with this data.
+     */
+    create: XOR<DrillGraphicCreateInput, DrillGraphicUncheckedCreateInput>
+    /**
+     * In case the DrillGraphic was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DrillGraphicUpdateInput, DrillGraphicUncheckedUpdateInput>
+  }
+
+  /**
+   * DrillGraphic delete
+   */
+  export type DrillGraphicDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+    /**
+     * Filter which DrillGraphic to delete.
+     */
+    where: DrillGraphicWhereUniqueInput
+  }
+
+  /**
+   * DrillGraphic deleteMany
+   */
+  export type DrillGraphicDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DrillGraphics to delete
+     */
+    where?: DrillGraphicWhereInput
+    /**
+     * Limit how many DrillGraphics to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DrillGraphic without action
+   */
+  export type DrillGraphicDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillGraphic
+     */
+    select?: DrillGraphicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillGraphic
+     */
+    omit?: DrillGraphicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillGraphicInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DrillTopic
+   */
+
+  export type AggregateDrillTopic = {
+    _count: DrillTopicCountAggregateOutputType | null
+    _avg: DrillTopicAvgAggregateOutputType | null
+    _sum: DrillTopicSumAggregateOutputType | null
+    _min: DrillTopicMinAggregateOutputType | null
+    _max: DrillTopicMaxAggregateOutputType | null
+  }
+
+  export type DrillTopicAvgAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    order: number | null
+  }
+
+  export type DrillTopicSumAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    order: number | null
+  }
+
+  export type DrillTopicMinAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    key: string | null
+    name: string | null
+    order: number | null
+  }
+
+  export type DrillTopicMaxAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    key: string | null
+    name: string | null
+    order: number | null
+  }
+
+  export type DrillTopicCountAggregateOutputType = {
+    id: number
+    clubId: number
+    key: number
+    name: number
+    order: number
+    _all: number
+  }
+
+
+  export type DrillTopicAvgAggregateInputType = {
+    id?: true
+    clubId?: true
+    order?: true
+  }
+
+  export type DrillTopicSumAggregateInputType = {
+    id?: true
+    clubId?: true
+    order?: true
+  }
+
+  export type DrillTopicMinAggregateInputType = {
+    id?: true
+    clubId?: true
+    key?: true
+    name?: true
+    order?: true
+  }
+
+  export type DrillTopicMaxAggregateInputType = {
+    id?: true
+    clubId?: true
+    key?: true
+    name?: true
+    order?: true
+  }
+
+  export type DrillTopicCountAggregateInputType = {
+    id?: true
+    clubId?: true
+    key?: true
+    name?: true
+    order?: true
+    _all?: true
+  }
+
+  export type DrillTopicAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DrillTopic to aggregate.
+     */
+    where?: DrillTopicWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillTopics to fetch.
+     */
+    orderBy?: DrillTopicOrderByWithRelationInput | DrillTopicOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DrillTopicWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillTopics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillTopics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DrillTopics
+    **/
+    _count?: true | DrillTopicCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DrillTopicAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DrillTopicSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DrillTopicMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DrillTopicMaxAggregateInputType
+  }
+
+  export type GetDrillTopicAggregateType<T extends DrillTopicAggregateArgs> = {
+        [P in keyof T & keyof AggregateDrillTopic]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDrillTopic[P]>
+      : GetScalarType<T[P], AggregateDrillTopic[P]>
+  }
+
+
+
+
+  export type DrillTopicGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillTopicWhereInput
+    orderBy?: DrillTopicOrderByWithAggregationInput | DrillTopicOrderByWithAggregationInput[]
+    by: DrillTopicScalarFieldEnum[] | DrillTopicScalarFieldEnum
+    having?: DrillTopicScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DrillTopicCountAggregateInputType | true
+    _avg?: DrillTopicAvgAggregateInputType
+    _sum?: DrillTopicSumAggregateInputType
+    _min?: DrillTopicMinAggregateInputType
+    _max?: DrillTopicMaxAggregateInputType
+  }
+
+  export type DrillTopicGroupByOutputType = {
+    id: number
+    clubId: number
+    key: string | null
+    name: string
+    order: number
+    _count: DrillTopicCountAggregateOutputType | null
+    _avg: DrillTopicAvgAggregateOutputType | null
+    _sum: DrillTopicSumAggregateOutputType | null
+    _min: DrillTopicMinAggregateOutputType | null
+    _max: DrillTopicMaxAggregateOutputType | null
+  }
+
+  type GetDrillTopicGroupByPayload<T extends DrillTopicGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DrillTopicGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DrillTopicGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DrillTopicGroupByOutputType[P]>
+            : GetScalarType<T[P], DrillTopicGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DrillTopicSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    key?: boolean
+    name?: boolean
+    order?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    drills?: boolean | DrillTopic$drillsArgs<ExtArgs>
+    _count?: boolean | DrillTopicCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillTopic"]>
+
+  export type DrillTopicSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    key?: boolean
+    name?: boolean
+    order?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillTopic"]>
+
+  export type DrillTopicSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    key?: boolean
+    name?: boolean
+    order?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillTopic"]>
+
+  export type DrillTopicSelectScalar = {
+    id?: boolean
+    clubId?: boolean
+    key?: boolean
+    name?: boolean
+    order?: boolean
+  }
+
+  export type DrillTopicOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "key" | "name" | "order", ExtArgs["result"]["drillTopic"]>
+  export type DrillTopicInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    drills?: boolean | DrillTopic$drillsArgs<ExtArgs>
+    _count?: boolean | DrillTopicCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type DrillTopicIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type DrillTopicIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+
+  export type $DrillTopicPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DrillTopic"
+    objects: {
+      club: Prisma.$ClubPayload<ExtArgs>
+      drills: Prisma.$DrillTopicLinkPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      clubId: number
+      key: string | null
+      name: string
+      order: number
+    }, ExtArgs["result"]["drillTopic"]>
+    composites: {}
+  }
+
+  type DrillTopicGetPayload<S extends boolean | null | undefined | DrillTopicDefaultArgs> = $Result.GetResult<Prisma.$DrillTopicPayload, S>
+
+  type DrillTopicCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DrillTopicFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DrillTopicCountAggregateInputType | true
+    }
+
+  export interface DrillTopicDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DrillTopic'], meta: { name: 'DrillTopic' } }
+    /**
+     * Find zero or one DrillTopic that matches the filter.
+     * @param {DrillTopicFindUniqueArgs} args - Arguments to find a DrillTopic
+     * @example
+     * // Get one DrillTopic
+     * const drillTopic = await prisma.drillTopic.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DrillTopicFindUniqueArgs>(args: SelectSubset<T, DrillTopicFindUniqueArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DrillTopic that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DrillTopicFindUniqueOrThrowArgs} args - Arguments to find a DrillTopic
+     * @example
+     * // Get one DrillTopic
+     * const drillTopic = await prisma.drillTopic.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DrillTopicFindUniqueOrThrowArgs>(args: SelectSubset<T, DrillTopicFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DrillTopic that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicFindFirstArgs} args - Arguments to find a DrillTopic
+     * @example
+     * // Get one DrillTopic
+     * const drillTopic = await prisma.drillTopic.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DrillTopicFindFirstArgs>(args?: SelectSubset<T, DrillTopicFindFirstArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DrillTopic that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicFindFirstOrThrowArgs} args - Arguments to find a DrillTopic
+     * @example
+     * // Get one DrillTopic
+     * const drillTopic = await prisma.drillTopic.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DrillTopicFindFirstOrThrowArgs>(args?: SelectSubset<T, DrillTopicFindFirstOrThrowArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DrillTopics that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DrillTopics
+     * const drillTopics = await prisma.drillTopic.findMany()
+     * 
+     * // Get first 10 DrillTopics
+     * const drillTopics = await prisma.drillTopic.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const drillTopicWithIdOnly = await prisma.drillTopic.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends DrillTopicFindManyArgs>(args?: SelectSubset<T, DrillTopicFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DrillTopic.
+     * @param {DrillTopicCreateArgs} args - Arguments to create a DrillTopic.
+     * @example
+     * // Create one DrillTopic
+     * const DrillTopic = await prisma.drillTopic.create({
+     *   data: {
+     *     // ... data to create a DrillTopic
+     *   }
+     * })
+     * 
+     */
+    create<T extends DrillTopicCreateArgs>(args: SelectSubset<T, DrillTopicCreateArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DrillTopics.
+     * @param {DrillTopicCreateManyArgs} args - Arguments to create many DrillTopics.
+     * @example
+     * // Create many DrillTopics
+     * const drillTopic = await prisma.drillTopic.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DrillTopicCreateManyArgs>(args?: SelectSubset<T, DrillTopicCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DrillTopics and returns the data saved in the database.
+     * @param {DrillTopicCreateManyAndReturnArgs} args - Arguments to create many DrillTopics.
+     * @example
+     * // Create many DrillTopics
+     * const drillTopic = await prisma.drillTopic.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DrillTopics and only return the `id`
+     * const drillTopicWithIdOnly = await prisma.drillTopic.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DrillTopicCreateManyAndReturnArgs>(args?: SelectSubset<T, DrillTopicCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DrillTopic.
+     * @param {DrillTopicDeleteArgs} args - Arguments to delete one DrillTopic.
+     * @example
+     * // Delete one DrillTopic
+     * const DrillTopic = await prisma.drillTopic.delete({
+     *   where: {
+     *     // ... filter to delete one DrillTopic
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DrillTopicDeleteArgs>(args: SelectSubset<T, DrillTopicDeleteArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DrillTopic.
+     * @param {DrillTopicUpdateArgs} args - Arguments to update one DrillTopic.
+     * @example
+     * // Update one DrillTopic
+     * const drillTopic = await prisma.drillTopic.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DrillTopicUpdateArgs>(args: SelectSubset<T, DrillTopicUpdateArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DrillTopics.
+     * @param {DrillTopicDeleteManyArgs} args - Arguments to filter DrillTopics to delete.
+     * @example
+     * // Delete a few DrillTopics
+     * const { count } = await prisma.drillTopic.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DrillTopicDeleteManyArgs>(args?: SelectSubset<T, DrillTopicDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DrillTopics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DrillTopics
+     * const drillTopic = await prisma.drillTopic.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DrillTopicUpdateManyArgs>(args: SelectSubset<T, DrillTopicUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DrillTopics and returns the data updated in the database.
+     * @param {DrillTopicUpdateManyAndReturnArgs} args - Arguments to update many DrillTopics.
+     * @example
+     * // Update many DrillTopics
+     * const drillTopic = await prisma.drillTopic.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DrillTopics and only return the `id`
+     * const drillTopicWithIdOnly = await prisma.drillTopic.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DrillTopicUpdateManyAndReturnArgs>(args: SelectSubset<T, DrillTopicUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DrillTopic.
+     * @param {DrillTopicUpsertArgs} args - Arguments to update or create a DrillTopic.
+     * @example
+     * // Update or create a DrillTopic
+     * const drillTopic = await prisma.drillTopic.upsert({
+     *   create: {
+     *     // ... data to create a DrillTopic
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DrillTopic we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DrillTopicUpsertArgs>(args: SelectSubset<T, DrillTopicUpsertArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DrillTopics.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicCountArgs} args - Arguments to filter DrillTopics to count.
+     * @example
+     * // Count the number of DrillTopics
+     * const count = await prisma.drillTopic.count({
+     *   where: {
+     *     // ... the filter for the DrillTopics we want to count
+     *   }
+     * })
+    **/
+    count<T extends DrillTopicCountArgs>(
+      args?: Subset<T, DrillTopicCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DrillTopicCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DrillTopic.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DrillTopicAggregateArgs>(args: Subset<T, DrillTopicAggregateArgs>): Prisma.PrismaPromise<GetDrillTopicAggregateType<T>>
+
+    /**
+     * Group by DrillTopic.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DrillTopicGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DrillTopicGroupByArgs['orderBy'] }
+        : { orderBy?: DrillTopicGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DrillTopicGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDrillTopicGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DrillTopic model
+   */
+  readonly fields: DrillTopicFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DrillTopic.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DrillTopicClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    drills<T extends DrillTopic$drillsArgs<ExtArgs> = {}>(args?: Subset<T, DrillTopic$drillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DrillTopic model
+   */
+  interface DrillTopicFieldRefs {
+    readonly id: FieldRef<"DrillTopic", 'Int'>
+    readonly clubId: FieldRef<"DrillTopic", 'Int'>
+    readonly key: FieldRef<"DrillTopic", 'String'>
+    readonly name: FieldRef<"DrillTopic", 'String'>
+    readonly order: FieldRef<"DrillTopic", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DrillTopic findUnique
+   */
+  export type DrillTopicFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopic to fetch.
+     */
+    where: DrillTopicWhereUniqueInput
+  }
+
+  /**
+   * DrillTopic findUniqueOrThrow
+   */
+  export type DrillTopicFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopic to fetch.
+     */
+    where: DrillTopicWhereUniqueInput
+  }
+
+  /**
+   * DrillTopic findFirst
+   */
+  export type DrillTopicFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopic to fetch.
+     */
+    where?: DrillTopicWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillTopics to fetch.
+     */
+    orderBy?: DrillTopicOrderByWithRelationInput | DrillTopicOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DrillTopics.
+     */
+    cursor?: DrillTopicWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillTopics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillTopics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillTopics.
+     */
+    distinct?: DrillTopicScalarFieldEnum | DrillTopicScalarFieldEnum[]
+  }
+
+  /**
+   * DrillTopic findFirstOrThrow
+   */
+  export type DrillTopicFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopic to fetch.
+     */
+    where?: DrillTopicWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillTopics to fetch.
+     */
+    orderBy?: DrillTopicOrderByWithRelationInput | DrillTopicOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DrillTopics.
+     */
+    cursor?: DrillTopicWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillTopics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillTopics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillTopics.
+     */
+    distinct?: DrillTopicScalarFieldEnum | DrillTopicScalarFieldEnum[]
+  }
+
+  /**
+   * DrillTopic findMany
+   */
+  export type DrillTopicFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopics to fetch.
+     */
+    where?: DrillTopicWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillTopics to fetch.
+     */
+    orderBy?: DrillTopicOrderByWithRelationInput | DrillTopicOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DrillTopics.
+     */
+    cursor?: DrillTopicWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillTopics from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillTopics.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillTopics.
+     */
+    distinct?: DrillTopicScalarFieldEnum | DrillTopicScalarFieldEnum[]
+  }
+
+  /**
+   * DrillTopic create
+   */
+  export type DrillTopicCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DrillTopic.
+     */
+    data: XOR<DrillTopicCreateInput, DrillTopicUncheckedCreateInput>
+  }
+
+  /**
+   * DrillTopic createMany
+   */
+  export type DrillTopicCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DrillTopics.
+     */
+    data: DrillTopicCreateManyInput | DrillTopicCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DrillTopic createManyAndReturn
+   */
+  export type DrillTopicCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * The data used to create many DrillTopics.
+     */
+    data: DrillTopicCreateManyInput | DrillTopicCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DrillTopic update
+   */
+  export type DrillTopicUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DrillTopic.
+     */
+    data: XOR<DrillTopicUpdateInput, DrillTopicUncheckedUpdateInput>
+    /**
+     * Choose, which DrillTopic to update.
+     */
+    where: DrillTopicWhereUniqueInput
+  }
+
+  /**
+   * DrillTopic updateMany
+   */
+  export type DrillTopicUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DrillTopics.
+     */
+    data: XOR<DrillTopicUpdateManyMutationInput, DrillTopicUncheckedUpdateManyInput>
+    /**
+     * Filter which DrillTopics to update
+     */
+    where?: DrillTopicWhereInput
+    /**
+     * Limit how many DrillTopics to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DrillTopic updateManyAndReturn
+   */
+  export type DrillTopicUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * The data used to update DrillTopics.
+     */
+    data: XOR<DrillTopicUpdateManyMutationInput, DrillTopicUncheckedUpdateManyInput>
+    /**
+     * Filter which DrillTopics to update
+     */
+    where?: DrillTopicWhereInput
+    /**
+     * Limit how many DrillTopics to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DrillTopic upsert
+   */
+  export type DrillTopicUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DrillTopic to update in case it exists.
+     */
+    where: DrillTopicWhereUniqueInput
+    /**
+     * In case the DrillTopic found by the `where` argument doesn't exist, create a new DrillTopic with this data.
+     */
+    create: XOR<DrillTopicCreateInput, DrillTopicUncheckedCreateInput>
+    /**
+     * In case the DrillTopic was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DrillTopicUpdateInput, DrillTopicUncheckedUpdateInput>
+  }
+
+  /**
+   * DrillTopic delete
+   */
+  export type DrillTopicDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    /**
+     * Filter which DrillTopic to delete.
+     */
+    where: DrillTopicWhereUniqueInput
+  }
+
+  /**
+   * DrillTopic deleteMany
+   */
+  export type DrillTopicDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DrillTopics to delete
+     */
+    where?: DrillTopicWhereInput
+    /**
+     * Limit how many DrillTopics to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DrillTopic.drills
+   */
+  export type DrillTopic$drillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    where?: DrillTopicLinkWhereInput
+    orderBy?: DrillTopicLinkOrderByWithRelationInput | DrillTopicLinkOrderByWithRelationInput[]
+    cursor?: DrillTopicLinkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DrillTopicLinkScalarFieldEnum | DrillTopicLinkScalarFieldEnum[]
+  }
+
+  /**
+   * DrillTopic without action
+   */
+  export type DrillTopicDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model DrillTopicLink
+   */
+
+  export type AggregateDrillTopicLink = {
+    _count: DrillTopicLinkCountAggregateOutputType | null
+    _avg: DrillTopicLinkAvgAggregateOutputType | null
+    _sum: DrillTopicLinkSumAggregateOutputType | null
+    _min: DrillTopicLinkMinAggregateOutputType | null
+    _max: DrillTopicLinkMaxAggregateOutputType | null
+  }
+
+  export type DrillTopicLinkAvgAggregateOutputType = {
+    drillId: number | null
+    topicId: number | null
+  }
+
+  export type DrillTopicLinkSumAggregateOutputType = {
+    drillId: number | null
+    topicId: number | null
+  }
+
+  export type DrillTopicLinkMinAggregateOutputType = {
+    drillId: number | null
+    topicId: number | null
+  }
+
+  export type DrillTopicLinkMaxAggregateOutputType = {
+    drillId: number | null
+    topicId: number | null
+  }
+
+  export type DrillTopicLinkCountAggregateOutputType = {
+    drillId: number
+    topicId: number
+    _all: number
+  }
+
+
+  export type DrillTopicLinkAvgAggregateInputType = {
+    drillId?: true
+    topicId?: true
+  }
+
+  export type DrillTopicLinkSumAggregateInputType = {
+    drillId?: true
+    topicId?: true
+  }
+
+  export type DrillTopicLinkMinAggregateInputType = {
+    drillId?: true
+    topicId?: true
+  }
+
+  export type DrillTopicLinkMaxAggregateInputType = {
+    drillId?: true
+    topicId?: true
+  }
+
+  export type DrillTopicLinkCountAggregateInputType = {
+    drillId?: true
+    topicId?: true
+    _all?: true
+  }
+
+  export type DrillTopicLinkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DrillTopicLink to aggregate.
+     */
+    where?: DrillTopicLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillTopicLinks to fetch.
+     */
+    orderBy?: DrillTopicLinkOrderByWithRelationInput | DrillTopicLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: DrillTopicLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillTopicLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillTopicLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned DrillTopicLinks
+    **/
+    _count?: true | DrillTopicLinkCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: DrillTopicLinkAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: DrillTopicLinkSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: DrillTopicLinkMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: DrillTopicLinkMaxAggregateInputType
+  }
+
+  export type GetDrillTopicLinkAggregateType<T extends DrillTopicLinkAggregateArgs> = {
+        [P in keyof T & keyof AggregateDrillTopicLink]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateDrillTopicLink[P]>
+      : GetScalarType<T[P], AggregateDrillTopicLink[P]>
+  }
+
+
+
+
+  export type DrillTopicLinkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: DrillTopicLinkWhereInput
+    orderBy?: DrillTopicLinkOrderByWithAggregationInput | DrillTopicLinkOrderByWithAggregationInput[]
+    by: DrillTopicLinkScalarFieldEnum[] | DrillTopicLinkScalarFieldEnum
+    having?: DrillTopicLinkScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: DrillTopicLinkCountAggregateInputType | true
+    _avg?: DrillTopicLinkAvgAggregateInputType
+    _sum?: DrillTopicLinkSumAggregateInputType
+    _min?: DrillTopicLinkMinAggregateInputType
+    _max?: DrillTopicLinkMaxAggregateInputType
+  }
+
+  export type DrillTopicLinkGroupByOutputType = {
+    drillId: number
+    topicId: number
+    _count: DrillTopicLinkCountAggregateOutputType | null
+    _avg: DrillTopicLinkAvgAggregateOutputType | null
+    _sum: DrillTopicLinkSumAggregateOutputType | null
+    _min: DrillTopicLinkMinAggregateOutputType | null
+    _max: DrillTopicLinkMaxAggregateOutputType | null
+  }
+
+  type GetDrillTopicLinkGroupByPayload<T extends DrillTopicLinkGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<DrillTopicLinkGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof DrillTopicLinkGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], DrillTopicLinkGroupByOutputType[P]>
+            : GetScalarType<T[P], DrillTopicLinkGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type DrillTopicLinkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    drillId?: boolean
+    topicId?: boolean
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+    topic?: boolean | DrillTopicDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillTopicLink"]>
+
+  export type DrillTopicLinkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    drillId?: boolean
+    topicId?: boolean
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+    topic?: boolean | DrillTopicDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillTopicLink"]>
+
+  export type DrillTopicLinkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    drillId?: boolean
+    topicId?: boolean
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+    topic?: boolean | DrillTopicDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["drillTopicLink"]>
+
+  export type DrillTopicLinkSelectScalar = {
+    drillId?: boolean
+    topicId?: boolean
+  }
+
+  export type DrillTopicLinkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"drillId" | "topicId", ExtArgs["result"]["drillTopicLink"]>
+  export type DrillTopicLinkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+    topic?: boolean | DrillTopicDefaultArgs<ExtArgs>
+  }
+  export type DrillTopicLinkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+    topic?: boolean | DrillTopicDefaultArgs<ExtArgs>
+  }
+  export type DrillTopicLinkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    drill?: boolean | DrillDefaultArgs<ExtArgs>
+    topic?: boolean | DrillTopicDefaultArgs<ExtArgs>
+  }
+
+  export type $DrillTopicLinkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "DrillTopicLink"
+    objects: {
+      drill: Prisma.$DrillPayload<ExtArgs>
+      topic: Prisma.$DrillTopicPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      drillId: number
+      topicId: number
+    }, ExtArgs["result"]["drillTopicLink"]>
+    composites: {}
+  }
+
+  type DrillTopicLinkGetPayload<S extends boolean | null | undefined | DrillTopicLinkDefaultArgs> = $Result.GetResult<Prisma.$DrillTopicLinkPayload, S>
+
+  type DrillTopicLinkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<DrillTopicLinkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: DrillTopicLinkCountAggregateInputType | true
+    }
+
+  export interface DrillTopicLinkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['DrillTopicLink'], meta: { name: 'DrillTopicLink' } }
+    /**
+     * Find zero or one DrillTopicLink that matches the filter.
+     * @param {DrillTopicLinkFindUniqueArgs} args - Arguments to find a DrillTopicLink
+     * @example
+     * // Get one DrillTopicLink
+     * const drillTopicLink = await prisma.drillTopicLink.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends DrillTopicLinkFindUniqueArgs>(args: SelectSubset<T, DrillTopicLinkFindUniqueArgs<ExtArgs>>): Prisma__DrillTopicLinkClient<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one DrillTopicLink that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {DrillTopicLinkFindUniqueOrThrowArgs} args - Arguments to find a DrillTopicLink
+     * @example
+     * // Get one DrillTopicLink
+     * const drillTopicLink = await prisma.drillTopicLink.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends DrillTopicLinkFindUniqueOrThrowArgs>(args: SelectSubset<T, DrillTopicLinkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__DrillTopicLinkClient<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DrillTopicLink that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicLinkFindFirstArgs} args - Arguments to find a DrillTopicLink
+     * @example
+     * // Get one DrillTopicLink
+     * const drillTopicLink = await prisma.drillTopicLink.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends DrillTopicLinkFindFirstArgs>(args?: SelectSubset<T, DrillTopicLinkFindFirstArgs<ExtArgs>>): Prisma__DrillTopicLinkClient<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first DrillTopicLink that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicLinkFindFirstOrThrowArgs} args - Arguments to find a DrillTopicLink
+     * @example
+     * // Get one DrillTopicLink
+     * const drillTopicLink = await prisma.drillTopicLink.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends DrillTopicLinkFindFirstOrThrowArgs>(args?: SelectSubset<T, DrillTopicLinkFindFirstOrThrowArgs<ExtArgs>>): Prisma__DrillTopicLinkClient<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more DrillTopicLinks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicLinkFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all DrillTopicLinks
+     * const drillTopicLinks = await prisma.drillTopicLink.findMany()
+     * 
+     * // Get first 10 DrillTopicLinks
+     * const drillTopicLinks = await prisma.drillTopicLink.findMany({ take: 10 })
+     * 
+     * // Only select the `drillId`
+     * const drillTopicLinkWithDrillIdOnly = await prisma.drillTopicLink.findMany({ select: { drillId: true } })
+     * 
+     */
+    findMany<T extends DrillTopicLinkFindManyArgs>(args?: SelectSubset<T, DrillTopicLinkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a DrillTopicLink.
+     * @param {DrillTopicLinkCreateArgs} args - Arguments to create a DrillTopicLink.
+     * @example
+     * // Create one DrillTopicLink
+     * const DrillTopicLink = await prisma.drillTopicLink.create({
+     *   data: {
+     *     // ... data to create a DrillTopicLink
+     *   }
+     * })
+     * 
+     */
+    create<T extends DrillTopicLinkCreateArgs>(args: SelectSubset<T, DrillTopicLinkCreateArgs<ExtArgs>>): Prisma__DrillTopicLinkClient<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many DrillTopicLinks.
+     * @param {DrillTopicLinkCreateManyArgs} args - Arguments to create many DrillTopicLinks.
+     * @example
+     * // Create many DrillTopicLinks
+     * const drillTopicLink = await prisma.drillTopicLink.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends DrillTopicLinkCreateManyArgs>(args?: SelectSubset<T, DrillTopicLinkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many DrillTopicLinks and returns the data saved in the database.
+     * @param {DrillTopicLinkCreateManyAndReturnArgs} args - Arguments to create many DrillTopicLinks.
+     * @example
+     * // Create many DrillTopicLinks
+     * const drillTopicLink = await prisma.drillTopicLink.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many DrillTopicLinks and only return the `drillId`
+     * const drillTopicLinkWithDrillIdOnly = await prisma.drillTopicLink.createManyAndReturn({
+     *   select: { drillId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends DrillTopicLinkCreateManyAndReturnArgs>(args?: SelectSubset<T, DrillTopicLinkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a DrillTopicLink.
+     * @param {DrillTopicLinkDeleteArgs} args - Arguments to delete one DrillTopicLink.
+     * @example
+     * // Delete one DrillTopicLink
+     * const DrillTopicLink = await prisma.drillTopicLink.delete({
+     *   where: {
+     *     // ... filter to delete one DrillTopicLink
+     *   }
+     * })
+     * 
+     */
+    delete<T extends DrillTopicLinkDeleteArgs>(args: SelectSubset<T, DrillTopicLinkDeleteArgs<ExtArgs>>): Prisma__DrillTopicLinkClient<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one DrillTopicLink.
+     * @param {DrillTopicLinkUpdateArgs} args - Arguments to update one DrillTopicLink.
+     * @example
+     * // Update one DrillTopicLink
+     * const drillTopicLink = await prisma.drillTopicLink.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends DrillTopicLinkUpdateArgs>(args: SelectSubset<T, DrillTopicLinkUpdateArgs<ExtArgs>>): Prisma__DrillTopicLinkClient<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more DrillTopicLinks.
+     * @param {DrillTopicLinkDeleteManyArgs} args - Arguments to filter DrillTopicLinks to delete.
+     * @example
+     * // Delete a few DrillTopicLinks
+     * const { count } = await prisma.drillTopicLink.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends DrillTopicLinkDeleteManyArgs>(args?: SelectSubset<T, DrillTopicLinkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DrillTopicLinks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicLinkUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many DrillTopicLinks
+     * const drillTopicLink = await prisma.drillTopicLink.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends DrillTopicLinkUpdateManyArgs>(args: SelectSubset<T, DrillTopicLinkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more DrillTopicLinks and returns the data updated in the database.
+     * @param {DrillTopicLinkUpdateManyAndReturnArgs} args - Arguments to update many DrillTopicLinks.
+     * @example
+     * // Update many DrillTopicLinks
+     * const drillTopicLink = await prisma.drillTopicLink.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more DrillTopicLinks and only return the `drillId`
+     * const drillTopicLinkWithDrillIdOnly = await prisma.drillTopicLink.updateManyAndReturn({
+     *   select: { drillId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends DrillTopicLinkUpdateManyAndReturnArgs>(args: SelectSubset<T, DrillTopicLinkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one DrillTopicLink.
+     * @param {DrillTopicLinkUpsertArgs} args - Arguments to update or create a DrillTopicLink.
+     * @example
+     * // Update or create a DrillTopicLink
+     * const drillTopicLink = await prisma.drillTopicLink.upsert({
+     *   create: {
+     *     // ... data to create a DrillTopicLink
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the DrillTopicLink we want to update
+     *   }
+     * })
+     */
+    upsert<T extends DrillTopicLinkUpsertArgs>(args: SelectSubset<T, DrillTopicLinkUpsertArgs<ExtArgs>>): Prisma__DrillTopicLinkClient<$Result.GetResult<Prisma.$DrillTopicLinkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of DrillTopicLinks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicLinkCountArgs} args - Arguments to filter DrillTopicLinks to count.
+     * @example
+     * // Count the number of DrillTopicLinks
+     * const count = await prisma.drillTopicLink.count({
+     *   where: {
+     *     // ... the filter for the DrillTopicLinks we want to count
+     *   }
+     * })
+    **/
+    count<T extends DrillTopicLinkCountArgs>(
+      args?: Subset<T, DrillTopicLinkCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], DrillTopicLinkCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a DrillTopicLink.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicLinkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends DrillTopicLinkAggregateArgs>(args: Subset<T, DrillTopicLinkAggregateArgs>): Prisma.PrismaPromise<GetDrillTopicLinkAggregateType<T>>
+
+    /**
+     * Group by DrillTopicLink.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {DrillTopicLinkGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends DrillTopicLinkGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: DrillTopicLinkGroupByArgs['orderBy'] }
+        : { orderBy?: DrillTopicLinkGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, DrillTopicLinkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetDrillTopicLinkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the DrillTopicLink model
+   */
+  readonly fields: DrillTopicLinkFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for DrillTopicLink.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__DrillTopicLinkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    drill<T extends DrillDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DrillDefaultArgs<ExtArgs>>): Prisma__DrillClient<$Result.GetResult<Prisma.$DrillPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    topic<T extends DrillTopicDefaultArgs<ExtArgs> = {}>(args?: Subset<T, DrillTopicDefaultArgs<ExtArgs>>): Prisma__DrillTopicClient<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the DrillTopicLink model
+   */
+  interface DrillTopicLinkFieldRefs {
+    readonly drillId: FieldRef<"DrillTopicLink", 'Int'>
+    readonly topicId: FieldRef<"DrillTopicLink", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * DrillTopicLink findUnique
+   */
+  export type DrillTopicLinkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopicLink to fetch.
+     */
+    where: DrillTopicLinkWhereUniqueInput
+  }
+
+  /**
+   * DrillTopicLink findUniqueOrThrow
+   */
+  export type DrillTopicLinkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopicLink to fetch.
+     */
+    where: DrillTopicLinkWhereUniqueInput
+  }
+
+  /**
+   * DrillTopicLink findFirst
+   */
+  export type DrillTopicLinkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopicLink to fetch.
+     */
+    where?: DrillTopicLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillTopicLinks to fetch.
+     */
+    orderBy?: DrillTopicLinkOrderByWithRelationInput | DrillTopicLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DrillTopicLinks.
+     */
+    cursor?: DrillTopicLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillTopicLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillTopicLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillTopicLinks.
+     */
+    distinct?: DrillTopicLinkScalarFieldEnum | DrillTopicLinkScalarFieldEnum[]
+  }
+
+  /**
+   * DrillTopicLink findFirstOrThrow
+   */
+  export type DrillTopicLinkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopicLink to fetch.
+     */
+    where?: DrillTopicLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillTopicLinks to fetch.
+     */
+    orderBy?: DrillTopicLinkOrderByWithRelationInput | DrillTopicLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for DrillTopicLinks.
+     */
+    cursor?: DrillTopicLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillTopicLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillTopicLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillTopicLinks.
+     */
+    distinct?: DrillTopicLinkScalarFieldEnum | DrillTopicLinkScalarFieldEnum[]
+  }
+
+  /**
+   * DrillTopicLink findMany
+   */
+  export type DrillTopicLinkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * Filter, which DrillTopicLinks to fetch.
+     */
+    where?: DrillTopicLinkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of DrillTopicLinks to fetch.
+     */
+    orderBy?: DrillTopicLinkOrderByWithRelationInput | DrillTopicLinkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing DrillTopicLinks.
+     */
+    cursor?: DrillTopicLinkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` DrillTopicLinks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` DrillTopicLinks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of DrillTopicLinks.
+     */
+    distinct?: DrillTopicLinkScalarFieldEnum | DrillTopicLinkScalarFieldEnum[]
+  }
+
+  /**
+   * DrillTopicLink create
+   */
+  export type DrillTopicLinkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * The data needed to create a DrillTopicLink.
+     */
+    data: XOR<DrillTopicLinkCreateInput, DrillTopicLinkUncheckedCreateInput>
+  }
+
+  /**
+   * DrillTopicLink createMany
+   */
+  export type DrillTopicLinkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many DrillTopicLinks.
+     */
+    data: DrillTopicLinkCreateManyInput | DrillTopicLinkCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * DrillTopicLink createManyAndReturn
+   */
+  export type DrillTopicLinkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * The data used to create many DrillTopicLinks.
+     */
+    data: DrillTopicLinkCreateManyInput | DrillTopicLinkCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DrillTopicLink update
+   */
+  export type DrillTopicLinkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * The data needed to update a DrillTopicLink.
+     */
+    data: XOR<DrillTopicLinkUpdateInput, DrillTopicLinkUncheckedUpdateInput>
+    /**
+     * Choose, which DrillTopicLink to update.
+     */
+    where: DrillTopicLinkWhereUniqueInput
+  }
+
+  /**
+   * DrillTopicLink updateMany
+   */
+  export type DrillTopicLinkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update DrillTopicLinks.
+     */
+    data: XOR<DrillTopicLinkUpdateManyMutationInput, DrillTopicLinkUncheckedUpdateManyInput>
+    /**
+     * Filter which DrillTopicLinks to update
+     */
+    where?: DrillTopicLinkWhereInput
+    /**
+     * Limit how many DrillTopicLinks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * DrillTopicLink updateManyAndReturn
+   */
+  export type DrillTopicLinkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * The data used to update DrillTopicLinks.
+     */
+    data: XOR<DrillTopicLinkUpdateManyMutationInput, DrillTopicLinkUncheckedUpdateManyInput>
+    /**
+     * Filter which DrillTopicLinks to update
+     */
+    where?: DrillTopicLinkWhereInput
+    /**
+     * Limit how many DrillTopicLinks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * DrillTopicLink upsert
+   */
+  export type DrillTopicLinkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * The filter to search for the DrillTopicLink to update in case it exists.
+     */
+    where: DrillTopicLinkWhereUniqueInput
+    /**
+     * In case the DrillTopicLink found by the `where` argument doesn't exist, create a new DrillTopicLink with this data.
+     */
+    create: XOR<DrillTopicLinkCreateInput, DrillTopicLinkUncheckedCreateInput>
+    /**
+     * In case the DrillTopicLink was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<DrillTopicLinkUpdateInput, DrillTopicLinkUncheckedUpdateInput>
+  }
+
+  /**
+   * DrillTopicLink delete
+   */
+  export type DrillTopicLinkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
+    /**
+     * Filter which DrillTopicLink to delete.
+     */
+    where: DrillTopicLinkWhereUniqueInput
+  }
+
+  /**
+   * DrillTopicLink deleteMany
+   */
+  export type DrillTopicLinkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which DrillTopicLinks to delete
+     */
+    where?: DrillTopicLinkWhereInput
+    /**
+     * Limit how many DrillTopicLinks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * DrillTopicLink without action
+   */
+  export type DrillTopicLinkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopicLink
+     */
+    select?: DrillTopicLinkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopicLink
+     */
+    omit?: DrillTopicLinkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicLinkInclude<ExtArgs> | null
   }
 
 
@@ -22177,6 +27162,7 @@ export namespace Prisma {
     teams?: boolean | Echelon$teamsArgs<ExtArgs>
     competitions?: boolean | Echelon$competitionsArgs<ExtArgs>
     equipmentColors?: boolean | Echelon$equipmentColorsArgs<ExtArgs>
+    drills?: boolean | Echelon$drillsArgs<ExtArgs>
     _count?: boolean | EchelonCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["echelon"]>
 
@@ -22218,6 +27204,7 @@ export namespace Prisma {
     teams?: boolean | Echelon$teamsArgs<ExtArgs>
     competitions?: boolean | Echelon$competitionsArgs<ExtArgs>
     equipmentColors?: boolean | Echelon$equipmentColorsArgs<ExtArgs>
+    drills?: boolean | Echelon$drillsArgs<ExtArgs>
     _count?: boolean | EchelonCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type EchelonIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -22229,6 +27216,7 @@ export namespace Prisma {
       teams: Prisma.$TeamPayload<ExtArgs>[]
       competitions: Prisma.$CompetitionPayload<ExtArgs>[]
       equipmentColors: Prisma.$EquipmentColorPayload<ExtArgs>[]
+      drills: Prisma.$DrillPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -22636,6 +27624,7 @@ export namespace Prisma {
     teams<T extends Echelon$teamsArgs<ExtArgs> = {}>(args?: Subset<T, Echelon$teamsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     competitions<T extends Echelon$competitionsArgs<ExtArgs> = {}>(args?: Subset<T, Echelon$competitionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CompetitionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     equipmentColors<T extends Echelon$equipmentColorsArgs<ExtArgs> = {}>(args?: Subset<T, Echelon$equipmentColorsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipmentColorPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    drills<T extends Echelon$drillsArgs<ExtArgs> = {}>(args?: Subset<T, Echelon$drillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23138,6 +28127,30 @@ export namespace Prisma {
   }
 
   /**
+   * Echelon.drills
+   */
+  export type Echelon$drillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Drill
+     */
+    select?: DrillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Drill
+     */
+    omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+    where?: DrillWhereInput
+    orderBy?: DrillOrderByWithRelationInput | DrillOrderByWithRelationInput[]
+    cursor?: DrillWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DrillScalarFieldEnum | DrillScalarFieldEnum[]
+  }
+
+  /**
    * Echelon without action
    */
   export type EchelonDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -23170,11 +28183,13 @@ export namespace Prisma {
 
   export type ClubAvgAggregateOutputType = {
     id: number | null
+    courtLogoRotation: number | null
     fpbClubId: number | null
   }
 
   export type ClubSumAggregateOutputType = {
     id: number | null
+    courtLogoRotation: number | null
     fpbClubId: number | null
   }
 
@@ -23186,6 +28201,13 @@ export namespace Prisma {
     federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
+    courtBackground: string | null
+    courtKeyColor: string | null
+    courtCenterColor: string | null
+    courtLineColor: string | null
+    courtMarginColor: string | null
+    courtShowLogo: boolean | null
+    courtLogoRotation: number | null
     fpbClubId: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -23199,6 +28221,13 @@ export namespace Prisma {
     federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
+    courtBackground: string | null
+    courtKeyColor: string | null
+    courtCenterColor: string | null
+    courtLineColor: string | null
+    courtMarginColor: string | null
+    courtShowLogo: boolean | null
+    courtLogoRotation: number | null
     fpbClubId: number | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -23212,6 +28241,13 @@ export namespace Prisma {
     federationLogo: number
     backgroundColor: number
     foregroundColor: number
+    courtBackground: number
+    courtKeyColor: number
+    courtCenterColor: number
+    courtLineColor: number
+    courtMarginColor: number
+    courtShowLogo: number
+    courtLogoRotation: number
     fpbClubId: number
     createdAt: number
     updatedAt: number
@@ -23221,11 +28257,13 @@ export namespace Prisma {
 
   export type ClubAvgAggregateInputType = {
     id?: true
+    courtLogoRotation?: true
     fpbClubId?: true
   }
 
   export type ClubSumAggregateInputType = {
     id?: true
+    courtLogoRotation?: true
     fpbClubId?: true
   }
 
@@ -23237,6 +28275,13 @@ export namespace Prisma {
     federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
+    courtBackground?: true
+    courtKeyColor?: true
+    courtCenterColor?: true
+    courtLineColor?: true
+    courtMarginColor?: true
+    courtShowLogo?: true
+    courtLogoRotation?: true
     fpbClubId?: true
     createdAt?: true
     updatedAt?: true
@@ -23250,6 +28295,13 @@ export namespace Prisma {
     federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
+    courtBackground?: true
+    courtKeyColor?: true
+    courtCenterColor?: true
+    courtLineColor?: true
+    courtMarginColor?: true
+    courtShowLogo?: true
+    courtLogoRotation?: true
     fpbClubId?: true
     createdAt?: true
     updatedAt?: true
@@ -23263,6 +28315,13 @@ export namespace Prisma {
     federationLogo?: true
     backgroundColor?: true
     foregroundColor?: true
+    courtBackground?: true
+    courtKeyColor?: true
+    courtCenterColor?: true
+    courtLineColor?: true
+    courtMarginColor?: true
+    courtShowLogo?: true
+    courtLogoRotation?: true
     fpbClubId?: true
     createdAt?: true
     updatedAt?: true
@@ -23363,6 +28422,13 @@ export namespace Prisma {
     federationLogo: string | null
     backgroundColor: string | null
     foregroundColor: string | null
+    courtBackground: string | null
+    courtKeyColor: string | null
+    courtCenterColor: string | null
+    courtLineColor: string | null
+    courtMarginColor: string | null
+    courtShowLogo: boolean
+    courtLogoRotation: number
     fpbClubId: number | null
     createdAt: Date
     updatedAt: Date
@@ -23395,6 +28461,13 @@ export namespace Prisma {
     federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
+    courtBackground?: boolean
+    courtKeyColor?: boolean
+    courtCenterColor?: boolean
+    courtLineColor?: boolean
+    courtMarginColor?: boolean
+    courtShowLogo?: boolean
+    courtLogoRotation?: boolean
     fpbClubId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -23408,6 +28481,11 @@ export namespace Prisma {
     staff?: boolean | Club$staffArgs<ExtArgs>
     alerts?: boolean | Club$alertsArgs<ExtArgs>
     emailSettings?: boolean | Club$emailSettingsArgs<ExtArgs>
+    practices?: boolean | Club$practicesArgs<ExtArgs>
+    practiceSettings?: boolean | Club$practiceSettingsArgs<ExtArgs>
+    attendanceReasons?: boolean | Club$attendanceReasonsArgs<ExtArgs>
+    drills?: boolean | Club$drillsArgs<ExtArgs>
+    drillTopics?: boolean | Club$drillTopicsArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["club"]>
 
@@ -23419,6 +28497,13 @@ export namespace Prisma {
     federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
+    courtBackground?: boolean
+    courtKeyColor?: boolean
+    courtCenterColor?: boolean
+    courtLineColor?: boolean
+    courtMarginColor?: boolean
+    courtShowLogo?: boolean
+    courtLogoRotation?: boolean
     fpbClubId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -23432,6 +28517,13 @@ export namespace Prisma {
     federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
+    courtBackground?: boolean
+    courtKeyColor?: boolean
+    courtCenterColor?: boolean
+    courtLineColor?: boolean
+    courtMarginColor?: boolean
+    courtShowLogo?: boolean
+    courtLogoRotation?: boolean
     fpbClubId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -23445,12 +28537,19 @@ export namespace Prisma {
     federationLogo?: boolean
     backgroundColor?: boolean
     foregroundColor?: boolean
+    courtBackground?: boolean
+    courtKeyColor?: boolean
+    courtCenterColor?: boolean
+    courtLineColor?: boolean
+    courtMarginColor?: boolean
+    courtShowLogo?: boolean
+    courtLogoRotation?: boolean
     fpbClubId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortName" | "image" | "federationLogo" | "backgroundColor" | "foregroundColor" | "fpbClubId" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
+  export type ClubOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "shortName" | "image" | "federationLogo" | "backgroundColor" | "foregroundColor" | "courtBackground" | "courtKeyColor" | "courtCenterColor" | "courtLineColor" | "courtMarginColor" | "courtShowLogo" | "courtLogoRotation" | "fpbClubId" | "createdAt" | "updatedAt", ExtArgs["result"]["club"]>
   export type ClubInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | Club$accountsArgs<ExtArgs>
     athletes?: boolean | Club$athletesArgs<ExtArgs>
@@ -23462,6 +28561,11 @@ export namespace Prisma {
     staff?: boolean | Club$staffArgs<ExtArgs>
     alerts?: boolean | Club$alertsArgs<ExtArgs>
     emailSettings?: boolean | Club$emailSettingsArgs<ExtArgs>
+    practices?: boolean | Club$practicesArgs<ExtArgs>
+    practiceSettings?: boolean | Club$practiceSettingsArgs<ExtArgs>
+    attendanceReasons?: boolean | Club$attendanceReasonsArgs<ExtArgs>
+    drills?: boolean | Club$drillsArgs<ExtArgs>
+    drillTopics?: boolean | Club$drillTopicsArgs<ExtArgs>
     _count?: boolean | ClubCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ClubIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -23480,6 +28584,11 @@ export namespace Prisma {
       staff: Prisma.$StaffPayload<ExtArgs>[]
       alerts: Prisma.$AlertPayload<ExtArgs>[]
       emailSettings: Prisma.$ClubEmailSettingsPayload<ExtArgs> | null
+      practices: Prisma.$PracticePayload<ExtArgs>[]
+      practiceSettings: Prisma.$ClubPracticeSettingsPayload<ExtArgs> | null
+      attendanceReasons: Prisma.$ClubAttendanceReasonPayload<ExtArgs>[]
+      drills: Prisma.$DrillPayload<ExtArgs>[]
+      drillTopics: Prisma.$DrillTopicPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -23489,6 +28598,17 @@ export namespace Prisma {
       federationLogo: string | null
       backgroundColor: string | null
       foregroundColor: string | null
+      courtBackground: string | null
+      courtKeyColor: string | null
+      courtCenterColor: string | null
+      courtLineColor: string | null
+      courtMarginColor: string | null
+      courtShowLogo: boolean
+      /**
+       * Rotation (degrees, 0/90/180/270) applied to the centre-circle logo so
+       *    * the crest can sit upright when viewed from either end of the court.
+       */
+      courtLogoRotation: number
       fpbClubId: number | null
       createdAt: Date
       updatedAt: Date
@@ -23896,6 +29016,11 @@ export namespace Prisma {
     staff<T extends Club$staffArgs<ExtArgs> = {}>(args?: Subset<T, Club$staffArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$StaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     alerts<T extends Club$alertsArgs<ExtArgs> = {}>(args?: Subset<T, Club$alertsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AlertPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     emailSettings<T extends Club$emailSettingsArgs<ExtArgs> = {}>(args?: Subset<T, Club$emailSettingsArgs<ExtArgs>>): Prisma__ClubEmailSettingsClient<$Result.GetResult<Prisma.$ClubEmailSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    practices<T extends Club$practicesArgs<ExtArgs> = {}>(args?: Subset<T, Club$practicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    practiceSettings<T extends Club$practiceSettingsArgs<ExtArgs> = {}>(args?: Subset<T, Club$practiceSettingsArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    attendanceReasons<T extends Club$attendanceReasonsArgs<ExtArgs> = {}>(args?: Subset<T, Club$attendanceReasonsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    drills<T extends Club$drillsArgs<ExtArgs> = {}>(args?: Subset<T, Club$drillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    drillTopics<T extends Club$drillTopicsArgs<ExtArgs> = {}>(args?: Subset<T, Club$drillTopicsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$DrillTopicPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -23932,6 +29057,13 @@ export namespace Prisma {
     readonly federationLogo: FieldRef<"Club", 'String'>
     readonly backgroundColor: FieldRef<"Club", 'String'>
     readonly foregroundColor: FieldRef<"Club", 'String'>
+    readonly courtBackground: FieldRef<"Club", 'String'>
+    readonly courtKeyColor: FieldRef<"Club", 'String'>
+    readonly courtCenterColor: FieldRef<"Club", 'String'>
+    readonly courtLineColor: FieldRef<"Club", 'String'>
+    readonly courtMarginColor: FieldRef<"Club", 'String'>
+    readonly courtShowLogo: FieldRef<"Club", 'Boolean'>
+    readonly courtLogoRotation: FieldRef<"Club", 'Int'>
     readonly fpbClubId: FieldRef<"Club", 'Int'>
     readonly createdAt: FieldRef<"Club", 'DateTime'>
     readonly updatedAt: FieldRef<"Club", 'DateTime'>
@@ -24560,6 +29692,121 @@ export namespace Prisma {
      */
     include?: ClubEmailSettingsInclude<ExtArgs> | null
     where?: ClubEmailSettingsWhereInput
+  }
+
+  /**
+   * Club.practices
+   */
+  export type Club$practicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    where?: PracticeWhereInput
+    orderBy?: PracticeOrderByWithRelationInput | PracticeOrderByWithRelationInput[]
+    cursor?: PracticeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PracticeScalarFieldEnum | PracticeScalarFieldEnum[]
+  }
+
+  /**
+   * Club.practiceSettings
+   */
+  export type Club$practiceSettingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    where?: ClubPracticeSettingsWhereInput
+  }
+
+  /**
+   * Club.attendanceReasons
+   */
+  export type Club$attendanceReasonsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    where?: ClubAttendanceReasonWhereInput
+    orderBy?: ClubAttendanceReasonOrderByWithRelationInput | ClubAttendanceReasonOrderByWithRelationInput[]
+    cursor?: ClubAttendanceReasonWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ClubAttendanceReasonScalarFieldEnum | ClubAttendanceReasonScalarFieldEnum[]
+  }
+
+  /**
+   * Club.drills
+   */
+  export type Club$drillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Drill
+     */
+    select?: DrillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Drill
+     */
+    omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+    where?: DrillWhereInput
+    orderBy?: DrillOrderByWithRelationInput | DrillOrderByWithRelationInput[]
+    cursor?: DrillWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DrillScalarFieldEnum | DrillScalarFieldEnum[]
+  }
+
+  /**
+   * Club.drillTopics
+   */
+  export type Club$drillTopicsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the DrillTopic
+     */
+    select?: DrillTopicSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the DrillTopic
+     */
+    omit?: DrillTopicOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillTopicInclude<ExtArgs> | null
+    where?: DrillTopicWhereInput
+    orderBy?: DrillTopicOrderByWithRelationInput | DrillTopicOrderByWithRelationInput[]
+    cursor?: DrillTopicWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: DrillTopicScalarFieldEnum | DrillTopicScalarFieldEnum[]
   }
 
   /**
@@ -30550,6 +35797,8 @@ export namespace Prisma {
     athletes?: boolean | Team$athletesArgs<ExtArgs>
     staff?: boolean | Team$staffArgs<ExtArgs>
     games?: boolean | Team$gamesArgs<ExtArgs>
+    macrocycles?: boolean | Team$macrocyclesArgs<ExtArgs>
+    practices?: boolean | Team$practicesArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["team"]>
 
@@ -30597,6 +35846,8 @@ export namespace Prisma {
     athletes?: boolean | Team$athletesArgs<ExtArgs>
     staff?: boolean | Team$staffArgs<ExtArgs>
     games?: boolean | Team$gamesArgs<ExtArgs>
+    macrocycles?: boolean | Team$macrocyclesArgs<ExtArgs>
+    practices?: boolean | Team$practicesArgs<ExtArgs>
     _count?: boolean | TeamCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type TeamIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -30616,6 +35867,8 @@ export namespace Prisma {
       athletes: Prisma.$TeamAthletePayload<ExtArgs>[]
       staff: Prisma.$TeamStaffPayload<ExtArgs>[]
       games: Prisma.$GamePayload<ExtArgs>[]
+      macrocycles: Prisma.$MacrocyclePayload<ExtArgs>[]
+      practices: Prisma.$PracticePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: number
@@ -31025,6 +36278,8 @@ export namespace Prisma {
     athletes<T extends Team$athletesArgs<ExtArgs> = {}>(args?: Subset<T, Team$athletesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamAthletePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     staff<T extends Team$staffArgs<ExtArgs> = {}>(args?: Subset<T, Team$staffArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TeamStaffPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     games<T extends Team$gamesArgs<ExtArgs> = {}>(args?: Subset<T, Team$gamesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GamePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    macrocycles<T extends Team$macrocyclesArgs<ExtArgs> = {}>(args?: Subset<T, Team$macrocyclesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MacrocyclePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    practices<T extends Team$practicesArgs<ExtArgs> = {}>(args?: Subset<T, Team$practicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -31532,6 +36787,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GameScalarFieldEnum | GameScalarFieldEnum[]
+  }
+
+  /**
+   * Team.macrocycles
+   */
+  export type Team$macrocyclesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Macrocycle
+     */
+    select?: MacrocycleSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Macrocycle
+     */
+    omit?: MacrocycleOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: MacrocycleInclude<ExtArgs> | null
+    where?: MacrocycleWhereInput
+    orderBy?: MacrocycleOrderByWithRelationInput | MacrocycleOrderByWithRelationInput[]
+    cursor?: MacrocycleWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: MacrocycleScalarFieldEnum | MacrocycleScalarFieldEnum[]
+  }
+
+  /**
+   * Team.practices
+   */
+  export type Team$practicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    where?: PracticeWhereInput
+    orderBy?: PracticeOrderByWithRelationInput | PracticeOrderByWithRelationInput[]
+    cursor?: PracticeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PracticeScalarFieldEnum | PracticeScalarFieldEnum[]
   }
 
   /**
@@ -44342,6 +49645,5988 @@ export namespace Prisma {
 
 
   /**
+   * Model Practice
+   */
+
+  export type AggregatePractice = {
+    _count: PracticeCountAggregateOutputType | null
+    _avg: PracticeAvgAggregateOutputType | null
+    _sum: PracticeSumAggregateOutputType | null
+    _min: PracticeMinAggregateOutputType | null
+    _max: PracticeMaxAggregateOutputType | null
+  }
+
+  export type PracticeAvgAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    teamId: number | null
+  }
+
+  export type PracticeSumAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    teamId: number | null
+  }
+
+  export type PracticeMinAggregateOutputType = {
+    id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    clubId: number | null
+    teamId: number | null
+    date: Date | null
+    endTime: Date | null
+    subtitle: string | null
+    topic: string | null
+    offensiveGoals: string | null
+    defensiveGoals: string | null
+    notes: string | null
+    completed: boolean | null
+  }
+
+  export type PracticeMaxAggregateOutputType = {
+    id: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    clubId: number | null
+    teamId: number | null
+    date: Date | null
+    endTime: Date | null
+    subtitle: string | null
+    topic: string | null
+    offensiveGoals: string | null
+    defensiveGoals: string | null
+    notes: string | null
+    completed: boolean | null
+  }
+
+  export type PracticeCountAggregateOutputType = {
+    id: number
+    createdAt: number
+    updatedAt: number
+    clubId: number
+    teamId: number
+    date: number
+    endTime: number
+    subtitle: number
+    topic: number
+    offensiveGoals: number
+    defensiveGoals: number
+    notes: number
+    completed: number
+    groups: number
+    _all: number
+  }
+
+
+  export type PracticeAvgAggregateInputType = {
+    id?: true
+    clubId?: true
+    teamId?: true
+  }
+
+  export type PracticeSumAggregateInputType = {
+    id?: true
+    clubId?: true
+    teamId?: true
+  }
+
+  export type PracticeMinAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    clubId?: true
+    teamId?: true
+    date?: true
+    endTime?: true
+    subtitle?: true
+    topic?: true
+    offensiveGoals?: true
+    defensiveGoals?: true
+    notes?: true
+    completed?: true
+  }
+
+  export type PracticeMaxAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    clubId?: true
+    teamId?: true
+    date?: true
+    endTime?: true
+    subtitle?: true
+    topic?: true
+    offensiveGoals?: true
+    defensiveGoals?: true
+    notes?: true
+    completed?: true
+  }
+
+  export type PracticeCountAggregateInputType = {
+    id?: true
+    createdAt?: true
+    updatedAt?: true
+    clubId?: true
+    teamId?: true
+    date?: true
+    endTime?: true
+    subtitle?: true
+    topic?: true
+    offensiveGoals?: true
+    defensiveGoals?: true
+    notes?: true
+    completed?: true
+    groups?: true
+    _all?: true
+  }
+
+  export type PracticeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Practice to aggregate.
+     */
+    where?: PracticeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Practices to fetch.
+     */
+    orderBy?: PracticeOrderByWithRelationInput | PracticeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PracticeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Practices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Practices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Practices
+    **/
+    _count?: true | PracticeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PracticeAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PracticeSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PracticeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PracticeMaxAggregateInputType
+  }
+
+  export type GetPracticeAggregateType<T extends PracticeAggregateArgs> = {
+        [P in keyof T & keyof AggregatePractice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePractice[P]>
+      : GetScalarType<T[P], AggregatePractice[P]>
+  }
+
+
+
+
+  export type PracticeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeWhereInput
+    orderBy?: PracticeOrderByWithAggregationInput | PracticeOrderByWithAggregationInput[]
+    by: PracticeScalarFieldEnum[] | PracticeScalarFieldEnum
+    having?: PracticeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PracticeCountAggregateInputType | true
+    _avg?: PracticeAvgAggregateInputType
+    _sum?: PracticeSumAggregateInputType
+    _min?: PracticeMinAggregateInputType
+    _max?: PracticeMaxAggregateInputType
+  }
+
+  export type PracticeGroupByOutputType = {
+    id: number
+    createdAt: Date
+    updatedAt: Date
+    clubId: number
+    teamId: number
+    date: Date
+    endTime: Date
+    subtitle: string | null
+    topic: string
+    offensiveGoals: string | null
+    defensiveGoals: string | null
+    notes: string | null
+    completed: boolean
+    groups: JsonValue | null
+    _count: PracticeCountAggregateOutputType | null
+    _avg: PracticeAvgAggregateOutputType | null
+    _sum: PracticeSumAggregateOutputType | null
+    _min: PracticeMinAggregateOutputType | null
+    _max: PracticeMaxAggregateOutputType | null
+  }
+
+  type GetPracticeGroupByPayload<T extends PracticeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PracticeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PracticeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PracticeGroupByOutputType[P]>
+            : GetScalarType<T[P], PracticeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PracticeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    clubId?: boolean
+    teamId?: boolean
+    date?: boolean
+    endTime?: boolean
+    subtitle?: boolean
+    topic?: boolean
+    offensiveGoals?: boolean
+    defensiveGoals?: boolean
+    notes?: boolean
+    completed?: boolean
+    groups?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    attendances?: boolean | Practice$attendancesArgs<ExtArgs>
+    items?: boolean | Practice$itemsArgs<ExtArgs>
+    _count?: boolean | PracticeCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["practice"]>
+
+  export type PracticeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    clubId?: boolean
+    teamId?: boolean
+    date?: boolean
+    endTime?: boolean
+    subtitle?: boolean
+    topic?: boolean
+    offensiveGoals?: boolean
+    defensiveGoals?: boolean
+    notes?: boolean
+    completed?: boolean
+    groups?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["practice"]>
+
+  export type PracticeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    clubId?: boolean
+    teamId?: boolean
+    date?: boolean
+    endTime?: boolean
+    subtitle?: boolean
+    topic?: boolean
+    offensiveGoals?: boolean
+    defensiveGoals?: boolean
+    notes?: boolean
+    completed?: boolean
+    groups?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["practice"]>
+
+  export type PracticeSelectScalar = {
+    id?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    clubId?: boolean
+    teamId?: boolean
+    date?: boolean
+    endTime?: boolean
+    subtitle?: boolean
+    topic?: boolean
+    offensiveGoals?: boolean
+    defensiveGoals?: boolean
+    notes?: boolean
+    completed?: boolean
+    groups?: boolean
+  }
+
+  export type PracticeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "createdAt" | "updatedAt" | "clubId" | "teamId" | "date" | "endTime" | "subtitle" | "topic" | "offensiveGoals" | "defensiveGoals" | "notes" | "completed" | "groups", ExtArgs["result"]["practice"]>
+  export type PracticeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+    attendances?: boolean | Practice$attendancesArgs<ExtArgs>
+    items?: boolean | Practice$itemsArgs<ExtArgs>
+    _count?: boolean | PracticeCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PracticeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+  export type PracticeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    team?: boolean | TeamDefaultArgs<ExtArgs>
+  }
+
+  export type $PracticePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Practice"
+    objects: {
+      club: Prisma.$ClubPayload<ExtArgs>
+      team: Prisma.$TeamPayload<ExtArgs>
+      attendances: Prisma.$PracticeAthletePayload<ExtArgs>[]
+      items: Prisma.$PracticeItemPayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      createdAt: Date
+      updatedAt: Date
+      clubId: number
+      teamId: number
+      date: Date
+      endTime: Date
+      subtitle: string | null
+      topic: string
+      offensiveGoals: string | null
+      defensiveGoals: string | null
+      notes: string | null
+      completed: boolean
+      /**
+       * Optional JSON describing one or more independent group sets the
+       * coach uses to split the squad into teams during the session.
+       * Shape: `{ sets: Array<{ id, name, teams: Array<{ id, name, players: (athleteId|null)[] }> }> }`.
+       * Athlete IDs are validated against the practice's roster on save.
+       */
+      groups: Prisma.JsonValue | null
+    }, ExtArgs["result"]["practice"]>
+    composites: {}
+  }
+
+  type PracticeGetPayload<S extends boolean | null | undefined | PracticeDefaultArgs> = $Result.GetResult<Prisma.$PracticePayload, S>
+
+  type PracticeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PracticeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PracticeCountAggregateInputType | true
+    }
+
+  export interface PracticeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Practice'], meta: { name: 'Practice' } }
+    /**
+     * Find zero or one Practice that matches the filter.
+     * @param {PracticeFindUniqueArgs} args - Arguments to find a Practice
+     * @example
+     * // Get one Practice
+     * const practice = await prisma.practice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PracticeFindUniqueArgs>(args: SelectSubset<T, PracticeFindUniqueArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Practice that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PracticeFindUniqueOrThrowArgs} args - Arguments to find a Practice
+     * @example
+     * // Get one Practice
+     * const practice = await prisma.practice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PracticeFindUniqueOrThrowArgs>(args: SelectSubset<T, PracticeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Practice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeFindFirstArgs} args - Arguments to find a Practice
+     * @example
+     * // Get one Practice
+     * const practice = await prisma.practice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PracticeFindFirstArgs>(args?: SelectSubset<T, PracticeFindFirstArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Practice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeFindFirstOrThrowArgs} args - Arguments to find a Practice
+     * @example
+     * // Get one Practice
+     * const practice = await prisma.practice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PracticeFindFirstOrThrowArgs>(args?: SelectSubset<T, PracticeFindFirstOrThrowArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Practices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Practices
+     * const practices = await prisma.practice.findMany()
+     * 
+     * // Get first 10 Practices
+     * const practices = await prisma.practice.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const practiceWithIdOnly = await prisma.practice.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PracticeFindManyArgs>(args?: SelectSubset<T, PracticeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Practice.
+     * @param {PracticeCreateArgs} args - Arguments to create a Practice.
+     * @example
+     * // Create one Practice
+     * const Practice = await prisma.practice.create({
+     *   data: {
+     *     // ... data to create a Practice
+     *   }
+     * })
+     * 
+     */
+    create<T extends PracticeCreateArgs>(args: SelectSubset<T, PracticeCreateArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Practices.
+     * @param {PracticeCreateManyArgs} args - Arguments to create many Practices.
+     * @example
+     * // Create many Practices
+     * const practice = await prisma.practice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PracticeCreateManyArgs>(args?: SelectSubset<T, PracticeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Practices and returns the data saved in the database.
+     * @param {PracticeCreateManyAndReturnArgs} args - Arguments to create many Practices.
+     * @example
+     * // Create many Practices
+     * const practice = await prisma.practice.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Practices and only return the `id`
+     * const practiceWithIdOnly = await prisma.practice.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PracticeCreateManyAndReturnArgs>(args?: SelectSubset<T, PracticeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Practice.
+     * @param {PracticeDeleteArgs} args - Arguments to delete one Practice.
+     * @example
+     * // Delete one Practice
+     * const Practice = await prisma.practice.delete({
+     *   where: {
+     *     // ... filter to delete one Practice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PracticeDeleteArgs>(args: SelectSubset<T, PracticeDeleteArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Practice.
+     * @param {PracticeUpdateArgs} args - Arguments to update one Practice.
+     * @example
+     * // Update one Practice
+     * const practice = await prisma.practice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PracticeUpdateArgs>(args: SelectSubset<T, PracticeUpdateArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Practices.
+     * @param {PracticeDeleteManyArgs} args - Arguments to filter Practices to delete.
+     * @example
+     * // Delete a few Practices
+     * const { count } = await prisma.practice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PracticeDeleteManyArgs>(args?: SelectSubset<T, PracticeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Practices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Practices
+     * const practice = await prisma.practice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PracticeUpdateManyArgs>(args: SelectSubset<T, PracticeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Practices and returns the data updated in the database.
+     * @param {PracticeUpdateManyAndReturnArgs} args - Arguments to update many Practices.
+     * @example
+     * // Update many Practices
+     * const practice = await prisma.practice.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Practices and only return the `id`
+     * const practiceWithIdOnly = await prisma.practice.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PracticeUpdateManyAndReturnArgs>(args: SelectSubset<T, PracticeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Practice.
+     * @param {PracticeUpsertArgs} args - Arguments to update or create a Practice.
+     * @example
+     * // Update or create a Practice
+     * const practice = await prisma.practice.upsert({
+     *   create: {
+     *     // ... data to create a Practice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Practice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PracticeUpsertArgs>(args: SelectSubset<T, PracticeUpsertArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Practices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeCountArgs} args - Arguments to filter Practices to count.
+     * @example
+     * // Count the number of Practices
+     * const count = await prisma.practice.count({
+     *   where: {
+     *     // ... the filter for the Practices we want to count
+     *   }
+     * })
+    **/
+    count<T extends PracticeCountArgs>(
+      args?: Subset<T, PracticeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PracticeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Practice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PracticeAggregateArgs>(args: Subset<T, PracticeAggregateArgs>): Prisma.PrismaPromise<GetPracticeAggregateType<T>>
+
+    /**
+     * Group by Practice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PracticeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PracticeGroupByArgs['orderBy'] }
+        : { orderBy?: PracticeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PracticeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPracticeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Practice model
+   */
+  readonly fields: PracticeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Practice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PracticeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    team<T extends TeamDefaultArgs<ExtArgs> = {}>(args?: Subset<T, TeamDefaultArgs<ExtArgs>>): Prisma__TeamClient<$Result.GetResult<Prisma.$TeamPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    attendances<T extends Practice$attendancesArgs<ExtArgs> = {}>(args?: Subset<T, Practice$attendancesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    items<T extends Practice$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Practice$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Practice model
+   */
+  interface PracticeFieldRefs {
+    readonly id: FieldRef<"Practice", 'Int'>
+    readonly createdAt: FieldRef<"Practice", 'DateTime'>
+    readonly updatedAt: FieldRef<"Practice", 'DateTime'>
+    readonly clubId: FieldRef<"Practice", 'Int'>
+    readonly teamId: FieldRef<"Practice", 'Int'>
+    readonly date: FieldRef<"Practice", 'DateTime'>
+    readonly endTime: FieldRef<"Practice", 'DateTime'>
+    readonly subtitle: FieldRef<"Practice", 'String'>
+    readonly topic: FieldRef<"Practice", 'String'>
+    readonly offensiveGoals: FieldRef<"Practice", 'String'>
+    readonly defensiveGoals: FieldRef<"Practice", 'String'>
+    readonly notes: FieldRef<"Practice", 'String'>
+    readonly completed: FieldRef<"Practice", 'Boolean'>
+    readonly groups: FieldRef<"Practice", 'Json'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Practice findUnique
+   */
+  export type PracticeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * Filter, which Practice to fetch.
+     */
+    where: PracticeWhereUniqueInput
+  }
+
+  /**
+   * Practice findUniqueOrThrow
+   */
+  export type PracticeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * Filter, which Practice to fetch.
+     */
+    where: PracticeWhereUniqueInput
+  }
+
+  /**
+   * Practice findFirst
+   */
+  export type PracticeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * Filter, which Practice to fetch.
+     */
+    where?: PracticeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Practices to fetch.
+     */
+    orderBy?: PracticeOrderByWithRelationInput | PracticeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Practices.
+     */
+    cursor?: PracticeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Practices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Practices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Practices.
+     */
+    distinct?: PracticeScalarFieldEnum | PracticeScalarFieldEnum[]
+  }
+
+  /**
+   * Practice findFirstOrThrow
+   */
+  export type PracticeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * Filter, which Practice to fetch.
+     */
+    where?: PracticeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Practices to fetch.
+     */
+    orderBy?: PracticeOrderByWithRelationInput | PracticeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Practices.
+     */
+    cursor?: PracticeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Practices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Practices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Practices.
+     */
+    distinct?: PracticeScalarFieldEnum | PracticeScalarFieldEnum[]
+  }
+
+  /**
+   * Practice findMany
+   */
+  export type PracticeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * Filter, which Practices to fetch.
+     */
+    where?: PracticeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Practices to fetch.
+     */
+    orderBy?: PracticeOrderByWithRelationInput | PracticeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Practices.
+     */
+    cursor?: PracticeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Practices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Practices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Practices.
+     */
+    distinct?: PracticeScalarFieldEnum | PracticeScalarFieldEnum[]
+  }
+
+  /**
+   * Practice create
+   */
+  export type PracticeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Practice.
+     */
+    data: XOR<PracticeCreateInput, PracticeUncheckedCreateInput>
+  }
+
+  /**
+   * Practice createMany
+   */
+  export type PracticeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Practices.
+     */
+    data: PracticeCreateManyInput | PracticeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Practice createManyAndReturn
+   */
+  export type PracticeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * The data used to create many Practices.
+     */
+    data: PracticeCreateManyInput | PracticeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Practice update
+   */
+  export type PracticeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Practice.
+     */
+    data: XOR<PracticeUpdateInput, PracticeUncheckedUpdateInput>
+    /**
+     * Choose, which Practice to update.
+     */
+    where: PracticeWhereUniqueInput
+  }
+
+  /**
+   * Practice updateMany
+   */
+  export type PracticeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Practices.
+     */
+    data: XOR<PracticeUpdateManyMutationInput, PracticeUncheckedUpdateManyInput>
+    /**
+     * Filter which Practices to update
+     */
+    where?: PracticeWhereInput
+    /**
+     * Limit how many Practices to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Practice updateManyAndReturn
+   */
+  export type PracticeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * The data used to update Practices.
+     */
+    data: XOR<PracticeUpdateManyMutationInput, PracticeUncheckedUpdateManyInput>
+    /**
+     * Filter which Practices to update
+     */
+    where?: PracticeWhereInput
+    /**
+     * Limit how many Practices to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Practice upsert
+   */
+  export type PracticeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Practice to update in case it exists.
+     */
+    where: PracticeWhereUniqueInput
+    /**
+     * In case the Practice found by the `where` argument doesn't exist, create a new Practice with this data.
+     */
+    create: XOR<PracticeCreateInput, PracticeUncheckedCreateInput>
+    /**
+     * In case the Practice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PracticeUpdateInput, PracticeUncheckedUpdateInput>
+  }
+
+  /**
+   * Practice delete
+   */
+  export type PracticeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+    /**
+     * Filter which Practice to delete.
+     */
+    where: PracticeWhereUniqueInput
+  }
+
+  /**
+   * Practice deleteMany
+   */
+  export type PracticeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Practices to delete
+     */
+    where?: PracticeWhereInput
+    /**
+     * Limit how many Practices to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Practice.attendances
+   */
+  export type Practice$attendancesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    where?: PracticeAthleteWhereInput
+    orderBy?: PracticeAthleteOrderByWithRelationInput | PracticeAthleteOrderByWithRelationInput[]
+    cursor?: PracticeAthleteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PracticeAthleteScalarFieldEnum | PracticeAthleteScalarFieldEnum[]
+  }
+
+  /**
+   * Practice.items
+   */
+  export type Practice$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    where?: PracticeItemWhereInput
+    orderBy?: PracticeItemOrderByWithRelationInput | PracticeItemOrderByWithRelationInput[]
+    cursor?: PracticeItemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PracticeItemScalarFieldEnum | PracticeItemScalarFieldEnum[]
+  }
+
+  /**
+   * Practice without action
+   */
+  export type PracticeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Practice
+     */
+    select?: PracticeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Practice
+     */
+    omit?: PracticeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PracticeItem
+   */
+
+  export type AggregatePracticeItem = {
+    _count: PracticeItemCountAggregateOutputType | null
+    _avg: PracticeItemAvgAggregateOutputType | null
+    _sum: PracticeItemSumAggregateOutputType | null
+    _min: PracticeItemMinAggregateOutputType | null
+    _max: PracticeItemMaxAggregateOutputType | null
+  }
+
+  export type PracticeItemAvgAggregateOutputType = {
+    id: number | null
+    practiceId: number | null
+    order: number | null
+    duration: number | null
+    drillId: number | null
+  }
+
+  export type PracticeItemSumAggregateOutputType = {
+    id: number | null
+    practiceId: number | null
+    order: number | null
+    duration: number | null
+    drillId: number | null
+  }
+
+  export type PracticeItemMinAggregateOutputType = {
+    id: number | null
+    practiceId: number | null
+    order: number | null
+    duration: number | null
+    type: $Enums.PracticeItemType | null
+    title: string | null
+    text: string | null
+    drillId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PracticeItemMaxAggregateOutputType = {
+    id: number | null
+    practiceId: number | null
+    order: number | null
+    duration: number | null
+    type: $Enums.PracticeItemType | null
+    title: string | null
+    text: string | null
+    drillId: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PracticeItemCountAggregateOutputType = {
+    id: number
+    practiceId: number
+    order: number
+    duration: number
+    type: number
+    title: number
+    text: number
+    drillId: number
+    graphics: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PracticeItemAvgAggregateInputType = {
+    id?: true
+    practiceId?: true
+    order?: true
+    duration?: true
+    drillId?: true
+  }
+
+  export type PracticeItemSumAggregateInputType = {
+    id?: true
+    practiceId?: true
+    order?: true
+    duration?: true
+    drillId?: true
+  }
+
+  export type PracticeItemMinAggregateInputType = {
+    id?: true
+    practiceId?: true
+    order?: true
+    duration?: true
+    type?: true
+    title?: true
+    text?: true
+    drillId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PracticeItemMaxAggregateInputType = {
+    id?: true
+    practiceId?: true
+    order?: true
+    duration?: true
+    type?: true
+    title?: true
+    text?: true
+    drillId?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PracticeItemCountAggregateInputType = {
+    id?: true
+    practiceId?: true
+    order?: true
+    duration?: true
+    type?: true
+    title?: true
+    text?: true
+    drillId?: true
+    graphics?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PracticeItemAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PracticeItem to aggregate.
+     */
+    where?: PracticeItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PracticeItems to fetch.
+     */
+    orderBy?: PracticeItemOrderByWithRelationInput | PracticeItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PracticeItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PracticeItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PracticeItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PracticeItems
+    **/
+    _count?: true | PracticeItemCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PracticeItemAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PracticeItemSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PracticeItemMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PracticeItemMaxAggregateInputType
+  }
+
+  export type GetPracticeItemAggregateType<T extends PracticeItemAggregateArgs> = {
+        [P in keyof T & keyof AggregatePracticeItem]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePracticeItem[P]>
+      : GetScalarType<T[P], AggregatePracticeItem[P]>
+  }
+
+
+
+
+  export type PracticeItemGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeItemWhereInput
+    orderBy?: PracticeItemOrderByWithAggregationInput | PracticeItemOrderByWithAggregationInput[]
+    by: PracticeItemScalarFieldEnum[] | PracticeItemScalarFieldEnum
+    having?: PracticeItemScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PracticeItemCountAggregateInputType | true
+    _avg?: PracticeItemAvgAggregateInputType
+    _sum?: PracticeItemSumAggregateInputType
+    _min?: PracticeItemMinAggregateInputType
+    _max?: PracticeItemMaxAggregateInputType
+  }
+
+  export type PracticeItemGroupByOutputType = {
+    id: number
+    practiceId: number
+    order: number
+    duration: number
+    type: $Enums.PracticeItemType
+    title: string | null
+    text: string | null
+    drillId: number | null
+    graphics: JsonValue | null
+    createdAt: Date
+    updatedAt: Date
+    _count: PracticeItemCountAggregateOutputType | null
+    _avg: PracticeItemAvgAggregateOutputType | null
+    _sum: PracticeItemSumAggregateOutputType | null
+    _min: PracticeItemMinAggregateOutputType | null
+    _max: PracticeItemMaxAggregateOutputType | null
+  }
+
+  type GetPracticeItemGroupByPayload<T extends PracticeItemGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PracticeItemGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PracticeItemGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PracticeItemGroupByOutputType[P]>
+            : GetScalarType<T[P], PracticeItemGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PracticeItemSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    practiceId?: boolean
+    order?: boolean
+    duration?: boolean
+    type?: boolean
+    title?: boolean
+    text?: boolean
+    drillId?: boolean
+    graphics?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    drill?: boolean | PracticeItem$drillArgs<ExtArgs>
+  }, ExtArgs["result"]["practiceItem"]>
+
+  export type PracticeItemSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    practiceId?: boolean
+    order?: boolean
+    duration?: boolean
+    type?: boolean
+    title?: boolean
+    text?: boolean
+    drillId?: boolean
+    graphics?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    drill?: boolean | PracticeItem$drillArgs<ExtArgs>
+  }, ExtArgs["result"]["practiceItem"]>
+
+  export type PracticeItemSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    practiceId?: boolean
+    order?: boolean
+    duration?: boolean
+    type?: boolean
+    title?: boolean
+    text?: boolean
+    drillId?: boolean
+    graphics?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    drill?: boolean | PracticeItem$drillArgs<ExtArgs>
+  }, ExtArgs["result"]["practiceItem"]>
+
+  export type PracticeItemSelectScalar = {
+    id?: boolean
+    practiceId?: boolean
+    order?: boolean
+    duration?: boolean
+    type?: boolean
+    title?: boolean
+    text?: boolean
+    drillId?: boolean
+    graphics?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PracticeItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "practiceId" | "order" | "duration" | "type" | "title" | "text" | "drillId" | "graphics" | "createdAt" | "updatedAt", ExtArgs["result"]["practiceItem"]>
+  export type PracticeItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    drill?: boolean | PracticeItem$drillArgs<ExtArgs>
+  }
+  export type PracticeItemIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    drill?: boolean | PracticeItem$drillArgs<ExtArgs>
+  }
+  export type PracticeItemIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    drill?: boolean | PracticeItem$drillArgs<ExtArgs>
+  }
+
+  export type $PracticeItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PracticeItem"
+    objects: {
+      practice: Prisma.$PracticePayload<ExtArgs>
+      drill: Prisma.$DrillPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      practiceId: number
+      order: number
+      duration: number
+      type: $Enums.PracticeItemType
+      title: string | null
+      text: string | null
+      drillId: number | null
+      /**
+       * Per-graphic overrides stored as a JSON array of
+       * `{ drillGraphicId, caption, printFirst, printOther }`. Captions and
+       * print flags live on the practice item so the same drill can be used
+       * in multiple practice plans with different annotations. The SVGs
+       * themselves are never duplicated here — the UI looks them up from
+       * the linked drill at render time.
+       */
+      graphics: Prisma.JsonValue | null
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["practiceItem"]>
+    composites: {}
+  }
+
+  type PracticeItemGetPayload<S extends boolean | null | undefined | PracticeItemDefaultArgs> = $Result.GetResult<Prisma.$PracticeItemPayload, S>
+
+  type PracticeItemCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PracticeItemFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PracticeItemCountAggregateInputType | true
+    }
+
+  export interface PracticeItemDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PracticeItem'], meta: { name: 'PracticeItem' } }
+    /**
+     * Find zero or one PracticeItem that matches the filter.
+     * @param {PracticeItemFindUniqueArgs} args - Arguments to find a PracticeItem
+     * @example
+     * // Get one PracticeItem
+     * const practiceItem = await prisma.practiceItem.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PracticeItemFindUniqueArgs>(args: SelectSubset<T, PracticeItemFindUniqueArgs<ExtArgs>>): Prisma__PracticeItemClient<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PracticeItem that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PracticeItemFindUniqueOrThrowArgs} args - Arguments to find a PracticeItem
+     * @example
+     * // Get one PracticeItem
+     * const practiceItem = await prisma.practiceItem.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PracticeItemFindUniqueOrThrowArgs>(args: SelectSubset<T, PracticeItemFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PracticeItemClient<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PracticeItem that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeItemFindFirstArgs} args - Arguments to find a PracticeItem
+     * @example
+     * // Get one PracticeItem
+     * const practiceItem = await prisma.practiceItem.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PracticeItemFindFirstArgs>(args?: SelectSubset<T, PracticeItemFindFirstArgs<ExtArgs>>): Prisma__PracticeItemClient<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PracticeItem that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeItemFindFirstOrThrowArgs} args - Arguments to find a PracticeItem
+     * @example
+     * // Get one PracticeItem
+     * const practiceItem = await prisma.practiceItem.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PracticeItemFindFirstOrThrowArgs>(args?: SelectSubset<T, PracticeItemFindFirstOrThrowArgs<ExtArgs>>): Prisma__PracticeItemClient<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PracticeItems that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeItemFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PracticeItems
+     * const practiceItems = await prisma.practiceItem.findMany()
+     * 
+     * // Get first 10 PracticeItems
+     * const practiceItems = await prisma.practiceItem.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const practiceItemWithIdOnly = await prisma.practiceItem.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PracticeItemFindManyArgs>(args?: SelectSubset<T, PracticeItemFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PracticeItem.
+     * @param {PracticeItemCreateArgs} args - Arguments to create a PracticeItem.
+     * @example
+     * // Create one PracticeItem
+     * const PracticeItem = await prisma.practiceItem.create({
+     *   data: {
+     *     // ... data to create a PracticeItem
+     *   }
+     * })
+     * 
+     */
+    create<T extends PracticeItemCreateArgs>(args: SelectSubset<T, PracticeItemCreateArgs<ExtArgs>>): Prisma__PracticeItemClient<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PracticeItems.
+     * @param {PracticeItemCreateManyArgs} args - Arguments to create many PracticeItems.
+     * @example
+     * // Create many PracticeItems
+     * const practiceItem = await prisma.practiceItem.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PracticeItemCreateManyArgs>(args?: SelectSubset<T, PracticeItemCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PracticeItems and returns the data saved in the database.
+     * @param {PracticeItemCreateManyAndReturnArgs} args - Arguments to create many PracticeItems.
+     * @example
+     * // Create many PracticeItems
+     * const practiceItem = await prisma.practiceItem.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PracticeItems and only return the `id`
+     * const practiceItemWithIdOnly = await prisma.practiceItem.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PracticeItemCreateManyAndReturnArgs>(args?: SelectSubset<T, PracticeItemCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PracticeItem.
+     * @param {PracticeItemDeleteArgs} args - Arguments to delete one PracticeItem.
+     * @example
+     * // Delete one PracticeItem
+     * const PracticeItem = await prisma.practiceItem.delete({
+     *   where: {
+     *     // ... filter to delete one PracticeItem
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PracticeItemDeleteArgs>(args: SelectSubset<T, PracticeItemDeleteArgs<ExtArgs>>): Prisma__PracticeItemClient<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PracticeItem.
+     * @param {PracticeItemUpdateArgs} args - Arguments to update one PracticeItem.
+     * @example
+     * // Update one PracticeItem
+     * const practiceItem = await prisma.practiceItem.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PracticeItemUpdateArgs>(args: SelectSubset<T, PracticeItemUpdateArgs<ExtArgs>>): Prisma__PracticeItemClient<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PracticeItems.
+     * @param {PracticeItemDeleteManyArgs} args - Arguments to filter PracticeItems to delete.
+     * @example
+     * // Delete a few PracticeItems
+     * const { count } = await prisma.practiceItem.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PracticeItemDeleteManyArgs>(args?: SelectSubset<T, PracticeItemDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PracticeItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeItemUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PracticeItems
+     * const practiceItem = await prisma.practiceItem.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PracticeItemUpdateManyArgs>(args: SelectSubset<T, PracticeItemUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PracticeItems and returns the data updated in the database.
+     * @param {PracticeItemUpdateManyAndReturnArgs} args - Arguments to update many PracticeItems.
+     * @example
+     * // Update many PracticeItems
+     * const practiceItem = await prisma.practiceItem.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PracticeItems and only return the `id`
+     * const practiceItemWithIdOnly = await prisma.practiceItem.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PracticeItemUpdateManyAndReturnArgs>(args: SelectSubset<T, PracticeItemUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PracticeItem.
+     * @param {PracticeItemUpsertArgs} args - Arguments to update or create a PracticeItem.
+     * @example
+     * // Update or create a PracticeItem
+     * const practiceItem = await prisma.practiceItem.upsert({
+     *   create: {
+     *     // ... data to create a PracticeItem
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PracticeItem we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PracticeItemUpsertArgs>(args: SelectSubset<T, PracticeItemUpsertArgs<ExtArgs>>): Prisma__PracticeItemClient<$Result.GetResult<Prisma.$PracticeItemPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PracticeItems.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeItemCountArgs} args - Arguments to filter PracticeItems to count.
+     * @example
+     * // Count the number of PracticeItems
+     * const count = await prisma.practiceItem.count({
+     *   where: {
+     *     // ... the filter for the PracticeItems we want to count
+     *   }
+     * })
+    **/
+    count<T extends PracticeItemCountArgs>(
+      args?: Subset<T, PracticeItemCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PracticeItemCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PracticeItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeItemAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PracticeItemAggregateArgs>(args: Subset<T, PracticeItemAggregateArgs>): Prisma.PrismaPromise<GetPracticeItemAggregateType<T>>
+
+    /**
+     * Group by PracticeItem.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeItemGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PracticeItemGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PracticeItemGroupByArgs['orderBy'] }
+        : { orderBy?: PracticeItemGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PracticeItemGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPracticeItemGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PracticeItem model
+   */
+  readonly fields: PracticeItemFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PracticeItem.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PracticeItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    practice<T extends PracticeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PracticeDefaultArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    drill<T extends PracticeItem$drillArgs<ExtArgs> = {}>(args?: Subset<T, PracticeItem$drillArgs<ExtArgs>>): Prisma__DrillClient<$Result.GetResult<Prisma.$DrillPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PracticeItem model
+   */
+  interface PracticeItemFieldRefs {
+    readonly id: FieldRef<"PracticeItem", 'Int'>
+    readonly practiceId: FieldRef<"PracticeItem", 'Int'>
+    readonly order: FieldRef<"PracticeItem", 'Int'>
+    readonly duration: FieldRef<"PracticeItem", 'Int'>
+    readonly type: FieldRef<"PracticeItem", 'PracticeItemType'>
+    readonly title: FieldRef<"PracticeItem", 'String'>
+    readonly text: FieldRef<"PracticeItem", 'String'>
+    readonly drillId: FieldRef<"PracticeItem", 'Int'>
+    readonly graphics: FieldRef<"PracticeItem", 'Json'>
+    readonly createdAt: FieldRef<"PracticeItem", 'DateTime'>
+    readonly updatedAt: FieldRef<"PracticeItem", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PracticeItem findUnique
+   */
+  export type PracticeItemFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeItem to fetch.
+     */
+    where: PracticeItemWhereUniqueInput
+  }
+
+  /**
+   * PracticeItem findUniqueOrThrow
+   */
+  export type PracticeItemFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeItem to fetch.
+     */
+    where: PracticeItemWhereUniqueInput
+  }
+
+  /**
+   * PracticeItem findFirst
+   */
+  export type PracticeItemFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeItem to fetch.
+     */
+    where?: PracticeItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PracticeItems to fetch.
+     */
+    orderBy?: PracticeItemOrderByWithRelationInput | PracticeItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PracticeItems.
+     */
+    cursor?: PracticeItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PracticeItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PracticeItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PracticeItems.
+     */
+    distinct?: PracticeItemScalarFieldEnum | PracticeItemScalarFieldEnum[]
+  }
+
+  /**
+   * PracticeItem findFirstOrThrow
+   */
+  export type PracticeItemFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeItem to fetch.
+     */
+    where?: PracticeItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PracticeItems to fetch.
+     */
+    orderBy?: PracticeItemOrderByWithRelationInput | PracticeItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PracticeItems.
+     */
+    cursor?: PracticeItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PracticeItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PracticeItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PracticeItems.
+     */
+    distinct?: PracticeItemScalarFieldEnum | PracticeItemScalarFieldEnum[]
+  }
+
+  /**
+   * PracticeItem findMany
+   */
+  export type PracticeItemFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeItems to fetch.
+     */
+    where?: PracticeItemWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PracticeItems to fetch.
+     */
+    orderBy?: PracticeItemOrderByWithRelationInput | PracticeItemOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PracticeItems.
+     */
+    cursor?: PracticeItemWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PracticeItems from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PracticeItems.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PracticeItems.
+     */
+    distinct?: PracticeItemScalarFieldEnum | PracticeItemScalarFieldEnum[]
+  }
+
+  /**
+   * PracticeItem create
+   */
+  export type PracticeItemCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PracticeItem.
+     */
+    data: XOR<PracticeItemCreateInput, PracticeItemUncheckedCreateInput>
+  }
+
+  /**
+   * PracticeItem createMany
+   */
+  export type PracticeItemCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PracticeItems.
+     */
+    data: PracticeItemCreateManyInput | PracticeItemCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PracticeItem createManyAndReturn
+   */
+  export type PracticeItemCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * The data used to create many PracticeItems.
+     */
+    data: PracticeItemCreateManyInput | PracticeItemCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PracticeItem update
+   */
+  export type PracticeItemUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PracticeItem.
+     */
+    data: XOR<PracticeItemUpdateInput, PracticeItemUncheckedUpdateInput>
+    /**
+     * Choose, which PracticeItem to update.
+     */
+    where: PracticeItemWhereUniqueInput
+  }
+
+  /**
+   * PracticeItem updateMany
+   */
+  export type PracticeItemUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PracticeItems.
+     */
+    data: XOR<PracticeItemUpdateManyMutationInput, PracticeItemUncheckedUpdateManyInput>
+    /**
+     * Filter which PracticeItems to update
+     */
+    where?: PracticeItemWhereInput
+    /**
+     * Limit how many PracticeItems to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PracticeItem updateManyAndReturn
+   */
+  export type PracticeItemUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * The data used to update PracticeItems.
+     */
+    data: XOR<PracticeItemUpdateManyMutationInput, PracticeItemUncheckedUpdateManyInput>
+    /**
+     * Filter which PracticeItems to update
+     */
+    where?: PracticeItemWhereInput
+    /**
+     * Limit how many PracticeItems to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PracticeItem upsert
+   */
+  export type PracticeItemUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PracticeItem to update in case it exists.
+     */
+    where: PracticeItemWhereUniqueInput
+    /**
+     * In case the PracticeItem found by the `where` argument doesn't exist, create a new PracticeItem with this data.
+     */
+    create: XOR<PracticeItemCreateInput, PracticeItemUncheckedCreateInput>
+    /**
+     * In case the PracticeItem was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PracticeItemUpdateInput, PracticeItemUncheckedUpdateInput>
+  }
+
+  /**
+   * PracticeItem delete
+   */
+  export type PracticeItemDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+    /**
+     * Filter which PracticeItem to delete.
+     */
+    where: PracticeItemWhereUniqueInput
+  }
+
+  /**
+   * PracticeItem deleteMany
+   */
+  export type PracticeItemDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PracticeItems to delete
+     */
+    where?: PracticeItemWhereInput
+    /**
+     * Limit how many PracticeItems to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PracticeItem.drill
+   */
+  export type PracticeItem$drillArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Drill
+     */
+    select?: DrillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Drill
+     */
+    omit?: DrillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DrillInclude<ExtArgs> | null
+    where?: DrillWhereInput
+  }
+
+  /**
+   * PracticeItem without action
+   */
+  export type PracticeItemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeItem
+     */
+    select?: PracticeItemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeItem
+     */
+    omit?: PracticeItemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeItemInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PracticeAthlete
+   */
+
+  export type AggregatePracticeAthlete = {
+    _count: PracticeAthleteCountAggregateOutputType | null
+    _avg: PracticeAthleteAvgAggregateOutputType | null
+    _sum: PracticeAthleteSumAggregateOutputType | null
+    _min: PracticeAthleteMinAggregateOutputType | null
+    _max: PracticeAthleteMaxAggregateOutputType | null
+  }
+
+  export type PracticeAthleteAvgAggregateOutputType = {
+    id: number | null
+    practiceId: number | null
+    athleteId: number | null
+    lateMinutes: number | null
+    absenceReasonId: number | null
+  }
+
+  export type PracticeAthleteSumAggregateOutputType = {
+    id: number | null
+    practiceId: number | null
+    athleteId: number | null
+    lateMinutes: number | null
+    absenceReasonId: number | null
+  }
+
+  export type PracticeAthleteMinAggregateOutputType = {
+    id: number | null
+    practiceId: number | null
+    athleteId: number | null
+    attending: boolean | null
+    attended: boolean | null
+    lateMinutes: number | null
+    absenceReasonId: number | null
+    absenceNotes: string | null
+  }
+
+  export type PracticeAthleteMaxAggregateOutputType = {
+    id: number | null
+    practiceId: number | null
+    athleteId: number | null
+    attending: boolean | null
+    attended: boolean | null
+    lateMinutes: number | null
+    absenceReasonId: number | null
+    absenceNotes: string | null
+  }
+
+  export type PracticeAthleteCountAggregateOutputType = {
+    id: number
+    practiceId: number
+    athleteId: number
+    attending: number
+    attended: number
+    lateMinutes: number
+    absenceReasonId: number
+    absenceNotes: number
+    _all: number
+  }
+
+
+  export type PracticeAthleteAvgAggregateInputType = {
+    id?: true
+    practiceId?: true
+    athleteId?: true
+    lateMinutes?: true
+    absenceReasonId?: true
+  }
+
+  export type PracticeAthleteSumAggregateInputType = {
+    id?: true
+    practiceId?: true
+    athleteId?: true
+    lateMinutes?: true
+    absenceReasonId?: true
+  }
+
+  export type PracticeAthleteMinAggregateInputType = {
+    id?: true
+    practiceId?: true
+    athleteId?: true
+    attending?: true
+    attended?: true
+    lateMinutes?: true
+    absenceReasonId?: true
+    absenceNotes?: true
+  }
+
+  export type PracticeAthleteMaxAggregateInputType = {
+    id?: true
+    practiceId?: true
+    athleteId?: true
+    attending?: true
+    attended?: true
+    lateMinutes?: true
+    absenceReasonId?: true
+    absenceNotes?: true
+  }
+
+  export type PracticeAthleteCountAggregateInputType = {
+    id?: true
+    practiceId?: true
+    athleteId?: true
+    attending?: true
+    attended?: true
+    lateMinutes?: true
+    absenceReasonId?: true
+    absenceNotes?: true
+    _all?: true
+  }
+
+  export type PracticeAthleteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PracticeAthlete to aggregate.
+     */
+    where?: PracticeAthleteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PracticeAthletes to fetch.
+     */
+    orderBy?: PracticeAthleteOrderByWithRelationInput | PracticeAthleteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PracticeAthleteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PracticeAthletes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PracticeAthletes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PracticeAthletes
+    **/
+    _count?: true | PracticeAthleteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PracticeAthleteAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PracticeAthleteSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PracticeAthleteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PracticeAthleteMaxAggregateInputType
+  }
+
+  export type GetPracticeAthleteAggregateType<T extends PracticeAthleteAggregateArgs> = {
+        [P in keyof T & keyof AggregatePracticeAthlete]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePracticeAthlete[P]>
+      : GetScalarType<T[P], AggregatePracticeAthlete[P]>
+  }
+
+
+
+
+  export type PracticeAthleteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PracticeAthleteWhereInput
+    orderBy?: PracticeAthleteOrderByWithAggregationInput | PracticeAthleteOrderByWithAggregationInput[]
+    by: PracticeAthleteScalarFieldEnum[] | PracticeAthleteScalarFieldEnum
+    having?: PracticeAthleteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PracticeAthleteCountAggregateInputType | true
+    _avg?: PracticeAthleteAvgAggregateInputType
+    _sum?: PracticeAthleteSumAggregateInputType
+    _min?: PracticeAthleteMinAggregateInputType
+    _max?: PracticeAthleteMaxAggregateInputType
+  }
+
+  export type PracticeAthleteGroupByOutputType = {
+    id: number
+    practiceId: number
+    athleteId: number
+    attending: boolean
+    attended: boolean | null
+    lateMinutes: number | null
+    absenceReasonId: number | null
+    absenceNotes: string | null
+    _count: PracticeAthleteCountAggregateOutputType | null
+    _avg: PracticeAthleteAvgAggregateOutputType | null
+    _sum: PracticeAthleteSumAggregateOutputType | null
+    _min: PracticeAthleteMinAggregateOutputType | null
+    _max: PracticeAthleteMaxAggregateOutputType | null
+  }
+
+  type GetPracticeAthleteGroupByPayload<T extends PracticeAthleteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PracticeAthleteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PracticeAthleteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PracticeAthleteGroupByOutputType[P]>
+            : GetScalarType<T[P], PracticeAthleteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PracticeAthleteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    practiceId?: boolean
+    athleteId?: boolean
+    attending?: boolean
+    attended?: boolean
+    lateMinutes?: boolean
+    absenceReasonId?: boolean
+    absenceNotes?: boolean
+    absenceReason?: boolean | PracticeAthlete$absenceReasonArgs<ExtArgs>
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    athlete?: boolean | AthleteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["practiceAthlete"]>
+
+  export type PracticeAthleteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    practiceId?: boolean
+    athleteId?: boolean
+    attending?: boolean
+    attended?: boolean
+    lateMinutes?: boolean
+    absenceReasonId?: boolean
+    absenceNotes?: boolean
+    absenceReason?: boolean | PracticeAthlete$absenceReasonArgs<ExtArgs>
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    athlete?: boolean | AthleteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["practiceAthlete"]>
+
+  export type PracticeAthleteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    practiceId?: boolean
+    athleteId?: boolean
+    attending?: boolean
+    attended?: boolean
+    lateMinutes?: boolean
+    absenceReasonId?: boolean
+    absenceNotes?: boolean
+    absenceReason?: boolean | PracticeAthlete$absenceReasonArgs<ExtArgs>
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    athlete?: boolean | AthleteDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["practiceAthlete"]>
+
+  export type PracticeAthleteSelectScalar = {
+    id?: boolean
+    practiceId?: boolean
+    athleteId?: boolean
+    attending?: boolean
+    attended?: boolean
+    lateMinutes?: boolean
+    absenceReasonId?: boolean
+    absenceNotes?: boolean
+  }
+
+  export type PracticeAthleteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "practiceId" | "athleteId" | "attending" | "attended" | "lateMinutes" | "absenceReasonId" | "absenceNotes", ExtArgs["result"]["practiceAthlete"]>
+  export type PracticeAthleteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    absenceReason?: boolean | PracticeAthlete$absenceReasonArgs<ExtArgs>
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    athlete?: boolean | AthleteDefaultArgs<ExtArgs>
+  }
+  export type PracticeAthleteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    absenceReason?: boolean | PracticeAthlete$absenceReasonArgs<ExtArgs>
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    athlete?: boolean | AthleteDefaultArgs<ExtArgs>
+  }
+  export type PracticeAthleteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    absenceReason?: boolean | PracticeAthlete$absenceReasonArgs<ExtArgs>
+    practice?: boolean | PracticeDefaultArgs<ExtArgs>
+    athlete?: boolean | AthleteDefaultArgs<ExtArgs>
+  }
+
+  export type $PracticeAthletePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PracticeAthlete"
+    objects: {
+      absenceReason: Prisma.$ClubAttendanceReasonPayload<ExtArgs> | null
+      practice: Prisma.$PracticePayload<ExtArgs>
+      athlete: Prisma.$AthletePayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      practiceId: number
+      athleteId: number
+      /**
+       * Whether the coach expected this athlete to be present at the session.
+       */
+      attending: boolean
+      /**
+       * null = not yet filled in, true = attended, false = did not show up.
+       */
+      attended: boolean | null
+      /**
+       * How many minutes late the athlete showed up (only meaningful when
+       * `attended == true`).
+       */
+      lateMinutes: number | null
+      /**
+       * Reason for the absence when `attended == false`. Points at a
+       * club-scoped reason which may be one of the seeded defaults or a
+       * custom one.
+       */
+      absenceReasonId: number | null
+      /**
+       * Free-form clarification entered next to the reason ("Other | Reason:").
+       */
+      absenceNotes: string | null
+    }, ExtArgs["result"]["practiceAthlete"]>
+    composites: {}
+  }
+
+  type PracticeAthleteGetPayload<S extends boolean | null | undefined | PracticeAthleteDefaultArgs> = $Result.GetResult<Prisma.$PracticeAthletePayload, S>
+
+  type PracticeAthleteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PracticeAthleteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PracticeAthleteCountAggregateInputType | true
+    }
+
+  export interface PracticeAthleteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PracticeAthlete'], meta: { name: 'PracticeAthlete' } }
+    /**
+     * Find zero or one PracticeAthlete that matches the filter.
+     * @param {PracticeAthleteFindUniqueArgs} args - Arguments to find a PracticeAthlete
+     * @example
+     * // Get one PracticeAthlete
+     * const practiceAthlete = await prisma.practiceAthlete.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PracticeAthleteFindUniqueArgs>(args: SelectSubset<T, PracticeAthleteFindUniqueArgs<ExtArgs>>): Prisma__PracticeAthleteClient<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PracticeAthlete that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PracticeAthleteFindUniqueOrThrowArgs} args - Arguments to find a PracticeAthlete
+     * @example
+     * // Get one PracticeAthlete
+     * const practiceAthlete = await prisma.practiceAthlete.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PracticeAthleteFindUniqueOrThrowArgs>(args: SelectSubset<T, PracticeAthleteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PracticeAthleteClient<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PracticeAthlete that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeAthleteFindFirstArgs} args - Arguments to find a PracticeAthlete
+     * @example
+     * // Get one PracticeAthlete
+     * const practiceAthlete = await prisma.practiceAthlete.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PracticeAthleteFindFirstArgs>(args?: SelectSubset<T, PracticeAthleteFindFirstArgs<ExtArgs>>): Prisma__PracticeAthleteClient<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PracticeAthlete that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeAthleteFindFirstOrThrowArgs} args - Arguments to find a PracticeAthlete
+     * @example
+     * // Get one PracticeAthlete
+     * const practiceAthlete = await prisma.practiceAthlete.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PracticeAthleteFindFirstOrThrowArgs>(args?: SelectSubset<T, PracticeAthleteFindFirstOrThrowArgs<ExtArgs>>): Prisma__PracticeAthleteClient<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PracticeAthletes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeAthleteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PracticeAthletes
+     * const practiceAthletes = await prisma.practiceAthlete.findMany()
+     * 
+     * // Get first 10 PracticeAthletes
+     * const practiceAthletes = await prisma.practiceAthlete.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const practiceAthleteWithIdOnly = await prisma.practiceAthlete.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PracticeAthleteFindManyArgs>(args?: SelectSubset<T, PracticeAthleteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PracticeAthlete.
+     * @param {PracticeAthleteCreateArgs} args - Arguments to create a PracticeAthlete.
+     * @example
+     * // Create one PracticeAthlete
+     * const PracticeAthlete = await prisma.practiceAthlete.create({
+     *   data: {
+     *     // ... data to create a PracticeAthlete
+     *   }
+     * })
+     * 
+     */
+    create<T extends PracticeAthleteCreateArgs>(args: SelectSubset<T, PracticeAthleteCreateArgs<ExtArgs>>): Prisma__PracticeAthleteClient<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PracticeAthletes.
+     * @param {PracticeAthleteCreateManyArgs} args - Arguments to create many PracticeAthletes.
+     * @example
+     * // Create many PracticeAthletes
+     * const practiceAthlete = await prisma.practiceAthlete.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PracticeAthleteCreateManyArgs>(args?: SelectSubset<T, PracticeAthleteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PracticeAthletes and returns the data saved in the database.
+     * @param {PracticeAthleteCreateManyAndReturnArgs} args - Arguments to create many PracticeAthletes.
+     * @example
+     * // Create many PracticeAthletes
+     * const practiceAthlete = await prisma.practiceAthlete.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PracticeAthletes and only return the `id`
+     * const practiceAthleteWithIdOnly = await prisma.practiceAthlete.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PracticeAthleteCreateManyAndReturnArgs>(args?: SelectSubset<T, PracticeAthleteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PracticeAthlete.
+     * @param {PracticeAthleteDeleteArgs} args - Arguments to delete one PracticeAthlete.
+     * @example
+     * // Delete one PracticeAthlete
+     * const PracticeAthlete = await prisma.practiceAthlete.delete({
+     *   where: {
+     *     // ... filter to delete one PracticeAthlete
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PracticeAthleteDeleteArgs>(args: SelectSubset<T, PracticeAthleteDeleteArgs<ExtArgs>>): Prisma__PracticeAthleteClient<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PracticeAthlete.
+     * @param {PracticeAthleteUpdateArgs} args - Arguments to update one PracticeAthlete.
+     * @example
+     * // Update one PracticeAthlete
+     * const practiceAthlete = await prisma.practiceAthlete.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PracticeAthleteUpdateArgs>(args: SelectSubset<T, PracticeAthleteUpdateArgs<ExtArgs>>): Prisma__PracticeAthleteClient<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PracticeAthletes.
+     * @param {PracticeAthleteDeleteManyArgs} args - Arguments to filter PracticeAthletes to delete.
+     * @example
+     * // Delete a few PracticeAthletes
+     * const { count } = await prisma.practiceAthlete.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PracticeAthleteDeleteManyArgs>(args?: SelectSubset<T, PracticeAthleteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PracticeAthletes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeAthleteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PracticeAthletes
+     * const practiceAthlete = await prisma.practiceAthlete.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PracticeAthleteUpdateManyArgs>(args: SelectSubset<T, PracticeAthleteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PracticeAthletes and returns the data updated in the database.
+     * @param {PracticeAthleteUpdateManyAndReturnArgs} args - Arguments to update many PracticeAthletes.
+     * @example
+     * // Update many PracticeAthletes
+     * const practiceAthlete = await prisma.practiceAthlete.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PracticeAthletes and only return the `id`
+     * const practiceAthleteWithIdOnly = await prisma.practiceAthlete.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PracticeAthleteUpdateManyAndReturnArgs>(args: SelectSubset<T, PracticeAthleteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PracticeAthlete.
+     * @param {PracticeAthleteUpsertArgs} args - Arguments to update or create a PracticeAthlete.
+     * @example
+     * // Update or create a PracticeAthlete
+     * const practiceAthlete = await prisma.practiceAthlete.upsert({
+     *   create: {
+     *     // ... data to create a PracticeAthlete
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PracticeAthlete we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PracticeAthleteUpsertArgs>(args: SelectSubset<T, PracticeAthleteUpsertArgs<ExtArgs>>): Prisma__PracticeAthleteClient<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PracticeAthletes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeAthleteCountArgs} args - Arguments to filter PracticeAthletes to count.
+     * @example
+     * // Count the number of PracticeAthletes
+     * const count = await prisma.practiceAthlete.count({
+     *   where: {
+     *     // ... the filter for the PracticeAthletes we want to count
+     *   }
+     * })
+    **/
+    count<T extends PracticeAthleteCountArgs>(
+      args?: Subset<T, PracticeAthleteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PracticeAthleteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PracticeAthlete.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeAthleteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PracticeAthleteAggregateArgs>(args: Subset<T, PracticeAthleteAggregateArgs>): Prisma.PrismaPromise<GetPracticeAthleteAggregateType<T>>
+
+    /**
+     * Group by PracticeAthlete.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PracticeAthleteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PracticeAthleteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PracticeAthleteGroupByArgs['orderBy'] }
+        : { orderBy?: PracticeAthleteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PracticeAthleteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPracticeAthleteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PracticeAthlete model
+   */
+  readonly fields: PracticeAthleteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PracticeAthlete.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PracticeAthleteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    absenceReason<T extends PracticeAthlete$absenceReasonArgs<ExtArgs> = {}>(args?: Subset<T, PracticeAthlete$absenceReasonArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    practice<T extends PracticeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PracticeDefaultArgs<ExtArgs>>): Prisma__PracticeClient<$Result.GetResult<Prisma.$PracticePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    athlete<T extends AthleteDefaultArgs<ExtArgs> = {}>(args?: Subset<T, AthleteDefaultArgs<ExtArgs>>): Prisma__AthleteClient<$Result.GetResult<Prisma.$AthletePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PracticeAthlete model
+   */
+  interface PracticeAthleteFieldRefs {
+    readonly id: FieldRef<"PracticeAthlete", 'Int'>
+    readonly practiceId: FieldRef<"PracticeAthlete", 'Int'>
+    readonly athleteId: FieldRef<"PracticeAthlete", 'Int'>
+    readonly attending: FieldRef<"PracticeAthlete", 'Boolean'>
+    readonly attended: FieldRef<"PracticeAthlete", 'Boolean'>
+    readonly lateMinutes: FieldRef<"PracticeAthlete", 'Int'>
+    readonly absenceReasonId: FieldRef<"PracticeAthlete", 'Int'>
+    readonly absenceNotes: FieldRef<"PracticeAthlete", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PracticeAthlete findUnique
+   */
+  export type PracticeAthleteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeAthlete to fetch.
+     */
+    where: PracticeAthleteWhereUniqueInput
+  }
+
+  /**
+   * PracticeAthlete findUniqueOrThrow
+   */
+  export type PracticeAthleteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeAthlete to fetch.
+     */
+    where: PracticeAthleteWhereUniqueInput
+  }
+
+  /**
+   * PracticeAthlete findFirst
+   */
+  export type PracticeAthleteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeAthlete to fetch.
+     */
+    where?: PracticeAthleteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PracticeAthletes to fetch.
+     */
+    orderBy?: PracticeAthleteOrderByWithRelationInput | PracticeAthleteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PracticeAthletes.
+     */
+    cursor?: PracticeAthleteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PracticeAthletes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PracticeAthletes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PracticeAthletes.
+     */
+    distinct?: PracticeAthleteScalarFieldEnum | PracticeAthleteScalarFieldEnum[]
+  }
+
+  /**
+   * PracticeAthlete findFirstOrThrow
+   */
+  export type PracticeAthleteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeAthlete to fetch.
+     */
+    where?: PracticeAthleteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PracticeAthletes to fetch.
+     */
+    orderBy?: PracticeAthleteOrderByWithRelationInput | PracticeAthleteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PracticeAthletes.
+     */
+    cursor?: PracticeAthleteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PracticeAthletes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PracticeAthletes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PracticeAthletes.
+     */
+    distinct?: PracticeAthleteScalarFieldEnum | PracticeAthleteScalarFieldEnum[]
+  }
+
+  /**
+   * PracticeAthlete findMany
+   */
+  export type PracticeAthleteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * Filter, which PracticeAthletes to fetch.
+     */
+    where?: PracticeAthleteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PracticeAthletes to fetch.
+     */
+    orderBy?: PracticeAthleteOrderByWithRelationInput | PracticeAthleteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PracticeAthletes.
+     */
+    cursor?: PracticeAthleteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PracticeAthletes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PracticeAthletes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PracticeAthletes.
+     */
+    distinct?: PracticeAthleteScalarFieldEnum | PracticeAthleteScalarFieldEnum[]
+  }
+
+  /**
+   * PracticeAthlete create
+   */
+  export type PracticeAthleteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PracticeAthlete.
+     */
+    data: XOR<PracticeAthleteCreateInput, PracticeAthleteUncheckedCreateInput>
+  }
+
+  /**
+   * PracticeAthlete createMany
+   */
+  export type PracticeAthleteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PracticeAthletes.
+     */
+    data: PracticeAthleteCreateManyInput | PracticeAthleteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PracticeAthlete createManyAndReturn
+   */
+  export type PracticeAthleteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * The data used to create many PracticeAthletes.
+     */
+    data: PracticeAthleteCreateManyInput | PracticeAthleteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PracticeAthlete update
+   */
+  export type PracticeAthleteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PracticeAthlete.
+     */
+    data: XOR<PracticeAthleteUpdateInput, PracticeAthleteUncheckedUpdateInput>
+    /**
+     * Choose, which PracticeAthlete to update.
+     */
+    where: PracticeAthleteWhereUniqueInput
+  }
+
+  /**
+   * PracticeAthlete updateMany
+   */
+  export type PracticeAthleteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PracticeAthletes.
+     */
+    data: XOR<PracticeAthleteUpdateManyMutationInput, PracticeAthleteUncheckedUpdateManyInput>
+    /**
+     * Filter which PracticeAthletes to update
+     */
+    where?: PracticeAthleteWhereInput
+    /**
+     * Limit how many PracticeAthletes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PracticeAthlete updateManyAndReturn
+   */
+  export type PracticeAthleteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * The data used to update PracticeAthletes.
+     */
+    data: XOR<PracticeAthleteUpdateManyMutationInput, PracticeAthleteUncheckedUpdateManyInput>
+    /**
+     * Filter which PracticeAthletes to update
+     */
+    where?: PracticeAthleteWhereInput
+    /**
+     * Limit how many PracticeAthletes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PracticeAthlete upsert
+   */
+  export type PracticeAthleteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PracticeAthlete to update in case it exists.
+     */
+    where: PracticeAthleteWhereUniqueInput
+    /**
+     * In case the PracticeAthlete found by the `where` argument doesn't exist, create a new PracticeAthlete with this data.
+     */
+    create: XOR<PracticeAthleteCreateInput, PracticeAthleteUncheckedCreateInput>
+    /**
+     * In case the PracticeAthlete was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PracticeAthleteUpdateInput, PracticeAthleteUncheckedUpdateInput>
+  }
+
+  /**
+   * PracticeAthlete delete
+   */
+  export type PracticeAthleteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    /**
+     * Filter which PracticeAthlete to delete.
+     */
+    where: PracticeAthleteWhereUniqueInput
+  }
+
+  /**
+   * PracticeAthlete deleteMany
+   */
+  export type PracticeAthleteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PracticeAthletes to delete
+     */
+    where?: PracticeAthleteWhereInput
+    /**
+     * Limit how many PracticeAthletes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PracticeAthlete.absenceReason
+   */
+  export type PracticeAthlete$absenceReasonArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    where?: ClubAttendanceReasonWhereInput
+  }
+
+  /**
+   * PracticeAthlete without action
+   */
+  export type PracticeAthleteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ClubAttendanceReason
+   */
+
+  export type AggregateClubAttendanceReason = {
+    _count: ClubAttendanceReasonCountAggregateOutputType | null
+    _avg: ClubAttendanceReasonAvgAggregateOutputType | null
+    _sum: ClubAttendanceReasonSumAggregateOutputType | null
+    _min: ClubAttendanceReasonMinAggregateOutputType | null
+    _max: ClubAttendanceReasonMaxAggregateOutputType | null
+  }
+
+  export type ClubAttendanceReasonAvgAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    order: number | null
+  }
+
+  export type ClubAttendanceReasonSumAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    order: number | null
+  }
+
+  export type ClubAttendanceReasonMinAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    key: string | null
+    name: string | null
+    order: number | null
+  }
+
+  export type ClubAttendanceReasonMaxAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    key: string | null
+    name: string | null
+    order: number | null
+  }
+
+  export type ClubAttendanceReasonCountAggregateOutputType = {
+    id: number
+    clubId: number
+    key: number
+    name: number
+    order: number
+    _all: number
+  }
+
+
+  export type ClubAttendanceReasonAvgAggregateInputType = {
+    id?: true
+    clubId?: true
+    order?: true
+  }
+
+  export type ClubAttendanceReasonSumAggregateInputType = {
+    id?: true
+    clubId?: true
+    order?: true
+  }
+
+  export type ClubAttendanceReasonMinAggregateInputType = {
+    id?: true
+    clubId?: true
+    key?: true
+    name?: true
+    order?: true
+  }
+
+  export type ClubAttendanceReasonMaxAggregateInputType = {
+    id?: true
+    clubId?: true
+    key?: true
+    name?: true
+    order?: true
+  }
+
+  export type ClubAttendanceReasonCountAggregateInputType = {
+    id?: true
+    clubId?: true
+    key?: true
+    name?: true
+    order?: true
+    _all?: true
+  }
+
+  export type ClubAttendanceReasonAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClubAttendanceReason to aggregate.
+     */
+    where?: ClubAttendanceReasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubAttendanceReasons to fetch.
+     */
+    orderBy?: ClubAttendanceReasonOrderByWithRelationInput | ClubAttendanceReasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClubAttendanceReasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubAttendanceReasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubAttendanceReasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ClubAttendanceReasons
+    **/
+    _count?: true | ClubAttendanceReasonCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ClubAttendanceReasonAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ClubAttendanceReasonSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClubAttendanceReasonMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClubAttendanceReasonMaxAggregateInputType
+  }
+
+  export type GetClubAttendanceReasonAggregateType<T extends ClubAttendanceReasonAggregateArgs> = {
+        [P in keyof T & keyof AggregateClubAttendanceReason]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClubAttendanceReason[P]>
+      : GetScalarType<T[P], AggregateClubAttendanceReason[P]>
+  }
+
+
+
+
+  export type ClubAttendanceReasonGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClubAttendanceReasonWhereInput
+    orderBy?: ClubAttendanceReasonOrderByWithAggregationInput | ClubAttendanceReasonOrderByWithAggregationInput[]
+    by: ClubAttendanceReasonScalarFieldEnum[] | ClubAttendanceReasonScalarFieldEnum
+    having?: ClubAttendanceReasonScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClubAttendanceReasonCountAggregateInputType | true
+    _avg?: ClubAttendanceReasonAvgAggregateInputType
+    _sum?: ClubAttendanceReasonSumAggregateInputType
+    _min?: ClubAttendanceReasonMinAggregateInputType
+    _max?: ClubAttendanceReasonMaxAggregateInputType
+  }
+
+  export type ClubAttendanceReasonGroupByOutputType = {
+    id: number
+    clubId: number
+    key: string | null
+    name: string
+    order: number
+    _count: ClubAttendanceReasonCountAggregateOutputType | null
+    _avg: ClubAttendanceReasonAvgAggregateOutputType | null
+    _sum: ClubAttendanceReasonSumAggregateOutputType | null
+    _min: ClubAttendanceReasonMinAggregateOutputType | null
+    _max: ClubAttendanceReasonMaxAggregateOutputType | null
+  }
+
+  type GetClubAttendanceReasonGroupByPayload<T extends ClubAttendanceReasonGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClubAttendanceReasonGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClubAttendanceReasonGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClubAttendanceReasonGroupByOutputType[P]>
+            : GetScalarType<T[P], ClubAttendanceReasonGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClubAttendanceReasonSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    key?: boolean
+    name?: boolean
+    order?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    athletes?: boolean | ClubAttendanceReason$athletesArgs<ExtArgs>
+    _count?: boolean | ClubAttendanceReasonCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubAttendanceReason"]>
+
+  export type ClubAttendanceReasonSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    key?: boolean
+    name?: boolean
+    order?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubAttendanceReason"]>
+
+  export type ClubAttendanceReasonSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    key?: boolean
+    name?: boolean
+    order?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubAttendanceReason"]>
+
+  export type ClubAttendanceReasonSelectScalar = {
+    id?: boolean
+    clubId?: boolean
+    key?: boolean
+    name?: boolean
+    order?: boolean
+  }
+
+  export type ClubAttendanceReasonOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "key" | "name" | "order", ExtArgs["result"]["clubAttendanceReason"]>
+  export type ClubAttendanceReasonInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+    athletes?: boolean | ClubAttendanceReason$athletesArgs<ExtArgs>
+    _count?: boolean | ClubAttendanceReasonCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type ClubAttendanceReasonIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type ClubAttendanceReasonIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+
+  export type $ClubAttendanceReasonPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClubAttendanceReason"
+    objects: {
+      club: Prisma.$ClubPayload<ExtArgs>
+      athletes: Prisma.$PracticeAthletePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      clubId: number
+      /**
+       * Localisation key for seeded defaults. `null` for custom reasons.
+       */
+      key: string | null
+      name: string
+      order: number
+    }, ExtArgs["result"]["clubAttendanceReason"]>
+    composites: {}
+  }
+
+  type ClubAttendanceReasonGetPayload<S extends boolean | null | undefined | ClubAttendanceReasonDefaultArgs> = $Result.GetResult<Prisma.$ClubAttendanceReasonPayload, S>
+
+  type ClubAttendanceReasonCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClubAttendanceReasonFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClubAttendanceReasonCountAggregateInputType | true
+    }
+
+  export interface ClubAttendanceReasonDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClubAttendanceReason'], meta: { name: 'ClubAttendanceReason' } }
+    /**
+     * Find zero or one ClubAttendanceReason that matches the filter.
+     * @param {ClubAttendanceReasonFindUniqueArgs} args - Arguments to find a ClubAttendanceReason
+     * @example
+     * // Get one ClubAttendanceReason
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClubAttendanceReasonFindUniqueArgs>(args: SelectSubset<T, ClubAttendanceReasonFindUniqueArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClubAttendanceReason that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClubAttendanceReasonFindUniqueOrThrowArgs} args - Arguments to find a ClubAttendanceReason
+     * @example
+     * // Get one ClubAttendanceReason
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClubAttendanceReasonFindUniqueOrThrowArgs>(args: SelectSubset<T, ClubAttendanceReasonFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClubAttendanceReason that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubAttendanceReasonFindFirstArgs} args - Arguments to find a ClubAttendanceReason
+     * @example
+     * // Get one ClubAttendanceReason
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClubAttendanceReasonFindFirstArgs>(args?: SelectSubset<T, ClubAttendanceReasonFindFirstArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClubAttendanceReason that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubAttendanceReasonFindFirstOrThrowArgs} args - Arguments to find a ClubAttendanceReason
+     * @example
+     * // Get one ClubAttendanceReason
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClubAttendanceReasonFindFirstOrThrowArgs>(args?: SelectSubset<T, ClubAttendanceReasonFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClubAttendanceReasons that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubAttendanceReasonFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClubAttendanceReasons
+     * const clubAttendanceReasons = await prisma.clubAttendanceReason.findMany()
+     * 
+     * // Get first 10 ClubAttendanceReasons
+     * const clubAttendanceReasons = await prisma.clubAttendanceReason.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const clubAttendanceReasonWithIdOnly = await prisma.clubAttendanceReason.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClubAttendanceReasonFindManyArgs>(args?: SelectSubset<T, ClubAttendanceReasonFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClubAttendanceReason.
+     * @param {ClubAttendanceReasonCreateArgs} args - Arguments to create a ClubAttendanceReason.
+     * @example
+     * // Create one ClubAttendanceReason
+     * const ClubAttendanceReason = await prisma.clubAttendanceReason.create({
+     *   data: {
+     *     // ... data to create a ClubAttendanceReason
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClubAttendanceReasonCreateArgs>(args: SelectSubset<T, ClubAttendanceReasonCreateArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClubAttendanceReasons.
+     * @param {ClubAttendanceReasonCreateManyArgs} args - Arguments to create many ClubAttendanceReasons.
+     * @example
+     * // Create many ClubAttendanceReasons
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClubAttendanceReasonCreateManyArgs>(args?: SelectSubset<T, ClubAttendanceReasonCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClubAttendanceReasons and returns the data saved in the database.
+     * @param {ClubAttendanceReasonCreateManyAndReturnArgs} args - Arguments to create many ClubAttendanceReasons.
+     * @example
+     * // Create many ClubAttendanceReasons
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ClubAttendanceReasons and only return the `id`
+     * const clubAttendanceReasonWithIdOnly = await prisma.clubAttendanceReason.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClubAttendanceReasonCreateManyAndReturnArgs>(args?: SelectSubset<T, ClubAttendanceReasonCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClubAttendanceReason.
+     * @param {ClubAttendanceReasonDeleteArgs} args - Arguments to delete one ClubAttendanceReason.
+     * @example
+     * // Delete one ClubAttendanceReason
+     * const ClubAttendanceReason = await prisma.clubAttendanceReason.delete({
+     *   where: {
+     *     // ... filter to delete one ClubAttendanceReason
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClubAttendanceReasonDeleteArgs>(args: SelectSubset<T, ClubAttendanceReasonDeleteArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClubAttendanceReason.
+     * @param {ClubAttendanceReasonUpdateArgs} args - Arguments to update one ClubAttendanceReason.
+     * @example
+     * // Update one ClubAttendanceReason
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClubAttendanceReasonUpdateArgs>(args: SelectSubset<T, ClubAttendanceReasonUpdateArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClubAttendanceReasons.
+     * @param {ClubAttendanceReasonDeleteManyArgs} args - Arguments to filter ClubAttendanceReasons to delete.
+     * @example
+     * // Delete a few ClubAttendanceReasons
+     * const { count } = await prisma.clubAttendanceReason.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClubAttendanceReasonDeleteManyArgs>(args?: SelectSubset<T, ClubAttendanceReasonDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClubAttendanceReasons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubAttendanceReasonUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClubAttendanceReasons
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClubAttendanceReasonUpdateManyArgs>(args: SelectSubset<T, ClubAttendanceReasonUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClubAttendanceReasons and returns the data updated in the database.
+     * @param {ClubAttendanceReasonUpdateManyAndReturnArgs} args - Arguments to update many ClubAttendanceReasons.
+     * @example
+     * // Update many ClubAttendanceReasons
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ClubAttendanceReasons and only return the `id`
+     * const clubAttendanceReasonWithIdOnly = await prisma.clubAttendanceReason.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClubAttendanceReasonUpdateManyAndReturnArgs>(args: SelectSubset<T, ClubAttendanceReasonUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClubAttendanceReason.
+     * @param {ClubAttendanceReasonUpsertArgs} args - Arguments to update or create a ClubAttendanceReason.
+     * @example
+     * // Update or create a ClubAttendanceReason
+     * const clubAttendanceReason = await prisma.clubAttendanceReason.upsert({
+     *   create: {
+     *     // ... data to create a ClubAttendanceReason
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClubAttendanceReason we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClubAttendanceReasonUpsertArgs>(args: SelectSubset<T, ClubAttendanceReasonUpsertArgs<ExtArgs>>): Prisma__ClubAttendanceReasonClient<$Result.GetResult<Prisma.$ClubAttendanceReasonPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClubAttendanceReasons.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubAttendanceReasonCountArgs} args - Arguments to filter ClubAttendanceReasons to count.
+     * @example
+     * // Count the number of ClubAttendanceReasons
+     * const count = await prisma.clubAttendanceReason.count({
+     *   where: {
+     *     // ... the filter for the ClubAttendanceReasons we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClubAttendanceReasonCountArgs>(
+      args?: Subset<T, ClubAttendanceReasonCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClubAttendanceReasonCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClubAttendanceReason.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubAttendanceReasonAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClubAttendanceReasonAggregateArgs>(args: Subset<T, ClubAttendanceReasonAggregateArgs>): Prisma.PrismaPromise<GetClubAttendanceReasonAggregateType<T>>
+
+    /**
+     * Group by ClubAttendanceReason.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubAttendanceReasonGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClubAttendanceReasonGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClubAttendanceReasonGroupByArgs['orderBy'] }
+        : { orderBy?: ClubAttendanceReasonGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClubAttendanceReasonGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClubAttendanceReasonGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClubAttendanceReason model
+   */
+  readonly fields: ClubAttendanceReasonFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClubAttendanceReason.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClubAttendanceReasonClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    athletes<T extends ClubAttendanceReason$athletesArgs<ExtArgs> = {}>(args?: Subset<T, ClubAttendanceReason$athletesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PracticeAthletePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClubAttendanceReason model
+   */
+  interface ClubAttendanceReasonFieldRefs {
+    readonly id: FieldRef<"ClubAttendanceReason", 'Int'>
+    readonly clubId: FieldRef<"ClubAttendanceReason", 'Int'>
+    readonly key: FieldRef<"ClubAttendanceReason", 'String'>
+    readonly name: FieldRef<"ClubAttendanceReason", 'String'>
+    readonly order: FieldRef<"ClubAttendanceReason", 'Int'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ClubAttendanceReason findUnique
+   */
+  export type ClubAttendanceReasonFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubAttendanceReason to fetch.
+     */
+    where: ClubAttendanceReasonWhereUniqueInput
+  }
+
+  /**
+   * ClubAttendanceReason findUniqueOrThrow
+   */
+  export type ClubAttendanceReasonFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubAttendanceReason to fetch.
+     */
+    where: ClubAttendanceReasonWhereUniqueInput
+  }
+
+  /**
+   * ClubAttendanceReason findFirst
+   */
+  export type ClubAttendanceReasonFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubAttendanceReason to fetch.
+     */
+    where?: ClubAttendanceReasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubAttendanceReasons to fetch.
+     */
+    orderBy?: ClubAttendanceReasonOrderByWithRelationInput | ClubAttendanceReasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClubAttendanceReasons.
+     */
+    cursor?: ClubAttendanceReasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubAttendanceReasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubAttendanceReasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubAttendanceReasons.
+     */
+    distinct?: ClubAttendanceReasonScalarFieldEnum | ClubAttendanceReasonScalarFieldEnum[]
+  }
+
+  /**
+   * ClubAttendanceReason findFirstOrThrow
+   */
+  export type ClubAttendanceReasonFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubAttendanceReason to fetch.
+     */
+    where?: ClubAttendanceReasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubAttendanceReasons to fetch.
+     */
+    orderBy?: ClubAttendanceReasonOrderByWithRelationInput | ClubAttendanceReasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClubAttendanceReasons.
+     */
+    cursor?: ClubAttendanceReasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubAttendanceReasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubAttendanceReasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubAttendanceReasons.
+     */
+    distinct?: ClubAttendanceReasonScalarFieldEnum | ClubAttendanceReasonScalarFieldEnum[]
+  }
+
+  /**
+   * ClubAttendanceReason findMany
+   */
+  export type ClubAttendanceReasonFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubAttendanceReasons to fetch.
+     */
+    where?: ClubAttendanceReasonWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubAttendanceReasons to fetch.
+     */
+    orderBy?: ClubAttendanceReasonOrderByWithRelationInput | ClubAttendanceReasonOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ClubAttendanceReasons.
+     */
+    cursor?: ClubAttendanceReasonWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubAttendanceReasons from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubAttendanceReasons.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubAttendanceReasons.
+     */
+    distinct?: ClubAttendanceReasonScalarFieldEnum | ClubAttendanceReasonScalarFieldEnum[]
+  }
+
+  /**
+   * ClubAttendanceReason create
+   */
+  export type ClubAttendanceReasonCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClubAttendanceReason.
+     */
+    data: XOR<ClubAttendanceReasonCreateInput, ClubAttendanceReasonUncheckedCreateInput>
+  }
+
+  /**
+   * ClubAttendanceReason createMany
+   */
+  export type ClubAttendanceReasonCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClubAttendanceReasons.
+     */
+    data: ClubAttendanceReasonCreateManyInput | ClubAttendanceReasonCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClubAttendanceReason createManyAndReturn
+   */
+  export type ClubAttendanceReasonCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClubAttendanceReasons.
+     */
+    data: ClubAttendanceReasonCreateManyInput | ClubAttendanceReasonCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClubAttendanceReason update
+   */
+  export type ClubAttendanceReasonUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClubAttendanceReason.
+     */
+    data: XOR<ClubAttendanceReasonUpdateInput, ClubAttendanceReasonUncheckedUpdateInput>
+    /**
+     * Choose, which ClubAttendanceReason to update.
+     */
+    where: ClubAttendanceReasonWhereUniqueInput
+  }
+
+  /**
+   * ClubAttendanceReason updateMany
+   */
+  export type ClubAttendanceReasonUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClubAttendanceReasons.
+     */
+    data: XOR<ClubAttendanceReasonUpdateManyMutationInput, ClubAttendanceReasonUncheckedUpdateManyInput>
+    /**
+     * Filter which ClubAttendanceReasons to update
+     */
+    where?: ClubAttendanceReasonWhereInput
+    /**
+     * Limit how many ClubAttendanceReasons to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClubAttendanceReason updateManyAndReturn
+   */
+  export type ClubAttendanceReasonUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * The data used to update ClubAttendanceReasons.
+     */
+    data: XOR<ClubAttendanceReasonUpdateManyMutationInput, ClubAttendanceReasonUncheckedUpdateManyInput>
+    /**
+     * Filter which ClubAttendanceReasons to update
+     */
+    where?: ClubAttendanceReasonWhereInput
+    /**
+     * Limit how many ClubAttendanceReasons to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClubAttendanceReason upsert
+   */
+  export type ClubAttendanceReasonUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClubAttendanceReason to update in case it exists.
+     */
+    where: ClubAttendanceReasonWhereUniqueInput
+    /**
+     * In case the ClubAttendanceReason found by the `where` argument doesn't exist, create a new ClubAttendanceReason with this data.
+     */
+    create: XOR<ClubAttendanceReasonCreateInput, ClubAttendanceReasonUncheckedCreateInput>
+    /**
+     * In case the ClubAttendanceReason was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClubAttendanceReasonUpdateInput, ClubAttendanceReasonUncheckedUpdateInput>
+  }
+
+  /**
+   * ClubAttendanceReason delete
+   */
+  export type ClubAttendanceReasonDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+    /**
+     * Filter which ClubAttendanceReason to delete.
+     */
+    where: ClubAttendanceReasonWhereUniqueInput
+  }
+
+  /**
+   * ClubAttendanceReason deleteMany
+   */
+  export type ClubAttendanceReasonDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClubAttendanceReasons to delete
+     */
+    where?: ClubAttendanceReasonWhereInput
+    /**
+     * Limit how many ClubAttendanceReasons to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClubAttendanceReason.athletes
+   */
+  export type ClubAttendanceReason$athletesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PracticeAthlete
+     */
+    select?: PracticeAthleteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PracticeAthlete
+     */
+    omit?: PracticeAthleteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PracticeAthleteInclude<ExtArgs> | null
+    where?: PracticeAthleteWhereInput
+    orderBy?: PracticeAthleteOrderByWithRelationInput | PracticeAthleteOrderByWithRelationInput[]
+    cursor?: PracticeAthleteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PracticeAthleteScalarFieldEnum | PracticeAthleteScalarFieldEnum[]
+  }
+
+  /**
+   * ClubAttendanceReason without action
+   */
+  export type ClubAttendanceReasonDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubAttendanceReason
+     */
+    select?: ClubAttendanceReasonSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubAttendanceReason
+     */
+    omit?: ClubAttendanceReasonOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubAttendanceReasonInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ClubPracticeSettings
+   */
+
+  export type AggregateClubPracticeSettings = {
+    _count: ClubPracticeSettingsCountAggregateOutputType | null
+    _avg: ClubPracticeSettingsAvgAggregateOutputType | null
+    _sum: ClubPracticeSettingsSumAggregateOutputType | null
+    _min: ClubPracticeSettingsMinAggregateOutputType | null
+    _max: ClubPracticeSettingsMaxAggregateOutputType | null
+  }
+
+  export type ClubPracticeSettingsAvgAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+  }
+
+  export type ClubPracticeSettingsSumAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+  }
+
+  export type ClubPracticeSettingsMinAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    defaultAttendanceMale: $Enums.AttendanceDefault | null
+    defaultAttendanceFemale: $Enums.AttendanceDefault | null
+    defaultAttendanceCoed: $Enums.AttendanceDefault | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClubPracticeSettingsMaxAggregateOutputType = {
+    id: number | null
+    clubId: number | null
+    defaultAttendanceMale: $Enums.AttendanceDefault | null
+    defaultAttendanceFemale: $Enums.AttendanceDefault | null
+    defaultAttendanceCoed: $Enums.AttendanceDefault | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type ClubPracticeSettingsCountAggregateOutputType = {
+    id: number
+    clubId: number
+    defaultAttendanceMale: number
+    defaultAttendanceFemale: number
+    defaultAttendanceCoed: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ClubPracticeSettingsAvgAggregateInputType = {
+    id?: true
+    clubId?: true
+  }
+
+  export type ClubPracticeSettingsSumAggregateInputType = {
+    id?: true
+    clubId?: true
+  }
+
+  export type ClubPracticeSettingsMinAggregateInputType = {
+    id?: true
+    clubId?: true
+    defaultAttendanceMale?: true
+    defaultAttendanceFemale?: true
+    defaultAttendanceCoed?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClubPracticeSettingsMaxAggregateInputType = {
+    id?: true
+    clubId?: true
+    defaultAttendanceMale?: true
+    defaultAttendanceFemale?: true
+    defaultAttendanceCoed?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type ClubPracticeSettingsCountAggregateInputType = {
+    id?: true
+    clubId?: true
+    defaultAttendanceMale?: true
+    defaultAttendanceFemale?: true
+    defaultAttendanceCoed?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ClubPracticeSettingsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClubPracticeSettings to aggregate.
+     */
+    where?: ClubPracticeSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubPracticeSettings to fetch.
+     */
+    orderBy?: ClubPracticeSettingsOrderByWithRelationInput | ClubPracticeSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ClubPracticeSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubPracticeSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubPracticeSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ClubPracticeSettings
+    **/
+    _count?: true | ClubPracticeSettingsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ClubPracticeSettingsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ClubPracticeSettingsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ClubPracticeSettingsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ClubPracticeSettingsMaxAggregateInputType
+  }
+
+  export type GetClubPracticeSettingsAggregateType<T extends ClubPracticeSettingsAggregateArgs> = {
+        [P in keyof T & keyof AggregateClubPracticeSettings]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateClubPracticeSettings[P]>
+      : GetScalarType<T[P], AggregateClubPracticeSettings[P]>
+  }
+
+
+
+
+  export type ClubPracticeSettingsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ClubPracticeSettingsWhereInput
+    orderBy?: ClubPracticeSettingsOrderByWithAggregationInput | ClubPracticeSettingsOrderByWithAggregationInput[]
+    by: ClubPracticeSettingsScalarFieldEnum[] | ClubPracticeSettingsScalarFieldEnum
+    having?: ClubPracticeSettingsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ClubPracticeSettingsCountAggregateInputType | true
+    _avg?: ClubPracticeSettingsAvgAggregateInputType
+    _sum?: ClubPracticeSettingsSumAggregateInputType
+    _min?: ClubPracticeSettingsMinAggregateInputType
+    _max?: ClubPracticeSettingsMaxAggregateInputType
+  }
+
+  export type ClubPracticeSettingsGroupByOutputType = {
+    id: number
+    clubId: number
+    defaultAttendanceMale: $Enums.AttendanceDefault
+    defaultAttendanceFemale: $Enums.AttendanceDefault
+    defaultAttendanceCoed: $Enums.AttendanceDefault
+    createdAt: Date
+    updatedAt: Date
+    _count: ClubPracticeSettingsCountAggregateOutputType | null
+    _avg: ClubPracticeSettingsAvgAggregateOutputType | null
+    _sum: ClubPracticeSettingsSumAggregateOutputType | null
+    _min: ClubPracticeSettingsMinAggregateOutputType | null
+    _max: ClubPracticeSettingsMaxAggregateOutputType | null
+  }
+
+  type GetClubPracticeSettingsGroupByPayload<T extends ClubPracticeSettingsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ClubPracticeSettingsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ClubPracticeSettingsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ClubPracticeSettingsGroupByOutputType[P]>
+            : GetScalarType<T[P], ClubPracticeSettingsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ClubPracticeSettingsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    defaultAttendanceMale?: boolean
+    defaultAttendanceFemale?: boolean
+    defaultAttendanceCoed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubPracticeSettings"]>
+
+  export type ClubPracticeSettingsSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    defaultAttendanceMale?: boolean
+    defaultAttendanceFemale?: boolean
+    defaultAttendanceCoed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubPracticeSettings"]>
+
+  export type ClubPracticeSettingsSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    clubId?: boolean
+    defaultAttendanceMale?: boolean
+    defaultAttendanceFemale?: boolean
+    defaultAttendanceCoed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["clubPracticeSettings"]>
+
+  export type ClubPracticeSettingsSelectScalar = {
+    id?: boolean
+    clubId?: boolean
+    defaultAttendanceMale?: boolean
+    defaultAttendanceFemale?: boolean
+    defaultAttendanceCoed?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ClubPracticeSettingsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "clubId" | "defaultAttendanceMale" | "defaultAttendanceFemale" | "defaultAttendanceCoed" | "createdAt" | "updatedAt", ExtArgs["result"]["clubPracticeSettings"]>
+  export type ClubPracticeSettingsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type ClubPracticeSettingsIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+  export type ClubPracticeSettingsIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    club?: boolean | ClubDefaultArgs<ExtArgs>
+  }
+
+  export type $ClubPracticeSettingsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ClubPracticeSettings"
+    objects: {
+      club: Prisma.$ClubPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      clubId: number
+      defaultAttendanceMale: $Enums.AttendanceDefault
+      defaultAttendanceFemale: $Enums.AttendanceDefault
+      defaultAttendanceCoed: $Enums.AttendanceDefault
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["clubPracticeSettings"]>
+    composites: {}
+  }
+
+  type ClubPracticeSettingsGetPayload<S extends boolean | null | undefined | ClubPracticeSettingsDefaultArgs> = $Result.GetResult<Prisma.$ClubPracticeSettingsPayload, S>
+
+  type ClubPracticeSettingsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ClubPracticeSettingsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ClubPracticeSettingsCountAggregateInputType | true
+    }
+
+  export interface ClubPracticeSettingsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ClubPracticeSettings'], meta: { name: 'ClubPracticeSettings' } }
+    /**
+     * Find zero or one ClubPracticeSettings that matches the filter.
+     * @param {ClubPracticeSettingsFindUniqueArgs} args - Arguments to find a ClubPracticeSettings
+     * @example
+     * // Get one ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ClubPracticeSettingsFindUniqueArgs>(args: SelectSubset<T, ClubPracticeSettingsFindUniqueArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ClubPracticeSettings that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ClubPracticeSettingsFindUniqueOrThrowArgs} args - Arguments to find a ClubPracticeSettings
+     * @example
+     * // Get one ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ClubPracticeSettingsFindUniqueOrThrowArgs>(args: SelectSubset<T, ClubPracticeSettingsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClubPracticeSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubPracticeSettingsFindFirstArgs} args - Arguments to find a ClubPracticeSettings
+     * @example
+     * // Get one ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ClubPracticeSettingsFindFirstArgs>(args?: SelectSubset<T, ClubPracticeSettingsFindFirstArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ClubPracticeSettings that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubPracticeSettingsFindFirstOrThrowArgs} args - Arguments to find a ClubPracticeSettings
+     * @example
+     * // Get one ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ClubPracticeSettingsFindFirstOrThrowArgs>(args?: SelectSubset<T, ClubPracticeSettingsFindFirstOrThrowArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ClubPracticeSettings that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubPracticeSettingsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.findMany()
+     * 
+     * // Get first 10 ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const clubPracticeSettingsWithIdOnly = await prisma.clubPracticeSettings.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ClubPracticeSettingsFindManyArgs>(args?: SelectSubset<T, ClubPracticeSettingsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ClubPracticeSettings.
+     * @param {ClubPracticeSettingsCreateArgs} args - Arguments to create a ClubPracticeSettings.
+     * @example
+     * // Create one ClubPracticeSettings
+     * const ClubPracticeSettings = await prisma.clubPracticeSettings.create({
+     *   data: {
+     *     // ... data to create a ClubPracticeSettings
+     *   }
+     * })
+     * 
+     */
+    create<T extends ClubPracticeSettingsCreateArgs>(args: SelectSubset<T, ClubPracticeSettingsCreateArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ClubPracticeSettings.
+     * @param {ClubPracticeSettingsCreateManyArgs} args - Arguments to create many ClubPracticeSettings.
+     * @example
+     * // Create many ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ClubPracticeSettingsCreateManyArgs>(args?: SelectSubset<T, ClubPracticeSettingsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ClubPracticeSettings and returns the data saved in the database.
+     * @param {ClubPracticeSettingsCreateManyAndReturnArgs} args - Arguments to create many ClubPracticeSettings.
+     * @example
+     * // Create many ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ClubPracticeSettings and only return the `id`
+     * const clubPracticeSettingsWithIdOnly = await prisma.clubPracticeSettings.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ClubPracticeSettingsCreateManyAndReturnArgs>(args?: SelectSubset<T, ClubPracticeSettingsCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ClubPracticeSettings.
+     * @param {ClubPracticeSettingsDeleteArgs} args - Arguments to delete one ClubPracticeSettings.
+     * @example
+     * // Delete one ClubPracticeSettings
+     * const ClubPracticeSettings = await prisma.clubPracticeSettings.delete({
+     *   where: {
+     *     // ... filter to delete one ClubPracticeSettings
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ClubPracticeSettingsDeleteArgs>(args: SelectSubset<T, ClubPracticeSettingsDeleteArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ClubPracticeSettings.
+     * @param {ClubPracticeSettingsUpdateArgs} args - Arguments to update one ClubPracticeSettings.
+     * @example
+     * // Update one ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ClubPracticeSettingsUpdateArgs>(args: SelectSubset<T, ClubPracticeSettingsUpdateArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ClubPracticeSettings.
+     * @param {ClubPracticeSettingsDeleteManyArgs} args - Arguments to filter ClubPracticeSettings to delete.
+     * @example
+     * // Delete a few ClubPracticeSettings
+     * const { count } = await prisma.clubPracticeSettings.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ClubPracticeSettingsDeleteManyArgs>(args?: SelectSubset<T, ClubPracticeSettingsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClubPracticeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubPracticeSettingsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ClubPracticeSettingsUpdateManyArgs>(args: SelectSubset<T, ClubPracticeSettingsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ClubPracticeSettings and returns the data updated in the database.
+     * @param {ClubPracticeSettingsUpdateManyAndReturnArgs} args - Arguments to update many ClubPracticeSettings.
+     * @example
+     * // Update many ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ClubPracticeSettings and only return the `id`
+     * const clubPracticeSettingsWithIdOnly = await prisma.clubPracticeSettings.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ClubPracticeSettingsUpdateManyAndReturnArgs>(args: SelectSubset<T, ClubPracticeSettingsUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ClubPracticeSettings.
+     * @param {ClubPracticeSettingsUpsertArgs} args - Arguments to update or create a ClubPracticeSettings.
+     * @example
+     * // Update or create a ClubPracticeSettings
+     * const clubPracticeSettings = await prisma.clubPracticeSettings.upsert({
+     *   create: {
+     *     // ... data to create a ClubPracticeSettings
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ClubPracticeSettings we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ClubPracticeSettingsUpsertArgs>(args: SelectSubset<T, ClubPracticeSettingsUpsertArgs<ExtArgs>>): Prisma__ClubPracticeSettingsClient<$Result.GetResult<Prisma.$ClubPracticeSettingsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ClubPracticeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubPracticeSettingsCountArgs} args - Arguments to filter ClubPracticeSettings to count.
+     * @example
+     * // Count the number of ClubPracticeSettings
+     * const count = await prisma.clubPracticeSettings.count({
+     *   where: {
+     *     // ... the filter for the ClubPracticeSettings we want to count
+     *   }
+     * })
+    **/
+    count<T extends ClubPracticeSettingsCountArgs>(
+      args?: Subset<T, ClubPracticeSettingsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ClubPracticeSettingsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ClubPracticeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubPracticeSettingsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ClubPracticeSettingsAggregateArgs>(args: Subset<T, ClubPracticeSettingsAggregateArgs>): Prisma.PrismaPromise<GetClubPracticeSettingsAggregateType<T>>
+
+    /**
+     * Group by ClubPracticeSettings.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ClubPracticeSettingsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ClubPracticeSettingsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ClubPracticeSettingsGroupByArgs['orderBy'] }
+        : { orderBy?: ClubPracticeSettingsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ClubPracticeSettingsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetClubPracticeSettingsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ClubPracticeSettings model
+   */
+  readonly fields: ClubPracticeSettingsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ClubPracticeSettings.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ClubPracticeSettingsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    club<T extends ClubDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ClubDefaultArgs<ExtArgs>>): Prisma__ClubClient<$Result.GetResult<Prisma.$ClubPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ClubPracticeSettings model
+   */
+  interface ClubPracticeSettingsFieldRefs {
+    readonly id: FieldRef<"ClubPracticeSettings", 'Int'>
+    readonly clubId: FieldRef<"ClubPracticeSettings", 'Int'>
+    readonly defaultAttendanceMale: FieldRef<"ClubPracticeSettings", 'AttendanceDefault'>
+    readonly defaultAttendanceFemale: FieldRef<"ClubPracticeSettings", 'AttendanceDefault'>
+    readonly defaultAttendanceCoed: FieldRef<"ClubPracticeSettings", 'AttendanceDefault'>
+    readonly createdAt: FieldRef<"ClubPracticeSettings", 'DateTime'>
+    readonly updatedAt: FieldRef<"ClubPracticeSettings", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ClubPracticeSettings findUnique
+   */
+  export type ClubPracticeSettingsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubPracticeSettings to fetch.
+     */
+    where: ClubPracticeSettingsWhereUniqueInput
+  }
+
+  /**
+   * ClubPracticeSettings findUniqueOrThrow
+   */
+  export type ClubPracticeSettingsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubPracticeSettings to fetch.
+     */
+    where: ClubPracticeSettingsWhereUniqueInput
+  }
+
+  /**
+   * ClubPracticeSettings findFirst
+   */
+  export type ClubPracticeSettingsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubPracticeSettings to fetch.
+     */
+    where?: ClubPracticeSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubPracticeSettings to fetch.
+     */
+    orderBy?: ClubPracticeSettingsOrderByWithRelationInput | ClubPracticeSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClubPracticeSettings.
+     */
+    cursor?: ClubPracticeSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubPracticeSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubPracticeSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubPracticeSettings.
+     */
+    distinct?: ClubPracticeSettingsScalarFieldEnum | ClubPracticeSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * ClubPracticeSettings findFirstOrThrow
+   */
+  export type ClubPracticeSettingsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubPracticeSettings to fetch.
+     */
+    where?: ClubPracticeSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubPracticeSettings to fetch.
+     */
+    orderBy?: ClubPracticeSettingsOrderByWithRelationInput | ClubPracticeSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ClubPracticeSettings.
+     */
+    cursor?: ClubPracticeSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubPracticeSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubPracticeSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubPracticeSettings.
+     */
+    distinct?: ClubPracticeSettingsScalarFieldEnum | ClubPracticeSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * ClubPracticeSettings findMany
+   */
+  export type ClubPracticeSettingsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * Filter, which ClubPracticeSettings to fetch.
+     */
+    where?: ClubPracticeSettingsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ClubPracticeSettings to fetch.
+     */
+    orderBy?: ClubPracticeSettingsOrderByWithRelationInput | ClubPracticeSettingsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ClubPracticeSettings.
+     */
+    cursor?: ClubPracticeSettingsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ClubPracticeSettings from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ClubPracticeSettings.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ClubPracticeSettings.
+     */
+    distinct?: ClubPracticeSettingsScalarFieldEnum | ClubPracticeSettingsScalarFieldEnum[]
+  }
+
+  /**
+   * ClubPracticeSettings create
+   */
+  export type ClubPracticeSettingsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ClubPracticeSettings.
+     */
+    data: XOR<ClubPracticeSettingsCreateInput, ClubPracticeSettingsUncheckedCreateInput>
+  }
+
+  /**
+   * ClubPracticeSettings createMany
+   */
+  export type ClubPracticeSettingsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ClubPracticeSettings.
+     */
+    data: ClubPracticeSettingsCreateManyInput | ClubPracticeSettingsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ClubPracticeSettings createManyAndReturn
+   */
+  export type ClubPracticeSettingsCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * The data used to create many ClubPracticeSettings.
+     */
+    data: ClubPracticeSettingsCreateManyInput | ClubPracticeSettingsCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClubPracticeSettings update
+   */
+  export type ClubPracticeSettingsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ClubPracticeSettings.
+     */
+    data: XOR<ClubPracticeSettingsUpdateInput, ClubPracticeSettingsUncheckedUpdateInput>
+    /**
+     * Choose, which ClubPracticeSettings to update.
+     */
+    where: ClubPracticeSettingsWhereUniqueInput
+  }
+
+  /**
+   * ClubPracticeSettings updateMany
+   */
+  export type ClubPracticeSettingsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ClubPracticeSettings.
+     */
+    data: XOR<ClubPracticeSettingsUpdateManyMutationInput, ClubPracticeSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which ClubPracticeSettings to update
+     */
+    where?: ClubPracticeSettingsWhereInput
+    /**
+     * Limit how many ClubPracticeSettings to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClubPracticeSettings updateManyAndReturn
+   */
+  export type ClubPracticeSettingsUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * The data used to update ClubPracticeSettings.
+     */
+    data: XOR<ClubPracticeSettingsUpdateManyMutationInput, ClubPracticeSettingsUncheckedUpdateManyInput>
+    /**
+     * Filter which ClubPracticeSettings to update
+     */
+    where?: ClubPracticeSettingsWhereInput
+    /**
+     * Limit how many ClubPracticeSettings to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ClubPracticeSettings upsert
+   */
+  export type ClubPracticeSettingsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ClubPracticeSettings to update in case it exists.
+     */
+    where: ClubPracticeSettingsWhereUniqueInput
+    /**
+     * In case the ClubPracticeSettings found by the `where` argument doesn't exist, create a new ClubPracticeSettings with this data.
+     */
+    create: XOR<ClubPracticeSettingsCreateInput, ClubPracticeSettingsUncheckedCreateInput>
+    /**
+     * In case the ClubPracticeSettings was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ClubPracticeSettingsUpdateInput, ClubPracticeSettingsUncheckedUpdateInput>
+  }
+
+  /**
+   * ClubPracticeSettings delete
+   */
+  export type ClubPracticeSettingsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+    /**
+     * Filter which ClubPracticeSettings to delete.
+     */
+    where: ClubPracticeSettingsWhereUniqueInput
+  }
+
+  /**
+   * ClubPracticeSettings deleteMany
+   */
+  export type ClubPracticeSettingsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ClubPracticeSettings to delete
+     */
+    where?: ClubPracticeSettingsWhereInput
+    /**
+     * Limit how many ClubPracticeSettings to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ClubPracticeSettings without action
+   */
+  export type ClubPracticeSettingsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ClubPracticeSettings
+     */
+    select?: ClubPracticeSettingsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ClubPracticeSettings
+     */
+    omit?: ClubPracticeSettingsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ClubPracticeSettingsInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -44444,7 +55729,8 @@ export namespace Prisma {
     defaultClubId: 'defaultClubId',
     role: 'role',
     resetToken: 'resetToken',
-    resetTokenExpiry: 'resetTokenExpiry'
+    resetTokenExpiry: 'resetTokenExpiry',
+    drillRecentColors: 'drillRecentColors'
   };
 
   export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
@@ -44508,7 +55794,8 @@ export namespace Prisma {
     notes: 'notes',
     number: 'number',
     name: 'name',
-    clubId: 'clubId'
+    clubId: 'clubId',
+    teamId: 'teamId'
   };
 
   export type MacrocycleScalarFieldEnum = (typeof MacrocycleScalarFieldEnum)[keyof typeof MacrocycleScalarFieldEnum]
@@ -44569,11 +55856,65 @@ export namespace Prisma {
   export const DrillScalarFieldEnum: {
     id: 'id',
     name: 'name',
+    title: 'title',
     svg: 'svg',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    clubId: 'clubId',
+    accountId: 'accountId',
+    echelonId: 'echelonId',
+    description: 'description',
+    goals: 'goals',
+    variations: 'variations',
+    tips: 'tips',
+    defaultText: 'defaultText',
+    ballsCount: 'ballsCount',
+    basketsCount: 'basketsCount',
+    conesCount: 'conesCount',
+    extraEquipment: 'extraEquipment',
+    playersCount: 'playersCount',
+    coachesCount: 'coachesCount',
+    typeFundamental: 'typeFundamental',
+    typeIndividual: 'typeIndividual',
+    typeTeam: 'typeTeam',
+    posGuard: 'posGuard',
+    posForward: 'posForward',
+    posCenter: 'posCenter'
   };
 
   export type DrillScalarFieldEnum = (typeof DrillScalarFieldEnum)[keyof typeof DrillScalarFieldEnum]
+
+
+  export const DrillGraphicScalarFieldEnum: {
+    id: 'id',
+    drillId: 'drillId',
+    order: 'order',
+    svg: 'svg',
+    notes: 'notes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type DrillGraphicScalarFieldEnum = (typeof DrillGraphicScalarFieldEnum)[keyof typeof DrillGraphicScalarFieldEnum]
+
+
+  export const DrillTopicScalarFieldEnum: {
+    id: 'id',
+    clubId: 'clubId',
+    key: 'key',
+    name: 'name',
+    order: 'order'
+  };
+
+  export type DrillTopicScalarFieldEnum = (typeof DrillTopicScalarFieldEnum)[keyof typeof DrillTopicScalarFieldEnum]
+
+
+  export const DrillTopicLinkScalarFieldEnum: {
+    drillId: 'drillId',
+    topicId: 'topicId'
+  };
+
+  export type DrillTopicLinkScalarFieldEnum = (typeof DrillTopicLinkScalarFieldEnum)[keyof typeof DrillTopicLinkScalarFieldEnum]
 
 
   export const EchelonScalarFieldEnum: {
@@ -44598,6 +55939,13 @@ export namespace Prisma {
     federationLogo: 'federationLogo',
     backgroundColor: 'backgroundColor',
     foregroundColor: 'foregroundColor',
+    courtBackground: 'courtBackground',
+    courtKeyColor: 'courtKeyColor',
+    courtCenterColor: 'courtCenterColor',
+    courtLineColor: 'courtLineColor',
+    courtMarginColor: 'courtMarginColor',
+    courtShowLogo: 'courtShowLogo',
+    courtLogoRotation: 'courtLogoRotation',
     fpbClubId: 'fpbClubId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -44825,12 +56173,95 @@ export namespace Prisma {
   export type AlertRecipientScalarFieldEnum = (typeof AlertRecipientScalarFieldEnum)[keyof typeof AlertRecipientScalarFieldEnum]
 
 
+  export const PracticeScalarFieldEnum: {
+    id: 'id',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    clubId: 'clubId',
+    teamId: 'teamId',
+    date: 'date',
+    endTime: 'endTime',
+    subtitle: 'subtitle',
+    topic: 'topic',
+    offensiveGoals: 'offensiveGoals',
+    defensiveGoals: 'defensiveGoals',
+    notes: 'notes',
+    completed: 'completed',
+    groups: 'groups'
+  };
+
+  export type PracticeScalarFieldEnum = (typeof PracticeScalarFieldEnum)[keyof typeof PracticeScalarFieldEnum]
+
+
+  export const PracticeItemScalarFieldEnum: {
+    id: 'id',
+    practiceId: 'practiceId',
+    order: 'order',
+    duration: 'duration',
+    type: 'type',
+    title: 'title',
+    text: 'text',
+    drillId: 'drillId',
+    graphics: 'graphics',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PracticeItemScalarFieldEnum = (typeof PracticeItemScalarFieldEnum)[keyof typeof PracticeItemScalarFieldEnum]
+
+
+  export const PracticeAthleteScalarFieldEnum: {
+    id: 'id',
+    practiceId: 'practiceId',
+    athleteId: 'athleteId',
+    attending: 'attending',
+    attended: 'attended',
+    lateMinutes: 'lateMinutes',
+    absenceReasonId: 'absenceReasonId',
+    absenceNotes: 'absenceNotes'
+  };
+
+  export type PracticeAthleteScalarFieldEnum = (typeof PracticeAthleteScalarFieldEnum)[keyof typeof PracticeAthleteScalarFieldEnum]
+
+
+  export const ClubAttendanceReasonScalarFieldEnum: {
+    id: 'id',
+    clubId: 'clubId',
+    key: 'key',
+    name: 'name',
+    order: 'order'
+  };
+
+  export type ClubAttendanceReasonScalarFieldEnum = (typeof ClubAttendanceReasonScalarFieldEnum)[keyof typeof ClubAttendanceReasonScalarFieldEnum]
+
+
+  export const ClubPracticeSettingsScalarFieldEnum: {
+    id: 'id',
+    clubId: 'clubId',
+    defaultAttendanceMale: 'defaultAttendanceMale',
+    defaultAttendanceFemale: 'defaultAttendanceFemale',
+    defaultAttendanceCoed: 'defaultAttendanceCoed',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ClubPracticeSettingsScalarFieldEnum = (typeof ClubPracticeSettingsScalarFieldEnum)[keyof typeof ClubPracticeSettingsScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const QueryMode: {
@@ -44847,6 +56278,15 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+  export const JsonNullValueFilter: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull,
+    AnyNull: typeof AnyNull
+  };
+
+  export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
   /**
@@ -44942,6 +56382,20 @@ export namespace Prisma {
    * Reference to a field of type 'PlatformRole[]'
    */
   export type ListEnumPlatformRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PlatformRole[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
+   * Reference to a field of type 'QueryMode'
+   */
+  export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -45072,6 +56526,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'PracticeItemType'
+   */
+  export type EnumPracticeItemTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PracticeItemType'>
+    
+
+
+  /**
+   * Reference to a field of type 'PracticeItemType[]'
+   */
+  export type ListEnumPracticeItemTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PracticeItemType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttendanceDefault'
+   */
+  export type EnumAttendanceDefaultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceDefault'>
+    
+
+
+  /**
+   * Reference to a field of type 'AttendanceDefault[]'
+   */
+  export type ListEnumAttendanceDefaultFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AttendanceDefault[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -45114,6 +56596,7 @@ export namespace Prisma {
     teams?: TeamAthleteListRelationFilter
     preferredNumbers?: AthletePreferredNumberListRelationFilter
     gameEquipments?: GameEquipmentListRelationFilter
+    practiceAttendances?: PracticeAthleteListRelationFilter
   }
 
   export type AthleteOrderByWithRelationInput = {
@@ -45139,6 +56622,7 @@ export namespace Prisma {
     teams?: TeamAthleteOrderByRelationAggregateInput
     preferredNumbers?: AthletePreferredNumberOrderByRelationAggregateInput
     gameEquipments?: GameEquipmentOrderByRelationAggregateInput
+    practiceAttendances?: PracticeAthleteOrderByRelationAggregateInput
   }
 
   export type AthleteWhereUniqueInput = Prisma.AtLeast<{
@@ -45167,6 +56651,7 @@ export namespace Prisma {
     teams?: TeamAthleteListRelationFilter
     preferredNumbers?: AthletePreferredNumberListRelationFilter
     gameEquipments?: GameEquipmentListRelationFilter
+    practiceAttendances?: PracticeAthleteListRelationFilter
   }, "id">
 
   export type AthleteOrderByWithAggregationInput = {
@@ -45565,9 +57050,11 @@ export namespace Prisma {
     role?: EnumPlatformRoleFilter<"Account"> | $Enums.PlatformRole
     resetToken?: StringNullableFilter<"Account"> | string | null
     resetTokenExpiry?: DateTimeNullableFilter<"Account"> | Date | string | null
+    drillRecentColors?: JsonNullableFilter<"Account">
     clubs?: AccountClubListRelationFilter
     staffProfiles?: StaffListRelationFilter
     alertRecipients?: AlertRecipientListRelationFilter
+    drills?: DrillListRelationFilter
   }
 
   export type AccountOrderByWithRelationInput = {
@@ -45582,9 +57069,11 @@ export namespace Prisma {
     role?: SortOrder
     resetToken?: SortOrderInput | SortOrder
     resetTokenExpiry?: SortOrderInput | SortOrder
+    drillRecentColors?: SortOrderInput | SortOrder
     clubs?: AccountClubOrderByRelationAggregateInput
     staffProfiles?: StaffOrderByRelationAggregateInput
     alertRecipients?: AlertRecipientOrderByRelationAggregateInput
+    drills?: DrillOrderByRelationAggregateInput
   }
 
   export type AccountWhereUniqueInput = Prisma.AtLeast<{
@@ -45602,9 +57091,11 @@ export namespace Prisma {
     defaultClubId?: IntFilter<"Account"> | number
     role?: EnumPlatformRoleFilter<"Account"> | $Enums.PlatformRole
     resetTokenExpiry?: DateTimeNullableFilter<"Account"> | Date | string | null
+    drillRecentColors?: JsonNullableFilter<"Account">
     clubs?: AccountClubListRelationFilter
     staffProfiles?: StaffListRelationFilter
     alertRecipients?: AlertRecipientListRelationFilter
+    drills?: DrillListRelationFilter
   }, "id" | "email" | "resetToken">
 
   export type AccountOrderByWithAggregationInput = {
@@ -45619,6 +57110,7 @@ export namespace Prisma {
     role?: SortOrder
     resetToken?: SortOrderInput | SortOrder
     resetTokenExpiry?: SortOrderInput | SortOrder
+    drillRecentColors?: SortOrderInput | SortOrder
     _count?: AccountCountOrderByAggregateInput
     _avg?: AccountAvgOrderByAggregateInput
     _max?: AccountMaxOrderByAggregateInput
@@ -45641,6 +57133,7 @@ export namespace Prisma {
     role?: EnumPlatformRoleWithAggregatesFilter<"Account"> | $Enums.PlatformRole
     resetToken?: StringNullableWithAggregatesFilter<"Account"> | string | null
     resetTokenExpiry?: DateTimeNullableWithAggregatesFilter<"Account"> | Date | string | null
+    drillRecentColors?: JsonNullableWithAggregatesFilter<"Account">
   }
 
   export type StatisticWhereInput = {
@@ -45929,7 +57422,9 @@ export namespace Prisma {
     number?: IntNullableFilter<"Macrocycle"> | number | null
     name?: StringNullableFilter<"Macrocycle"> | string | null
     clubId?: IntFilter<"Macrocycle"> | number
+    teamId?: IntNullableFilter<"Macrocycle"> | number | null
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
     mesocycles?: MesocycleListRelationFilter
   }
 
@@ -45941,7 +57436,9 @@ export namespace Prisma {
     number?: SortOrderInput | SortOrder
     name?: SortOrderInput | SortOrder
     clubId?: SortOrder
+    teamId?: SortOrderInput | SortOrder
     club?: ClubOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
     mesocycles?: MesocycleOrderByRelationAggregateInput
   }
 
@@ -45956,7 +57453,9 @@ export namespace Prisma {
     number?: IntNullableFilter<"Macrocycle"> | number | null
     name?: StringNullableFilter<"Macrocycle"> | string | null
     clubId?: IntFilter<"Macrocycle"> | number
+    teamId?: IntNullableFilter<"Macrocycle"> | number | null
     club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    team?: XOR<TeamNullableScalarRelationFilter, TeamWhereInput> | null
     mesocycles?: MesocycleListRelationFilter
   }, "id">
 
@@ -45968,6 +57467,7 @@ export namespace Prisma {
     number?: SortOrderInput | SortOrder
     name?: SortOrderInput | SortOrder
     clubId?: SortOrder
+    teamId?: SortOrderInput | SortOrder
     _count?: MacrocycleCountOrderByAggregateInput
     _avg?: MacrocycleAvgOrderByAggregateInput
     _max?: MacrocycleMaxOrderByAggregateInput
@@ -45986,6 +57486,7 @@ export namespace Prisma {
     number?: IntNullableWithAggregatesFilter<"Macrocycle"> | number | null
     name?: StringNullableWithAggregatesFilter<"Macrocycle"> | string | null
     clubId?: IntWithAggregatesFilter<"Macrocycle"> | number
+    teamId?: IntNullableWithAggregatesFilter<"Macrocycle"> | number | null
   }
 
   export type MesocycleWhereInput = {
@@ -46268,15 +57769,71 @@ export namespace Prisma {
     NOT?: DrillWhereInput | DrillWhereInput[]
     id?: IntFilter<"Drill"> | number
     name?: StringNullableFilter<"Drill"> | string | null
-    svg?: StringFilter<"Drill"> | string
+    title?: StringNullableFilter<"Drill"> | string | null
+    svg?: StringNullableFilter<"Drill"> | string | null
     createdAt?: DateTimeFilter<"Drill"> | Date | string
+    updatedAt?: DateTimeFilter<"Drill"> | Date | string
+    clubId?: IntNullableFilter<"Drill"> | number | null
+    accountId?: IntNullableFilter<"Drill"> | number | null
+    echelonId?: IntNullableFilter<"Drill"> | number | null
+    description?: StringNullableFilter<"Drill"> | string | null
+    goals?: StringNullableFilter<"Drill"> | string | null
+    variations?: StringNullableFilter<"Drill"> | string | null
+    tips?: StringNullableFilter<"Drill"> | string | null
+    defaultText?: StringNullableFilter<"Drill"> | string | null
+    ballsCount?: IntFilter<"Drill"> | number
+    basketsCount?: IntFilter<"Drill"> | number
+    conesCount?: IntFilter<"Drill"> | number
+    extraEquipment?: StringNullableFilter<"Drill"> | string | null
+    playersCount?: IntFilter<"Drill"> | number
+    coachesCount?: IntFilter<"Drill"> | number
+    typeFundamental?: BoolFilter<"Drill"> | boolean
+    typeIndividual?: BoolFilter<"Drill"> | boolean
+    typeTeam?: BoolFilter<"Drill"> | boolean
+    posGuard?: BoolFilter<"Drill"> | boolean
+    posForward?: BoolFilter<"Drill"> | boolean
+    posCenter?: BoolFilter<"Drill"> | boolean
+    club?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
+    account?: XOR<AccountNullableScalarRelationFilter, AccountWhereInput> | null
+    echelon?: XOR<EchelonNullableScalarRelationFilter, EchelonWhereInput> | null
+    graphics?: DrillGraphicListRelationFilter
+    topics?: DrillTopicLinkListRelationFilter
+    practiceItems?: PracticeItemListRelationFilter
   }
 
   export type DrillOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
-    svg?: SortOrder
+    title?: SortOrderInput | SortOrder
+    svg?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrderInput | SortOrder
+    accountId?: SortOrderInput | SortOrder
+    echelonId?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    goals?: SortOrderInput | SortOrder
+    variations?: SortOrderInput | SortOrder
+    tips?: SortOrderInput | SortOrder
+    defaultText?: SortOrderInput | SortOrder
+    ballsCount?: SortOrder
+    basketsCount?: SortOrder
+    conesCount?: SortOrder
+    extraEquipment?: SortOrderInput | SortOrder
+    playersCount?: SortOrder
+    coachesCount?: SortOrder
+    typeFundamental?: SortOrder
+    typeIndividual?: SortOrder
+    typeTeam?: SortOrder
+    posGuard?: SortOrder
+    posForward?: SortOrder
+    posCenter?: SortOrder
+    club?: ClubOrderByWithRelationInput
+    account?: AccountOrderByWithRelationInput
+    echelon?: EchelonOrderByWithRelationInput
+    graphics?: DrillGraphicOrderByRelationAggregateInput
+    topics?: DrillTopicLinkOrderByRelationAggregateInput
+    practiceItems?: PracticeItemOrderByRelationAggregateInput
   }
 
   export type DrillWhereUniqueInput = Prisma.AtLeast<{
@@ -46285,15 +57842,65 @@ export namespace Prisma {
     OR?: DrillWhereInput[]
     NOT?: DrillWhereInput | DrillWhereInput[]
     name?: StringNullableFilter<"Drill"> | string | null
-    svg?: StringFilter<"Drill"> | string
+    title?: StringNullableFilter<"Drill"> | string | null
+    svg?: StringNullableFilter<"Drill"> | string | null
     createdAt?: DateTimeFilter<"Drill"> | Date | string
+    updatedAt?: DateTimeFilter<"Drill"> | Date | string
+    clubId?: IntNullableFilter<"Drill"> | number | null
+    accountId?: IntNullableFilter<"Drill"> | number | null
+    echelonId?: IntNullableFilter<"Drill"> | number | null
+    description?: StringNullableFilter<"Drill"> | string | null
+    goals?: StringNullableFilter<"Drill"> | string | null
+    variations?: StringNullableFilter<"Drill"> | string | null
+    tips?: StringNullableFilter<"Drill"> | string | null
+    defaultText?: StringNullableFilter<"Drill"> | string | null
+    ballsCount?: IntFilter<"Drill"> | number
+    basketsCount?: IntFilter<"Drill"> | number
+    conesCount?: IntFilter<"Drill"> | number
+    extraEquipment?: StringNullableFilter<"Drill"> | string | null
+    playersCount?: IntFilter<"Drill"> | number
+    coachesCount?: IntFilter<"Drill"> | number
+    typeFundamental?: BoolFilter<"Drill"> | boolean
+    typeIndividual?: BoolFilter<"Drill"> | boolean
+    typeTeam?: BoolFilter<"Drill"> | boolean
+    posGuard?: BoolFilter<"Drill"> | boolean
+    posForward?: BoolFilter<"Drill"> | boolean
+    posCenter?: BoolFilter<"Drill"> | boolean
+    club?: XOR<ClubNullableScalarRelationFilter, ClubWhereInput> | null
+    account?: XOR<AccountNullableScalarRelationFilter, AccountWhereInput> | null
+    echelon?: XOR<EchelonNullableScalarRelationFilter, EchelonWhereInput> | null
+    graphics?: DrillGraphicListRelationFilter
+    topics?: DrillTopicLinkListRelationFilter
+    practiceItems?: PracticeItemListRelationFilter
   }, "id">
 
   export type DrillOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
-    svg?: SortOrder
+    title?: SortOrderInput | SortOrder
+    svg?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrderInput | SortOrder
+    accountId?: SortOrderInput | SortOrder
+    echelonId?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    goals?: SortOrderInput | SortOrder
+    variations?: SortOrderInput | SortOrder
+    tips?: SortOrderInput | SortOrder
+    defaultText?: SortOrderInput | SortOrder
+    ballsCount?: SortOrder
+    basketsCount?: SortOrder
+    conesCount?: SortOrder
+    extraEquipment?: SortOrderInput | SortOrder
+    playersCount?: SortOrder
+    coachesCount?: SortOrder
+    typeFundamental?: SortOrder
+    typeIndividual?: SortOrder
+    typeTeam?: SortOrder
+    posGuard?: SortOrder
+    posForward?: SortOrder
+    posCenter?: SortOrder
     _count?: DrillCountOrderByAggregateInput
     _avg?: DrillAvgOrderByAggregateInput
     _max?: DrillMaxOrderByAggregateInput
@@ -46307,8 +57914,204 @@ export namespace Prisma {
     NOT?: DrillScalarWhereWithAggregatesInput | DrillScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Drill"> | number
     name?: StringNullableWithAggregatesFilter<"Drill"> | string | null
-    svg?: StringWithAggregatesFilter<"Drill"> | string
+    title?: StringNullableWithAggregatesFilter<"Drill"> | string | null
+    svg?: StringNullableWithAggregatesFilter<"Drill"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Drill"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Drill"> | Date | string
+    clubId?: IntNullableWithAggregatesFilter<"Drill"> | number | null
+    accountId?: IntNullableWithAggregatesFilter<"Drill"> | number | null
+    echelonId?: IntNullableWithAggregatesFilter<"Drill"> | number | null
+    description?: StringNullableWithAggregatesFilter<"Drill"> | string | null
+    goals?: StringNullableWithAggregatesFilter<"Drill"> | string | null
+    variations?: StringNullableWithAggregatesFilter<"Drill"> | string | null
+    tips?: StringNullableWithAggregatesFilter<"Drill"> | string | null
+    defaultText?: StringNullableWithAggregatesFilter<"Drill"> | string | null
+    ballsCount?: IntWithAggregatesFilter<"Drill"> | number
+    basketsCount?: IntWithAggregatesFilter<"Drill"> | number
+    conesCount?: IntWithAggregatesFilter<"Drill"> | number
+    extraEquipment?: StringNullableWithAggregatesFilter<"Drill"> | string | null
+    playersCount?: IntWithAggregatesFilter<"Drill"> | number
+    coachesCount?: IntWithAggregatesFilter<"Drill"> | number
+    typeFundamental?: BoolWithAggregatesFilter<"Drill"> | boolean
+    typeIndividual?: BoolWithAggregatesFilter<"Drill"> | boolean
+    typeTeam?: BoolWithAggregatesFilter<"Drill"> | boolean
+    posGuard?: BoolWithAggregatesFilter<"Drill"> | boolean
+    posForward?: BoolWithAggregatesFilter<"Drill"> | boolean
+    posCenter?: BoolWithAggregatesFilter<"Drill"> | boolean
+  }
+
+  export type DrillGraphicWhereInput = {
+    AND?: DrillGraphicWhereInput | DrillGraphicWhereInput[]
+    OR?: DrillGraphicWhereInput[]
+    NOT?: DrillGraphicWhereInput | DrillGraphicWhereInput[]
+    id?: IntFilter<"DrillGraphic"> | number
+    drillId?: IntFilter<"DrillGraphic"> | number
+    order?: IntFilter<"DrillGraphic"> | number
+    svg?: StringFilter<"DrillGraphic"> | string
+    notes?: StringNullableFilter<"DrillGraphic"> | string | null
+    createdAt?: DateTimeFilter<"DrillGraphic"> | Date | string
+    updatedAt?: DateTimeFilter<"DrillGraphic"> | Date | string
+    drill?: XOR<DrillScalarRelationFilter, DrillWhereInput>
+  }
+
+  export type DrillGraphicOrderByWithRelationInput = {
+    id?: SortOrder
+    drillId?: SortOrder
+    order?: SortOrder
+    svg?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    drill?: DrillOrderByWithRelationInput
+  }
+
+  export type DrillGraphicWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: DrillGraphicWhereInput | DrillGraphicWhereInput[]
+    OR?: DrillGraphicWhereInput[]
+    NOT?: DrillGraphicWhereInput | DrillGraphicWhereInput[]
+    drillId?: IntFilter<"DrillGraphic"> | number
+    order?: IntFilter<"DrillGraphic"> | number
+    svg?: StringFilter<"DrillGraphic"> | string
+    notes?: StringNullableFilter<"DrillGraphic"> | string | null
+    createdAt?: DateTimeFilter<"DrillGraphic"> | Date | string
+    updatedAt?: DateTimeFilter<"DrillGraphic"> | Date | string
+    drill?: XOR<DrillScalarRelationFilter, DrillWhereInput>
+  }, "id">
+
+  export type DrillGraphicOrderByWithAggregationInput = {
+    id?: SortOrder
+    drillId?: SortOrder
+    order?: SortOrder
+    svg?: SortOrder
+    notes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: DrillGraphicCountOrderByAggregateInput
+    _avg?: DrillGraphicAvgOrderByAggregateInput
+    _max?: DrillGraphicMaxOrderByAggregateInput
+    _min?: DrillGraphicMinOrderByAggregateInput
+    _sum?: DrillGraphicSumOrderByAggregateInput
+  }
+
+  export type DrillGraphicScalarWhereWithAggregatesInput = {
+    AND?: DrillGraphicScalarWhereWithAggregatesInput | DrillGraphicScalarWhereWithAggregatesInput[]
+    OR?: DrillGraphicScalarWhereWithAggregatesInput[]
+    NOT?: DrillGraphicScalarWhereWithAggregatesInput | DrillGraphicScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"DrillGraphic"> | number
+    drillId?: IntWithAggregatesFilter<"DrillGraphic"> | number
+    order?: IntWithAggregatesFilter<"DrillGraphic"> | number
+    svg?: StringWithAggregatesFilter<"DrillGraphic"> | string
+    notes?: StringNullableWithAggregatesFilter<"DrillGraphic"> | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"DrillGraphic"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"DrillGraphic"> | Date | string
+  }
+
+  export type DrillTopicWhereInput = {
+    AND?: DrillTopicWhereInput | DrillTopicWhereInput[]
+    OR?: DrillTopicWhereInput[]
+    NOT?: DrillTopicWhereInput | DrillTopicWhereInput[]
+    id?: IntFilter<"DrillTopic"> | number
+    clubId?: IntFilter<"DrillTopic"> | number
+    key?: StringNullableFilter<"DrillTopic"> | string | null
+    name?: StringFilter<"DrillTopic"> | string
+    order?: IntFilter<"DrillTopic"> | number
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    drills?: DrillTopicLinkListRelationFilter
+  }
+
+  export type DrillTopicOrderByWithRelationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrderInput | SortOrder
+    name?: SortOrder
+    order?: SortOrder
+    club?: ClubOrderByWithRelationInput
+    drills?: DrillTopicLinkOrderByRelationAggregateInput
+  }
+
+  export type DrillTopicWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    clubId_key?: DrillTopicClubIdKeyCompoundUniqueInput
+    AND?: DrillTopicWhereInput | DrillTopicWhereInput[]
+    OR?: DrillTopicWhereInput[]
+    NOT?: DrillTopicWhereInput | DrillTopicWhereInput[]
+    clubId?: IntFilter<"DrillTopic"> | number
+    key?: StringNullableFilter<"DrillTopic"> | string | null
+    name?: StringFilter<"DrillTopic"> | string
+    order?: IntFilter<"DrillTopic"> | number
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    drills?: DrillTopicLinkListRelationFilter
+  }, "id" | "clubId_key">
+
+  export type DrillTopicOrderByWithAggregationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrderInput | SortOrder
+    name?: SortOrder
+    order?: SortOrder
+    _count?: DrillTopicCountOrderByAggregateInput
+    _avg?: DrillTopicAvgOrderByAggregateInput
+    _max?: DrillTopicMaxOrderByAggregateInput
+    _min?: DrillTopicMinOrderByAggregateInput
+    _sum?: DrillTopicSumOrderByAggregateInput
+  }
+
+  export type DrillTopicScalarWhereWithAggregatesInput = {
+    AND?: DrillTopicScalarWhereWithAggregatesInput | DrillTopicScalarWhereWithAggregatesInput[]
+    OR?: DrillTopicScalarWhereWithAggregatesInput[]
+    NOT?: DrillTopicScalarWhereWithAggregatesInput | DrillTopicScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"DrillTopic"> | number
+    clubId?: IntWithAggregatesFilter<"DrillTopic"> | number
+    key?: StringNullableWithAggregatesFilter<"DrillTopic"> | string | null
+    name?: StringWithAggregatesFilter<"DrillTopic"> | string
+    order?: IntWithAggregatesFilter<"DrillTopic"> | number
+  }
+
+  export type DrillTopicLinkWhereInput = {
+    AND?: DrillTopicLinkWhereInput | DrillTopicLinkWhereInput[]
+    OR?: DrillTopicLinkWhereInput[]
+    NOT?: DrillTopicLinkWhereInput | DrillTopicLinkWhereInput[]
+    drillId?: IntFilter<"DrillTopicLink"> | number
+    topicId?: IntFilter<"DrillTopicLink"> | number
+    drill?: XOR<DrillScalarRelationFilter, DrillWhereInput>
+    topic?: XOR<DrillTopicScalarRelationFilter, DrillTopicWhereInput>
+  }
+
+  export type DrillTopicLinkOrderByWithRelationInput = {
+    drillId?: SortOrder
+    topicId?: SortOrder
+    drill?: DrillOrderByWithRelationInput
+    topic?: DrillTopicOrderByWithRelationInput
+  }
+
+  export type DrillTopicLinkWhereUniqueInput = Prisma.AtLeast<{
+    drillId_topicId?: DrillTopicLinkDrillIdTopicIdCompoundUniqueInput
+    AND?: DrillTopicLinkWhereInput | DrillTopicLinkWhereInput[]
+    OR?: DrillTopicLinkWhereInput[]
+    NOT?: DrillTopicLinkWhereInput | DrillTopicLinkWhereInput[]
+    drillId?: IntFilter<"DrillTopicLink"> | number
+    topicId?: IntFilter<"DrillTopicLink"> | number
+    drill?: XOR<DrillScalarRelationFilter, DrillWhereInput>
+    topic?: XOR<DrillTopicScalarRelationFilter, DrillTopicWhereInput>
+  }, "drillId_topicId">
+
+  export type DrillTopicLinkOrderByWithAggregationInput = {
+    drillId?: SortOrder
+    topicId?: SortOrder
+    _count?: DrillTopicLinkCountOrderByAggregateInput
+    _avg?: DrillTopicLinkAvgOrderByAggregateInput
+    _max?: DrillTopicLinkMaxOrderByAggregateInput
+    _min?: DrillTopicLinkMinOrderByAggregateInput
+    _sum?: DrillTopicLinkSumOrderByAggregateInput
+  }
+
+  export type DrillTopicLinkScalarWhereWithAggregatesInput = {
+    AND?: DrillTopicLinkScalarWhereWithAggregatesInput | DrillTopicLinkScalarWhereWithAggregatesInput[]
+    OR?: DrillTopicLinkScalarWhereWithAggregatesInput[]
+    NOT?: DrillTopicLinkScalarWhereWithAggregatesInput | DrillTopicLinkScalarWhereWithAggregatesInput[]
+    drillId?: IntWithAggregatesFilter<"DrillTopicLink"> | number
+    topicId?: IntWithAggregatesFilter<"DrillTopicLink"> | number
   }
 
   export type EchelonWhereInput = {
@@ -46326,6 +58129,7 @@ export namespace Prisma {
     teams?: TeamListRelationFilter
     competitions?: CompetitionListRelationFilter
     equipmentColors?: EquipmentColorListRelationFilter
+    drills?: DrillListRelationFilter
   }
 
   export type EchelonOrderByWithRelationInput = {
@@ -46340,6 +58144,7 @@ export namespace Prisma {
     teams?: TeamOrderByRelationAggregateInput
     competitions?: CompetitionOrderByRelationAggregateInput
     equipmentColors?: EquipmentColorOrderByRelationAggregateInput
+    drills?: DrillOrderByRelationAggregateInput
   }
 
   export type EchelonWhereUniqueInput = Prisma.AtLeast<{
@@ -46357,6 +58162,7 @@ export namespace Prisma {
     teams?: TeamListRelationFilter
     competitions?: CompetitionListRelationFilter
     equipmentColors?: EquipmentColorListRelationFilter
+    drills?: DrillListRelationFilter
   }, "id">
 
   export type EchelonOrderByWithAggregationInput = {
@@ -46400,6 +58206,13 @@ export namespace Prisma {
     federationLogo?: StringNullableFilter<"Club"> | string | null
     backgroundColor?: StringNullableFilter<"Club"> | string | null
     foregroundColor?: StringNullableFilter<"Club"> | string | null
+    courtBackground?: StringNullableFilter<"Club"> | string | null
+    courtKeyColor?: StringNullableFilter<"Club"> | string | null
+    courtCenterColor?: StringNullableFilter<"Club"> | string | null
+    courtLineColor?: StringNullableFilter<"Club"> | string | null
+    courtMarginColor?: StringNullableFilter<"Club"> | string | null
+    courtShowLogo?: BoolFilter<"Club"> | boolean
+    courtLogoRotation?: IntFilter<"Club"> | number
     fpbClubId?: IntNullableFilter<"Club"> | number | null
     createdAt?: DateTimeFilter<"Club"> | Date | string
     updatedAt?: DateTimeFilter<"Club"> | Date | string
@@ -46413,6 +58226,11 @@ export namespace Prisma {
     staff?: StaffListRelationFilter
     alerts?: AlertListRelationFilter
     emailSettings?: XOR<ClubEmailSettingsNullableScalarRelationFilter, ClubEmailSettingsWhereInput> | null
+    practices?: PracticeListRelationFilter
+    practiceSettings?: XOR<ClubPracticeSettingsNullableScalarRelationFilter, ClubPracticeSettingsWhereInput> | null
+    attendanceReasons?: ClubAttendanceReasonListRelationFilter
+    drills?: DrillListRelationFilter
+    drillTopics?: DrillTopicListRelationFilter
   }
 
   export type ClubOrderByWithRelationInput = {
@@ -46423,6 +58241,13 @@ export namespace Prisma {
     federationLogo?: SortOrderInput | SortOrder
     backgroundColor?: SortOrderInput | SortOrder
     foregroundColor?: SortOrderInput | SortOrder
+    courtBackground?: SortOrderInput | SortOrder
+    courtKeyColor?: SortOrderInput | SortOrder
+    courtCenterColor?: SortOrderInput | SortOrder
+    courtLineColor?: SortOrderInput | SortOrder
+    courtMarginColor?: SortOrderInput | SortOrder
+    courtShowLogo?: SortOrder
+    courtLogoRotation?: SortOrder
     fpbClubId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -46436,6 +58261,11 @@ export namespace Prisma {
     staff?: StaffOrderByRelationAggregateInput
     alerts?: AlertOrderByRelationAggregateInput
     emailSettings?: ClubEmailSettingsOrderByWithRelationInput
+    practices?: PracticeOrderByRelationAggregateInput
+    practiceSettings?: ClubPracticeSettingsOrderByWithRelationInput
+    attendanceReasons?: ClubAttendanceReasonOrderByRelationAggregateInput
+    drills?: DrillOrderByRelationAggregateInput
+    drillTopics?: DrillTopicOrderByRelationAggregateInput
   }
 
   export type ClubWhereUniqueInput = Prisma.AtLeast<{
@@ -46449,6 +58279,13 @@ export namespace Prisma {
     federationLogo?: StringNullableFilter<"Club"> | string | null
     backgroundColor?: StringNullableFilter<"Club"> | string | null
     foregroundColor?: StringNullableFilter<"Club"> | string | null
+    courtBackground?: StringNullableFilter<"Club"> | string | null
+    courtKeyColor?: StringNullableFilter<"Club"> | string | null
+    courtCenterColor?: StringNullableFilter<"Club"> | string | null
+    courtLineColor?: StringNullableFilter<"Club"> | string | null
+    courtMarginColor?: StringNullableFilter<"Club"> | string | null
+    courtShowLogo?: BoolFilter<"Club"> | boolean
+    courtLogoRotation?: IntFilter<"Club"> | number
     fpbClubId?: IntNullableFilter<"Club"> | number | null
     createdAt?: DateTimeFilter<"Club"> | Date | string
     updatedAt?: DateTimeFilter<"Club"> | Date | string
@@ -46462,6 +58299,11 @@ export namespace Prisma {
     staff?: StaffListRelationFilter
     alerts?: AlertListRelationFilter
     emailSettings?: XOR<ClubEmailSettingsNullableScalarRelationFilter, ClubEmailSettingsWhereInput> | null
+    practices?: PracticeListRelationFilter
+    practiceSettings?: XOR<ClubPracticeSettingsNullableScalarRelationFilter, ClubPracticeSettingsWhereInput> | null
+    attendanceReasons?: ClubAttendanceReasonListRelationFilter
+    drills?: DrillListRelationFilter
+    drillTopics?: DrillTopicListRelationFilter
   }, "id" | "name">
 
   export type ClubOrderByWithAggregationInput = {
@@ -46472,6 +58314,13 @@ export namespace Prisma {
     federationLogo?: SortOrderInput | SortOrder
     backgroundColor?: SortOrderInput | SortOrder
     foregroundColor?: SortOrderInput | SortOrder
+    courtBackground?: SortOrderInput | SortOrder
+    courtKeyColor?: SortOrderInput | SortOrder
+    courtCenterColor?: SortOrderInput | SortOrder
+    courtLineColor?: SortOrderInput | SortOrder
+    courtMarginColor?: SortOrderInput | SortOrder
+    courtShowLogo?: SortOrder
+    courtLogoRotation?: SortOrder
     fpbClubId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -46493,6 +58342,13 @@ export namespace Prisma {
     federationLogo?: StringNullableWithAggregatesFilter<"Club"> | string | null
     backgroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
     foregroundColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    courtBackground?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    courtKeyColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    courtCenterColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    courtLineColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    courtMarginColor?: StringNullableWithAggregatesFilter<"Club"> | string | null
+    courtShowLogo?: BoolWithAggregatesFilter<"Club"> | boolean
+    courtLogoRotation?: IntWithAggregatesFilter<"Club"> | number
     fpbClubId?: IntNullableWithAggregatesFilter<"Club"> | number | null
     createdAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Club"> | Date | string
@@ -46848,6 +58704,8 @@ export namespace Prisma {
     athletes?: TeamAthleteListRelationFilter
     staff?: TeamStaffListRelationFilter
     games?: GameListRelationFilter
+    macrocycles?: MacrocycleListRelationFilter
+    practices?: PracticeListRelationFilter
   }
 
   export type TeamOrderByWithRelationInput = {
@@ -46864,6 +58722,8 @@ export namespace Prisma {
     athletes?: TeamAthleteOrderByRelationAggregateInput
     staff?: TeamStaffOrderByRelationAggregateInput
     games?: GameOrderByRelationAggregateInput
+    macrocycles?: MacrocycleOrderByRelationAggregateInput
+    practices?: PracticeOrderByRelationAggregateInput
   }
 
   export type TeamWhereUniqueInput = Prisma.AtLeast<{
@@ -46883,6 +58743,8 @@ export namespace Prisma {
     athletes?: TeamAthleteListRelationFilter
     staff?: TeamStaffListRelationFilter
     games?: GameListRelationFilter
+    macrocycles?: MacrocycleListRelationFilter
+    practices?: PracticeListRelationFilter
   }, "id">
 
   export type TeamOrderByWithAggregationInput = {
@@ -47711,6 +59573,414 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"AlertRecipient"> | Date | string
   }
 
+  export type PracticeWhereInput = {
+    AND?: PracticeWhereInput | PracticeWhereInput[]
+    OR?: PracticeWhereInput[]
+    NOT?: PracticeWhereInput | PracticeWhereInput[]
+    id?: IntFilter<"Practice"> | number
+    createdAt?: DateTimeFilter<"Practice"> | Date | string
+    updatedAt?: DateTimeFilter<"Practice"> | Date | string
+    clubId?: IntFilter<"Practice"> | number
+    teamId?: IntFilter<"Practice"> | number
+    date?: DateTimeFilter<"Practice"> | Date | string
+    endTime?: DateTimeFilter<"Practice"> | Date | string
+    subtitle?: StringNullableFilter<"Practice"> | string | null
+    topic?: StringFilter<"Practice"> | string
+    offensiveGoals?: StringNullableFilter<"Practice"> | string | null
+    defensiveGoals?: StringNullableFilter<"Practice"> | string | null
+    notes?: StringNullableFilter<"Practice"> | string | null
+    completed?: BoolFilter<"Practice"> | boolean
+    groups?: JsonNullableFilter<"Practice">
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    attendances?: PracticeAthleteListRelationFilter
+    items?: PracticeItemListRelationFilter
+  }
+
+  export type PracticeOrderByWithRelationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrder
+    teamId?: SortOrder
+    date?: SortOrder
+    endTime?: SortOrder
+    subtitle?: SortOrderInput | SortOrder
+    topic?: SortOrder
+    offensiveGoals?: SortOrderInput | SortOrder
+    defensiveGoals?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    completed?: SortOrder
+    groups?: SortOrderInput | SortOrder
+    club?: ClubOrderByWithRelationInput
+    team?: TeamOrderByWithRelationInput
+    attendances?: PracticeAthleteOrderByRelationAggregateInput
+    items?: PracticeItemOrderByRelationAggregateInput
+  }
+
+  export type PracticeWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: PracticeWhereInput | PracticeWhereInput[]
+    OR?: PracticeWhereInput[]
+    NOT?: PracticeWhereInput | PracticeWhereInput[]
+    createdAt?: DateTimeFilter<"Practice"> | Date | string
+    updatedAt?: DateTimeFilter<"Practice"> | Date | string
+    clubId?: IntFilter<"Practice"> | number
+    teamId?: IntFilter<"Practice"> | number
+    date?: DateTimeFilter<"Practice"> | Date | string
+    endTime?: DateTimeFilter<"Practice"> | Date | string
+    subtitle?: StringNullableFilter<"Practice"> | string | null
+    topic?: StringFilter<"Practice"> | string
+    offensiveGoals?: StringNullableFilter<"Practice"> | string | null
+    defensiveGoals?: StringNullableFilter<"Practice"> | string | null
+    notes?: StringNullableFilter<"Practice"> | string | null
+    completed?: BoolFilter<"Practice"> | boolean
+    groups?: JsonNullableFilter<"Practice">
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    team?: XOR<TeamScalarRelationFilter, TeamWhereInput>
+    attendances?: PracticeAthleteListRelationFilter
+    items?: PracticeItemListRelationFilter
+  }, "id">
+
+  export type PracticeOrderByWithAggregationInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrder
+    teamId?: SortOrder
+    date?: SortOrder
+    endTime?: SortOrder
+    subtitle?: SortOrderInput | SortOrder
+    topic?: SortOrder
+    offensiveGoals?: SortOrderInput | SortOrder
+    defensiveGoals?: SortOrderInput | SortOrder
+    notes?: SortOrderInput | SortOrder
+    completed?: SortOrder
+    groups?: SortOrderInput | SortOrder
+    _count?: PracticeCountOrderByAggregateInput
+    _avg?: PracticeAvgOrderByAggregateInput
+    _max?: PracticeMaxOrderByAggregateInput
+    _min?: PracticeMinOrderByAggregateInput
+    _sum?: PracticeSumOrderByAggregateInput
+  }
+
+  export type PracticeScalarWhereWithAggregatesInput = {
+    AND?: PracticeScalarWhereWithAggregatesInput | PracticeScalarWhereWithAggregatesInput[]
+    OR?: PracticeScalarWhereWithAggregatesInput[]
+    NOT?: PracticeScalarWhereWithAggregatesInput | PracticeScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Practice"> | number
+    createdAt?: DateTimeWithAggregatesFilter<"Practice"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Practice"> | Date | string
+    clubId?: IntWithAggregatesFilter<"Practice"> | number
+    teamId?: IntWithAggregatesFilter<"Practice"> | number
+    date?: DateTimeWithAggregatesFilter<"Practice"> | Date | string
+    endTime?: DateTimeWithAggregatesFilter<"Practice"> | Date | string
+    subtitle?: StringNullableWithAggregatesFilter<"Practice"> | string | null
+    topic?: StringWithAggregatesFilter<"Practice"> | string
+    offensiveGoals?: StringNullableWithAggregatesFilter<"Practice"> | string | null
+    defensiveGoals?: StringNullableWithAggregatesFilter<"Practice"> | string | null
+    notes?: StringNullableWithAggregatesFilter<"Practice"> | string | null
+    completed?: BoolWithAggregatesFilter<"Practice"> | boolean
+    groups?: JsonNullableWithAggregatesFilter<"Practice">
+  }
+
+  export type PracticeItemWhereInput = {
+    AND?: PracticeItemWhereInput | PracticeItemWhereInput[]
+    OR?: PracticeItemWhereInput[]
+    NOT?: PracticeItemWhereInput | PracticeItemWhereInput[]
+    id?: IntFilter<"PracticeItem"> | number
+    practiceId?: IntFilter<"PracticeItem"> | number
+    order?: IntFilter<"PracticeItem"> | number
+    duration?: IntFilter<"PracticeItem"> | number
+    type?: EnumPracticeItemTypeFilter<"PracticeItem"> | $Enums.PracticeItemType
+    title?: StringNullableFilter<"PracticeItem"> | string | null
+    text?: StringNullableFilter<"PracticeItem"> | string | null
+    drillId?: IntNullableFilter<"PracticeItem"> | number | null
+    graphics?: JsonNullableFilter<"PracticeItem">
+    createdAt?: DateTimeFilter<"PracticeItem"> | Date | string
+    updatedAt?: DateTimeFilter<"PracticeItem"> | Date | string
+    practice?: XOR<PracticeScalarRelationFilter, PracticeWhereInput>
+    drill?: XOR<DrillNullableScalarRelationFilter, DrillWhereInput> | null
+  }
+
+  export type PracticeItemOrderByWithRelationInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    order?: SortOrder
+    duration?: SortOrder
+    type?: SortOrder
+    title?: SortOrderInput | SortOrder
+    text?: SortOrderInput | SortOrder
+    drillId?: SortOrderInput | SortOrder
+    graphics?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    practice?: PracticeOrderByWithRelationInput
+    drill?: DrillOrderByWithRelationInput
+  }
+
+  export type PracticeItemWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    AND?: PracticeItemWhereInput | PracticeItemWhereInput[]
+    OR?: PracticeItemWhereInput[]
+    NOT?: PracticeItemWhereInput | PracticeItemWhereInput[]
+    practiceId?: IntFilter<"PracticeItem"> | number
+    order?: IntFilter<"PracticeItem"> | number
+    duration?: IntFilter<"PracticeItem"> | number
+    type?: EnumPracticeItemTypeFilter<"PracticeItem"> | $Enums.PracticeItemType
+    title?: StringNullableFilter<"PracticeItem"> | string | null
+    text?: StringNullableFilter<"PracticeItem"> | string | null
+    drillId?: IntNullableFilter<"PracticeItem"> | number | null
+    graphics?: JsonNullableFilter<"PracticeItem">
+    createdAt?: DateTimeFilter<"PracticeItem"> | Date | string
+    updatedAt?: DateTimeFilter<"PracticeItem"> | Date | string
+    practice?: XOR<PracticeScalarRelationFilter, PracticeWhereInput>
+    drill?: XOR<DrillNullableScalarRelationFilter, DrillWhereInput> | null
+  }, "id">
+
+  export type PracticeItemOrderByWithAggregationInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    order?: SortOrder
+    duration?: SortOrder
+    type?: SortOrder
+    title?: SortOrderInput | SortOrder
+    text?: SortOrderInput | SortOrder
+    drillId?: SortOrderInput | SortOrder
+    graphics?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PracticeItemCountOrderByAggregateInput
+    _avg?: PracticeItemAvgOrderByAggregateInput
+    _max?: PracticeItemMaxOrderByAggregateInput
+    _min?: PracticeItemMinOrderByAggregateInput
+    _sum?: PracticeItemSumOrderByAggregateInput
+  }
+
+  export type PracticeItemScalarWhereWithAggregatesInput = {
+    AND?: PracticeItemScalarWhereWithAggregatesInput | PracticeItemScalarWhereWithAggregatesInput[]
+    OR?: PracticeItemScalarWhereWithAggregatesInput[]
+    NOT?: PracticeItemScalarWhereWithAggregatesInput | PracticeItemScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"PracticeItem"> | number
+    practiceId?: IntWithAggregatesFilter<"PracticeItem"> | number
+    order?: IntWithAggregatesFilter<"PracticeItem"> | number
+    duration?: IntWithAggregatesFilter<"PracticeItem"> | number
+    type?: EnumPracticeItemTypeWithAggregatesFilter<"PracticeItem"> | $Enums.PracticeItemType
+    title?: StringNullableWithAggregatesFilter<"PracticeItem"> | string | null
+    text?: StringNullableWithAggregatesFilter<"PracticeItem"> | string | null
+    drillId?: IntNullableWithAggregatesFilter<"PracticeItem"> | number | null
+    graphics?: JsonNullableWithAggregatesFilter<"PracticeItem">
+    createdAt?: DateTimeWithAggregatesFilter<"PracticeItem"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"PracticeItem"> | Date | string
+  }
+
+  export type PracticeAthleteWhereInput = {
+    AND?: PracticeAthleteWhereInput | PracticeAthleteWhereInput[]
+    OR?: PracticeAthleteWhereInput[]
+    NOT?: PracticeAthleteWhereInput | PracticeAthleteWhereInput[]
+    id?: IntFilter<"PracticeAthlete"> | number
+    practiceId?: IntFilter<"PracticeAthlete"> | number
+    athleteId?: IntFilter<"PracticeAthlete"> | number
+    attending?: BoolFilter<"PracticeAthlete"> | boolean
+    attended?: BoolNullableFilter<"PracticeAthlete"> | boolean | null
+    lateMinutes?: IntNullableFilter<"PracticeAthlete"> | number | null
+    absenceReasonId?: IntNullableFilter<"PracticeAthlete"> | number | null
+    absenceNotes?: StringNullableFilter<"PracticeAthlete"> | string | null
+    absenceReason?: XOR<ClubAttendanceReasonNullableScalarRelationFilter, ClubAttendanceReasonWhereInput> | null
+    practice?: XOR<PracticeScalarRelationFilter, PracticeWhereInput>
+    athlete?: XOR<AthleteScalarRelationFilter, AthleteWhereInput>
+  }
+
+  export type PracticeAthleteOrderByWithRelationInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    athleteId?: SortOrder
+    attending?: SortOrder
+    attended?: SortOrderInput | SortOrder
+    lateMinutes?: SortOrderInput | SortOrder
+    absenceReasonId?: SortOrderInput | SortOrder
+    absenceNotes?: SortOrderInput | SortOrder
+    absenceReason?: ClubAttendanceReasonOrderByWithRelationInput
+    practice?: PracticeOrderByWithRelationInput
+    athlete?: AthleteOrderByWithRelationInput
+  }
+
+  export type PracticeAthleteWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    practiceId_athleteId?: PracticeAthletePracticeIdAthleteIdCompoundUniqueInput
+    AND?: PracticeAthleteWhereInput | PracticeAthleteWhereInput[]
+    OR?: PracticeAthleteWhereInput[]
+    NOT?: PracticeAthleteWhereInput | PracticeAthleteWhereInput[]
+    practiceId?: IntFilter<"PracticeAthlete"> | number
+    athleteId?: IntFilter<"PracticeAthlete"> | number
+    attending?: BoolFilter<"PracticeAthlete"> | boolean
+    attended?: BoolNullableFilter<"PracticeAthlete"> | boolean | null
+    lateMinutes?: IntNullableFilter<"PracticeAthlete"> | number | null
+    absenceReasonId?: IntNullableFilter<"PracticeAthlete"> | number | null
+    absenceNotes?: StringNullableFilter<"PracticeAthlete"> | string | null
+    absenceReason?: XOR<ClubAttendanceReasonNullableScalarRelationFilter, ClubAttendanceReasonWhereInput> | null
+    practice?: XOR<PracticeScalarRelationFilter, PracticeWhereInput>
+    athlete?: XOR<AthleteScalarRelationFilter, AthleteWhereInput>
+  }, "id" | "practiceId_athleteId">
+
+  export type PracticeAthleteOrderByWithAggregationInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    athleteId?: SortOrder
+    attending?: SortOrder
+    attended?: SortOrderInput | SortOrder
+    lateMinutes?: SortOrderInput | SortOrder
+    absenceReasonId?: SortOrderInput | SortOrder
+    absenceNotes?: SortOrderInput | SortOrder
+    _count?: PracticeAthleteCountOrderByAggregateInput
+    _avg?: PracticeAthleteAvgOrderByAggregateInput
+    _max?: PracticeAthleteMaxOrderByAggregateInput
+    _min?: PracticeAthleteMinOrderByAggregateInput
+    _sum?: PracticeAthleteSumOrderByAggregateInput
+  }
+
+  export type PracticeAthleteScalarWhereWithAggregatesInput = {
+    AND?: PracticeAthleteScalarWhereWithAggregatesInput | PracticeAthleteScalarWhereWithAggregatesInput[]
+    OR?: PracticeAthleteScalarWhereWithAggregatesInput[]
+    NOT?: PracticeAthleteScalarWhereWithAggregatesInput | PracticeAthleteScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"PracticeAthlete"> | number
+    practiceId?: IntWithAggregatesFilter<"PracticeAthlete"> | number
+    athleteId?: IntWithAggregatesFilter<"PracticeAthlete"> | number
+    attending?: BoolWithAggregatesFilter<"PracticeAthlete"> | boolean
+    attended?: BoolNullableWithAggregatesFilter<"PracticeAthlete"> | boolean | null
+    lateMinutes?: IntNullableWithAggregatesFilter<"PracticeAthlete"> | number | null
+    absenceReasonId?: IntNullableWithAggregatesFilter<"PracticeAthlete"> | number | null
+    absenceNotes?: StringNullableWithAggregatesFilter<"PracticeAthlete"> | string | null
+  }
+
+  export type ClubAttendanceReasonWhereInput = {
+    AND?: ClubAttendanceReasonWhereInput | ClubAttendanceReasonWhereInput[]
+    OR?: ClubAttendanceReasonWhereInput[]
+    NOT?: ClubAttendanceReasonWhereInput | ClubAttendanceReasonWhereInput[]
+    id?: IntFilter<"ClubAttendanceReason"> | number
+    clubId?: IntFilter<"ClubAttendanceReason"> | number
+    key?: StringNullableFilter<"ClubAttendanceReason"> | string | null
+    name?: StringFilter<"ClubAttendanceReason"> | string
+    order?: IntFilter<"ClubAttendanceReason"> | number
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    athletes?: PracticeAthleteListRelationFilter
+  }
+
+  export type ClubAttendanceReasonOrderByWithRelationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrderInput | SortOrder
+    name?: SortOrder
+    order?: SortOrder
+    club?: ClubOrderByWithRelationInput
+    athletes?: PracticeAthleteOrderByRelationAggregateInput
+  }
+
+  export type ClubAttendanceReasonWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    clubId_key?: ClubAttendanceReasonClubIdKeyCompoundUniqueInput
+    AND?: ClubAttendanceReasonWhereInput | ClubAttendanceReasonWhereInput[]
+    OR?: ClubAttendanceReasonWhereInput[]
+    NOT?: ClubAttendanceReasonWhereInput | ClubAttendanceReasonWhereInput[]
+    clubId?: IntFilter<"ClubAttendanceReason"> | number
+    key?: StringNullableFilter<"ClubAttendanceReason"> | string | null
+    name?: StringFilter<"ClubAttendanceReason"> | string
+    order?: IntFilter<"ClubAttendanceReason"> | number
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+    athletes?: PracticeAthleteListRelationFilter
+  }, "id" | "clubId_key">
+
+  export type ClubAttendanceReasonOrderByWithAggregationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrderInput | SortOrder
+    name?: SortOrder
+    order?: SortOrder
+    _count?: ClubAttendanceReasonCountOrderByAggregateInput
+    _avg?: ClubAttendanceReasonAvgOrderByAggregateInput
+    _max?: ClubAttendanceReasonMaxOrderByAggregateInput
+    _min?: ClubAttendanceReasonMinOrderByAggregateInput
+    _sum?: ClubAttendanceReasonSumOrderByAggregateInput
+  }
+
+  export type ClubAttendanceReasonScalarWhereWithAggregatesInput = {
+    AND?: ClubAttendanceReasonScalarWhereWithAggregatesInput | ClubAttendanceReasonScalarWhereWithAggregatesInput[]
+    OR?: ClubAttendanceReasonScalarWhereWithAggregatesInput[]
+    NOT?: ClubAttendanceReasonScalarWhereWithAggregatesInput | ClubAttendanceReasonScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ClubAttendanceReason"> | number
+    clubId?: IntWithAggregatesFilter<"ClubAttendanceReason"> | number
+    key?: StringNullableWithAggregatesFilter<"ClubAttendanceReason"> | string | null
+    name?: StringWithAggregatesFilter<"ClubAttendanceReason"> | string
+    order?: IntWithAggregatesFilter<"ClubAttendanceReason"> | number
+  }
+
+  export type ClubPracticeSettingsWhereInput = {
+    AND?: ClubPracticeSettingsWhereInput | ClubPracticeSettingsWhereInput[]
+    OR?: ClubPracticeSettingsWhereInput[]
+    NOT?: ClubPracticeSettingsWhereInput | ClubPracticeSettingsWhereInput[]
+    id?: IntFilter<"ClubPracticeSettings"> | number
+    clubId?: IntFilter<"ClubPracticeSettings"> | number
+    defaultAttendanceMale?: EnumAttendanceDefaultFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    createdAt?: DateTimeFilter<"ClubPracticeSettings"> | Date | string
+    updatedAt?: DateTimeFilter<"ClubPracticeSettings"> | Date | string
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+  }
+
+  export type ClubPracticeSettingsOrderByWithRelationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    defaultAttendanceMale?: SortOrder
+    defaultAttendanceFemale?: SortOrder
+    defaultAttendanceCoed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    club?: ClubOrderByWithRelationInput
+  }
+
+  export type ClubPracticeSettingsWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    clubId?: number
+    AND?: ClubPracticeSettingsWhereInput | ClubPracticeSettingsWhereInput[]
+    OR?: ClubPracticeSettingsWhereInput[]
+    NOT?: ClubPracticeSettingsWhereInput | ClubPracticeSettingsWhereInput[]
+    defaultAttendanceMale?: EnumAttendanceDefaultFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    createdAt?: DateTimeFilter<"ClubPracticeSettings"> | Date | string
+    updatedAt?: DateTimeFilter<"ClubPracticeSettings"> | Date | string
+    club?: XOR<ClubScalarRelationFilter, ClubWhereInput>
+  }, "id" | "clubId">
+
+  export type ClubPracticeSettingsOrderByWithAggregationInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    defaultAttendanceMale?: SortOrder
+    defaultAttendanceFemale?: SortOrder
+    defaultAttendanceCoed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: ClubPracticeSettingsCountOrderByAggregateInput
+    _avg?: ClubPracticeSettingsAvgOrderByAggregateInput
+    _max?: ClubPracticeSettingsMaxOrderByAggregateInput
+    _min?: ClubPracticeSettingsMinOrderByAggregateInput
+    _sum?: ClubPracticeSettingsSumOrderByAggregateInput
+  }
+
+  export type ClubPracticeSettingsScalarWhereWithAggregatesInput = {
+    AND?: ClubPracticeSettingsScalarWhereWithAggregatesInput | ClubPracticeSettingsScalarWhereWithAggregatesInput[]
+    OR?: ClubPracticeSettingsScalarWhereWithAggregatesInput[]
+    NOT?: ClubPracticeSettingsScalarWhereWithAggregatesInput | ClubPracticeSettingsScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"ClubPracticeSettings"> | number
+    clubId?: IntWithAggregatesFilter<"ClubPracticeSettings"> | number
+    defaultAttendanceMale?: EnumAttendanceDefaultWithAggregatesFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultWithAggregatesFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultWithAggregatesFilter<"ClubPracticeSettings"> | $Enums.AttendanceDefault
+    createdAt?: DateTimeWithAggregatesFilter<"ClubPracticeSettings"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"ClubPracticeSettings"> | Date | string
+  }
+
   export type AthleteCreateInput = {
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -47732,6 +60002,7 @@ export namespace Prisma {
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateInput = {
@@ -47756,6 +60027,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUpdateInput = {
@@ -47779,6 +60051,7 @@ export namespace Prisma {
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateInput = {
@@ -47803,6 +60076,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteCreateManyInput = {
@@ -48230,9 +60504,11 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubCreateNestedManyWithoutAccountInput
     staffProfiles?: StaffCreateNestedManyWithoutAccountInput
     alertRecipients?: AlertRecipientCreateNestedManyWithoutAccountInput
+    drills?: DrillCreateNestedManyWithoutAccountInput
   }
 
   export type AccountUncheckedCreateInput = {
@@ -48247,9 +60523,11 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUncheckedCreateNestedManyWithoutAccountInput
     staffProfiles?: StaffUncheckedCreateNestedManyWithoutAccountInput
     alertRecipients?: AlertRecipientUncheckedCreateNestedManyWithoutAccountInput
+    drills?: DrillUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type AccountUpdateInput = {
@@ -48263,9 +60541,11 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUpdateManyWithoutAccountNestedInput
     staffProfiles?: StaffUpdateManyWithoutAccountNestedInput
     alertRecipients?: AlertRecipientUpdateManyWithoutAccountNestedInput
+    drills?: DrillUpdateManyWithoutAccountNestedInput
   }
 
   export type AccountUncheckedUpdateInput = {
@@ -48280,9 +60560,11 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUncheckedUpdateManyWithoutAccountNestedInput
     staffProfiles?: StaffUncheckedUpdateManyWithoutAccountNestedInput
     alertRecipients?: AlertRecipientUncheckedUpdateManyWithoutAccountNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type AccountCreateManyInput = {
@@ -48297,6 +60579,7 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type AccountUpdateManyMutationInput = {
@@ -48310,6 +60593,7 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type AccountUncheckedUpdateManyInput = {
@@ -48324,6 +60608,7 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type StatisticCreateInput = {
@@ -48611,6 +60896,7 @@ export namespace Prisma {
     number?: number | null
     name?: string | null
     club: ClubCreateNestedOneWithoutMacrocyclesInput
+    team?: TeamCreateNestedOneWithoutMacrocyclesInput
     mesocycles?: MesocycleCreateNestedManyWithoutMacrocycleInput
   }
 
@@ -48622,6 +60908,7 @@ export namespace Prisma {
     number?: number | null
     name?: string | null
     clubId: number
+    teamId?: number | null
     mesocycles?: MesocycleUncheckedCreateNestedManyWithoutMacrocycleInput
   }
 
@@ -48632,6 +60919,7 @@ export namespace Prisma {
     number?: NullableIntFieldUpdateOperationsInput | number | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutMacrocyclesNestedInput
+    team?: TeamUpdateOneWithoutMacrocyclesNestedInput
     mesocycles?: MesocycleUpdateManyWithoutMacrocycleNestedInput
   }
 
@@ -48643,6 +60931,7 @@ export namespace Prisma {
     number?: NullableIntFieldUpdateOperationsInput | number | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
+    teamId?: NullableIntFieldUpdateOperationsInput | number | null
     mesocycles?: MesocycleUncheckedUpdateManyWithoutMacrocycleNestedInput
   }
 
@@ -48654,6 +60943,7 @@ export namespace Prisma {
     number?: number | null
     name?: string | null
     clubId: number
+    teamId?: number | null
   }
 
   export type MacrocycleUpdateManyMutationInput = {
@@ -48672,6 +60962,7 @@ export namespace Prisma {
     number?: NullableIntFieldUpdateOperationsInput | number | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
+    teamId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type MesocycleCreateInput = {
@@ -48948,48 +61239,367 @@ export namespace Prisma {
 
   export type DrillCreateInput = {
     name?: string | null
-    svg: string
+    title?: string | null
+    svg?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: ClubCreateNestedOneWithoutDrillsInput
+    account?: AccountCreateNestedOneWithoutDrillsInput
+    echelon?: EchelonCreateNestedOneWithoutDrillsInput
+    graphics?: DrillGraphicCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemCreateNestedManyWithoutDrillInput
   }
 
   export type DrillUncheckedCreateInput = {
     id?: number
     name?: string | null
-    svg: string
+    title?: string | null
+    svg?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    accountId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    graphics?: DrillGraphicUncheckedCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkUncheckedCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemUncheckedCreateNestedManyWithoutDrillInput
   }
 
   export type DrillUpdateInput = {
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    svg?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutDrillsNestedInput
+    account?: AccountUpdateOneWithoutDrillsNestedInput
+    echelon?: EchelonUpdateOneWithoutDrillsNestedInput
+    graphics?: DrillGraphicUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUpdateManyWithoutDrillNestedInput
   }
 
   export type DrillUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    svg?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    graphics?: DrillGraphicUncheckedUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUncheckedUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUncheckedUpdateManyWithoutDrillNestedInput
   }
 
   export type DrillCreateManyInput = {
     id?: number
     name?: string | null
-    svg: string
+    title?: string | null
+    svg?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    accountId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
   }
 
   export type DrillUpdateManyMutationInput = {
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    svg?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type DrillUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     name?: NullableStringFieldUpdateOperationsInput | string | null
-    svg?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type DrillGraphicCreateInput = {
+    order?: number
+    svg: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    drill: DrillCreateNestedOneWithoutGraphicsInput
+  }
+
+  export type DrillGraphicUncheckedCreateInput = {
+    id?: number
+    drillId: number
+    order?: number
+    svg: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DrillGraphicUpdateInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    svg?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    drill?: DrillUpdateOneRequiredWithoutGraphicsNestedInput
+  }
+
+  export type DrillGraphicUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    drillId?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    svg?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DrillGraphicCreateManyInput = {
+    id?: number
+    drillId: number
+    order?: number
+    svg: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DrillGraphicUpdateManyMutationInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    svg?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DrillGraphicUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    drillId?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    svg?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DrillTopicCreateInput = {
+    key?: string | null
+    name: string
+    order?: number
+    club: ClubCreateNestedOneWithoutDrillTopicsInput
+    drills?: DrillTopicLinkCreateNestedManyWithoutTopicInput
+  }
+
+  export type DrillTopicUncheckedCreateInput = {
+    id?: number
+    clubId: number
+    key?: string | null
+    name: string
+    order?: number
+    drills?: DrillTopicLinkUncheckedCreateNestedManyWithoutTopicInput
+  }
+
+  export type DrillTopicUpdateInput = {
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    club?: ClubUpdateOneRequiredWithoutDrillTopicsNestedInput
+    drills?: DrillTopicLinkUpdateManyWithoutTopicNestedInput
+  }
+
+  export type DrillTopicUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    drills?: DrillTopicLinkUncheckedUpdateManyWithoutTopicNestedInput
+  }
+
+  export type DrillTopicCreateManyInput = {
+    id?: number
+    clubId: number
+    key?: string | null
+    name: string
+    order?: number
+  }
+
+  export type DrillTopicUpdateManyMutationInput = {
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type DrillTopicUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type DrillTopicLinkCreateInput = {
+    drill: DrillCreateNestedOneWithoutTopicsInput
+    topic: DrillTopicCreateNestedOneWithoutDrillsInput
+  }
+
+  export type DrillTopicLinkUncheckedCreateInput = {
+    drillId: number
+    topicId: number
+  }
+
+  export type DrillTopicLinkUpdateInput = {
+    drill?: DrillUpdateOneRequiredWithoutTopicsNestedInput
+    topic?: DrillTopicUpdateOneRequiredWithoutDrillsNestedInput
+  }
+
+  export type DrillTopicLinkUncheckedUpdateInput = {
+    drillId?: IntFieldUpdateOperationsInput | number
+    topicId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type DrillTopicLinkCreateManyInput = {
+    drillId: number
+    topicId: number
+  }
+
+  export type DrillTopicLinkUpdateManyMutationInput = {
+
+  }
+
+  export type DrillTopicLinkUncheckedUpdateManyInput = {
+    drillId?: IntFieldUpdateOperationsInput | number
+    topicId?: IntFieldUpdateOperationsInput | number
   }
 
   export type EchelonCreateInput = {
@@ -49003,6 +61613,7 @@ export namespace Prisma {
     teams?: TeamCreateNestedManyWithoutEchelonInput
     competitions?: CompetitionCreateNestedManyWithoutEchelonInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutEchelonInput
+    drills?: DrillCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUncheckedCreateInput = {
@@ -49017,6 +61628,7 @@ export namespace Prisma {
     teams?: TeamUncheckedCreateNestedManyWithoutEchelonInput
     competitions?: CompetitionUncheckedCreateNestedManyWithoutEchelonInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutEchelonInput
+    drills?: DrillUncheckedCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUpdateInput = {
@@ -49030,6 +61642,7 @@ export namespace Prisma {
     teams?: TeamUpdateManyWithoutEchelonNestedInput
     competitions?: CompetitionUpdateManyWithoutEchelonNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutEchelonNestedInput
+    drills?: DrillUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonUncheckedUpdateInput = {
@@ -49044,6 +61657,7 @@ export namespace Prisma {
     teams?: TeamUncheckedUpdateManyWithoutEchelonNestedInput
     competitions?: CompetitionUncheckedUpdateManyWithoutEchelonNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutEchelonNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonCreateManyInput = {
@@ -49085,6 +61699,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49098,6 +61719,11 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateInput = {
@@ -49108,6 +61734,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49121,6 +61754,11 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubUpdateInput = {
@@ -49130,6 +61768,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49143,6 +61788,11 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateInput = {
@@ -49153,6 +61803,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49166,6 +61823,11 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type ClubCreateManyInput = {
@@ -49176,6 +61838,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -49188,6 +61857,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49201,6 +61877,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -49537,6 +62220,8 @@ export namespace Prisma {
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
     staff?: TeamStaffCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutTeamInput
+    practices?: PracticeCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateInput = {
@@ -49551,6 +62236,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
     staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutTeamInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUpdateInput = {
@@ -49564,6 +62251,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
     staff?: TeamStaffUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateInput = {
@@ -49578,6 +62267,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
     staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamCreateManyInput = {
@@ -50360,6 +63051,414 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PracticeCreateInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    club: ClubCreateNestedOneWithoutPracticesInput
+    team: TeamCreateNestedOneWithoutPracticesInput
+    attendances?: PracticeAthleteCreateNestedManyWithoutPracticeInput
+    items?: PracticeItemCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeUncheckedCreateInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId: number
+    teamId: number
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    attendances?: PracticeAthleteUncheckedCreateNestedManyWithoutPracticeInput
+    items?: PracticeItemUncheckedCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeUpdateInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    club?: ClubUpdateOneRequiredWithoutPracticesNestedInput
+    team?: TeamUpdateOneRequiredWithoutPracticesNestedInput
+    attendances?: PracticeAthleteUpdateManyWithoutPracticeNestedInput
+    items?: PracticeItemUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type PracticeUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    attendances?: PracticeAthleteUncheckedUpdateManyWithoutPracticeNestedInput
+    items?: PracticeItemUncheckedUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type PracticeCreateManyInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId: number
+    teamId: number
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type PracticeUpdateManyMutationInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type PracticeUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type PracticeItemCreateInput = {
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    practice: PracticeCreateNestedOneWithoutItemsInput
+    drill?: DrillCreateNestedOneWithoutPracticeItemsInput
+  }
+
+  export type PracticeItemUncheckedCreateInput = {
+    id?: number
+    practiceId: number
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    drillId?: number | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PracticeItemUpdateInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    practice?: PracticeUpdateOneRequiredWithoutItemsNestedInput
+    drill?: DrillUpdateOneWithoutPracticeItemsNestedInput
+  }
+
+  export type PracticeItemUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    drillId?: NullableIntFieldUpdateOperationsInput | number | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PracticeItemCreateManyInput = {
+    id?: number
+    practiceId: number
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    drillId?: number | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PracticeItemUpdateManyMutationInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PracticeItemUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    drillId?: NullableIntFieldUpdateOperationsInput | number | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PracticeAthleteCreateInput = {
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceNotes?: string | null
+    absenceReason?: ClubAttendanceReasonCreateNestedOneWithoutAthletesInput
+    practice: PracticeCreateNestedOneWithoutAttendancesInput
+    athlete: AthleteCreateNestedOneWithoutPracticeAttendancesInput
+  }
+
+  export type PracticeAthleteUncheckedCreateInput = {
+    id?: number
+    practiceId: number
+    athleteId: number
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceReasonId?: number | null
+    absenceNotes?: string | null
+  }
+
+  export type PracticeAthleteUpdateInput = {
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    absenceReason?: ClubAttendanceReasonUpdateOneWithoutAthletesNestedInput
+    practice?: PracticeUpdateOneRequiredWithoutAttendancesNestedInput
+    athlete?: AthleteUpdateOneRequiredWithoutPracticeAttendancesNestedInput
+  }
+
+  export type PracticeAthleteUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    athleteId?: IntFieldUpdateOperationsInput | number
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceReasonId?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PracticeAthleteCreateManyInput = {
+    id?: number
+    practiceId: number
+    athleteId: number
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceReasonId?: number | null
+    absenceNotes?: string | null
+  }
+
+  export type PracticeAthleteUpdateManyMutationInput = {
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PracticeAthleteUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    athleteId?: IntFieldUpdateOperationsInput | number
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceReasonId?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type ClubAttendanceReasonCreateInput = {
+    key?: string | null
+    name: string
+    order?: number
+    club: ClubCreateNestedOneWithoutAttendanceReasonsInput
+    athletes?: PracticeAthleteCreateNestedManyWithoutAbsenceReasonInput
+  }
+
+  export type ClubAttendanceReasonUncheckedCreateInput = {
+    id?: number
+    clubId: number
+    key?: string | null
+    name: string
+    order?: number
+    athletes?: PracticeAthleteUncheckedCreateNestedManyWithoutAbsenceReasonInput
+  }
+
+  export type ClubAttendanceReasonUpdateInput = {
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    club?: ClubUpdateOneRequiredWithoutAttendanceReasonsNestedInput
+    athletes?: PracticeAthleteUpdateManyWithoutAbsenceReasonNestedInput
+  }
+
+  export type ClubAttendanceReasonUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    athletes?: PracticeAthleteUncheckedUpdateManyWithoutAbsenceReasonNestedInput
+  }
+
+  export type ClubAttendanceReasonCreateManyInput = {
+    id?: number
+    clubId: number
+    key?: string | null
+    name: string
+    order?: number
+  }
+
+  export type ClubAttendanceReasonUpdateManyMutationInput = {
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ClubAttendanceReasonUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type ClubPracticeSettingsCreateInput = {
+    defaultAttendanceMale?: $Enums.AttendanceDefault
+    defaultAttendanceFemale?: $Enums.AttendanceDefault
+    defaultAttendanceCoed?: $Enums.AttendanceDefault
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutPracticeSettingsInput
+  }
+
+  export type ClubPracticeSettingsUncheckedCreateInput = {
+    id?: number
+    clubId: number
+    defaultAttendanceMale?: $Enums.AttendanceDefault
+    defaultAttendanceFemale?: $Enums.AttendanceDefault
+    defaultAttendanceCoed?: $Enums.AttendanceDefault
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClubPracticeSettingsUpdateInput = {
+    defaultAttendanceMale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutPracticeSettingsNestedInput
+  }
+
+  export type ClubPracticeSettingsUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    defaultAttendanceMale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubPracticeSettingsCreateManyInput = {
+    id?: number
+    clubId: number
+    defaultAttendanceMale?: $Enums.AttendanceDefault
+    defaultAttendanceFemale?: $Enums.AttendanceDefault
+    defaultAttendanceCoed?: $Enums.AttendanceDefault
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClubPracticeSettingsUpdateManyMutationInput = {
+    defaultAttendanceMale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubPracticeSettingsUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    defaultAttendanceMale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -50500,6 +63599,12 @@ export namespace Prisma {
     none?: GameEquipmentWhereInput
   }
 
+  export type PracticeAthleteListRelationFilter = {
+    every?: PracticeAthleteWhereInput
+    some?: PracticeAthleteWhereInput
+    none?: PracticeAthleteWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -50530,6 +63635,10 @@ export namespace Prisma {
   }
 
   export type GameEquipmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PracticeAthleteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -51006,6 +64115,29 @@ export namespace Prisma {
     notIn?: $Enums.PlatformRole[] | ListEnumPlatformRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumPlatformRoleFilter<$PrismaModel> | $Enums.PlatformRole
   }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type AccountClubListRelationFilter = {
     every?: AccountClubWhereInput
@@ -51025,6 +64157,12 @@ export namespace Prisma {
     none?: AlertRecipientWhereInput
   }
 
+  export type DrillListRelationFilter = {
+    every?: DrillWhereInput
+    some?: DrillWhereInput
+    none?: DrillWhereInput
+  }
+
   export type AccountClubOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -51034,6 +64172,10 @@ export namespace Prisma {
   }
 
   export type AlertRecipientOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DrillOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -51049,6 +64191,7 @@ export namespace Prisma {
     role?: SortOrder
     resetToken?: SortOrder
     resetTokenExpiry?: SortOrder
+    drillRecentColors?: SortOrder
   }
 
   export type AccountAvgOrderByAggregateInput = {
@@ -51097,6 +64240,32 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumPlatformRoleFilter<$PrismaModel>
     _max?: NestedEnumPlatformRoleFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type StatisticGameIdAthleteIdCompoundUniqueInput = {
@@ -51334,12 +64503,14 @@ export namespace Prisma {
     number?: SortOrder
     name?: SortOrder
     clubId?: SortOrder
+    teamId?: SortOrder
   }
 
   export type MacrocycleAvgOrderByAggregateInput = {
     id?: SortOrder
     number?: SortOrder
     clubId?: SortOrder
+    teamId?: SortOrder
   }
 
   export type MacrocycleMaxOrderByAggregateInput = {
@@ -51350,6 +64521,7 @@ export namespace Prisma {
     number?: SortOrder
     name?: SortOrder
     clubId?: SortOrder
+    teamId?: SortOrder
   }
 
   export type MacrocycleMinOrderByAggregateInput = {
@@ -51360,12 +64532,14 @@ export namespace Prisma {
     number?: SortOrder
     name?: SortOrder
     clubId?: SortOrder
+    teamId?: SortOrder
   }
 
   export type MacrocycleSumOrderByAggregateInput = {
     id?: SortOrder
     number?: SortOrder
     clubId?: SortOrder
+    teamId?: SortOrder
   }
 
   export type MacrocycleScalarRelationFilter = {
@@ -51588,33 +64762,283 @@ export namespace Prisma {
     _max?: NestedEnumObjectiveTypeFilter<$PrismaModel>
   }
 
+  export type ClubNullableScalarRelationFilter = {
+    is?: ClubWhereInput | null
+    isNot?: ClubWhereInput | null
+  }
+
+  export type AccountNullableScalarRelationFilter = {
+    is?: AccountWhereInput | null
+    isNot?: AccountWhereInput | null
+  }
+
+  export type EchelonNullableScalarRelationFilter = {
+    is?: EchelonWhereInput | null
+    isNot?: EchelonWhereInput | null
+  }
+
+  export type DrillGraphicListRelationFilter = {
+    every?: DrillGraphicWhereInput
+    some?: DrillGraphicWhereInput
+    none?: DrillGraphicWhereInput
+  }
+
+  export type DrillTopicLinkListRelationFilter = {
+    every?: DrillTopicLinkWhereInput
+    some?: DrillTopicLinkWhereInput
+    none?: DrillTopicLinkWhereInput
+  }
+
+  export type PracticeItemListRelationFilter = {
+    every?: PracticeItemWhereInput
+    some?: PracticeItemWhereInput
+    none?: PracticeItemWhereInput
+  }
+
+  export type DrillGraphicOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DrillTopicLinkOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PracticeItemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type DrillCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    title?: SortOrder
     svg?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrder
+    accountId?: SortOrder
+    echelonId?: SortOrder
+    description?: SortOrder
+    goals?: SortOrder
+    variations?: SortOrder
+    tips?: SortOrder
+    defaultText?: SortOrder
+    ballsCount?: SortOrder
+    basketsCount?: SortOrder
+    conesCount?: SortOrder
+    extraEquipment?: SortOrder
+    playersCount?: SortOrder
+    coachesCount?: SortOrder
+    typeFundamental?: SortOrder
+    typeIndividual?: SortOrder
+    typeTeam?: SortOrder
+    posGuard?: SortOrder
+    posForward?: SortOrder
+    posCenter?: SortOrder
   }
 
   export type DrillAvgOrderByAggregateInput = {
     id?: SortOrder
+    clubId?: SortOrder
+    accountId?: SortOrder
+    echelonId?: SortOrder
+    ballsCount?: SortOrder
+    basketsCount?: SortOrder
+    conesCount?: SortOrder
+    playersCount?: SortOrder
+    coachesCount?: SortOrder
   }
 
   export type DrillMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    title?: SortOrder
     svg?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrder
+    accountId?: SortOrder
+    echelonId?: SortOrder
+    description?: SortOrder
+    goals?: SortOrder
+    variations?: SortOrder
+    tips?: SortOrder
+    defaultText?: SortOrder
+    ballsCount?: SortOrder
+    basketsCount?: SortOrder
+    conesCount?: SortOrder
+    extraEquipment?: SortOrder
+    playersCount?: SortOrder
+    coachesCount?: SortOrder
+    typeFundamental?: SortOrder
+    typeIndividual?: SortOrder
+    typeTeam?: SortOrder
+    posGuard?: SortOrder
+    posForward?: SortOrder
+    posCenter?: SortOrder
   }
 
   export type DrillMinOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
+    title?: SortOrder
     svg?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrder
+    accountId?: SortOrder
+    echelonId?: SortOrder
+    description?: SortOrder
+    goals?: SortOrder
+    variations?: SortOrder
+    tips?: SortOrder
+    defaultText?: SortOrder
+    ballsCount?: SortOrder
+    basketsCount?: SortOrder
+    conesCount?: SortOrder
+    extraEquipment?: SortOrder
+    playersCount?: SortOrder
+    coachesCount?: SortOrder
+    typeFundamental?: SortOrder
+    typeIndividual?: SortOrder
+    typeTeam?: SortOrder
+    posGuard?: SortOrder
+    posForward?: SortOrder
+    posCenter?: SortOrder
   }
 
   export type DrillSumOrderByAggregateInput = {
     id?: SortOrder
+    clubId?: SortOrder
+    accountId?: SortOrder
+    echelonId?: SortOrder
+    ballsCount?: SortOrder
+    basketsCount?: SortOrder
+    conesCount?: SortOrder
+    playersCount?: SortOrder
+    coachesCount?: SortOrder
+  }
+
+  export type DrillScalarRelationFilter = {
+    is?: DrillWhereInput
+    isNot?: DrillWhereInput
+  }
+
+  export type DrillGraphicCountOrderByAggregateInput = {
+    id?: SortOrder
+    drillId?: SortOrder
+    order?: SortOrder
+    svg?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DrillGraphicAvgOrderByAggregateInput = {
+    id?: SortOrder
+    drillId?: SortOrder
+    order?: SortOrder
+  }
+
+  export type DrillGraphicMaxOrderByAggregateInput = {
+    id?: SortOrder
+    drillId?: SortOrder
+    order?: SortOrder
+    svg?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DrillGraphicMinOrderByAggregateInput = {
+    id?: SortOrder
+    drillId?: SortOrder
+    order?: SortOrder
+    svg?: SortOrder
+    notes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type DrillGraphicSumOrderByAggregateInput = {
+    id?: SortOrder
+    drillId?: SortOrder
+    order?: SortOrder
+  }
+
+  export type DrillTopicClubIdKeyCompoundUniqueInput = {
+    clubId: number
+    key: string
+  }
+
+  export type DrillTopicCountOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    order?: SortOrder
+  }
+
+  export type DrillTopicAvgOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    order?: SortOrder
+  }
+
+  export type DrillTopicMaxOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    order?: SortOrder
+  }
+
+  export type DrillTopicMinOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    order?: SortOrder
+  }
+
+  export type DrillTopicSumOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    order?: SortOrder
+  }
+
+  export type DrillTopicScalarRelationFilter = {
+    is?: DrillTopicWhereInput
+    isNot?: DrillTopicWhereInput
+  }
+
+  export type DrillTopicLinkDrillIdTopicIdCompoundUniqueInput = {
+    drillId: number
+    topicId: number
+  }
+
+  export type DrillTopicLinkCountOrderByAggregateInput = {
+    drillId?: SortOrder
+    topicId?: SortOrder
+  }
+
+  export type DrillTopicLinkAvgOrderByAggregateInput = {
+    drillId?: SortOrder
+    topicId?: SortOrder
+  }
+
+  export type DrillTopicLinkMaxOrderByAggregateInput = {
+    drillId?: SortOrder
+    topicId?: SortOrder
+  }
+
+  export type DrillTopicLinkMinOrderByAggregateInput = {
+    drillId?: SortOrder
+    topicId?: SortOrder
+  }
+
+  export type DrillTopicLinkSumOrderByAggregateInput = {
+    drillId?: SortOrder
+    topicId?: SortOrder
   }
 
   export type EnumGenderFilter<$PrismaModel = never> = {
@@ -51732,6 +65156,29 @@ export namespace Prisma {
     isNot?: ClubEmailSettingsWhereInput | null
   }
 
+  export type PracticeListRelationFilter = {
+    every?: PracticeWhereInput
+    some?: PracticeWhereInput
+    none?: PracticeWhereInput
+  }
+
+  export type ClubPracticeSettingsNullableScalarRelationFilter = {
+    is?: ClubPracticeSettingsWhereInput | null
+    isNot?: ClubPracticeSettingsWhereInput | null
+  }
+
+  export type ClubAttendanceReasonListRelationFilter = {
+    every?: ClubAttendanceReasonWhereInput
+    some?: ClubAttendanceReasonWhereInput
+    none?: ClubAttendanceReasonWhereInput
+  }
+
+  export type DrillTopicListRelationFilter = {
+    every?: DrillTopicWhereInput
+    some?: DrillTopicWhereInput
+    none?: DrillTopicWhereInput
+  }
+
   export type AthleteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -51744,6 +65191,18 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type PracticeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ClubAttendanceReasonOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type DrillTopicOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ClubCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -51752,6 +65211,13 @@ export namespace Prisma {
     federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
+    courtBackground?: SortOrder
+    courtKeyColor?: SortOrder
+    courtCenterColor?: SortOrder
+    courtLineColor?: SortOrder
+    courtMarginColor?: SortOrder
+    courtShowLogo?: SortOrder
+    courtLogoRotation?: SortOrder
     fpbClubId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -51759,6 +65225,7 @@ export namespace Prisma {
 
   export type ClubAvgOrderByAggregateInput = {
     id?: SortOrder
+    courtLogoRotation?: SortOrder
     fpbClubId?: SortOrder
   }
 
@@ -51770,6 +65237,13 @@ export namespace Prisma {
     federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
+    courtBackground?: SortOrder
+    courtKeyColor?: SortOrder
+    courtCenterColor?: SortOrder
+    courtLineColor?: SortOrder
+    courtMarginColor?: SortOrder
+    courtShowLogo?: SortOrder
+    courtLogoRotation?: SortOrder
     fpbClubId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -51783,6 +65257,13 @@ export namespace Prisma {
     federationLogo?: SortOrder
     backgroundColor?: SortOrder
     foregroundColor?: SortOrder
+    courtBackground?: SortOrder
+    courtKeyColor?: SortOrder
+    courtCenterColor?: SortOrder
+    courtLineColor?: SortOrder
+    courtMarginColor?: SortOrder
+    courtShowLogo?: SortOrder
+    courtLogoRotation?: SortOrder
     fpbClubId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -51790,6 +65271,7 @@ export namespace Prisma {
 
   export type ClubSumOrderByAggregateInput = {
     id?: SortOrder
+    courtLogoRotation?: SortOrder
     fpbClubId?: SortOrder
   }
 
@@ -51888,11 +65370,6 @@ export namespace Prisma {
   export type OpponentNullableScalarRelationFilter = {
     is?: OpponentWhereInput | null
     isNot?: OpponentWhereInput | null
-  }
-
-  export type ClubNullableScalarRelationFilter = {
-    is?: ClubWhereInput | null
-    isNot?: ClubWhereInput | null
   }
 
   export type VenueCountOrderByAggregateInput = {
@@ -52171,11 +65648,6 @@ export namespace Prisma {
     in?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
     notIn?: $Enums.StaffRole[] | ListEnumStaffRoleFieldRefInput<$PrismaModel>
     not?: NestedEnumStaffRoleFilter<$PrismaModel> | $Enums.StaffRole
-  }
-
-  export type AccountNullableScalarRelationFilter = {
-    is?: AccountWhereInput | null
-    isNot?: AccountWhereInput | null
   }
 
   export type StaffClubIdAccountIdCompoundUniqueInput = {
@@ -52799,6 +66271,307 @@ export namespace Prisma {
     _max?: NestedEnumAlertRecipientStatusFilter<$PrismaModel>
   }
 
+  export type PracticeCountOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrder
+    teamId?: SortOrder
+    date?: SortOrder
+    endTime?: SortOrder
+    subtitle?: SortOrder
+    topic?: SortOrder
+    offensiveGoals?: SortOrder
+    defensiveGoals?: SortOrder
+    notes?: SortOrder
+    completed?: SortOrder
+    groups?: SortOrder
+  }
+
+  export type PracticeAvgOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    teamId?: SortOrder
+  }
+
+  export type PracticeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrder
+    teamId?: SortOrder
+    date?: SortOrder
+    endTime?: SortOrder
+    subtitle?: SortOrder
+    topic?: SortOrder
+    offensiveGoals?: SortOrder
+    defensiveGoals?: SortOrder
+    notes?: SortOrder
+    completed?: SortOrder
+  }
+
+  export type PracticeMinOrderByAggregateInput = {
+    id?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    clubId?: SortOrder
+    teamId?: SortOrder
+    date?: SortOrder
+    endTime?: SortOrder
+    subtitle?: SortOrder
+    topic?: SortOrder
+    offensiveGoals?: SortOrder
+    defensiveGoals?: SortOrder
+    notes?: SortOrder
+    completed?: SortOrder
+  }
+
+  export type PracticeSumOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    teamId?: SortOrder
+  }
+
+  export type EnumPracticeItemTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PracticeItemType | EnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PracticeItemType[] | ListEnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PracticeItemType[] | ListEnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPracticeItemTypeFilter<$PrismaModel> | $Enums.PracticeItemType
+  }
+
+  export type PracticeScalarRelationFilter = {
+    is?: PracticeWhereInput
+    isNot?: PracticeWhereInput
+  }
+
+  export type DrillNullableScalarRelationFilter = {
+    is?: DrillWhereInput | null
+    isNot?: DrillWhereInput | null
+  }
+
+  export type PracticeItemCountOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    order?: SortOrder
+    duration?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    text?: SortOrder
+    drillId?: SortOrder
+    graphics?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PracticeItemAvgOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    order?: SortOrder
+    duration?: SortOrder
+    drillId?: SortOrder
+  }
+
+  export type PracticeItemMaxOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    order?: SortOrder
+    duration?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    text?: SortOrder
+    drillId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PracticeItemMinOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    order?: SortOrder
+    duration?: SortOrder
+    type?: SortOrder
+    title?: SortOrder
+    text?: SortOrder
+    drillId?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PracticeItemSumOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    order?: SortOrder
+    duration?: SortOrder
+    drillId?: SortOrder
+  }
+
+  export type EnumPracticeItemTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PracticeItemType | EnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PracticeItemType[] | ListEnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PracticeItemType[] | ListEnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPracticeItemTypeWithAggregatesFilter<$PrismaModel> | $Enums.PracticeItemType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPracticeItemTypeFilter<$PrismaModel>
+    _max?: NestedEnumPracticeItemTypeFilter<$PrismaModel>
+  }
+
+  export type ClubAttendanceReasonNullableScalarRelationFilter = {
+    is?: ClubAttendanceReasonWhereInput | null
+    isNot?: ClubAttendanceReasonWhereInput | null
+  }
+
+  export type PracticeAthletePracticeIdAthleteIdCompoundUniqueInput = {
+    practiceId: number
+    athleteId: number
+  }
+
+  export type PracticeAthleteCountOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    athleteId?: SortOrder
+    attending?: SortOrder
+    attended?: SortOrder
+    lateMinutes?: SortOrder
+    absenceReasonId?: SortOrder
+    absenceNotes?: SortOrder
+  }
+
+  export type PracticeAthleteAvgOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    athleteId?: SortOrder
+    lateMinutes?: SortOrder
+    absenceReasonId?: SortOrder
+  }
+
+  export type PracticeAthleteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    athleteId?: SortOrder
+    attending?: SortOrder
+    attended?: SortOrder
+    lateMinutes?: SortOrder
+    absenceReasonId?: SortOrder
+    absenceNotes?: SortOrder
+  }
+
+  export type PracticeAthleteMinOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    athleteId?: SortOrder
+    attending?: SortOrder
+    attended?: SortOrder
+    lateMinutes?: SortOrder
+    absenceReasonId?: SortOrder
+    absenceNotes?: SortOrder
+  }
+
+  export type PracticeAthleteSumOrderByAggregateInput = {
+    id?: SortOrder
+    practiceId?: SortOrder
+    athleteId?: SortOrder
+    lateMinutes?: SortOrder
+    absenceReasonId?: SortOrder
+  }
+
+  export type ClubAttendanceReasonClubIdKeyCompoundUniqueInput = {
+    clubId: number
+    key: string
+  }
+
+  export type ClubAttendanceReasonCountOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    order?: SortOrder
+  }
+
+  export type ClubAttendanceReasonAvgOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    order?: SortOrder
+  }
+
+  export type ClubAttendanceReasonMaxOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    order?: SortOrder
+  }
+
+  export type ClubAttendanceReasonMinOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    key?: SortOrder
+    name?: SortOrder
+    order?: SortOrder
+  }
+
+  export type ClubAttendanceReasonSumOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    order?: SortOrder
+  }
+
+  export type EnumAttendanceDefaultFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceDefault | EnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceDefault[] | ListEnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceDefault[] | ListEnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceDefaultFilter<$PrismaModel> | $Enums.AttendanceDefault
+  }
+
+  export type ClubPracticeSettingsCountOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    defaultAttendanceMale?: SortOrder
+    defaultAttendanceFemale?: SortOrder
+    defaultAttendanceCoed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClubPracticeSettingsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+  }
+
+  export type ClubPracticeSettingsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    defaultAttendanceMale?: SortOrder
+    defaultAttendanceFemale?: SortOrder
+    defaultAttendanceCoed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClubPracticeSettingsMinOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+    defaultAttendanceMale?: SortOrder
+    defaultAttendanceFemale?: SortOrder
+    defaultAttendanceCoed?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ClubPracticeSettingsSumOrderByAggregateInput = {
+    id?: SortOrder
+    clubId?: SortOrder
+  }
+
+  export type EnumAttendanceDefaultWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceDefault | EnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceDefault[] | ListEnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceDefault[] | ListEnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceDefaultWithAggregatesFilter<$PrismaModel> | $Enums.AttendanceDefault
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAttendanceDefaultFilter<$PrismaModel>
+    _max?: NestedEnumAttendanceDefaultFilter<$PrismaModel>
+  }
+
   export type ClubCreateNestedOneWithoutAthletesInput = {
     create?: XOR<ClubCreateWithoutAthletesInput, ClubUncheckedCreateWithoutAthletesInput>
     connectOrCreate?: ClubCreateOrConnectWithoutAthletesInput
@@ -52861,6 +66634,13 @@ export namespace Prisma {
     connect?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
   }
 
+  export type PracticeAthleteCreateNestedManyWithoutAthleteInput = {
+    create?: XOR<PracticeAthleteCreateWithoutAthleteInput, PracticeAthleteUncheckedCreateWithoutAthleteInput> | PracticeAthleteCreateWithoutAthleteInput[] | PracticeAthleteUncheckedCreateWithoutAthleteInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutAthleteInput | PracticeAthleteCreateOrConnectWithoutAthleteInput[]
+    createMany?: PracticeAthleteCreateManyAthleteInputEnvelope
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+  }
+
   export type AthleteReportUncheckedCreateNestedManyWithoutAthleteInput = {
     create?: XOR<AthleteReportCreateWithoutAthleteInput, AthleteReportUncheckedCreateWithoutAthleteInput> | AthleteReportCreateWithoutAthleteInput[] | AthleteReportUncheckedCreateWithoutAthleteInput[]
     connectOrCreate?: AthleteReportCreateOrConnectWithoutAthleteInput | AthleteReportCreateOrConnectWithoutAthleteInput[]
@@ -52915,6 +66695,13 @@ export namespace Prisma {
     connectOrCreate?: GameEquipmentCreateOrConnectWithoutAthleteInput | GameEquipmentCreateOrConnectWithoutAthleteInput[]
     createMany?: GameEquipmentCreateManyAthleteInputEnvelope
     connect?: GameEquipmentWhereUniqueInput | GameEquipmentWhereUniqueInput[]
+  }
+
+  export type PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput = {
+    create?: XOR<PracticeAthleteCreateWithoutAthleteInput, PracticeAthleteUncheckedCreateWithoutAthleteInput> | PracticeAthleteCreateWithoutAthleteInput[] | PracticeAthleteUncheckedCreateWithoutAthleteInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutAthleteInput | PracticeAthleteCreateOrConnectWithoutAthleteInput[]
+    createMany?: PracticeAthleteCreateManyAthleteInputEnvelope
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -53073,6 +66860,20 @@ export namespace Prisma {
     deleteMany?: GameEquipmentScalarWhereInput | GameEquipmentScalarWhereInput[]
   }
 
+  export type PracticeAthleteUpdateManyWithoutAthleteNestedInput = {
+    create?: XOR<PracticeAthleteCreateWithoutAthleteInput, PracticeAthleteUncheckedCreateWithoutAthleteInput> | PracticeAthleteCreateWithoutAthleteInput[] | PracticeAthleteUncheckedCreateWithoutAthleteInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutAthleteInput | PracticeAthleteCreateOrConnectWithoutAthleteInput[]
+    upsert?: PracticeAthleteUpsertWithWhereUniqueWithoutAthleteInput | PracticeAthleteUpsertWithWhereUniqueWithoutAthleteInput[]
+    createMany?: PracticeAthleteCreateManyAthleteInputEnvelope
+    set?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    disconnect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    delete?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    update?: PracticeAthleteUpdateWithWhereUniqueWithoutAthleteInput | PracticeAthleteUpdateWithWhereUniqueWithoutAthleteInput[]
+    updateMany?: PracticeAthleteUpdateManyWithWhereWithoutAthleteInput | PracticeAthleteUpdateManyWithWhereWithoutAthleteInput[]
+    deleteMany?: PracticeAthleteScalarWhereInput | PracticeAthleteScalarWhereInput[]
+  }
+
   export type IntFieldUpdateOperationsInput = {
     set?: number
     increment?: number
@@ -53191,6 +66992,20 @@ export namespace Prisma {
     update?: GameEquipmentUpdateWithWhereUniqueWithoutAthleteInput | GameEquipmentUpdateWithWhereUniqueWithoutAthleteInput[]
     updateMany?: GameEquipmentUpdateManyWithWhereWithoutAthleteInput | GameEquipmentUpdateManyWithWhereWithoutAthleteInput[]
     deleteMany?: GameEquipmentScalarWhereInput | GameEquipmentScalarWhereInput[]
+  }
+
+  export type PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput = {
+    create?: XOR<PracticeAthleteCreateWithoutAthleteInput, PracticeAthleteUncheckedCreateWithoutAthleteInput> | PracticeAthleteCreateWithoutAthleteInput[] | PracticeAthleteUncheckedCreateWithoutAthleteInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutAthleteInput | PracticeAthleteCreateOrConnectWithoutAthleteInput[]
+    upsert?: PracticeAthleteUpsertWithWhereUniqueWithoutAthleteInput | PracticeAthleteUpsertWithWhereUniqueWithoutAthleteInput[]
+    createMany?: PracticeAthleteCreateManyAthleteInputEnvelope
+    set?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    disconnect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    delete?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    update?: PracticeAthleteUpdateWithWhereUniqueWithoutAthleteInput | PracticeAthleteUpdateWithWhereUniqueWithoutAthleteInput[]
+    updateMany?: PracticeAthleteUpdateManyWithWhereWithoutAthleteInput | PracticeAthleteUpdateManyWithWhereWithoutAthleteInput[]
+    deleteMany?: PracticeAthleteScalarWhereInput | PracticeAthleteScalarWhereInput[]
   }
 
   export type GameCreateNestedOneWithoutGameAthletesInput = {
@@ -53674,6 +67489,13 @@ export namespace Prisma {
     connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
   }
 
+  export type DrillCreateNestedManyWithoutAccountInput = {
+    create?: XOR<DrillCreateWithoutAccountInput, DrillUncheckedCreateWithoutAccountInput> | DrillCreateWithoutAccountInput[] | DrillUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutAccountInput | DrillCreateOrConnectWithoutAccountInput[]
+    createMany?: DrillCreateManyAccountInputEnvelope
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+  }
+
   export type AccountClubUncheckedCreateNestedManyWithoutAccountInput = {
     create?: XOR<AccountClubCreateWithoutAccountInput, AccountClubUncheckedCreateWithoutAccountInput> | AccountClubCreateWithoutAccountInput[] | AccountClubUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutAccountInput | AccountClubCreateOrConnectWithoutAccountInput[]
@@ -53693,6 +67515,13 @@ export namespace Prisma {
     connectOrCreate?: AlertRecipientCreateOrConnectWithoutAccountInput | AlertRecipientCreateOrConnectWithoutAccountInput[]
     createMany?: AlertRecipientCreateManyAccountInputEnvelope
     connect?: AlertRecipientWhereUniqueInput | AlertRecipientWhereUniqueInput[]
+  }
+
+  export type DrillUncheckedCreateNestedManyWithoutAccountInput = {
+    create?: XOR<DrillCreateWithoutAccountInput, DrillUncheckedCreateWithoutAccountInput> | DrillCreateWithoutAccountInput[] | DrillUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutAccountInput | DrillCreateOrConnectWithoutAccountInput[]
+    createMany?: DrillCreateManyAccountInputEnvelope
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
   }
 
   export type EnumPlatformRoleFieldUpdateOperationsInput = {
@@ -53741,6 +67570,20 @@ export namespace Prisma {
     deleteMany?: AlertRecipientScalarWhereInput | AlertRecipientScalarWhereInput[]
   }
 
+  export type DrillUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<DrillCreateWithoutAccountInput, DrillUncheckedCreateWithoutAccountInput> | DrillCreateWithoutAccountInput[] | DrillUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutAccountInput | DrillCreateOrConnectWithoutAccountInput[]
+    upsert?: DrillUpsertWithWhereUniqueWithoutAccountInput | DrillUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: DrillCreateManyAccountInputEnvelope
+    set?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    disconnect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    delete?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    update?: DrillUpdateWithWhereUniqueWithoutAccountInput | DrillUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: DrillUpdateManyWithWhereWithoutAccountInput | DrillUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: DrillScalarWhereInput | DrillScalarWhereInput[]
+  }
+
   export type AccountClubUncheckedUpdateManyWithoutAccountNestedInput = {
     create?: XOR<AccountClubCreateWithoutAccountInput, AccountClubUncheckedCreateWithoutAccountInput> | AccountClubCreateWithoutAccountInput[] | AccountClubUncheckedCreateWithoutAccountInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutAccountInput | AccountClubCreateOrConnectWithoutAccountInput[]
@@ -53781,6 +67624,20 @@ export namespace Prisma {
     update?: AlertRecipientUpdateWithWhereUniqueWithoutAccountInput | AlertRecipientUpdateWithWhereUniqueWithoutAccountInput[]
     updateMany?: AlertRecipientUpdateManyWithWhereWithoutAccountInput | AlertRecipientUpdateManyWithWhereWithoutAccountInput[]
     deleteMany?: AlertRecipientScalarWhereInput | AlertRecipientScalarWhereInput[]
+  }
+
+  export type DrillUncheckedUpdateManyWithoutAccountNestedInput = {
+    create?: XOR<DrillCreateWithoutAccountInput, DrillUncheckedCreateWithoutAccountInput> | DrillCreateWithoutAccountInput[] | DrillUncheckedCreateWithoutAccountInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutAccountInput | DrillCreateOrConnectWithoutAccountInput[]
+    upsert?: DrillUpsertWithWhereUniqueWithoutAccountInput | DrillUpsertWithWhereUniqueWithoutAccountInput[]
+    createMany?: DrillCreateManyAccountInputEnvelope
+    set?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    disconnect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    delete?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    update?: DrillUpdateWithWhereUniqueWithoutAccountInput | DrillUpdateWithWhereUniqueWithoutAccountInput[]
+    updateMany?: DrillUpdateManyWithWhereWithoutAccountInput | DrillUpdateManyWithWhereWithoutAccountInput[]
+    deleteMany?: DrillScalarWhereInput | DrillScalarWhereInput[]
   }
 
   export type AthleteCreateNestedOneWithoutStatisticsInput = {
@@ -53889,6 +67746,12 @@ export namespace Prisma {
     connect?: ClubWhereUniqueInput
   }
 
+  export type TeamCreateNestedOneWithoutMacrocyclesInput = {
+    create?: XOR<TeamCreateWithoutMacrocyclesInput, TeamUncheckedCreateWithoutMacrocyclesInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutMacrocyclesInput
+    connect?: TeamWhereUniqueInput
+  }
+
   export type MesocycleCreateNestedManyWithoutMacrocycleInput = {
     create?: XOR<MesocycleCreateWithoutMacrocycleInput, MesocycleUncheckedCreateWithoutMacrocycleInput> | MesocycleCreateWithoutMacrocycleInput[] | MesocycleUncheckedCreateWithoutMacrocycleInput[]
     connectOrCreate?: MesocycleCreateOrConnectWithoutMacrocycleInput | MesocycleCreateOrConnectWithoutMacrocycleInput[]
@@ -53909,6 +67772,16 @@ export namespace Prisma {
     upsert?: ClubUpsertWithoutMacrocyclesInput
     connect?: ClubWhereUniqueInput
     update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutMacrocyclesInput, ClubUpdateWithoutMacrocyclesInput>, ClubUncheckedUpdateWithoutMacrocyclesInput>
+  }
+
+  export type TeamUpdateOneWithoutMacrocyclesNestedInput = {
+    create?: XOR<TeamCreateWithoutMacrocyclesInput, TeamUncheckedCreateWithoutMacrocyclesInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutMacrocyclesInput
+    upsert?: TeamUpsertWithoutMacrocyclesInput
+    disconnect?: TeamWhereInput | boolean
+    delete?: TeamWhereInput | boolean
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutMacrocyclesInput, TeamUpdateWithoutMacrocyclesInput>, TeamUncheckedUpdateWithoutMacrocyclesInput>
   }
 
   export type MesocycleUpdateManyWithoutMacrocycleNestedInput = {
@@ -54083,6 +67956,278 @@ export namespace Prisma {
     update?: XOR<XOR<GameUpdateToOneWithWhereWithoutObjectivesInput, GameUpdateWithoutObjectivesInput>, GameUncheckedUpdateWithoutObjectivesInput>
   }
 
+  export type ClubCreateNestedOneWithoutDrillsInput = {
+    create?: XOR<ClubCreateWithoutDrillsInput, ClubUncheckedCreateWithoutDrillsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutDrillsInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type AccountCreateNestedOneWithoutDrillsInput = {
+    create?: XOR<AccountCreateWithoutDrillsInput, AccountUncheckedCreateWithoutDrillsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutDrillsInput
+    connect?: AccountWhereUniqueInput
+  }
+
+  export type EchelonCreateNestedOneWithoutDrillsInput = {
+    create?: XOR<EchelonCreateWithoutDrillsInput, EchelonUncheckedCreateWithoutDrillsInput>
+    connectOrCreate?: EchelonCreateOrConnectWithoutDrillsInput
+    connect?: EchelonWhereUniqueInput
+  }
+
+  export type DrillGraphicCreateNestedManyWithoutDrillInput = {
+    create?: XOR<DrillGraphicCreateWithoutDrillInput, DrillGraphicUncheckedCreateWithoutDrillInput> | DrillGraphicCreateWithoutDrillInput[] | DrillGraphicUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: DrillGraphicCreateOrConnectWithoutDrillInput | DrillGraphicCreateOrConnectWithoutDrillInput[]
+    createMany?: DrillGraphicCreateManyDrillInputEnvelope
+    connect?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+  }
+
+  export type DrillTopicLinkCreateNestedManyWithoutDrillInput = {
+    create?: XOR<DrillTopicLinkCreateWithoutDrillInput, DrillTopicLinkUncheckedCreateWithoutDrillInput> | DrillTopicLinkCreateWithoutDrillInput[] | DrillTopicLinkUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: DrillTopicLinkCreateOrConnectWithoutDrillInput | DrillTopicLinkCreateOrConnectWithoutDrillInput[]
+    createMany?: DrillTopicLinkCreateManyDrillInputEnvelope
+    connect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+  }
+
+  export type PracticeItemCreateNestedManyWithoutDrillInput = {
+    create?: XOR<PracticeItemCreateWithoutDrillInput, PracticeItemUncheckedCreateWithoutDrillInput> | PracticeItemCreateWithoutDrillInput[] | PracticeItemUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: PracticeItemCreateOrConnectWithoutDrillInput | PracticeItemCreateOrConnectWithoutDrillInput[]
+    createMany?: PracticeItemCreateManyDrillInputEnvelope
+    connect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+  }
+
+  export type DrillGraphicUncheckedCreateNestedManyWithoutDrillInput = {
+    create?: XOR<DrillGraphicCreateWithoutDrillInput, DrillGraphicUncheckedCreateWithoutDrillInput> | DrillGraphicCreateWithoutDrillInput[] | DrillGraphicUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: DrillGraphicCreateOrConnectWithoutDrillInput | DrillGraphicCreateOrConnectWithoutDrillInput[]
+    createMany?: DrillGraphicCreateManyDrillInputEnvelope
+    connect?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+  }
+
+  export type DrillTopicLinkUncheckedCreateNestedManyWithoutDrillInput = {
+    create?: XOR<DrillTopicLinkCreateWithoutDrillInput, DrillTopicLinkUncheckedCreateWithoutDrillInput> | DrillTopicLinkCreateWithoutDrillInput[] | DrillTopicLinkUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: DrillTopicLinkCreateOrConnectWithoutDrillInput | DrillTopicLinkCreateOrConnectWithoutDrillInput[]
+    createMany?: DrillTopicLinkCreateManyDrillInputEnvelope
+    connect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+  }
+
+  export type PracticeItemUncheckedCreateNestedManyWithoutDrillInput = {
+    create?: XOR<PracticeItemCreateWithoutDrillInput, PracticeItemUncheckedCreateWithoutDrillInput> | PracticeItemCreateWithoutDrillInput[] | PracticeItemUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: PracticeItemCreateOrConnectWithoutDrillInput | PracticeItemCreateOrConnectWithoutDrillInput[]
+    createMany?: PracticeItemCreateManyDrillInputEnvelope
+    connect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+  }
+
+  export type ClubUpdateOneWithoutDrillsNestedInput = {
+    create?: XOR<ClubCreateWithoutDrillsInput, ClubUncheckedCreateWithoutDrillsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutDrillsInput
+    upsert?: ClubUpsertWithoutDrillsInput
+    disconnect?: ClubWhereInput | boolean
+    delete?: ClubWhereInput | boolean
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutDrillsInput, ClubUpdateWithoutDrillsInput>, ClubUncheckedUpdateWithoutDrillsInput>
+  }
+
+  export type AccountUpdateOneWithoutDrillsNestedInput = {
+    create?: XOR<AccountCreateWithoutDrillsInput, AccountUncheckedCreateWithoutDrillsInput>
+    connectOrCreate?: AccountCreateOrConnectWithoutDrillsInput
+    upsert?: AccountUpsertWithoutDrillsInput
+    disconnect?: AccountWhereInput | boolean
+    delete?: AccountWhereInput | boolean
+    connect?: AccountWhereUniqueInput
+    update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutDrillsInput, AccountUpdateWithoutDrillsInput>, AccountUncheckedUpdateWithoutDrillsInput>
+  }
+
+  export type EchelonUpdateOneWithoutDrillsNestedInput = {
+    create?: XOR<EchelonCreateWithoutDrillsInput, EchelonUncheckedCreateWithoutDrillsInput>
+    connectOrCreate?: EchelonCreateOrConnectWithoutDrillsInput
+    upsert?: EchelonUpsertWithoutDrillsInput
+    disconnect?: EchelonWhereInput | boolean
+    delete?: EchelonWhereInput | boolean
+    connect?: EchelonWhereUniqueInput
+    update?: XOR<XOR<EchelonUpdateToOneWithWhereWithoutDrillsInput, EchelonUpdateWithoutDrillsInput>, EchelonUncheckedUpdateWithoutDrillsInput>
+  }
+
+  export type DrillGraphicUpdateManyWithoutDrillNestedInput = {
+    create?: XOR<DrillGraphicCreateWithoutDrillInput, DrillGraphicUncheckedCreateWithoutDrillInput> | DrillGraphicCreateWithoutDrillInput[] | DrillGraphicUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: DrillGraphicCreateOrConnectWithoutDrillInput | DrillGraphicCreateOrConnectWithoutDrillInput[]
+    upsert?: DrillGraphicUpsertWithWhereUniqueWithoutDrillInput | DrillGraphicUpsertWithWhereUniqueWithoutDrillInput[]
+    createMany?: DrillGraphicCreateManyDrillInputEnvelope
+    set?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+    disconnect?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+    delete?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+    connect?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+    update?: DrillGraphicUpdateWithWhereUniqueWithoutDrillInput | DrillGraphicUpdateWithWhereUniqueWithoutDrillInput[]
+    updateMany?: DrillGraphicUpdateManyWithWhereWithoutDrillInput | DrillGraphicUpdateManyWithWhereWithoutDrillInput[]
+    deleteMany?: DrillGraphicScalarWhereInput | DrillGraphicScalarWhereInput[]
+  }
+
+  export type DrillTopicLinkUpdateManyWithoutDrillNestedInput = {
+    create?: XOR<DrillTopicLinkCreateWithoutDrillInput, DrillTopicLinkUncheckedCreateWithoutDrillInput> | DrillTopicLinkCreateWithoutDrillInput[] | DrillTopicLinkUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: DrillTopicLinkCreateOrConnectWithoutDrillInput | DrillTopicLinkCreateOrConnectWithoutDrillInput[]
+    upsert?: DrillTopicLinkUpsertWithWhereUniqueWithoutDrillInput | DrillTopicLinkUpsertWithWhereUniqueWithoutDrillInput[]
+    createMany?: DrillTopicLinkCreateManyDrillInputEnvelope
+    set?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    disconnect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    delete?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    connect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    update?: DrillTopicLinkUpdateWithWhereUniqueWithoutDrillInput | DrillTopicLinkUpdateWithWhereUniqueWithoutDrillInput[]
+    updateMany?: DrillTopicLinkUpdateManyWithWhereWithoutDrillInput | DrillTopicLinkUpdateManyWithWhereWithoutDrillInput[]
+    deleteMany?: DrillTopicLinkScalarWhereInput | DrillTopicLinkScalarWhereInput[]
+  }
+
+  export type PracticeItemUpdateManyWithoutDrillNestedInput = {
+    create?: XOR<PracticeItemCreateWithoutDrillInput, PracticeItemUncheckedCreateWithoutDrillInput> | PracticeItemCreateWithoutDrillInput[] | PracticeItemUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: PracticeItemCreateOrConnectWithoutDrillInput | PracticeItemCreateOrConnectWithoutDrillInput[]
+    upsert?: PracticeItemUpsertWithWhereUniqueWithoutDrillInput | PracticeItemUpsertWithWhereUniqueWithoutDrillInput[]
+    createMany?: PracticeItemCreateManyDrillInputEnvelope
+    set?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    disconnect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    delete?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    connect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    update?: PracticeItemUpdateWithWhereUniqueWithoutDrillInput | PracticeItemUpdateWithWhereUniqueWithoutDrillInput[]
+    updateMany?: PracticeItemUpdateManyWithWhereWithoutDrillInput | PracticeItemUpdateManyWithWhereWithoutDrillInput[]
+    deleteMany?: PracticeItemScalarWhereInput | PracticeItemScalarWhereInput[]
+  }
+
+  export type DrillGraphicUncheckedUpdateManyWithoutDrillNestedInput = {
+    create?: XOR<DrillGraphicCreateWithoutDrillInput, DrillGraphicUncheckedCreateWithoutDrillInput> | DrillGraphicCreateWithoutDrillInput[] | DrillGraphicUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: DrillGraphicCreateOrConnectWithoutDrillInput | DrillGraphicCreateOrConnectWithoutDrillInput[]
+    upsert?: DrillGraphicUpsertWithWhereUniqueWithoutDrillInput | DrillGraphicUpsertWithWhereUniqueWithoutDrillInput[]
+    createMany?: DrillGraphicCreateManyDrillInputEnvelope
+    set?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+    disconnect?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+    delete?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+    connect?: DrillGraphicWhereUniqueInput | DrillGraphicWhereUniqueInput[]
+    update?: DrillGraphicUpdateWithWhereUniqueWithoutDrillInput | DrillGraphicUpdateWithWhereUniqueWithoutDrillInput[]
+    updateMany?: DrillGraphicUpdateManyWithWhereWithoutDrillInput | DrillGraphicUpdateManyWithWhereWithoutDrillInput[]
+    deleteMany?: DrillGraphicScalarWhereInput | DrillGraphicScalarWhereInput[]
+  }
+
+  export type DrillTopicLinkUncheckedUpdateManyWithoutDrillNestedInput = {
+    create?: XOR<DrillTopicLinkCreateWithoutDrillInput, DrillTopicLinkUncheckedCreateWithoutDrillInput> | DrillTopicLinkCreateWithoutDrillInput[] | DrillTopicLinkUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: DrillTopicLinkCreateOrConnectWithoutDrillInput | DrillTopicLinkCreateOrConnectWithoutDrillInput[]
+    upsert?: DrillTopicLinkUpsertWithWhereUniqueWithoutDrillInput | DrillTopicLinkUpsertWithWhereUniqueWithoutDrillInput[]
+    createMany?: DrillTopicLinkCreateManyDrillInputEnvelope
+    set?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    disconnect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    delete?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    connect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    update?: DrillTopicLinkUpdateWithWhereUniqueWithoutDrillInput | DrillTopicLinkUpdateWithWhereUniqueWithoutDrillInput[]
+    updateMany?: DrillTopicLinkUpdateManyWithWhereWithoutDrillInput | DrillTopicLinkUpdateManyWithWhereWithoutDrillInput[]
+    deleteMany?: DrillTopicLinkScalarWhereInput | DrillTopicLinkScalarWhereInput[]
+  }
+
+  export type PracticeItemUncheckedUpdateManyWithoutDrillNestedInput = {
+    create?: XOR<PracticeItemCreateWithoutDrillInput, PracticeItemUncheckedCreateWithoutDrillInput> | PracticeItemCreateWithoutDrillInput[] | PracticeItemUncheckedCreateWithoutDrillInput[]
+    connectOrCreate?: PracticeItemCreateOrConnectWithoutDrillInput | PracticeItemCreateOrConnectWithoutDrillInput[]
+    upsert?: PracticeItemUpsertWithWhereUniqueWithoutDrillInput | PracticeItemUpsertWithWhereUniqueWithoutDrillInput[]
+    createMany?: PracticeItemCreateManyDrillInputEnvelope
+    set?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    disconnect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    delete?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    connect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    update?: PracticeItemUpdateWithWhereUniqueWithoutDrillInput | PracticeItemUpdateWithWhereUniqueWithoutDrillInput[]
+    updateMany?: PracticeItemUpdateManyWithWhereWithoutDrillInput | PracticeItemUpdateManyWithWhereWithoutDrillInput[]
+    deleteMany?: PracticeItemScalarWhereInput | PracticeItemScalarWhereInput[]
+  }
+
+  export type DrillCreateNestedOneWithoutGraphicsInput = {
+    create?: XOR<DrillCreateWithoutGraphicsInput, DrillUncheckedCreateWithoutGraphicsInput>
+    connectOrCreate?: DrillCreateOrConnectWithoutGraphicsInput
+    connect?: DrillWhereUniqueInput
+  }
+
+  export type DrillUpdateOneRequiredWithoutGraphicsNestedInput = {
+    create?: XOR<DrillCreateWithoutGraphicsInput, DrillUncheckedCreateWithoutGraphicsInput>
+    connectOrCreate?: DrillCreateOrConnectWithoutGraphicsInput
+    upsert?: DrillUpsertWithoutGraphicsInput
+    connect?: DrillWhereUniqueInput
+    update?: XOR<XOR<DrillUpdateToOneWithWhereWithoutGraphicsInput, DrillUpdateWithoutGraphicsInput>, DrillUncheckedUpdateWithoutGraphicsInput>
+  }
+
+  export type ClubCreateNestedOneWithoutDrillTopicsInput = {
+    create?: XOR<ClubCreateWithoutDrillTopicsInput, ClubUncheckedCreateWithoutDrillTopicsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutDrillTopicsInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type DrillTopicLinkCreateNestedManyWithoutTopicInput = {
+    create?: XOR<DrillTopicLinkCreateWithoutTopicInput, DrillTopicLinkUncheckedCreateWithoutTopicInput> | DrillTopicLinkCreateWithoutTopicInput[] | DrillTopicLinkUncheckedCreateWithoutTopicInput[]
+    connectOrCreate?: DrillTopicLinkCreateOrConnectWithoutTopicInput | DrillTopicLinkCreateOrConnectWithoutTopicInput[]
+    createMany?: DrillTopicLinkCreateManyTopicInputEnvelope
+    connect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+  }
+
+  export type DrillTopicLinkUncheckedCreateNestedManyWithoutTopicInput = {
+    create?: XOR<DrillTopicLinkCreateWithoutTopicInput, DrillTopicLinkUncheckedCreateWithoutTopicInput> | DrillTopicLinkCreateWithoutTopicInput[] | DrillTopicLinkUncheckedCreateWithoutTopicInput[]
+    connectOrCreate?: DrillTopicLinkCreateOrConnectWithoutTopicInput | DrillTopicLinkCreateOrConnectWithoutTopicInput[]
+    createMany?: DrillTopicLinkCreateManyTopicInputEnvelope
+    connect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+  }
+
+  export type ClubUpdateOneRequiredWithoutDrillTopicsNestedInput = {
+    create?: XOR<ClubCreateWithoutDrillTopicsInput, ClubUncheckedCreateWithoutDrillTopicsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutDrillTopicsInput
+    upsert?: ClubUpsertWithoutDrillTopicsInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutDrillTopicsInput, ClubUpdateWithoutDrillTopicsInput>, ClubUncheckedUpdateWithoutDrillTopicsInput>
+  }
+
+  export type DrillTopicLinkUpdateManyWithoutTopicNestedInput = {
+    create?: XOR<DrillTopicLinkCreateWithoutTopicInput, DrillTopicLinkUncheckedCreateWithoutTopicInput> | DrillTopicLinkCreateWithoutTopicInput[] | DrillTopicLinkUncheckedCreateWithoutTopicInput[]
+    connectOrCreate?: DrillTopicLinkCreateOrConnectWithoutTopicInput | DrillTopicLinkCreateOrConnectWithoutTopicInput[]
+    upsert?: DrillTopicLinkUpsertWithWhereUniqueWithoutTopicInput | DrillTopicLinkUpsertWithWhereUniqueWithoutTopicInput[]
+    createMany?: DrillTopicLinkCreateManyTopicInputEnvelope
+    set?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    disconnect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    delete?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    connect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    update?: DrillTopicLinkUpdateWithWhereUniqueWithoutTopicInput | DrillTopicLinkUpdateWithWhereUniqueWithoutTopicInput[]
+    updateMany?: DrillTopicLinkUpdateManyWithWhereWithoutTopicInput | DrillTopicLinkUpdateManyWithWhereWithoutTopicInput[]
+    deleteMany?: DrillTopicLinkScalarWhereInput | DrillTopicLinkScalarWhereInput[]
+  }
+
+  export type DrillTopicLinkUncheckedUpdateManyWithoutTopicNestedInput = {
+    create?: XOR<DrillTopicLinkCreateWithoutTopicInput, DrillTopicLinkUncheckedCreateWithoutTopicInput> | DrillTopicLinkCreateWithoutTopicInput[] | DrillTopicLinkUncheckedCreateWithoutTopicInput[]
+    connectOrCreate?: DrillTopicLinkCreateOrConnectWithoutTopicInput | DrillTopicLinkCreateOrConnectWithoutTopicInput[]
+    upsert?: DrillTopicLinkUpsertWithWhereUniqueWithoutTopicInput | DrillTopicLinkUpsertWithWhereUniqueWithoutTopicInput[]
+    createMany?: DrillTopicLinkCreateManyTopicInputEnvelope
+    set?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    disconnect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    delete?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    connect?: DrillTopicLinkWhereUniqueInput | DrillTopicLinkWhereUniqueInput[]
+    update?: DrillTopicLinkUpdateWithWhereUniqueWithoutTopicInput | DrillTopicLinkUpdateWithWhereUniqueWithoutTopicInput[]
+    updateMany?: DrillTopicLinkUpdateManyWithWhereWithoutTopicInput | DrillTopicLinkUpdateManyWithWhereWithoutTopicInput[]
+    deleteMany?: DrillTopicLinkScalarWhereInput | DrillTopicLinkScalarWhereInput[]
+  }
+
+  export type DrillCreateNestedOneWithoutTopicsInput = {
+    create?: XOR<DrillCreateWithoutTopicsInput, DrillUncheckedCreateWithoutTopicsInput>
+    connectOrCreate?: DrillCreateOrConnectWithoutTopicsInput
+    connect?: DrillWhereUniqueInput
+  }
+
+  export type DrillTopicCreateNestedOneWithoutDrillsInput = {
+    create?: XOR<DrillTopicCreateWithoutDrillsInput, DrillTopicUncheckedCreateWithoutDrillsInput>
+    connectOrCreate?: DrillTopicCreateOrConnectWithoutDrillsInput
+    connect?: DrillTopicWhereUniqueInput
+  }
+
+  export type DrillUpdateOneRequiredWithoutTopicsNestedInput = {
+    create?: XOR<DrillCreateWithoutTopicsInput, DrillUncheckedCreateWithoutTopicsInput>
+    connectOrCreate?: DrillCreateOrConnectWithoutTopicsInput
+    upsert?: DrillUpsertWithoutTopicsInput
+    connect?: DrillWhereUniqueInput
+    update?: XOR<XOR<DrillUpdateToOneWithWhereWithoutTopicsInput, DrillUpdateWithoutTopicsInput>, DrillUncheckedUpdateWithoutTopicsInput>
+  }
+
+  export type DrillTopicUpdateOneRequiredWithoutDrillsNestedInput = {
+    create?: XOR<DrillTopicCreateWithoutDrillsInput, DrillTopicUncheckedCreateWithoutDrillsInput>
+    connectOrCreate?: DrillTopicCreateOrConnectWithoutDrillsInput
+    upsert?: DrillTopicUpsertWithoutDrillsInput
+    connect?: DrillTopicWhereUniqueInput
+    update?: XOR<XOR<DrillTopicUpdateToOneWithWhereWithoutDrillsInput, DrillTopicUpdateWithoutDrillsInput>, DrillTopicUncheckedUpdateWithoutDrillsInput>
+  }
+
   export type TeamCreateNestedManyWithoutEchelonInput = {
     create?: XOR<TeamCreateWithoutEchelonInput, TeamUncheckedCreateWithoutEchelonInput> | TeamCreateWithoutEchelonInput[] | TeamUncheckedCreateWithoutEchelonInput[]
     connectOrCreate?: TeamCreateOrConnectWithoutEchelonInput | TeamCreateOrConnectWithoutEchelonInput[]
@@ -54104,6 +68249,13 @@ export namespace Prisma {
     connect?: EquipmentColorWhereUniqueInput | EquipmentColorWhereUniqueInput[]
   }
 
+  export type DrillCreateNestedManyWithoutEchelonInput = {
+    create?: XOR<DrillCreateWithoutEchelonInput, DrillUncheckedCreateWithoutEchelonInput> | DrillCreateWithoutEchelonInput[] | DrillUncheckedCreateWithoutEchelonInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutEchelonInput | DrillCreateOrConnectWithoutEchelonInput[]
+    createMany?: DrillCreateManyEchelonInputEnvelope
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+  }
+
   export type TeamUncheckedCreateNestedManyWithoutEchelonInput = {
     create?: XOR<TeamCreateWithoutEchelonInput, TeamUncheckedCreateWithoutEchelonInput> | TeamCreateWithoutEchelonInput[] | TeamUncheckedCreateWithoutEchelonInput[]
     connectOrCreate?: TeamCreateOrConnectWithoutEchelonInput | TeamCreateOrConnectWithoutEchelonInput[]
@@ -54123,6 +68275,13 @@ export namespace Prisma {
     connectOrCreate?: EquipmentColorCreateOrConnectWithoutEchelonInput | EquipmentColorCreateOrConnectWithoutEchelonInput[]
     createMany?: EquipmentColorCreateManyEchelonInputEnvelope
     connect?: EquipmentColorWhereUniqueInput | EquipmentColorWhereUniqueInput[]
+  }
+
+  export type DrillUncheckedCreateNestedManyWithoutEchelonInput = {
+    create?: XOR<DrillCreateWithoutEchelonInput, DrillUncheckedCreateWithoutEchelonInput> | DrillCreateWithoutEchelonInput[] | DrillUncheckedCreateWithoutEchelonInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutEchelonInput | DrillCreateOrConnectWithoutEchelonInput[]
+    createMany?: DrillCreateManyEchelonInputEnvelope
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
   }
 
   export type EnumGenderFieldUpdateOperationsInput = {
@@ -54171,6 +68330,20 @@ export namespace Prisma {
     deleteMany?: EquipmentColorScalarWhereInput | EquipmentColorScalarWhereInput[]
   }
 
+  export type DrillUpdateManyWithoutEchelonNestedInput = {
+    create?: XOR<DrillCreateWithoutEchelonInput, DrillUncheckedCreateWithoutEchelonInput> | DrillCreateWithoutEchelonInput[] | DrillUncheckedCreateWithoutEchelonInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutEchelonInput | DrillCreateOrConnectWithoutEchelonInput[]
+    upsert?: DrillUpsertWithWhereUniqueWithoutEchelonInput | DrillUpsertWithWhereUniqueWithoutEchelonInput[]
+    createMany?: DrillCreateManyEchelonInputEnvelope
+    set?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    disconnect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    delete?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    update?: DrillUpdateWithWhereUniqueWithoutEchelonInput | DrillUpdateWithWhereUniqueWithoutEchelonInput[]
+    updateMany?: DrillUpdateManyWithWhereWithoutEchelonInput | DrillUpdateManyWithWhereWithoutEchelonInput[]
+    deleteMany?: DrillScalarWhereInput | DrillScalarWhereInput[]
+  }
+
   export type TeamUncheckedUpdateManyWithoutEchelonNestedInput = {
     create?: XOR<TeamCreateWithoutEchelonInput, TeamUncheckedCreateWithoutEchelonInput> | TeamCreateWithoutEchelonInput[] | TeamUncheckedCreateWithoutEchelonInput[]
     connectOrCreate?: TeamCreateOrConnectWithoutEchelonInput | TeamCreateOrConnectWithoutEchelonInput[]
@@ -54211,6 +68384,20 @@ export namespace Prisma {
     update?: EquipmentColorUpdateWithWhereUniqueWithoutEchelonInput | EquipmentColorUpdateWithWhereUniqueWithoutEchelonInput[]
     updateMany?: EquipmentColorUpdateManyWithWhereWithoutEchelonInput | EquipmentColorUpdateManyWithWhereWithoutEchelonInput[]
     deleteMany?: EquipmentColorScalarWhereInput | EquipmentColorScalarWhereInput[]
+  }
+
+  export type DrillUncheckedUpdateManyWithoutEchelonNestedInput = {
+    create?: XOR<DrillCreateWithoutEchelonInput, DrillUncheckedCreateWithoutEchelonInput> | DrillCreateWithoutEchelonInput[] | DrillUncheckedCreateWithoutEchelonInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutEchelonInput | DrillCreateOrConnectWithoutEchelonInput[]
+    upsert?: DrillUpsertWithWhereUniqueWithoutEchelonInput | DrillUpsertWithWhereUniqueWithoutEchelonInput[]
+    createMany?: DrillCreateManyEchelonInputEnvelope
+    set?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    disconnect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    delete?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    update?: DrillUpdateWithWhereUniqueWithoutEchelonInput | DrillUpdateWithWhereUniqueWithoutEchelonInput[]
+    updateMany?: DrillUpdateManyWithWhereWithoutEchelonInput | DrillUpdateManyWithWhereWithoutEchelonInput[]
+    deleteMany?: DrillScalarWhereInput | DrillScalarWhereInput[]
   }
 
   export type AccountClubCreateNestedManyWithoutClubInput = {
@@ -54282,6 +68469,40 @@ export namespace Prisma {
     connect?: ClubEmailSettingsWhereUniqueInput
   }
 
+  export type PracticeCreateNestedManyWithoutClubInput = {
+    create?: XOR<PracticeCreateWithoutClubInput, PracticeUncheckedCreateWithoutClubInput> | PracticeCreateWithoutClubInput[] | PracticeUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: PracticeCreateOrConnectWithoutClubInput | PracticeCreateOrConnectWithoutClubInput[]
+    createMany?: PracticeCreateManyClubInputEnvelope
+    connect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+  }
+
+  export type ClubPracticeSettingsCreateNestedOneWithoutClubInput = {
+    create?: XOR<ClubPracticeSettingsCreateWithoutClubInput, ClubPracticeSettingsUncheckedCreateWithoutClubInput>
+    connectOrCreate?: ClubPracticeSettingsCreateOrConnectWithoutClubInput
+    connect?: ClubPracticeSettingsWhereUniqueInput
+  }
+
+  export type ClubAttendanceReasonCreateNestedManyWithoutClubInput = {
+    create?: XOR<ClubAttendanceReasonCreateWithoutClubInput, ClubAttendanceReasonUncheckedCreateWithoutClubInput> | ClubAttendanceReasonCreateWithoutClubInput[] | ClubAttendanceReasonUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: ClubAttendanceReasonCreateOrConnectWithoutClubInput | ClubAttendanceReasonCreateOrConnectWithoutClubInput[]
+    createMany?: ClubAttendanceReasonCreateManyClubInputEnvelope
+    connect?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+  }
+
+  export type DrillCreateNestedManyWithoutClubInput = {
+    create?: XOR<DrillCreateWithoutClubInput, DrillUncheckedCreateWithoutClubInput> | DrillCreateWithoutClubInput[] | DrillUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutClubInput | DrillCreateOrConnectWithoutClubInput[]
+    createMany?: DrillCreateManyClubInputEnvelope
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+  }
+
+  export type DrillTopicCreateNestedManyWithoutClubInput = {
+    create?: XOR<DrillTopicCreateWithoutClubInput, DrillTopicUncheckedCreateWithoutClubInput> | DrillTopicCreateWithoutClubInput[] | DrillTopicUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: DrillTopicCreateOrConnectWithoutClubInput | DrillTopicCreateOrConnectWithoutClubInput[]
+    createMany?: DrillTopicCreateManyClubInputEnvelope
+    connect?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+  }
+
   export type AccountClubUncheckedCreateNestedManyWithoutClubInput = {
     create?: XOR<AccountClubCreateWithoutClubInput, AccountClubUncheckedCreateWithoutClubInput> | AccountClubCreateWithoutClubInput[] | AccountClubUncheckedCreateWithoutClubInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutClubInput | AccountClubCreateOrConnectWithoutClubInput[]
@@ -54349,6 +68570,40 @@ export namespace Prisma {
     create?: XOR<ClubEmailSettingsCreateWithoutClubInput, ClubEmailSettingsUncheckedCreateWithoutClubInput>
     connectOrCreate?: ClubEmailSettingsCreateOrConnectWithoutClubInput
     connect?: ClubEmailSettingsWhereUniqueInput
+  }
+
+  export type PracticeUncheckedCreateNestedManyWithoutClubInput = {
+    create?: XOR<PracticeCreateWithoutClubInput, PracticeUncheckedCreateWithoutClubInput> | PracticeCreateWithoutClubInput[] | PracticeUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: PracticeCreateOrConnectWithoutClubInput | PracticeCreateOrConnectWithoutClubInput[]
+    createMany?: PracticeCreateManyClubInputEnvelope
+    connect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+  }
+
+  export type ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput = {
+    create?: XOR<ClubPracticeSettingsCreateWithoutClubInput, ClubPracticeSettingsUncheckedCreateWithoutClubInput>
+    connectOrCreate?: ClubPracticeSettingsCreateOrConnectWithoutClubInput
+    connect?: ClubPracticeSettingsWhereUniqueInput
+  }
+
+  export type ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput = {
+    create?: XOR<ClubAttendanceReasonCreateWithoutClubInput, ClubAttendanceReasonUncheckedCreateWithoutClubInput> | ClubAttendanceReasonCreateWithoutClubInput[] | ClubAttendanceReasonUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: ClubAttendanceReasonCreateOrConnectWithoutClubInput | ClubAttendanceReasonCreateOrConnectWithoutClubInput[]
+    createMany?: ClubAttendanceReasonCreateManyClubInputEnvelope
+    connect?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+  }
+
+  export type DrillUncheckedCreateNestedManyWithoutClubInput = {
+    create?: XOR<DrillCreateWithoutClubInput, DrillUncheckedCreateWithoutClubInput> | DrillCreateWithoutClubInput[] | DrillUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutClubInput | DrillCreateOrConnectWithoutClubInput[]
+    createMany?: DrillCreateManyClubInputEnvelope
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+  }
+
+  export type DrillTopicUncheckedCreateNestedManyWithoutClubInput = {
+    create?: XOR<DrillTopicCreateWithoutClubInput, DrillTopicUncheckedCreateWithoutClubInput> | DrillTopicCreateWithoutClubInput[] | DrillTopicUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: DrillTopicCreateOrConnectWithoutClubInput | DrillTopicCreateOrConnectWithoutClubInput[]
+    createMany?: DrillTopicCreateManyClubInputEnvelope
+    connect?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
   }
 
   export type AccountClubUpdateManyWithoutClubNestedInput = {
@@ -54487,6 +68742,72 @@ export namespace Prisma {
     update?: XOR<XOR<ClubEmailSettingsUpdateToOneWithWhereWithoutClubInput, ClubEmailSettingsUpdateWithoutClubInput>, ClubEmailSettingsUncheckedUpdateWithoutClubInput>
   }
 
+  export type PracticeUpdateManyWithoutClubNestedInput = {
+    create?: XOR<PracticeCreateWithoutClubInput, PracticeUncheckedCreateWithoutClubInput> | PracticeCreateWithoutClubInput[] | PracticeUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: PracticeCreateOrConnectWithoutClubInput | PracticeCreateOrConnectWithoutClubInput[]
+    upsert?: PracticeUpsertWithWhereUniqueWithoutClubInput | PracticeUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: PracticeCreateManyClubInputEnvelope
+    set?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    disconnect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    delete?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    connect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    update?: PracticeUpdateWithWhereUniqueWithoutClubInput | PracticeUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: PracticeUpdateManyWithWhereWithoutClubInput | PracticeUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: PracticeScalarWhereInput | PracticeScalarWhereInput[]
+  }
+
+  export type ClubPracticeSettingsUpdateOneWithoutClubNestedInput = {
+    create?: XOR<ClubPracticeSettingsCreateWithoutClubInput, ClubPracticeSettingsUncheckedCreateWithoutClubInput>
+    connectOrCreate?: ClubPracticeSettingsCreateOrConnectWithoutClubInput
+    upsert?: ClubPracticeSettingsUpsertWithoutClubInput
+    disconnect?: ClubPracticeSettingsWhereInput | boolean
+    delete?: ClubPracticeSettingsWhereInput | boolean
+    connect?: ClubPracticeSettingsWhereUniqueInput
+    update?: XOR<XOR<ClubPracticeSettingsUpdateToOneWithWhereWithoutClubInput, ClubPracticeSettingsUpdateWithoutClubInput>, ClubPracticeSettingsUncheckedUpdateWithoutClubInput>
+  }
+
+  export type ClubAttendanceReasonUpdateManyWithoutClubNestedInput = {
+    create?: XOR<ClubAttendanceReasonCreateWithoutClubInput, ClubAttendanceReasonUncheckedCreateWithoutClubInput> | ClubAttendanceReasonCreateWithoutClubInput[] | ClubAttendanceReasonUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: ClubAttendanceReasonCreateOrConnectWithoutClubInput | ClubAttendanceReasonCreateOrConnectWithoutClubInput[]
+    upsert?: ClubAttendanceReasonUpsertWithWhereUniqueWithoutClubInput | ClubAttendanceReasonUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: ClubAttendanceReasonCreateManyClubInputEnvelope
+    set?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+    disconnect?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+    delete?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+    connect?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+    update?: ClubAttendanceReasonUpdateWithWhereUniqueWithoutClubInput | ClubAttendanceReasonUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: ClubAttendanceReasonUpdateManyWithWhereWithoutClubInput | ClubAttendanceReasonUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: ClubAttendanceReasonScalarWhereInput | ClubAttendanceReasonScalarWhereInput[]
+  }
+
+  export type DrillUpdateManyWithoutClubNestedInput = {
+    create?: XOR<DrillCreateWithoutClubInput, DrillUncheckedCreateWithoutClubInput> | DrillCreateWithoutClubInput[] | DrillUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutClubInput | DrillCreateOrConnectWithoutClubInput[]
+    upsert?: DrillUpsertWithWhereUniqueWithoutClubInput | DrillUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: DrillCreateManyClubInputEnvelope
+    set?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    disconnect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    delete?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    update?: DrillUpdateWithWhereUniqueWithoutClubInput | DrillUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: DrillUpdateManyWithWhereWithoutClubInput | DrillUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: DrillScalarWhereInput | DrillScalarWhereInput[]
+  }
+
+  export type DrillTopicUpdateManyWithoutClubNestedInput = {
+    create?: XOR<DrillTopicCreateWithoutClubInput, DrillTopicUncheckedCreateWithoutClubInput> | DrillTopicCreateWithoutClubInput[] | DrillTopicUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: DrillTopicCreateOrConnectWithoutClubInput | DrillTopicCreateOrConnectWithoutClubInput[]
+    upsert?: DrillTopicUpsertWithWhereUniqueWithoutClubInput | DrillTopicUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: DrillTopicCreateManyClubInputEnvelope
+    set?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+    disconnect?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+    delete?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+    connect?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+    update?: DrillTopicUpdateWithWhereUniqueWithoutClubInput | DrillTopicUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: DrillTopicUpdateManyWithWhereWithoutClubInput | DrillTopicUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: DrillTopicScalarWhereInput | DrillTopicScalarWhereInput[]
+  }
+
   export type AccountClubUncheckedUpdateManyWithoutClubNestedInput = {
     create?: XOR<AccountClubCreateWithoutClubInput, AccountClubUncheckedCreateWithoutClubInput> | AccountClubCreateWithoutClubInput[] | AccountClubUncheckedCreateWithoutClubInput[]
     connectOrCreate?: AccountClubCreateOrConnectWithoutClubInput | AccountClubCreateOrConnectWithoutClubInput[]
@@ -54621,6 +68942,72 @@ export namespace Prisma {
     delete?: ClubEmailSettingsWhereInput | boolean
     connect?: ClubEmailSettingsWhereUniqueInput
     update?: XOR<XOR<ClubEmailSettingsUpdateToOneWithWhereWithoutClubInput, ClubEmailSettingsUpdateWithoutClubInput>, ClubEmailSettingsUncheckedUpdateWithoutClubInput>
+  }
+
+  export type PracticeUncheckedUpdateManyWithoutClubNestedInput = {
+    create?: XOR<PracticeCreateWithoutClubInput, PracticeUncheckedCreateWithoutClubInput> | PracticeCreateWithoutClubInput[] | PracticeUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: PracticeCreateOrConnectWithoutClubInput | PracticeCreateOrConnectWithoutClubInput[]
+    upsert?: PracticeUpsertWithWhereUniqueWithoutClubInput | PracticeUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: PracticeCreateManyClubInputEnvelope
+    set?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    disconnect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    delete?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    connect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    update?: PracticeUpdateWithWhereUniqueWithoutClubInput | PracticeUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: PracticeUpdateManyWithWhereWithoutClubInput | PracticeUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: PracticeScalarWhereInput | PracticeScalarWhereInput[]
+  }
+
+  export type ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput = {
+    create?: XOR<ClubPracticeSettingsCreateWithoutClubInput, ClubPracticeSettingsUncheckedCreateWithoutClubInput>
+    connectOrCreate?: ClubPracticeSettingsCreateOrConnectWithoutClubInput
+    upsert?: ClubPracticeSettingsUpsertWithoutClubInput
+    disconnect?: ClubPracticeSettingsWhereInput | boolean
+    delete?: ClubPracticeSettingsWhereInput | boolean
+    connect?: ClubPracticeSettingsWhereUniqueInput
+    update?: XOR<XOR<ClubPracticeSettingsUpdateToOneWithWhereWithoutClubInput, ClubPracticeSettingsUpdateWithoutClubInput>, ClubPracticeSettingsUncheckedUpdateWithoutClubInput>
+  }
+
+  export type ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput = {
+    create?: XOR<ClubAttendanceReasonCreateWithoutClubInput, ClubAttendanceReasonUncheckedCreateWithoutClubInput> | ClubAttendanceReasonCreateWithoutClubInput[] | ClubAttendanceReasonUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: ClubAttendanceReasonCreateOrConnectWithoutClubInput | ClubAttendanceReasonCreateOrConnectWithoutClubInput[]
+    upsert?: ClubAttendanceReasonUpsertWithWhereUniqueWithoutClubInput | ClubAttendanceReasonUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: ClubAttendanceReasonCreateManyClubInputEnvelope
+    set?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+    disconnect?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+    delete?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+    connect?: ClubAttendanceReasonWhereUniqueInput | ClubAttendanceReasonWhereUniqueInput[]
+    update?: ClubAttendanceReasonUpdateWithWhereUniqueWithoutClubInput | ClubAttendanceReasonUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: ClubAttendanceReasonUpdateManyWithWhereWithoutClubInput | ClubAttendanceReasonUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: ClubAttendanceReasonScalarWhereInput | ClubAttendanceReasonScalarWhereInput[]
+  }
+
+  export type DrillUncheckedUpdateManyWithoutClubNestedInput = {
+    create?: XOR<DrillCreateWithoutClubInput, DrillUncheckedCreateWithoutClubInput> | DrillCreateWithoutClubInput[] | DrillUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: DrillCreateOrConnectWithoutClubInput | DrillCreateOrConnectWithoutClubInput[]
+    upsert?: DrillUpsertWithWhereUniqueWithoutClubInput | DrillUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: DrillCreateManyClubInputEnvelope
+    set?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    disconnect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    delete?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    connect?: DrillWhereUniqueInput | DrillWhereUniqueInput[]
+    update?: DrillUpdateWithWhereUniqueWithoutClubInput | DrillUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: DrillUpdateManyWithWhereWithoutClubInput | DrillUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: DrillScalarWhereInput | DrillScalarWhereInput[]
+  }
+
+  export type DrillTopicUncheckedUpdateManyWithoutClubNestedInput = {
+    create?: XOR<DrillTopicCreateWithoutClubInput, DrillTopicUncheckedCreateWithoutClubInput> | DrillTopicCreateWithoutClubInput[] | DrillTopicUncheckedCreateWithoutClubInput[]
+    connectOrCreate?: DrillTopicCreateOrConnectWithoutClubInput | DrillTopicCreateOrConnectWithoutClubInput[]
+    upsert?: DrillTopicUpsertWithWhereUniqueWithoutClubInput | DrillTopicUpsertWithWhereUniqueWithoutClubInput[]
+    createMany?: DrillTopicCreateManyClubInputEnvelope
+    set?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+    disconnect?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+    delete?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+    connect?: DrillTopicWhereUniqueInput | DrillTopicWhereUniqueInput[]
+    update?: DrillTopicUpdateWithWhereUniqueWithoutClubInput | DrillTopicUpdateWithWhereUniqueWithoutClubInput[]
+    updateMany?: DrillTopicUpdateManyWithWhereWithoutClubInput | DrillTopicUpdateManyWithWhereWithoutClubInput[]
+    deleteMany?: DrillTopicScalarWhereInput | DrillTopicScalarWhereInput[]
   }
 
   export type ClubCreateNestedOneWithoutEmailSettingsInput = {
@@ -54874,6 +69261,20 @@ export namespace Prisma {
     connect?: GameWhereUniqueInput | GameWhereUniqueInput[]
   }
 
+  export type MacrocycleCreateNestedManyWithoutTeamInput = {
+    create?: XOR<MacrocycleCreateWithoutTeamInput, MacrocycleUncheckedCreateWithoutTeamInput> | MacrocycleCreateWithoutTeamInput[] | MacrocycleUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MacrocycleCreateOrConnectWithoutTeamInput | MacrocycleCreateOrConnectWithoutTeamInput[]
+    createMany?: MacrocycleCreateManyTeamInputEnvelope
+    connect?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+  }
+
+  export type PracticeCreateNestedManyWithoutTeamInput = {
+    create?: XOR<PracticeCreateWithoutTeamInput, PracticeUncheckedCreateWithoutTeamInput> | PracticeCreateWithoutTeamInput[] | PracticeUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: PracticeCreateOrConnectWithoutTeamInput | PracticeCreateOrConnectWithoutTeamInput[]
+    createMany?: PracticeCreateManyTeamInputEnvelope
+    connect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+  }
+
   export type TeamAthleteUncheckedCreateNestedManyWithoutTeamInput = {
     create?: XOR<TeamAthleteCreateWithoutTeamInput, TeamAthleteUncheckedCreateWithoutTeamInput> | TeamAthleteCreateWithoutTeamInput[] | TeamAthleteUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamAthleteCreateOrConnectWithoutTeamInput | TeamAthleteCreateOrConnectWithoutTeamInput[]
@@ -54893,6 +69294,20 @@ export namespace Prisma {
     connectOrCreate?: GameCreateOrConnectWithoutTeamInput | GameCreateOrConnectWithoutTeamInput[]
     createMany?: GameCreateManyTeamInputEnvelope
     connect?: GameWhereUniqueInput | GameWhereUniqueInput[]
+  }
+
+  export type MacrocycleUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<MacrocycleCreateWithoutTeamInput, MacrocycleUncheckedCreateWithoutTeamInput> | MacrocycleCreateWithoutTeamInput[] | MacrocycleUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MacrocycleCreateOrConnectWithoutTeamInput | MacrocycleCreateOrConnectWithoutTeamInput[]
+    createMany?: MacrocycleCreateManyTeamInputEnvelope
+    connect?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+  }
+
+  export type PracticeUncheckedCreateNestedManyWithoutTeamInput = {
+    create?: XOR<PracticeCreateWithoutTeamInput, PracticeUncheckedCreateWithoutTeamInput> | PracticeCreateWithoutTeamInput[] | PracticeUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: PracticeCreateOrConnectWithoutTeamInput | PracticeCreateOrConnectWithoutTeamInput[]
+    createMany?: PracticeCreateManyTeamInputEnvelope
+    connect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
   }
 
   export type NullableEnumTeamTypeFieldUpdateOperationsInput = {
@@ -54957,6 +69372,34 @@ export namespace Prisma {
     deleteMany?: GameScalarWhereInput | GameScalarWhereInput[]
   }
 
+  export type MacrocycleUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<MacrocycleCreateWithoutTeamInput, MacrocycleUncheckedCreateWithoutTeamInput> | MacrocycleCreateWithoutTeamInput[] | MacrocycleUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MacrocycleCreateOrConnectWithoutTeamInput | MacrocycleCreateOrConnectWithoutTeamInput[]
+    upsert?: MacrocycleUpsertWithWhereUniqueWithoutTeamInput | MacrocycleUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: MacrocycleCreateManyTeamInputEnvelope
+    set?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+    disconnect?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+    delete?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+    connect?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+    update?: MacrocycleUpdateWithWhereUniqueWithoutTeamInput | MacrocycleUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: MacrocycleUpdateManyWithWhereWithoutTeamInput | MacrocycleUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: MacrocycleScalarWhereInput | MacrocycleScalarWhereInput[]
+  }
+
+  export type PracticeUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<PracticeCreateWithoutTeamInput, PracticeUncheckedCreateWithoutTeamInput> | PracticeCreateWithoutTeamInput[] | PracticeUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: PracticeCreateOrConnectWithoutTeamInput | PracticeCreateOrConnectWithoutTeamInput[]
+    upsert?: PracticeUpsertWithWhereUniqueWithoutTeamInput | PracticeUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: PracticeCreateManyTeamInputEnvelope
+    set?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    disconnect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    delete?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    connect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    update?: PracticeUpdateWithWhereUniqueWithoutTeamInput | PracticeUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: PracticeUpdateManyWithWhereWithoutTeamInput | PracticeUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: PracticeScalarWhereInput | PracticeScalarWhereInput[]
+  }
+
   export type TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput = {
     create?: XOR<TeamAthleteCreateWithoutTeamInput, TeamAthleteUncheckedCreateWithoutTeamInput> | TeamAthleteCreateWithoutTeamInput[] | TeamAthleteUncheckedCreateWithoutTeamInput[]
     connectOrCreate?: TeamAthleteCreateOrConnectWithoutTeamInput | TeamAthleteCreateOrConnectWithoutTeamInput[]
@@ -54997,6 +69440,34 @@ export namespace Prisma {
     update?: GameUpdateWithWhereUniqueWithoutTeamInput | GameUpdateWithWhereUniqueWithoutTeamInput[]
     updateMany?: GameUpdateManyWithWhereWithoutTeamInput | GameUpdateManyWithWhereWithoutTeamInput[]
     deleteMany?: GameScalarWhereInput | GameScalarWhereInput[]
+  }
+
+  export type MacrocycleUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<MacrocycleCreateWithoutTeamInput, MacrocycleUncheckedCreateWithoutTeamInput> | MacrocycleCreateWithoutTeamInput[] | MacrocycleUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: MacrocycleCreateOrConnectWithoutTeamInput | MacrocycleCreateOrConnectWithoutTeamInput[]
+    upsert?: MacrocycleUpsertWithWhereUniqueWithoutTeamInput | MacrocycleUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: MacrocycleCreateManyTeamInputEnvelope
+    set?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+    disconnect?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+    delete?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+    connect?: MacrocycleWhereUniqueInput | MacrocycleWhereUniqueInput[]
+    update?: MacrocycleUpdateWithWhereUniqueWithoutTeamInput | MacrocycleUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: MacrocycleUpdateManyWithWhereWithoutTeamInput | MacrocycleUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: MacrocycleScalarWhereInput | MacrocycleScalarWhereInput[]
+  }
+
+  export type PracticeUncheckedUpdateManyWithoutTeamNestedInput = {
+    create?: XOR<PracticeCreateWithoutTeamInput, PracticeUncheckedCreateWithoutTeamInput> | PracticeCreateWithoutTeamInput[] | PracticeUncheckedCreateWithoutTeamInput[]
+    connectOrCreate?: PracticeCreateOrConnectWithoutTeamInput | PracticeCreateOrConnectWithoutTeamInput[]
+    upsert?: PracticeUpsertWithWhereUniqueWithoutTeamInput | PracticeUpsertWithWhereUniqueWithoutTeamInput[]
+    createMany?: PracticeCreateManyTeamInputEnvelope
+    set?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    disconnect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    delete?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    connect?: PracticeWhereUniqueInput | PracticeWhereUniqueInput[]
+    update?: PracticeUpdateWithWhereUniqueWithoutTeamInput | PracticeUpdateWithWhereUniqueWithoutTeamInput[]
+    updateMany?: PracticeUpdateManyWithWhereWithoutTeamInput | PracticeUpdateManyWithWhereWithoutTeamInput[]
+    deleteMany?: PracticeScalarWhereInput | PracticeScalarWhereInput[]
   }
 
   export type TeamCreateNestedOneWithoutAthletesInput = {
@@ -55641,6 +70112,270 @@ export namespace Prisma {
     update?: XOR<XOR<AccountUpdateToOneWithWhereWithoutAlertRecipientsInput, AccountUpdateWithoutAlertRecipientsInput>, AccountUncheckedUpdateWithoutAlertRecipientsInput>
   }
 
+  export type ClubCreateNestedOneWithoutPracticesInput = {
+    create?: XOR<ClubCreateWithoutPracticesInput, ClubUncheckedCreateWithoutPracticesInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutPracticesInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type TeamCreateNestedOneWithoutPracticesInput = {
+    create?: XOR<TeamCreateWithoutPracticesInput, TeamUncheckedCreateWithoutPracticesInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutPracticesInput
+    connect?: TeamWhereUniqueInput
+  }
+
+  export type PracticeAthleteCreateNestedManyWithoutPracticeInput = {
+    create?: XOR<PracticeAthleteCreateWithoutPracticeInput, PracticeAthleteUncheckedCreateWithoutPracticeInput> | PracticeAthleteCreateWithoutPracticeInput[] | PracticeAthleteUncheckedCreateWithoutPracticeInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutPracticeInput | PracticeAthleteCreateOrConnectWithoutPracticeInput[]
+    createMany?: PracticeAthleteCreateManyPracticeInputEnvelope
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+  }
+
+  export type PracticeItemCreateNestedManyWithoutPracticeInput = {
+    create?: XOR<PracticeItemCreateWithoutPracticeInput, PracticeItemUncheckedCreateWithoutPracticeInput> | PracticeItemCreateWithoutPracticeInput[] | PracticeItemUncheckedCreateWithoutPracticeInput[]
+    connectOrCreate?: PracticeItemCreateOrConnectWithoutPracticeInput | PracticeItemCreateOrConnectWithoutPracticeInput[]
+    createMany?: PracticeItemCreateManyPracticeInputEnvelope
+    connect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+  }
+
+  export type PracticeAthleteUncheckedCreateNestedManyWithoutPracticeInput = {
+    create?: XOR<PracticeAthleteCreateWithoutPracticeInput, PracticeAthleteUncheckedCreateWithoutPracticeInput> | PracticeAthleteCreateWithoutPracticeInput[] | PracticeAthleteUncheckedCreateWithoutPracticeInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutPracticeInput | PracticeAthleteCreateOrConnectWithoutPracticeInput[]
+    createMany?: PracticeAthleteCreateManyPracticeInputEnvelope
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+  }
+
+  export type PracticeItemUncheckedCreateNestedManyWithoutPracticeInput = {
+    create?: XOR<PracticeItemCreateWithoutPracticeInput, PracticeItemUncheckedCreateWithoutPracticeInput> | PracticeItemCreateWithoutPracticeInput[] | PracticeItemUncheckedCreateWithoutPracticeInput[]
+    connectOrCreate?: PracticeItemCreateOrConnectWithoutPracticeInput | PracticeItemCreateOrConnectWithoutPracticeInput[]
+    createMany?: PracticeItemCreateManyPracticeInputEnvelope
+    connect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+  }
+
+  export type ClubUpdateOneRequiredWithoutPracticesNestedInput = {
+    create?: XOR<ClubCreateWithoutPracticesInput, ClubUncheckedCreateWithoutPracticesInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutPracticesInput
+    upsert?: ClubUpsertWithoutPracticesInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutPracticesInput, ClubUpdateWithoutPracticesInput>, ClubUncheckedUpdateWithoutPracticesInput>
+  }
+
+  export type TeamUpdateOneRequiredWithoutPracticesNestedInput = {
+    create?: XOR<TeamCreateWithoutPracticesInput, TeamUncheckedCreateWithoutPracticesInput>
+    connectOrCreate?: TeamCreateOrConnectWithoutPracticesInput
+    upsert?: TeamUpsertWithoutPracticesInput
+    connect?: TeamWhereUniqueInput
+    update?: XOR<XOR<TeamUpdateToOneWithWhereWithoutPracticesInput, TeamUpdateWithoutPracticesInput>, TeamUncheckedUpdateWithoutPracticesInput>
+  }
+
+  export type PracticeAthleteUpdateManyWithoutPracticeNestedInput = {
+    create?: XOR<PracticeAthleteCreateWithoutPracticeInput, PracticeAthleteUncheckedCreateWithoutPracticeInput> | PracticeAthleteCreateWithoutPracticeInput[] | PracticeAthleteUncheckedCreateWithoutPracticeInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutPracticeInput | PracticeAthleteCreateOrConnectWithoutPracticeInput[]
+    upsert?: PracticeAthleteUpsertWithWhereUniqueWithoutPracticeInput | PracticeAthleteUpsertWithWhereUniqueWithoutPracticeInput[]
+    createMany?: PracticeAthleteCreateManyPracticeInputEnvelope
+    set?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    disconnect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    delete?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    update?: PracticeAthleteUpdateWithWhereUniqueWithoutPracticeInput | PracticeAthleteUpdateWithWhereUniqueWithoutPracticeInput[]
+    updateMany?: PracticeAthleteUpdateManyWithWhereWithoutPracticeInput | PracticeAthleteUpdateManyWithWhereWithoutPracticeInput[]
+    deleteMany?: PracticeAthleteScalarWhereInput | PracticeAthleteScalarWhereInput[]
+  }
+
+  export type PracticeItemUpdateManyWithoutPracticeNestedInput = {
+    create?: XOR<PracticeItemCreateWithoutPracticeInput, PracticeItemUncheckedCreateWithoutPracticeInput> | PracticeItemCreateWithoutPracticeInput[] | PracticeItemUncheckedCreateWithoutPracticeInput[]
+    connectOrCreate?: PracticeItemCreateOrConnectWithoutPracticeInput | PracticeItemCreateOrConnectWithoutPracticeInput[]
+    upsert?: PracticeItemUpsertWithWhereUniqueWithoutPracticeInput | PracticeItemUpsertWithWhereUniqueWithoutPracticeInput[]
+    createMany?: PracticeItemCreateManyPracticeInputEnvelope
+    set?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    disconnect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    delete?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    connect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    update?: PracticeItemUpdateWithWhereUniqueWithoutPracticeInput | PracticeItemUpdateWithWhereUniqueWithoutPracticeInput[]
+    updateMany?: PracticeItemUpdateManyWithWhereWithoutPracticeInput | PracticeItemUpdateManyWithWhereWithoutPracticeInput[]
+    deleteMany?: PracticeItemScalarWhereInput | PracticeItemScalarWhereInput[]
+  }
+
+  export type PracticeAthleteUncheckedUpdateManyWithoutPracticeNestedInput = {
+    create?: XOR<PracticeAthleteCreateWithoutPracticeInput, PracticeAthleteUncheckedCreateWithoutPracticeInput> | PracticeAthleteCreateWithoutPracticeInput[] | PracticeAthleteUncheckedCreateWithoutPracticeInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutPracticeInput | PracticeAthleteCreateOrConnectWithoutPracticeInput[]
+    upsert?: PracticeAthleteUpsertWithWhereUniqueWithoutPracticeInput | PracticeAthleteUpsertWithWhereUniqueWithoutPracticeInput[]
+    createMany?: PracticeAthleteCreateManyPracticeInputEnvelope
+    set?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    disconnect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    delete?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    update?: PracticeAthleteUpdateWithWhereUniqueWithoutPracticeInput | PracticeAthleteUpdateWithWhereUniqueWithoutPracticeInput[]
+    updateMany?: PracticeAthleteUpdateManyWithWhereWithoutPracticeInput | PracticeAthleteUpdateManyWithWhereWithoutPracticeInput[]
+    deleteMany?: PracticeAthleteScalarWhereInput | PracticeAthleteScalarWhereInput[]
+  }
+
+  export type PracticeItemUncheckedUpdateManyWithoutPracticeNestedInput = {
+    create?: XOR<PracticeItemCreateWithoutPracticeInput, PracticeItemUncheckedCreateWithoutPracticeInput> | PracticeItemCreateWithoutPracticeInput[] | PracticeItemUncheckedCreateWithoutPracticeInput[]
+    connectOrCreate?: PracticeItemCreateOrConnectWithoutPracticeInput | PracticeItemCreateOrConnectWithoutPracticeInput[]
+    upsert?: PracticeItemUpsertWithWhereUniqueWithoutPracticeInput | PracticeItemUpsertWithWhereUniqueWithoutPracticeInput[]
+    createMany?: PracticeItemCreateManyPracticeInputEnvelope
+    set?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    disconnect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    delete?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    connect?: PracticeItemWhereUniqueInput | PracticeItemWhereUniqueInput[]
+    update?: PracticeItemUpdateWithWhereUniqueWithoutPracticeInput | PracticeItemUpdateWithWhereUniqueWithoutPracticeInput[]
+    updateMany?: PracticeItemUpdateManyWithWhereWithoutPracticeInput | PracticeItemUpdateManyWithWhereWithoutPracticeInput[]
+    deleteMany?: PracticeItemScalarWhereInput | PracticeItemScalarWhereInput[]
+  }
+
+  export type PracticeCreateNestedOneWithoutItemsInput = {
+    create?: XOR<PracticeCreateWithoutItemsInput, PracticeUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: PracticeCreateOrConnectWithoutItemsInput
+    connect?: PracticeWhereUniqueInput
+  }
+
+  export type DrillCreateNestedOneWithoutPracticeItemsInput = {
+    create?: XOR<DrillCreateWithoutPracticeItemsInput, DrillUncheckedCreateWithoutPracticeItemsInput>
+    connectOrCreate?: DrillCreateOrConnectWithoutPracticeItemsInput
+    connect?: DrillWhereUniqueInput
+  }
+
+  export type EnumPracticeItemTypeFieldUpdateOperationsInput = {
+    set?: $Enums.PracticeItemType
+  }
+
+  export type PracticeUpdateOneRequiredWithoutItemsNestedInput = {
+    create?: XOR<PracticeCreateWithoutItemsInput, PracticeUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: PracticeCreateOrConnectWithoutItemsInput
+    upsert?: PracticeUpsertWithoutItemsInput
+    connect?: PracticeWhereUniqueInput
+    update?: XOR<XOR<PracticeUpdateToOneWithWhereWithoutItemsInput, PracticeUpdateWithoutItemsInput>, PracticeUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type DrillUpdateOneWithoutPracticeItemsNestedInput = {
+    create?: XOR<DrillCreateWithoutPracticeItemsInput, DrillUncheckedCreateWithoutPracticeItemsInput>
+    connectOrCreate?: DrillCreateOrConnectWithoutPracticeItemsInput
+    upsert?: DrillUpsertWithoutPracticeItemsInput
+    disconnect?: DrillWhereInput | boolean
+    delete?: DrillWhereInput | boolean
+    connect?: DrillWhereUniqueInput
+    update?: XOR<XOR<DrillUpdateToOneWithWhereWithoutPracticeItemsInput, DrillUpdateWithoutPracticeItemsInput>, DrillUncheckedUpdateWithoutPracticeItemsInput>
+  }
+
+  export type ClubAttendanceReasonCreateNestedOneWithoutAthletesInput = {
+    create?: XOR<ClubAttendanceReasonCreateWithoutAthletesInput, ClubAttendanceReasonUncheckedCreateWithoutAthletesInput>
+    connectOrCreate?: ClubAttendanceReasonCreateOrConnectWithoutAthletesInput
+    connect?: ClubAttendanceReasonWhereUniqueInput
+  }
+
+  export type PracticeCreateNestedOneWithoutAttendancesInput = {
+    create?: XOR<PracticeCreateWithoutAttendancesInput, PracticeUncheckedCreateWithoutAttendancesInput>
+    connectOrCreate?: PracticeCreateOrConnectWithoutAttendancesInput
+    connect?: PracticeWhereUniqueInput
+  }
+
+  export type AthleteCreateNestedOneWithoutPracticeAttendancesInput = {
+    create?: XOR<AthleteCreateWithoutPracticeAttendancesInput, AthleteUncheckedCreateWithoutPracticeAttendancesInput>
+    connectOrCreate?: AthleteCreateOrConnectWithoutPracticeAttendancesInput
+    connect?: AthleteWhereUniqueInput
+  }
+
+  export type ClubAttendanceReasonUpdateOneWithoutAthletesNestedInput = {
+    create?: XOR<ClubAttendanceReasonCreateWithoutAthletesInput, ClubAttendanceReasonUncheckedCreateWithoutAthletesInput>
+    connectOrCreate?: ClubAttendanceReasonCreateOrConnectWithoutAthletesInput
+    upsert?: ClubAttendanceReasonUpsertWithoutAthletesInput
+    disconnect?: ClubAttendanceReasonWhereInput | boolean
+    delete?: ClubAttendanceReasonWhereInput | boolean
+    connect?: ClubAttendanceReasonWhereUniqueInput
+    update?: XOR<XOR<ClubAttendanceReasonUpdateToOneWithWhereWithoutAthletesInput, ClubAttendanceReasonUpdateWithoutAthletesInput>, ClubAttendanceReasonUncheckedUpdateWithoutAthletesInput>
+  }
+
+  export type PracticeUpdateOneRequiredWithoutAttendancesNestedInput = {
+    create?: XOR<PracticeCreateWithoutAttendancesInput, PracticeUncheckedCreateWithoutAttendancesInput>
+    connectOrCreate?: PracticeCreateOrConnectWithoutAttendancesInput
+    upsert?: PracticeUpsertWithoutAttendancesInput
+    connect?: PracticeWhereUniqueInput
+    update?: XOR<XOR<PracticeUpdateToOneWithWhereWithoutAttendancesInput, PracticeUpdateWithoutAttendancesInput>, PracticeUncheckedUpdateWithoutAttendancesInput>
+  }
+
+  export type AthleteUpdateOneRequiredWithoutPracticeAttendancesNestedInput = {
+    create?: XOR<AthleteCreateWithoutPracticeAttendancesInput, AthleteUncheckedCreateWithoutPracticeAttendancesInput>
+    connectOrCreate?: AthleteCreateOrConnectWithoutPracticeAttendancesInput
+    upsert?: AthleteUpsertWithoutPracticeAttendancesInput
+    connect?: AthleteWhereUniqueInput
+    update?: XOR<XOR<AthleteUpdateToOneWithWhereWithoutPracticeAttendancesInput, AthleteUpdateWithoutPracticeAttendancesInput>, AthleteUncheckedUpdateWithoutPracticeAttendancesInput>
+  }
+
+  export type ClubCreateNestedOneWithoutAttendanceReasonsInput = {
+    create?: XOR<ClubCreateWithoutAttendanceReasonsInput, ClubUncheckedCreateWithoutAttendanceReasonsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutAttendanceReasonsInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type PracticeAthleteCreateNestedManyWithoutAbsenceReasonInput = {
+    create?: XOR<PracticeAthleteCreateWithoutAbsenceReasonInput, PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput> | PracticeAthleteCreateWithoutAbsenceReasonInput[] | PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput | PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput[]
+    createMany?: PracticeAthleteCreateManyAbsenceReasonInputEnvelope
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+  }
+
+  export type PracticeAthleteUncheckedCreateNestedManyWithoutAbsenceReasonInput = {
+    create?: XOR<PracticeAthleteCreateWithoutAbsenceReasonInput, PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput> | PracticeAthleteCreateWithoutAbsenceReasonInput[] | PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput | PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput[]
+    createMany?: PracticeAthleteCreateManyAbsenceReasonInputEnvelope
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+  }
+
+  export type ClubUpdateOneRequiredWithoutAttendanceReasonsNestedInput = {
+    create?: XOR<ClubCreateWithoutAttendanceReasonsInput, ClubUncheckedCreateWithoutAttendanceReasonsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutAttendanceReasonsInput
+    upsert?: ClubUpsertWithoutAttendanceReasonsInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutAttendanceReasonsInput, ClubUpdateWithoutAttendanceReasonsInput>, ClubUncheckedUpdateWithoutAttendanceReasonsInput>
+  }
+
+  export type PracticeAthleteUpdateManyWithoutAbsenceReasonNestedInput = {
+    create?: XOR<PracticeAthleteCreateWithoutAbsenceReasonInput, PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput> | PracticeAthleteCreateWithoutAbsenceReasonInput[] | PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput | PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput[]
+    upsert?: PracticeAthleteUpsertWithWhereUniqueWithoutAbsenceReasonInput | PracticeAthleteUpsertWithWhereUniqueWithoutAbsenceReasonInput[]
+    createMany?: PracticeAthleteCreateManyAbsenceReasonInputEnvelope
+    set?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    disconnect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    delete?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    update?: PracticeAthleteUpdateWithWhereUniqueWithoutAbsenceReasonInput | PracticeAthleteUpdateWithWhereUniqueWithoutAbsenceReasonInput[]
+    updateMany?: PracticeAthleteUpdateManyWithWhereWithoutAbsenceReasonInput | PracticeAthleteUpdateManyWithWhereWithoutAbsenceReasonInput[]
+    deleteMany?: PracticeAthleteScalarWhereInput | PracticeAthleteScalarWhereInput[]
+  }
+
+  export type PracticeAthleteUncheckedUpdateManyWithoutAbsenceReasonNestedInput = {
+    create?: XOR<PracticeAthleteCreateWithoutAbsenceReasonInput, PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput> | PracticeAthleteCreateWithoutAbsenceReasonInput[] | PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput[]
+    connectOrCreate?: PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput | PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput[]
+    upsert?: PracticeAthleteUpsertWithWhereUniqueWithoutAbsenceReasonInput | PracticeAthleteUpsertWithWhereUniqueWithoutAbsenceReasonInput[]
+    createMany?: PracticeAthleteCreateManyAbsenceReasonInputEnvelope
+    set?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    disconnect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    delete?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    connect?: PracticeAthleteWhereUniqueInput | PracticeAthleteWhereUniqueInput[]
+    update?: PracticeAthleteUpdateWithWhereUniqueWithoutAbsenceReasonInput | PracticeAthleteUpdateWithWhereUniqueWithoutAbsenceReasonInput[]
+    updateMany?: PracticeAthleteUpdateManyWithWhereWithoutAbsenceReasonInput | PracticeAthleteUpdateManyWithWhereWithoutAbsenceReasonInput[]
+    deleteMany?: PracticeAthleteScalarWhereInput | PracticeAthleteScalarWhereInput[]
+  }
+
+  export type ClubCreateNestedOneWithoutPracticeSettingsInput = {
+    create?: XOR<ClubCreateWithoutPracticeSettingsInput, ClubUncheckedCreateWithoutPracticeSettingsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutPracticeSettingsInput
+    connect?: ClubWhereUniqueInput
+  }
+
+  export type EnumAttendanceDefaultFieldUpdateOperationsInput = {
+    set?: $Enums.AttendanceDefault
+  }
+
+  export type ClubUpdateOneRequiredWithoutPracticeSettingsNestedInput = {
+    create?: XOR<ClubCreateWithoutPracticeSettingsInput, ClubUncheckedCreateWithoutPracticeSettingsInput>
+    connectOrCreate?: ClubCreateOrConnectWithoutPracticeSettingsInput
+    upsert?: ClubUpsertWithoutPracticeSettingsInput
+    connect?: ClubWhereUniqueInput
+    update?: XOR<XOR<ClubUpdateToOneWithWhereWithoutPracticeSettingsInput, ClubUpdateWithoutPracticeSettingsInput>, ClubUncheckedUpdateWithoutPracticeSettingsInput>
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -55905,6 +70640,29 @@ export namespace Prisma {
     _min?: NestedEnumPlatformRoleFilter<$PrismaModel>
     _max?: NestedEnumPlatformRoleFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumObjectiveTypeFilter<$PrismaModel = never> = {
     equals?: $Enums.ObjectiveType | EnumObjectiveTypeFieldRefInput<$PrismaModel>
@@ -56076,6 +70834,40 @@ export namespace Prisma {
     _max?: NestedEnumAlertRecipientStatusFilter<$PrismaModel>
   }
 
+  export type NestedEnumPracticeItemTypeFilter<$PrismaModel = never> = {
+    equals?: $Enums.PracticeItemType | EnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PracticeItemType[] | ListEnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PracticeItemType[] | ListEnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPracticeItemTypeFilter<$PrismaModel> | $Enums.PracticeItemType
+  }
+
+  export type NestedEnumPracticeItemTypeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PracticeItemType | EnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    in?: $Enums.PracticeItemType[] | ListEnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PracticeItemType[] | ListEnumPracticeItemTypeFieldRefInput<$PrismaModel>
+    not?: NestedEnumPracticeItemTypeWithAggregatesFilter<$PrismaModel> | $Enums.PracticeItemType
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPracticeItemTypeFilter<$PrismaModel>
+    _max?: NestedEnumPracticeItemTypeFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAttendanceDefaultFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceDefault | EnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceDefault[] | ListEnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceDefault[] | ListEnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceDefaultFilter<$PrismaModel> | $Enums.AttendanceDefault
+  }
+
+  export type NestedEnumAttendanceDefaultWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AttendanceDefault | EnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    in?: $Enums.AttendanceDefault[] | ListEnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    notIn?: $Enums.AttendanceDefault[] | ListEnumAttendanceDefaultFieldRefInput<$PrismaModel>
+    not?: NestedEnumAttendanceDefaultWithAggregatesFilter<$PrismaModel> | $Enums.AttendanceDefault
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumAttendanceDefaultFilter<$PrismaModel>
+    _max?: NestedEnumAttendanceDefaultFilter<$PrismaModel>
+  }
+
   export type ClubCreateWithoutAthletesInput = {
     name: string
     shortName?: string | null
@@ -56083,6 +70875,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -56095,6 +70894,11 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutAthletesInput = {
@@ -56105,6 +70909,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -56117,6 +70928,11 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutAthletesInput = {
@@ -56351,6 +71167,35 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PracticeAthleteCreateWithoutAthleteInput = {
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceNotes?: string | null
+    absenceReason?: ClubAttendanceReasonCreateNestedOneWithoutAthletesInput
+    practice: PracticeCreateNestedOneWithoutAttendancesInput
+  }
+
+  export type PracticeAthleteUncheckedCreateWithoutAthleteInput = {
+    id?: number
+    practiceId: number
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceReasonId?: number | null
+    absenceNotes?: string | null
+  }
+
+  export type PracticeAthleteCreateOrConnectWithoutAthleteInput = {
+    where: PracticeAthleteWhereUniqueInput
+    create: XOR<PracticeAthleteCreateWithoutAthleteInput, PracticeAthleteUncheckedCreateWithoutAthleteInput>
+  }
+
+  export type PracticeAthleteCreateManyAthleteInputEnvelope = {
+    data: PracticeAthleteCreateManyAthleteInput | PracticeAthleteCreateManyAthleteInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ClubUpsertWithoutAthletesInput = {
     update: XOR<ClubUpdateWithoutAthletesInput, ClubUncheckedUpdateWithoutAthletesInput>
     create: XOR<ClubCreateWithoutAthletesInput, ClubUncheckedCreateWithoutAthletesInput>
@@ -56369,6 +71214,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56381,6 +71233,11 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAthletesInput = {
@@ -56391,6 +71248,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -56403,6 +71267,11 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type AthleteReportUpsertWithWhereUniqueWithoutAthleteInput = {
@@ -56628,6 +71497,36 @@ export namespace Prisma {
     manualOverride?: BoolFilter<"GameEquipment"> | boolean
   }
 
+  export type PracticeAthleteUpsertWithWhereUniqueWithoutAthleteInput = {
+    where: PracticeAthleteWhereUniqueInput
+    update: XOR<PracticeAthleteUpdateWithoutAthleteInput, PracticeAthleteUncheckedUpdateWithoutAthleteInput>
+    create: XOR<PracticeAthleteCreateWithoutAthleteInput, PracticeAthleteUncheckedCreateWithoutAthleteInput>
+  }
+
+  export type PracticeAthleteUpdateWithWhereUniqueWithoutAthleteInput = {
+    where: PracticeAthleteWhereUniqueInput
+    data: XOR<PracticeAthleteUpdateWithoutAthleteInput, PracticeAthleteUncheckedUpdateWithoutAthleteInput>
+  }
+
+  export type PracticeAthleteUpdateManyWithWhereWithoutAthleteInput = {
+    where: PracticeAthleteScalarWhereInput
+    data: XOR<PracticeAthleteUpdateManyMutationInput, PracticeAthleteUncheckedUpdateManyWithoutAthleteInput>
+  }
+
+  export type PracticeAthleteScalarWhereInput = {
+    AND?: PracticeAthleteScalarWhereInput | PracticeAthleteScalarWhereInput[]
+    OR?: PracticeAthleteScalarWhereInput[]
+    NOT?: PracticeAthleteScalarWhereInput | PracticeAthleteScalarWhereInput[]
+    id?: IntFilter<"PracticeAthlete"> | number
+    practiceId?: IntFilter<"PracticeAthlete"> | number
+    athleteId?: IntFilter<"PracticeAthlete"> | number
+    attending?: BoolFilter<"PracticeAthlete"> | boolean
+    attended?: BoolNullableFilter<"PracticeAthlete"> | boolean | null
+    lateMinutes?: IntNullableFilter<"PracticeAthlete"> | number | null
+    absenceReasonId?: IntNullableFilter<"PracticeAthlete"> | number | null
+    absenceNotes?: StringNullableFilter<"PracticeAthlete"> | string | null
+  }
+
   export type GameCreateWithoutGameAthletesInput = {
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -56720,6 +71619,7 @@ export namespace Prisma {
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutGameAthletesInput = {
@@ -56743,6 +71643,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutGameAthletesInput = {
@@ -56859,6 +71760,7 @@ export namespace Prisma {
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutGameAthletesInput = {
@@ -56882,6 +71784,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type ClubCreateWithoutGamesInput = {
@@ -56891,6 +71794,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -56903,6 +71813,11 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutGamesInput = {
@@ -56913,6 +71828,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -56925,6 +71847,11 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutGamesInput = {
@@ -56942,6 +71869,8 @@ export namespace Prisma {
     echelon: EchelonCreateNestedOneWithoutTeamsInput
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
     staff?: TeamStaffCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutTeamInput
+    practices?: PracticeCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutGamesInput = {
@@ -56955,6 +71884,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
     staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutTeamInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutGamesInput = {
@@ -57267,6 +72198,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57279,6 +72217,11 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutGamesInput = {
@@ -57289,6 +72232,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -57301,6 +72251,11 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type TeamUpsertWithoutGamesInput = {
@@ -57324,6 +72279,8 @@ export namespace Prisma {
     echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
     staff?: TeamStaffUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutGamesInput = {
@@ -57337,6 +72294,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
     staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type CompetitionUpsertWithoutGamesInput = {
@@ -57846,6 +72805,77 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type DrillCreateWithoutAccountInput = {
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: ClubCreateNestedOneWithoutDrillsInput
+    echelon?: EchelonCreateNestedOneWithoutDrillsInput
+    graphics?: DrillGraphicCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillUncheckedCreateWithoutAccountInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    graphics?: DrillGraphicUncheckedCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkUncheckedCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemUncheckedCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillCreateOrConnectWithoutAccountInput = {
+    where: DrillWhereUniqueInput
+    create: XOR<DrillCreateWithoutAccountInput, DrillUncheckedCreateWithoutAccountInput>
+  }
+
+  export type DrillCreateManyAccountInputEnvelope = {
+    data: DrillCreateManyAccountInput | DrillCreateManyAccountInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountClubUpsertWithWhereUniqueWithoutAccountInput = {
     where: AccountClubWhereUniqueInput
     update: XOR<AccountClubUpdateWithoutAccountInput, AccountClubUncheckedUpdateWithoutAccountInput>
@@ -57935,6 +72965,54 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"AlertRecipient"> | Date | string
   }
 
+  export type DrillUpsertWithWhereUniqueWithoutAccountInput = {
+    where: DrillWhereUniqueInput
+    update: XOR<DrillUpdateWithoutAccountInput, DrillUncheckedUpdateWithoutAccountInput>
+    create: XOR<DrillCreateWithoutAccountInput, DrillUncheckedCreateWithoutAccountInput>
+  }
+
+  export type DrillUpdateWithWhereUniqueWithoutAccountInput = {
+    where: DrillWhereUniqueInput
+    data: XOR<DrillUpdateWithoutAccountInput, DrillUncheckedUpdateWithoutAccountInput>
+  }
+
+  export type DrillUpdateManyWithWhereWithoutAccountInput = {
+    where: DrillScalarWhereInput
+    data: XOR<DrillUpdateManyMutationInput, DrillUncheckedUpdateManyWithoutAccountInput>
+  }
+
+  export type DrillScalarWhereInput = {
+    AND?: DrillScalarWhereInput | DrillScalarWhereInput[]
+    OR?: DrillScalarWhereInput[]
+    NOT?: DrillScalarWhereInput | DrillScalarWhereInput[]
+    id?: IntFilter<"Drill"> | number
+    name?: StringNullableFilter<"Drill"> | string | null
+    title?: StringNullableFilter<"Drill"> | string | null
+    svg?: StringNullableFilter<"Drill"> | string | null
+    createdAt?: DateTimeFilter<"Drill"> | Date | string
+    updatedAt?: DateTimeFilter<"Drill"> | Date | string
+    clubId?: IntNullableFilter<"Drill"> | number | null
+    accountId?: IntNullableFilter<"Drill"> | number | null
+    echelonId?: IntNullableFilter<"Drill"> | number | null
+    description?: StringNullableFilter<"Drill"> | string | null
+    goals?: StringNullableFilter<"Drill"> | string | null
+    variations?: StringNullableFilter<"Drill"> | string | null
+    tips?: StringNullableFilter<"Drill"> | string | null
+    defaultText?: StringNullableFilter<"Drill"> | string | null
+    ballsCount?: IntFilter<"Drill"> | number
+    basketsCount?: IntFilter<"Drill"> | number
+    conesCount?: IntFilter<"Drill"> | number
+    extraEquipment?: StringNullableFilter<"Drill"> | string | null
+    playersCount?: IntFilter<"Drill"> | number
+    coachesCount?: IntFilter<"Drill"> | number
+    typeFundamental?: BoolFilter<"Drill"> | boolean
+    typeIndividual?: BoolFilter<"Drill"> | boolean
+    typeTeam?: BoolFilter<"Drill"> | boolean
+    posGuard?: BoolFilter<"Drill"> | boolean
+    posForward?: BoolFilter<"Drill"> | boolean
+    posCenter?: BoolFilter<"Drill"> | boolean
+  }
+
   export type AthleteCreateWithoutStatisticsInput = {
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -57955,6 +73033,7 @@ export namespace Prisma {
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutStatisticsInput = {
@@ -57978,6 +73057,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutStatisticsInput = {
@@ -58088,6 +73168,7 @@ export namespace Prisma {
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutStatisticsInput = {
@@ -58111,6 +73192,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type GameUpsertWithoutStatisticsInput = {
@@ -58211,6 +73293,7 @@ export namespace Prisma {
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutTimeEntriesInput = {
@@ -58234,6 +73317,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutTimeEntriesInput = {
@@ -58344,6 +73428,7 @@ export namespace Prisma {
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutTimeEntriesInput = {
@@ -58367,6 +73452,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type GameUpsertWithoutTimeEntriesInput = {
@@ -58467,6 +73553,7 @@ export namespace Prisma {
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutAthleteReportsInput = {
@@ -58490,6 +73577,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutAthleteReportsInput = {
@@ -58589,6 +73677,7 @@ export namespace Prisma {
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutReviewedReportsInput = {
@@ -58612,6 +73701,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutReviewedReportsInput = {
@@ -58650,6 +73740,7 @@ export namespace Prisma {
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutAthleteReportsInput = {
@@ -58673,6 +73764,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type GameUpsertWithoutAthleteReportsInput = {
@@ -58784,6 +73876,7 @@ export namespace Prisma {
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutReviewedReportsInput = {
@@ -58807,6 +73900,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type ClubCreateWithoutMacrocyclesInput = {
@@ -58816,6 +73910,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -58828,6 +73929,11 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutMacrocyclesInput = {
@@ -58838,6 +73944,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -58850,11 +73963,50 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutMacrocyclesInput = {
     where: ClubWhereUniqueInput
     create: XOR<ClubCreateWithoutMacrocyclesInput, ClubUncheckedCreateWithoutMacrocyclesInput>
+  }
+
+  export type TeamCreateWithoutMacrocyclesInput = {
+    name: string
+    type?: $Enums.TeamType | null
+    fpbTeamId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutTeamsInput
+    echelon: EchelonCreateNestedOneWithoutTeamsInput
+    athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffCreateNestedManyWithoutTeamInput
+    games?: GameCreateNestedManyWithoutTeamInput
+    practices?: PracticeCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutMacrocyclesInput = {
+    id?: number
+    name: string
+    type?: $Enums.TeamType | null
+    clubId: number
+    echelonId: number
+    fpbTeamId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
+    games?: GameUncheckedCreateNestedManyWithoutTeamInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutMacrocyclesInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutMacrocyclesInput, TeamUncheckedCreateWithoutMacrocyclesInput>
   }
 
   export type MesocycleCreateWithoutMacrocycleInput = {
@@ -58904,6 +74056,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58916,6 +74075,11 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutMacrocyclesInput = {
@@ -58926,6 +74090,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -58938,6 +74109,51 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
+  }
+
+  export type TeamUpsertWithoutMacrocyclesInput = {
+    update: XOR<TeamUpdateWithoutMacrocyclesInput, TeamUncheckedUpdateWithoutMacrocyclesInput>
+    create: XOR<TeamCreateWithoutMacrocyclesInput, TeamUncheckedCreateWithoutMacrocyclesInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutMacrocyclesInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutMacrocyclesInput, TeamUncheckedUpdateWithoutMacrocyclesInput>
+  }
+
+  export type TeamUpdateWithoutMacrocyclesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
+    echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
+    athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUpdateManyWithoutTeamNestedInput
+    games?: GameUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutMacrocyclesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    clubId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
+    games?: GameUncheckedUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type MesocycleUpsertWithWhereUniqueWithoutMacrocycleInput = {
@@ -58976,6 +74192,7 @@ export namespace Prisma {
     number?: number | null
     name?: string | null
     club: ClubCreateNestedOneWithoutMacrocyclesInput
+    team?: TeamCreateNestedOneWithoutMacrocyclesInput
   }
 
   export type MacrocycleUncheckedCreateWithoutMesocyclesInput = {
@@ -58986,6 +74203,7 @@ export namespace Prisma {
     number?: number | null
     name?: string | null
     clubId: number
+    teamId?: number | null
   }
 
   export type MacrocycleCreateOrConnectWithoutMesocyclesInput = {
@@ -59040,6 +74258,7 @@ export namespace Prisma {
     number?: NullableIntFieldUpdateOperationsInput | number | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     club?: ClubUpdateOneRequiredWithoutMacrocyclesNestedInput
+    team?: TeamUpdateOneWithoutMacrocyclesNestedInput
   }
 
   export type MacrocycleUncheckedUpdateWithoutMesocyclesInput = {
@@ -59050,6 +74269,7 @@ export namespace Prisma {
     number?: NullableIntFieldUpdateOperationsInput | number | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     clubId?: IntFieldUpdateOperationsInput | number
+    teamId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type MicrocycleUpsertWithWhereUniqueWithoutMesocycleInput = {
@@ -59395,6 +74615,984 @@ export namespace Prisma {
     timeEntries?: TimeEntryUncheckedUpdateManyWithoutGameNestedInput
   }
 
+  export type ClubCreateWithoutDrillsInput = {
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubCreateNestedManyWithoutClubInput
+    athletes?: AthleteCreateNestedManyWithoutClubInput
+    games?: GameCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
+    teams?: TeamCreateNestedManyWithoutClubInput
+    venues?: VenueCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutDrillsInput = {
+    id?: number
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
+    athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
+    games?: GameUncheckedCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
+    teams?: TeamUncheckedCreateNestedManyWithoutClubInput
+    venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutDrillsInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutDrillsInput, ClubUncheckedCreateWithoutDrillsInput>
+  }
+
+  export type AccountCreateWithoutDrillsInput = {
+    name?: string | null
+    email: string
+    password: string
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultClubId?: number
+    role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
+    clubs?: AccountClubCreateNestedManyWithoutAccountInput
+    staffProfiles?: StaffCreateNestedManyWithoutAccountInput
+    alertRecipients?: AlertRecipientCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountUncheckedCreateWithoutDrillsInput = {
+    id?: number
+    name?: string | null
+    email: string
+    password: string
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    defaultClubId?: number
+    role?: $Enums.PlatformRole
+    resetToken?: string | null
+    resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
+    clubs?: AccountClubUncheckedCreateNestedManyWithoutAccountInput
+    staffProfiles?: StaffUncheckedCreateNestedManyWithoutAccountInput
+    alertRecipients?: AlertRecipientUncheckedCreateNestedManyWithoutAccountInput
+  }
+
+  export type AccountCreateOrConnectWithoutDrillsInput = {
+    where: AccountWhereUniqueInput
+    create: XOR<AccountCreateWithoutDrillsInput, AccountUncheckedCreateWithoutDrillsInput>
+  }
+
+  export type EchelonCreateWithoutDrillsInput = {
+    minAge: number
+    maxAge?: number | null
+    name: string
+    description?: string | null
+    gender: $Enums.Gender
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamCreateNestedManyWithoutEchelonInput
+    competitions?: CompetitionCreateNestedManyWithoutEchelonInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutEchelonInput
+  }
+
+  export type EchelonUncheckedCreateWithoutDrillsInput = {
+    id?: number
+    minAge: number
+    maxAge?: number | null
+    name: string
+    description?: string | null
+    gender: $Enums.Gender
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teams?: TeamUncheckedCreateNestedManyWithoutEchelonInput
+    competitions?: CompetitionUncheckedCreateNestedManyWithoutEchelonInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutEchelonInput
+  }
+
+  export type EchelonCreateOrConnectWithoutDrillsInput = {
+    where: EchelonWhereUniqueInput
+    create: XOR<EchelonCreateWithoutDrillsInput, EchelonUncheckedCreateWithoutDrillsInput>
+  }
+
+  export type DrillGraphicCreateWithoutDrillInput = {
+    order?: number
+    svg: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DrillGraphicUncheckedCreateWithoutDrillInput = {
+    id?: number
+    order?: number
+    svg: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DrillGraphicCreateOrConnectWithoutDrillInput = {
+    where: DrillGraphicWhereUniqueInput
+    create: XOR<DrillGraphicCreateWithoutDrillInput, DrillGraphicUncheckedCreateWithoutDrillInput>
+  }
+
+  export type DrillGraphicCreateManyDrillInputEnvelope = {
+    data: DrillGraphicCreateManyDrillInput | DrillGraphicCreateManyDrillInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DrillTopicLinkCreateWithoutDrillInput = {
+    topic: DrillTopicCreateNestedOneWithoutDrillsInput
+  }
+
+  export type DrillTopicLinkUncheckedCreateWithoutDrillInput = {
+    topicId: number
+  }
+
+  export type DrillTopicLinkCreateOrConnectWithoutDrillInput = {
+    where: DrillTopicLinkWhereUniqueInput
+    create: XOR<DrillTopicLinkCreateWithoutDrillInput, DrillTopicLinkUncheckedCreateWithoutDrillInput>
+  }
+
+  export type DrillTopicLinkCreateManyDrillInputEnvelope = {
+    data: DrillTopicLinkCreateManyDrillInput | DrillTopicLinkCreateManyDrillInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PracticeItemCreateWithoutDrillInput = {
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    practice: PracticeCreateNestedOneWithoutItemsInput
+  }
+
+  export type PracticeItemUncheckedCreateWithoutDrillInput = {
+    id?: number
+    practiceId: number
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PracticeItemCreateOrConnectWithoutDrillInput = {
+    where: PracticeItemWhereUniqueInput
+    create: XOR<PracticeItemCreateWithoutDrillInput, PracticeItemUncheckedCreateWithoutDrillInput>
+  }
+
+  export type PracticeItemCreateManyDrillInputEnvelope = {
+    data: PracticeItemCreateManyDrillInput | PracticeItemCreateManyDrillInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubUpsertWithoutDrillsInput = {
+    update: XOR<ClubUpdateWithoutDrillsInput, ClubUncheckedUpdateWithoutDrillsInput>
+    create: XOR<ClubCreateWithoutDrillsInput, ClubUncheckedCreateWithoutDrillsInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutDrillsInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutDrillsInput, ClubUncheckedUpdateWithoutDrillsInput>
+  }
+
+  export type ClubUpdateWithoutDrillsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUpdateManyWithoutClubNestedInput
+    games?: GameUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
+    teams?: TeamUpdateManyWithoutClubNestedInput
+    venues?: VenueUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutDrillsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
+    games?: GameUncheckedUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
+  }
+
+  export type AccountUpsertWithoutDrillsInput = {
+    update: XOR<AccountUpdateWithoutDrillsInput, AccountUncheckedUpdateWithoutDrillsInput>
+    create: XOR<AccountCreateWithoutDrillsInput, AccountUncheckedCreateWithoutDrillsInput>
+    where?: AccountWhereInput
+  }
+
+  export type AccountUpdateToOneWithWhereWithoutDrillsInput = {
+    where?: AccountWhereInput
+    data: XOR<AccountUpdateWithoutDrillsInput, AccountUncheckedUpdateWithoutDrillsInput>
+  }
+
+  export type AccountUpdateWithoutDrillsInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultClubId?: IntFieldUpdateOperationsInput | number
+    role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
+    clubs?: AccountClubUpdateManyWithoutAccountNestedInput
+    staffProfiles?: StaffUpdateManyWithoutAccountNestedInput
+    alertRecipients?: AlertRecipientUpdateManyWithoutAccountNestedInput
+  }
+
+  export type AccountUncheckedUpdateWithoutDrillsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    defaultClubId?: IntFieldUpdateOperationsInput | number
+    role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
+    resetToken?: NullableStringFieldUpdateOperationsInput | string | null
+    resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
+    clubs?: AccountClubUncheckedUpdateManyWithoutAccountNestedInput
+    staffProfiles?: StaffUncheckedUpdateManyWithoutAccountNestedInput
+    alertRecipients?: AlertRecipientUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type EchelonUpsertWithoutDrillsInput = {
+    update: XOR<EchelonUpdateWithoutDrillsInput, EchelonUncheckedUpdateWithoutDrillsInput>
+    create: XOR<EchelonCreateWithoutDrillsInput, EchelonUncheckedCreateWithoutDrillsInput>
+    where?: EchelonWhereInput
+  }
+
+  export type EchelonUpdateToOneWithWhereWithoutDrillsInput = {
+    where?: EchelonWhereInput
+    data: XOR<EchelonUpdateWithoutDrillsInput, EchelonUncheckedUpdateWithoutDrillsInput>
+  }
+
+  export type EchelonUpdateWithoutDrillsInput = {
+    minAge?: IntFieldUpdateOperationsInput | number
+    maxAge?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamUpdateManyWithoutEchelonNestedInput
+    competitions?: CompetitionUpdateManyWithoutEchelonNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutEchelonNestedInput
+  }
+
+  export type EchelonUncheckedUpdateWithoutDrillsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    minAge?: IntFieldUpdateOperationsInput | number
+    maxAge?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    gender?: EnumGenderFieldUpdateOperationsInput | $Enums.Gender
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teams?: TeamUncheckedUpdateManyWithoutEchelonNestedInput
+    competitions?: CompetitionUncheckedUpdateManyWithoutEchelonNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutEchelonNestedInput
+  }
+
+  export type DrillGraphicUpsertWithWhereUniqueWithoutDrillInput = {
+    where: DrillGraphicWhereUniqueInput
+    update: XOR<DrillGraphicUpdateWithoutDrillInput, DrillGraphicUncheckedUpdateWithoutDrillInput>
+    create: XOR<DrillGraphicCreateWithoutDrillInput, DrillGraphicUncheckedCreateWithoutDrillInput>
+  }
+
+  export type DrillGraphicUpdateWithWhereUniqueWithoutDrillInput = {
+    where: DrillGraphicWhereUniqueInput
+    data: XOR<DrillGraphicUpdateWithoutDrillInput, DrillGraphicUncheckedUpdateWithoutDrillInput>
+  }
+
+  export type DrillGraphicUpdateManyWithWhereWithoutDrillInput = {
+    where: DrillGraphicScalarWhereInput
+    data: XOR<DrillGraphicUpdateManyMutationInput, DrillGraphicUncheckedUpdateManyWithoutDrillInput>
+  }
+
+  export type DrillGraphicScalarWhereInput = {
+    AND?: DrillGraphicScalarWhereInput | DrillGraphicScalarWhereInput[]
+    OR?: DrillGraphicScalarWhereInput[]
+    NOT?: DrillGraphicScalarWhereInput | DrillGraphicScalarWhereInput[]
+    id?: IntFilter<"DrillGraphic"> | number
+    drillId?: IntFilter<"DrillGraphic"> | number
+    order?: IntFilter<"DrillGraphic"> | number
+    svg?: StringFilter<"DrillGraphic"> | string
+    notes?: StringNullableFilter<"DrillGraphic"> | string | null
+    createdAt?: DateTimeFilter<"DrillGraphic"> | Date | string
+    updatedAt?: DateTimeFilter<"DrillGraphic"> | Date | string
+  }
+
+  export type DrillTopicLinkUpsertWithWhereUniqueWithoutDrillInput = {
+    where: DrillTopicLinkWhereUniqueInput
+    update: XOR<DrillTopicLinkUpdateWithoutDrillInput, DrillTopicLinkUncheckedUpdateWithoutDrillInput>
+    create: XOR<DrillTopicLinkCreateWithoutDrillInput, DrillTopicLinkUncheckedCreateWithoutDrillInput>
+  }
+
+  export type DrillTopicLinkUpdateWithWhereUniqueWithoutDrillInput = {
+    where: DrillTopicLinkWhereUniqueInput
+    data: XOR<DrillTopicLinkUpdateWithoutDrillInput, DrillTopicLinkUncheckedUpdateWithoutDrillInput>
+  }
+
+  export type DrillTopicLinkUpdateManyWithWhereWithoutDrillInput = {
+    where: DrillTopicLinkScalarWhereInput
+    data: XOR<DrillTopicLinkUpdateManyMutationInput, DrillTopicLinkUncheckedUpdateManyWithoutDrillInput>
+  }
+
+  export type DrillTopicLinkScalarWhereInput = {
+    AND?: DrillTopicLinkScalarWhereInput | DrillTopicLinkScalarWhereInput[]
+    OR?: DrillTopicLinkScalarWhereInput[]
+    NOT?: DrillTopicLinkScalarWhereInput | DrillTopicLinkScalarWhereInput[]
+    drillId?: IntFilter<"DrillTopicLink"> | number
+    topicId?: IntFilter<"DrillTopicLink"> | number
+  }
+
+  export type PracticeItemUpsertWithWhereUniqueWithoutDrillInput = {
+    where: PracticeItemWhereUniqueInput
+    update: XOR<PracticeItemUpdateWithoutDrillInput, PracticeItemUncheckedUpdateWithoutDrillInput>
+    create: XOR<PracticeItemCreateWithoutDrillInput, PracticeItemUncheckedCreateWithoutDrillInput>
+  }
+
+  export type PracticeItemUpdateWithWhereUniqueWithoutDrillInput = {
+    where: PracticeItemWhereUniqueInput
+    data: XOR<PracticeItemUpdateWithoutDrillInput, PracticeItemUncheckedUpdateWithoutDrillInput>
+  }
+
+  export type PracticeItemUpdateManyWithWhereWithoutDrillInput = {
+    where: PracticeItemScalarWhereInput
+    data: XOR<PracticeItemUpdateManyMutationInput, PracticeItemUncheckedUpdateManyWithoutDrillInput>
+  }
+
+  export type PracticeItemScalarWhereInput = {
+    AND?: PracticeItemScalarWhereInput | PracticeItemScalarWhereInput[]
+    OR?: PracticeItemScalarWhereInput[]
+    NOT?: PracticeItemScalarWhereInput | PracticeItemScalarWhereInput[]
+    id?: IntFilter<"PracticeItem"> | number
+    practiceId?: IntFilter<"PracticeItem"> | number
+    order?: IntFilter<"PracticeItem"> | number
+    duration?: IntFilter<"PracticeItem"> | number
+    type?: EnumPracticeItemTypeFilter<"PracticeItem"> | $Enums.PracticeItemType
+    title?: StringNullableFilter<"PracticeItem"> | string | null
+    text?: StringNullableFilter<"PracticeItem"> | string | null
+    drillId?: IntNullableFilter<"PracticeItem"> | number | null
+    graphics?: JsonNullableFilter<"PracticeItem">
+    createdAt?: DateTimeFilter<"PracticeItem"> | Date | string
+    updatedAt?: DateTimeFilter<"PracticeItem"> | Date | string
+  }
+
+  export type DrillCreateWithoutGraphicsInput = {
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: ClubCreateNestedOneWithoutDrillsInput
+    account?: AccountCreateNestedOneWithoutDrillsInput
+    echelon?: EchelonCreateNestedOneWithoutDrillsInput
+    topics?: DrillTopicLinkCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillUncheckedCreateWithoutGraphicsInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    accountId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    topics?: DrillTopicLinkUncheckedCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemUncheckedCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillCreateOrConnectWithoutGraphicsInput = {
+    where: DrillWhereUniqueInput
+    create: XOR<DrillCreateWithoutGraphicsInput, DrillUncheckedCreateWithoutGraphicsInput>
+  }
+
+  export type DrillUpsertWithoutGraphicsInput = {
+    update: XOR<DrillUpdateWithoutGraphicsInput, DrillUncheckedUpdateWithoutGraphicsInput>
+    create: XOR<DrillCreateWithoutGraphicsInput, DrillUncheckedCreateWithoutGraphicsInput>
+    where?: DrillWhereInput
+  }
+
+  export type DrillUpdateToOneWithWhereWithoutGraphicsInput = {
+    where?: DrillWhereInput
+    data: XOR<DrillUpdateWithoutGraphicsInput, DrillUncheckedUpdateWithoutGraphicsInput>
+  }
+
+  export type DrillUpdateWithoutGraphicsInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutDrillsNestedInput
+    account?: AccountUpdateOneWithoutDrillsNestedInput
+    echelon?: EchelonUpdateOneWithoutDrillsNestedInput
+    topics?: DrillTopicLinkUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateWithoutGraphicsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    topics?: DrillTopicLinkUncheckedUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUncheckedUpdateManyWithoutDrillNestedInput
+  }
+
+  export type ClubCreateWithoutDrillTopicsInput = {
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubCreateNestedManyWithoutClubInput
+    athletes?: AthleteCreateNestedManyWithoutClubInput
+    games?: GameCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
+    teams?: TeamCreateNestedManyWithoutClubInput
+    venues?: VenueCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutDrillTopicsInput = {
+    id?: number
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
+    athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
+    games?: GameUncheckedCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
+    teams?: TeamUncheckedCreateNestedManyWithoutClubInput
+    venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutDrillTopicsInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutDrillTopicsInput, ClubUncheckedCreateWithoutDrillTopicsInput>
+  }
+
+  export type DrillTopicLinkCreateWithoutTopicInput = {
+    drill: DrillCreateNestedOneWithoutTopicsInput
+  }
+
+  export type DrillTopicLinkUncheckedCreateWithoutTopicInput = {
+    drillId: number
+  }
+
+  export type DrillTopicLinkCreateOrConnectWithoutTopicInput = {
+    where: DrillTopicLinkWhereUniqueInput
+    create: XOR<DrillTopicLinkCreateWithoutTopicInput, DrillTopicLinkUncheckedCreateWithoutTopicInput>
+  }
+
+  export type DrillTopicLinkCreateManyTopicInputEnvelope = {
+    data: DrillTopicLinkCreateManyTopicInput | DrillTopicLinkCreateManyTopicInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubUpsertWithoutDrillTopicsInput = {
+    update: XOR<ClubUpdateWithoutDrillTopicsInput, ClubUncheckedUpdateWithoutDrillTopicsInput>
+    create: XOR<ClubCreateWithoutDrillTopicsInput, ClubUncheckedCreateWithoutDrillTopicsInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutDrillTopicsInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutDrillTopicsInput, ClubUncheckedUpdateWithoutDrillTopicsInput>
+  }
+
+  export type ClubUpdateWithoutDrillTopicsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUpdateManyWithoutClubNestedInput
+    games?: GameUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
+    teams?: TeamUpdateManyWithoutClubNestedInput
+    venues?: VenueUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutDrillTopicsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
+    games?: GameUncheckedUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+  }
+
+  export type DrillTopicLinkUpsertWithWhereUniqueWithoutTopicInput = {
+    where: DrillTopicLinkWhereUniqueInput
+    update: XOR<DrillTopicLinkUpdateWithoutTopicInput, DrillTopicLinkUncheckedUpdateWithoutTopicInput>
+    create: XOR<DrillTopicLinkCreateWithoutTopicInput, DrillTopicLinkUncheckedCreateWithoutTopicInput>
+  }
+
+  export type DrillTopicLinkUpdateWithWhereUniqueWithoutTopicInput = {
+    where: DrillTopicLinkWhereUniqueInput
+    data: XOR<DrillTopicLinkUpdateWithoutTopicInput, DrillTopicLinkUncheckedUpdateWithoutTopicInput>
+  }
+
+  export type DrillTopicLinkUpdateManyWithWhereWithoutTopicInput = {
+    where: DrillTopicLinkScalarWhereInput
+    data: XOR<DrillTopicLinkUpdateManyMutationInput, DrillTopicLinkUncheckedUpdateManyWithoutTopicInput>
+  }
+
+  export type DrillCreateWithoutTopicsInput = {
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: ClubCreateNestedOneWithoutDrillsInput
+    account?: AccountCreateNestedOneWithoutDrillsInput
+    echelon?: EchelonCreateNestedOneWithoutDrillsInput
+    graphics?: DrillGraphicCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillUncheckedCreateWithoutTopicsInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    accountId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    graphics?: DrillGraphicUncheckedCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemUncheckedCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillCreateOrConnectWithoutTopicsInput = {
+    where: DrillWhereUniqueInput
+    create: XOR<DrillCreateWithoutTopicsInput, DrillUncheckedCreateWithoutTopicsInput>
+  }
+
+  export type DrillTopicCreateWithoutDrillsInput = {
+    key?: string | null
+    name: string
+    order?: number
+    club: ClubCreateNestedOneWithoutDrillTopicsInput
+  }
+
+  export type DrillTopicUncheckedCreateWithoutDrillsInput = {
+    id?: number
+    clubId: number
+    key?: string | null
+    name: string
+    order?: number
+  }
+
+  export type DrillTopicCreateOrConnectWithoutDrillsInput = {
+    where: DrillTopicWhereUniqueInput
+    create: XOR<DrillTopicCreateWithoutDrillsInput, DrillTopicUncheckedCreateWithoutDrillsInput>
+  }
+
+  export type DrillUpsertWithoutTopicsInput = {
+    update: XOR<DrillUpdateWithoutTopicsInput, DrillUncheckedUpdateWithoutTopicsInput>
+    create: XOR<DrillCreateWithoutTopicsInput, DrillUncheckedCreateWithoutTopicsInput>
+    where?: DrillWhereInput
+  }
+
+  export type DrillUpdateToOneWithWhereWithoutTopicsInput = {
+    where?: DrillWhereInput
+    data: XOR<DrillUpdateWithoutTopicsInput, DrillUncheckedUpdateWithoutTopicsInput>
+  }
+
+  export type DrillUpdateWithoutTopicsInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutDrillsNestedInput
+    account?: AccountUpdateOneWithoutDrillsNestedInput
+    echelon?: EchelonUpdateOneWithoutDrillsNestedInput
+    graphics?: DrillGraphicUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateWithoutTopicsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    graphics?: DrillGraphicUncheckedUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUncheckedUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillTopicUpsertWithoutDrillsInput = {
+    update: XOR<DrillTopicUpdateWithoutDrillsInput, DrillTopicUncheckedUpdateWithoutDrillsInput>
+    create: XOR<DrillTopicCreateWithoutDrillsInput, DrillTopicUncheckedCreateWithoutDrillsInput>
+    where?: DrillTopicWhereInput
+  }
+
+  export type DrillTopicUpdateToOneWithWhereWithoutDrillsInput = {
+    where?: DrillTopicWhereInput
+    data: XOR<DrillTopicUpdateWithoutDrillsInput, DrillTopicUncheckedUpdateWithoutDrillsInput>
+  }
+
+  export type DrillTopicUpdateWithoutDrillsInput = {
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    club?: ClubUpdateOneRequiredWithoutDrillTopicsNestedInput
+  }
+
+  export type DrillTopicUncheckedUpdateWithoutDrillsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+  }
+
   export type TeamCreateWithoutEchelonInput = {
     name: string
     type?: $Enums.TeamType | null
@@ -59405,6 +75603,8 @@ export namespace Prisma {
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
     staff?: TeamStaffCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutTeamInput
+    practices?: PracticeCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutEchelonInput = {
@@ -59418,6 +75618,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
     staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutTeamInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutEchelonInput = {
@@ -59495,6 +75697,77 @@ export namespace Prisma {
 
   export type EquipmentColorCreateManyEchelonInputEnvelope = {
     data: EquipmentColorCreateManyEchelonInput | EquipmentColorCreateManyEchelonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DrillCreateWithoutEchelonInput = {
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: ClubCreateNestedOneWithoutDrillsInput
+    account?: AccountCreateNestedOneWithoutDrillsInput
+    graphics?: DrillGraphicCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillUncheckedCreateWithoutEchelonInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    accountId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    graphics?: DrillGraphicUncheckedCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkUncheckedCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemUncheckedCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillCreateOrConnectWithoutEchelonInput = {
+    where: DrillWhereUniqueInput
+    create: XOR<DrillCreateWithoutEchelonInput, DrillUncheckedCreateWithoutEchelonInput>
+  }
+
+  export type DrillCreateManyEchelonInputEnvelope = {
+    data: DrillCreateManyEchelonInput | DrillCreateManyEchelonInput[]
     skipDuplicates?: boolean
   }
 
@@ -59589,6 +75862,22 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"EquipmentColor"> | Date | string
   }
 
+  export type DrillUpsertWithWhereUniqueWithoutEchelonInput = {
+    where: DrillWhereUniqueInput
+    update: XOR<DrillUpdateWithoutEchelonInput, DrillUncheckedUpdateWithoutEchelonInput>
+    create: XOR<DrillCreateWithoutEchelonInput, DrillUncheckedCreateWithoutEchelonInput>
+  }
+
+  export type DrillUpdateWithWhereUniqueWithoutEchelonInput = {
+    where: DrillWhereUniqueInput
+    data: XOR<DrillUpdateWithoutEchelonInput, DrillUncheckedUpdateWithoutEchelonInput>
+  }
+
+  export type DrillUpdateManyWithWhereWithoutEchelonInput = {
+    where: DrillScalarWhereInput
+    data: XOR<DrillUpdateManyMutationInput, DrillUncheckedUpdateManyWithoutEchelonInput>
+  }
+
   export type AccountClubCreateWithoutClubInput = {
     createdAt?: Date | string
     account: AccountCreateNestedOneWithoutClubsInput
@@ -59632,6 +75921,7 @@ export namespace Prisma {
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutClubInput = {
@@ -59655,6 +75945,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutClubInput = {
@@ -59750,6 +76041,7 @@ export namespace Prisma {
     notes?: string | null
     number?: number | null
     name?: string | null
+    team?: TeamCreateNestedOneWithoutMacrocyclesInput
     mesocycles?: MesocycleCreateNestedManyWithoutMacrocycleInput
   }
 
@@ -59760,6 +76052,7 @@ export namespace Prisma {
     notes?: string | null
     number?: number | null
     name?: string | null
+    teamId?: number | null
     mesocycles?: MesocycleUncheckedCreateNestedManyWithoutMacrocycleInput
   }
 
@@ -59783,6 +76076,8 @@ export namespace Prisma {
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
     staff?: TeamStaffCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutTeamInput
+    practices?: PracticeCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutClubInput = {
@@ -59796,6 +76091,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
     staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutTeamInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutClubInput = {
@@ -59984,6 +76281,194 @@ export namespace Prisma {
     create: XOR<ClubEmailSettingsCreateWithoutClubInput, ClubEmailSettingsUncheckedCreateWithoutClubInput>
   }
 
+  export type PracticeCreateWithoutClubInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    team: TeamCreateNestedOneWithoutPracticesInput
+    attendances?: PracticeAthleteCreateNestedManyWithoutPracticeInput
+    items?: PracticeItemCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeUncheckedCreateWithoutClubInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId: number
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    attendances?: PracticeAthleteUncheckedCreateNestedManyWithoutPracticeInput
+    items?: PracticeItemUncheckedCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeCreateOrConnectWithoutClubInput = {
+    where: PracticeWhereUniqueInput
+    create: XOR<PracticeCreateWithoutClubInput, PracticeUncheckedCreateWithoutClubInput>
+  }
+
+  export type PracticeCreateManyClubInputEnvelope = {
+    data: PracticeCreateManyClubInput | PracticeCreateManyClubInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubPracticeSettingsCreateWithoutClubInput = {
+    defaultAttendanceMale?: $Enums.AttendanceDefault
+    defaultAttendanceFemale?: $Enums.AttendanceDefault
+    defaultAttendanceCoed?: $Enums.AttendanceDefault
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClubPracticeSettingsUncheckedCreateWithoutClubInput = {
+    id?: number
+    defaultAttendanceMale?: $Enums.AttendanceDefault
+    defaultAttendanceFemale?: $Enums.AttendanceDefault
+    defaultAttendanceCoed?: $Enums.AttendanceDefault
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ClubPracticeSettingsCreateOrConnectWithoutClubInput = {
+    where: ClubPracticeSettingsWhereUniqueInput
+    create: XOR<ClubPracticeSettingsCreateWithoutClubInput, ClubPracticeSettingsUncheckedCreateWithoutClubInput>
+  }
+
+  export type ClubAttendanceReasonCreateWithoutClubInput = {
+    key?: string | null
+    name: string
+    order?: number
+    athletes?: PracticeAthleteCreateNestedManyWithoutAbsenceReasonInput
+  }
+
+  export type ClubAttendanceReasonUncheckedCreateWithoutClubInput = {
+    id?: number
+    key?: string | null
+    name: string
+    order?: number
+    athletes?: PracticeAthleteUncheckedCreateNestedManyWithoutAbsenceReasonInput
+  }
+
+  export type ClubAttendanceReasonCreateOrConnectWithoutClubInput = {
+    where: ClubAttendanceReasonWhereUniqueInput
+    create: XOR<ClubAttendanceReasonCreateWithoutClubInput, ClubAttendanceReasonUncheckedCreateWithoutClubInput>
+  }
+
+  export type ClubAttendanceReasonCreateManyClubInputEnvelope = {
+    data: ClubAttendanceReasonCreateManyClubInput | ClubAttendanceReasonCreateManyClubInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DrillCreateWithoutClubInput = {
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    account?: AccountCreateNestedOneWithoutDrillsInput
+    echelon?: EchelonCreateNestedOneWithoutDrillsInput
+    graphics?: DrillGraphicCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillUncheckedCreateWithoutClubInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accountId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    graphics?: DrillGraphicUncheckedCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkUncheckedCreateNestedManyWithoutDrillInput
+    practiceItems?: PracticeItemUncheckedCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillCreateOrConnectWithoutClubInput = {
+    where: DrillWhereUniqueInput
+    create: XOR<DrillCreateWithoutClubInput, DrillUncheckedCreateWithoutClubInput>
+  }
+
+  export type DrillCreateManyClubInputEnvelope = {
+    data: DrillCreateManyClubInput | DrillCreateManyClubInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type DrillTopicCreateWithoutClubInput = {
+    key?: string | null
+    name: string
+    order?: number
+    drills?: DrillTopicLinkCreateNestedManyWithoutTopicInput
+  }
+
+  export type DrillTopicUncheckedCreateWithoutClubInput = {
+    id?: number
+    key?: string | null
+    name: string
+    order?: number
+    drills?: DrillTopicLinkUncheckedCreateNestedManyWithoutTopicInput
+  }
+
+  export type DrillTopicCreateOrConnectWithoutClubInput = {
+    where: DrillTopicWhereUniqueInput
+    create: XOR<DrillTopicCreateWithoutClubInput, DrillTopicUncheckedCreateWithoutClubInput>
+  }
+
+  export type DrillTopicCreateManyClubInputEnvelope = {
+    data: DrillTopicCreateManyClubInput | DrillTopicCreateManyClubInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountClubUpsertWithWhereUniqueWithoutClubInput = {
     where: AccountClubWhereUniqueInput
     update: XOR<AccountClubUpdateWithoutClubInput, AccountClubUncheckedUpdateWithoutClubInput>
@@ -60078,6 +76563,7 @@ export namespace Prisma {
     number?: IntNullableFilter<"Macrocycle"> | number | null
     name?: StringNullableFilter<"Macrocycle"> | string | null
     clubId?: IntFilter<"Macrocycle"> | number
+    teamId?: IntNullableFilter<"Macrocycle"> | number | null
   }
 
   export type TeamUpsertWithWhereUniqueWithoutClubInput = {
@@ -60218,6 +76704,140 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PracticeUpsertWithWhereUniqueWithoutClubInput = {
+    where: PracticeWhereUniqueInput
+    update: XOR<PracticeUpdateWithoutClubInput, PracticeUncheckedUpdateWithoutClubInput>
+    create: XOR<PracticeCreateWithoutClubInput, PracticeUncheckedCreateWithoutClubInput>
+  }
+
+  export type PracticeUpdateWithWhereUniqueWithoutClubInput = {
+    where: PracticeWhereUniqueInput
+    data: XOR<PracticeUpdateWithoutClubInput, PracticeUncheckedUpdateWithoutClubInput>
+  }
+
+  export type PracticeUpdateManyWithWhereWithoutClubInput = {
+    where: PracticeScalarWhereInput
+    data: XOR<PracticeUpdateManyMutationInput, PracticeUncheckedUpdateManyWithoutClubInput>
+  }
+
+  export type PracticeScalarWhereInput = {
+    AND?: PracticeScalarWhereInput | PracticeScalarWhereInput[]
+    OR?: PracticeScalarWhereInput[]
+    NOT?: PracticeScalarWhereInput | PracticeScalarWhereInput[]
+    id?: IntFilter<"Practice"> | number
+    createdAt?: DateTimeFilter<"Practice"> | Date | string
+    updatedAt?: DateTimeFilter<"Practice"> | Date | string
+    clubId?: IntFilter<"Practice"> | number
+    teamId?: IntFilter<"Practice"> | number
+    date?: DateTimeFilter<"Practice"> | Date | string
+    endTime?: DateTimeFilter<"Practice"> | Date | string
+    subtitle?: StringNullableFilter<"Practice"> | string | null
+    topic?: StringFilter<"Practice"> | string
+    offensiveGoals?: StringNullableFilter<"Practice"> | string | null
+    defensiveGoals?: StringNullableFilter<"Practice"> | string | null
+    notes?: StringNullableFilter<"Practice"> | string | null
+    completed?: BoolFilter<"Practice"> | boolean
+    groups?: JsonNullableFilter<"Practice">
+  }
+
+  export type ClubPracticeSettingsUpsertWithoutClubInput = {
+    update: XOR<ClubPracticeSettingsUpdateWithoutClubInput, ClubPracticeSettingsUncheckedUpdateWithoutClubInput>
+    create: XOR<ClubPracticeSettingsCreateWithoutClubInput, ClubPracticeSettingsUncheckedCreateWithoutClubInput>
+    where?: ClubPracticeSettingsWhereInput
+  }
+
+  export type ClubPracticeSettingsUpdateToOneWithWhereWithoutClubInput = {
+    where?: ClubPracticeSettingsWhereInput
+    data: XOR<ClubPracticeSettingsUpdateWithoutClubInput, ClubPracticeSettingsUncheckedUpdateWithoutClubInput>
+  }
+
+  export type ClubPracticeSettingsUpdateWithoutClubInput = {
+    defaultAttendanceMale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubPracticeSettingsUncheckedUpdateWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    defaultAttendanceMale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceFemale?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    defaultAttendanceCoed?: EnumAttendanceDefaultFieldUpdateOperationsInput | $Enums.AttendanceDefault
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ClubAttendanceReasonUpsertWithWhereUniqueWithoutClubInput = {
+    where: ClubAttendanceReasonWhereUniqueInput
+    update: XOR<ClubAttendanceReasonUpdateWithoutClubInput, ClubAttendanceReasonUncheckedUpdateWithoutClubInput>
+    create: XOR<ClubAttendanceReasonCreateWithoutClubInput, ClubAttendanceReasonUncheckedCreateWithoutClubInput>
+  }
+
+  export type ClubAttendanceReasonUpdateWithWhereUniqueWithoutClubInput = {
+    where: ClubAttendanceReasonWhereUniqueInput
+    data: XOR<ClubAttendanceReasonUpdateWithoutClubInput, ClubAttendanceReasonUncheckedUpdateWithoutClubInput>
+  }
+
+  export type ClubAttendanceReasonUpdateManyWithWhereWithoutClubInput = {
+    where: ClubAttendanceReasonScalarWhereInput
+    data: XOR<ClubAttendanceReasonUpdateManyMutationInput, ClubAttendanceReasonUncheckedUpdateManyWithoutClubInput>
+  }
+
+  export type ClubAttendanceReasonScalarWhereInput = {
+    AND?: ClubAttendanceReasonScalarWhereInput | ClubAttendanceReasonScalarWhereInput[]
+    OR?: ClubAttendanceReasonScalarWhereInput[]
+    NOT?: ClubAttendanceReasonScalarWhereInput | ClubAttendanceReasonScalarWhereInput[]
+    id?: IntFilter<"ClubAttendanceReason"> | number
+    clubId?: IntFilter<"ClubAttendanceReason"> | number
+    key?: StringNullableFilter<"ClubAttendanceReason"> | string | null
+    name?: StringFilter<"ClubAttendanceReason"> | string
+    order?: IntFilter<"ClubAttendanceReason"> | number
+  }
+
+  export type DrillUpsertWithWhereUniqueWithoutClubInput = {
+    where: DrillWhereUniqueInput
+    update: XOR<DrillUpdateWithoutClubInput, DrillUncheckedUpdateWithoutClubInput>
+    create: XOR<DrillCreateWithoutClubInput, DrillUncheckedCreateWithoutClubInput>
+  }
+
+  export type DrillUpdateWithWhereUniqueWithoutClubInput = {
+    where: DrillWhereUniqueInput
+    data: XOR<DrillUpdateWithoutClubInput, DrillUncheckedUpdateWithoutClubInput>
+  }
+
+  export type DrillUpdateManyWithWhereWithoutClubInput = {
+    where: DrillScalarWhereInput
+    data: XOR<DrillUpdateManyMutationInput, DrillUncheckedUpdateManyWithoutClubInput>
+  }
+
+  export type DrillTopicUpsertWithWhereUniqueWithoutClubInput = {
+    where: DrillTopicWhereUniqueInput
+    update: XOR<DrillTopicUpdateWithoutClubInput, DrillTopicUncheckedUpdateWithoutClubInput>
+    create: XOR<DrillTopicCreateWithoutClubInput, DrillTopicUncheckedCreateWithoutClubInput>
+  }
+
+  export type DrillTopicUpdateWithWhereUniqueWithoutClubInput = {
+    where: DrillTopicWhereUniqueInput
+    data: XOR<DrillTopicUpdateWithoutClubInput, DrillTopicUncheckedUpdateWithoutClubInput>
+  }
+
+  export type DrillTopicUpdateManyWithWhereWithoutClubInput = {
+    where: DrillTopicScalarWhereInput
+    data: XOR<DrillTopicUpdateManyMutationInput, DrillTopicUncheckedUpdateManyWithoutClubInput>
+  }
+
+  export type DrillTopicScalarWhereInput = {
+    AND?: DrillTopicScalarWhereInput | DrillTopicScalarWhereInput[]
+    OR?: DrillTopicScalarWhereInput[]
+    NOT?: DrillTopicScalarWhereInput | DrillTopicScalarWhereInput[]
+    id?: IntFilter<"DrillTopic"> | number
+    clubId?: IntFilter<"DrillTopic"> | number
+    key?: StringNullableFilter<"DrillTopic"> | string | null
+    name?: StringFilter<"DrillTopic"> | string
+    order?: IntFilter<"DrillTopic"> | number
+  }
+
   export type ClubCreateWithoutEmailSettingsInput = {
     name: string
     shortName?: string | null
@@ -60225,6 +76845,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -60237,6 +76864,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutEmailSettingsInput = {
@@ -60247,6 +76879,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -60259,6 +76898,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutEmailSettingsInput = {
@@ -60284,6 +76928,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60296,6 +76947,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutEmailSettingsInput = {
@@ -60306,6 +76962,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60318,6 +76981,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type EquipmentColorCreateWithoutSeasonInput = {
@@ -60406,6 +77074,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -60418,6 +77093,11 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutVenuesInput = {
@@ -60428,6 +77108,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -60440,6 +77127,11 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutVenuesInput = {
@@ -60576,6 +77268,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60588,6 +77287,11 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutVenuesInput = {
@@ -60598,6 +77302,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60610,6 +77321,11 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type GameUpsertWithWhereUniqueWithoutVenueInput = {
@@ -60639,8 +77355,10 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     staffProfiles?: StaffCreateNestedManyWithoutAccountInput
     alertRecipients?: AlertRecipientCreateNestedManyWithoutAccountInput
+    drills?: DrillCreateNestedManyWithoutAccountInput
   }
 
   export type AccountUncheckedCreateWithoutClubsInput = {
@@ -60655,8 +77373,10 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     staffProfiles?: StaffUncheckedCreateNestedManyWithoutAccountInput
     alertRecipients?: AlertRecipientUncheckedCreateNestedManyWithoutAccountInput
+    drills?: DrillUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type AccountCreateOrConnectWithoutClubsInput = {
@@ -60671,6 +77391,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -60683,6 +77410,11 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutAccountsInput = {
@@ -60693,6 +77425,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -60705,6 +77444,11 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutAccountsInput = {
@@ -60753,8 +77497,10 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     staffProfiles?: StaffUpdateManyWithoutAccountNestedInput
     alertRecipients?: AlertRecipientUpdateManyWithoutAccountNestedInput
+    drills?: DrillUpdateManyWithoutAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutClubsInput = {
@@ -60769,8 +77515,10 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     staffProfiles?: StaffUncheckedUpdateManyWithoutAccountNestedInput
     alertRecipients?: AlertRecipientUncheckedUpdateManyWithoutAccountNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type ClubUpsertWithoutAccountsInput = {
@@ -60791,6 +77539,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60803,6 +77558,11 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAccountsInput = {
@@ -60813,6 +77573,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -60825,6 +77592,11 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type AccountClubRoleUpsertWithWhereUniqueWithoutAccountClubInput = {
@@ -60901,6 +77673,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -60913,6 +77692,11 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutTeamsInput = {
@@ -60923,6 +77707,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -60935,6 +77726,11 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutTeamsInput = {
@@ -60952,6 +77748,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     competitions?: CompetitionCreateNestedManyWithoutEchelonInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutEchelonInput
+    drills?: DrillCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUncheckedCreateWithoutTeamsInput = {
@@ -60965,6 +77762,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     competitions?: CompetitionUncheckedCreateNestedManyWithoutEchelonInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutEchelonInput
+    drills?: DrillUncheckedCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonCreateOrConnectWithoutTeamsInput = {
@@ -61089,6 +77887,82 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MacrocycleCreateWithoutTeamInput = {
+    startDate: Date | string
+    endDate: Date | string
+    notes?: string | null
+    number?: number | null
+    name?: string | null
+    club: ClubCreateNestedOneWithoutMacrocyclesInput
+    mesocycles?: MesocycleCreateNestedManyWithoutMacrocycleInput
+  }
+
+  export type MacrocycleUncheckedCreateWithoutTeamInput = {
+    id?: number
+    startDate: Date | string
+    endDate: Date | string
+    notes?: string | null
+    number?: number | null
+    name?: string | null
+    clubId: number
+    mesocycles?: MesocycleUncheckedCreateNestedManyWithoutMacrocycleInput
+  }
+
+  export type MacrocycleCreateOrConnectWithoutTeamInput = {
+    where: MacrocycleWhereUniqueInput
+    create: XOR<MacrocycleCreateWithoutTeamInput, MacrocycleUncheckedCreateWithoutTeamInput>
+  }
+
+  export type MacrocycleCreateManyTeamInputEnvelope = {
+    data: MacrocycleCreateManyTeamInput | MacrocycleCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PracticeCreateWithoutTeamInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    club: ClubCreateNestedOneWithoutPracticesInput
+    attendances?: PracticeAthleteCreateNestedManyWithoutPracticeInput
+    items?: PracticeItemCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeUncheckedCreateWithoutTeamInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId: number
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    attendances?: PracticeAthleteUncheckedCreateNestedManyWithoutPracticeInput
+    items?: PracticeItemUncheckedCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeCreateOrConnectWithoutTeamInput = {
+    where: PracticeWhereUniqueInput
+    create: XOR<PracticeCreateWithoutTeamInput, PracticeUncheckedCreateWithoutTeamInput>
+  }
+
+  export type PracticeCreateManyTeamInputEnvelope = {
+    data: PracticeCreateManyTeamInput | PracticeCreateManyTeamInput[]
+    skipDuplicates?: boolean
+  }
+
   export type ClubUpsertWithoutTeamsInput = {
     update: XOR<ClubUpdateWithoutTeamsInput, ClubUncheckedUpdateWithoutTeamsInput>
     create: XOR<ClubCreateWithoutTeamsInput, ClubUncheckedCreateWithoutTeamsInput>
@@ -61107,6 +77981,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61119,6 +78000,11 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutTeamsInput = {
@@ -61129,6 +78015,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61141,6 +78034,11 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type EchelonUpsertWithoutTeamsInput = {
@@ -61164,6 +78062,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     competitions?: CompetitionUpdateManyWithoutEchelonNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutEchelonNestedInput
+    drills?: DrillUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonUncheckedUpdateWithoutTeamsInput = {
@@ -61177,6 +78076,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     competitions?: CompetitionUncheckedUpdateManyWithoutEchelonNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutEchelonNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutEchelonNestedInput
   }
 
   export type TeamAthleteUpsertWithWhereUniqueWithoutTeamInput = {
@@ -61237,6 +78137,38 @@ export namespace Prisma {
     data: XOR<GameUpdateManyMutationInput, GameUncheckedUpdateManyWithoutTeamInput>
   }
 
+  export type MacrocycleUpsertWithWhereUniqueWithoutTeamInput = {
+    where: MacrocycleWhereUniqueInput
+    update: XOR<MacrocycleUpdateWithoutTeamInput, MacrocycleUncheckedUpdateWithoutTeamInput>
+    create: XOR<MacrocycleCreateWithoutTeamInput, MacrocycleUncheckedCreateWithoutTeamInput>
+  }
+
+  export type MacrocycleUpdateWithWhereUniqueWithoutTeamInput = {
+    where: MacrocycleWhereUniqueInput
+    data: XOR<MacrocycleUpdateWithoutTeamInput, MacrocycleUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type MacrocycleUpdateManyWithWhereWithoutTeamInput = {
+    where: MacrocycleScalarWhereInput
+    data: XOR<MacrocycleUpdateManyMutationInput, MacrocycleUncheckedUpdateManyWithoutTeamInput>
+  }
+
+  export type PracticeUpsertWithWhereUniqueWithoutTeamInput = {
+    where: PracticeWhereUniqueInput
+    update: XOR<PracticeUpdateWithoutTeamInput, PracticeUncheckedUpdateWithoutTeamInput>
+    create: XOR<PracticeCreateWithoutTeamInput, PracticeUncheckedCreateWithoutTeamInput>
+  }
+
+  export type PracticeUpdateWithWhereUniqueWithoutTeamInput = {
+    where: PracticeWhereUniqueInput
+    data: XOR<PracticeUpdateWithoutTeamInput, PracticeUncheckedUpdateWithoutTeamInput>
+  }
+
+  export type PracticeUpdateManyWithWhereWithoutTeamInput = {
+    where: PracticeScalarWhereInput
+    data: XOR<PracticeUpdateManyMutationInput, PracticeUncheckedUpdateManyWithoutTeamInput>
+  }
+
   export type TeamCreateWithoutAthletesInput = {
     name: string
     type?: $Enums.TeamType | null
@@ -61247,6 +78179,8 @@ export namespace Prisma {
     echelon: EchelonCreateNestedOneWithoutTeamsInput
     staff?: TeamStaffCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutTeamInput
+    practices?: PracticeCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutAthletesInput = {
@@ -61260,6 +78194,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutTeamInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutAthletesInput = {
@@ -61287,6 +78223,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutTeamsInput = {
@@ -61310,6 +78247,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutTeamsInput = {
@@ -61338,6 +78276,8 @@ export namespace Prisma {
     echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
     staff?: TeamStaffUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutAthletesInput = {
@@ -61351,6 +78291,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type AthleteUpsertWithoutTeamsInput = {
@@ -61384,6 +78326,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutTeamsInput = {
@@ -61407,6 +78350,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type ClubCreateWithoutStaffInput = {
@@ -61416,6 +78360,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -61428,6 +78379,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutStaffInput = {
@@ -61438,6 +78394,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -61450,6 +78413,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutStaffInput = {
@@ -61489,8 +78457,10 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubCreateNestedManyWithoutAccountInput
     alertRecipients?: AlertRecipientCreateNestedManyWithoutAccountInput
+    drills?: DrillCreateNestedManyWithoutAccountInput
   }
 
   export type AccountUncheckedCreateWithoutStaffProfilesInput = {
@@ -61505,8 +78475,10 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUncheckedCreateNestedManyWithoutAccountInput
     alertRecipients?: AlertRecipientUncheckedCreateNestedManyWithoutAccountInput
+    drills?: DrillUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type AccountCreateOrConnectWithoutStaffProfilesInput = {
@@ -61532,6 +78504,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61544,6 +78523,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutStaffInput = {
@@ -61554,6 +78538,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -61566,6 +78557,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type TeamStaffUpsertWithWhereUniqueWithoutStaffInput = {
@@ -61606,8 +78602,10 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUpdateManyWithoutAccountNestedInput
     alertRecipients?: AlertRecipientUpdateManyWithoutAccountNestedInput
+    drills?: DrillUpdateManyWithoutAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutStaffProfilesInput = {
@@ -61622,8 +78620,10 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUncheckedUpdateManyWithoutAccountNestedInput
     alertRecipients?: AlertRecipientUncheckedUpdateManyWithoutAccountNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutAccountNestedInput
   }
 
   export type TeamCreateWithoutStaffInput = {
@@ -61636,6 +78636,8 @@ export namespace Prisma {
     echelon: EchelonCreateNestedOneWithoutTeamsInput
     athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
     games?: GameCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutTeamInput
+    practices?: PracticeCreateNestedManyWithoutTeamInput
   }
 
   export type TeamUncheckedCreateWithoutStaffInput = {
@@ -61649,6 +78651,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
     games?: GameUncheckedCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutTeamInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutTeamInput
   }
 
   export type TeamCreateOrConnectWithoutStaffInput = {
@@ -61711,6 +78715,8 @@ export namespace Prisma {
     echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutStaffInput = {
@@ -61724,6 +78730,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type StaffUpsertWithoutTeamsInput = {
@@ -61776,6 +78784,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teams?: TeamCreateNestedManyWithoutEchelonInput
     equipmentColors?: EquipmentColorCreateNestedManyWithoutEchelonInput
+    drills?: DrillCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUncheckedCreateWithoutCompetitionsInput = {
@@ -61789,6 +78798,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teams?: TeamUncheckedCreateNestedManyWithoutEchelonInput
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutEchelonInput
+    drills?: DrillUncheckedCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonCreateOrConnectWithoutCompetitionsInput = {
@@ -61921,6 +78931,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamUpdateManyWithoutEchelonNestedInput
     equipmentColors?: EquipmentColorUpdateManyWithoutEchelonNestedInput
+    drills?: DrillUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonUncheckedUpdateWithoutCompetitionsInput = {
@@ -61934,6 +78945,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamUncheckedUpdateManyWithoutEchelonNestedInput
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutEchelonNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutEchelonNestedInput
   }
 
   export type CompetitionSerieUpsertWithWhereUniqueWithoutCompetitionInput = {
@@ -62155,6 +79167,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryCreateNestedManyWithoutAthleteInput
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutPreferredNumbersInput = {
@@ -62178,6 +79191,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUncheckedCreateNestedManyWithoutAthleteInput
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutPreferredNumbersInput = {
@@ -62216,6 +79230,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUpdateManyWithoutAthleteNestedInput
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutPreferredNumbersInput = {
@@ -62239,6 +79254,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUncheckedUpdateManyWithoutAthleteNestedInput
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type ClubCreateWithoutEquipmentColorsInput = {
@@ -62248,6 +79264,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -62260,6 +79283,11 @@ export namespace Prisma {
     staff?: StaffCreateNestedManyWithoutClubInput
     alerts?: AlertCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutEquipmentColorsInput = {
@@ -62270,6 +79298,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -62282,6 +79317,11 @@ export namespace Prisma {
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutEquipmentColorsInput = {
@@ -62319,6 +79359,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teams?: TeamCreateNestedManyWithoutEchelonInput
     competitions?: CompetitionCreateNestedManyWithoutEchelonInput
+    drills?: DrillCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonUncheckedCreateWithoutEquipmentColorsInput = {
@@ -62332,6 +79373,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     teams?: TeamUncheckedCreateNestedManyWithoutEchelonInput
     competitions?: CompetitionUncheckedCreateNestedManyWithoutEchelonInput
+    drills?: DrillUncheckedCreateNestedManyWithoutEchelonInput
   }
 
   export type EchelonCreateOrConnectWithoutEquipmentColorsInput = {
@@ -62409,6 +79451,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62421,6 +79470,11 @@ export namespace Prisma {
     staff?: StaffUpdateManyWithoutClubNestedInput
     alerts?: AlertUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutEquipmentColorsInput = {
@@ -62431,6 +79485,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -62443,6 +79504,11 @@ export namespace Prisma {
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type SeasonUpsertWithoutEquipmentColorsInput = {
@@ -62492,6 +79558,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamUpdateManyWithoutEchelonNestedInput
     competitions?: CompetitionUpdateManyWithoutEchelonNestedInput
+    drills?: DrillUpdateManyWithoutEchelonNestedInput
   }
 
   export type EchelonUncheckedUpdateWithoutEquipmentColorsInput = {
@@ -62505,6 +79572,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     teams?: TeamUncheckedUpdateManyWithoutEchelonNestedInput
     competitions?: CompetitionUncheckedUpdateManyWithoutEchelonNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutEchelonNestedInput
   }
 
   export type EquipmentUpsertWithWhereUniqueWithoutEquipmentColorInput = {
@@ -62750,6 +79818,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryCreateNestedManyWithoutAthleteInput
     teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteUncheckedCreateWithoutGameEquipmentsInput = {
@@ -62773,6 +79842,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUncheckedCreateNestedManyWithoutAthleteInput
     teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
     preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
+    practiceAttendances?: PracticeAthleteUncheckedCreateNestedManyWithoutAthleteInput
   }
 
   export type AthleteCreateOrConnectWithoutGameEquipmentsInput = {
@@ -62941,6 +80011,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUpdateManyWithoutAthleteNestedInput
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutGameEquipmentsInput = {
@@ -62964,6 +80035,7 @@ export namespace Prisma {
     timeEntries?: TimeEntryUncheckedUpdateManyWithoutAthleteNestedInput
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type EquipmentUpsertWithoutGameEquipmentsInput = {
@@ -63037,6 +80109,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -63049,6 +80128,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
     staff?: StaffCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
   }
 
   export type ClubUncheckedCreateWithoutAlertsInput = {
@@ -63059,6 +80143,13 @@ export namespace Prisma {
     federationLogo?: string | null
     backgroundColor?: string | null
     foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
     fpbClubId?: number | null
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -63071,6 +80162,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
     staff?: StaffUncheckedCreateNestedManyWithoutClubInput
     emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
   }
 
   export type ClubCreateOrConnectWithoutAlertsInput = {
@@ -63123,6 +80219,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63135,6 +80238,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
     staff?: StaffUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
   }
 
   export type ClubUncheckedUpdateWithoutAlertsInput = {
@@ -63145,6 +80253,13 @@ export namespace Prisma {
     federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
     backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
     foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
     fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -63157,6 +80272,11 @@ export namespace Prisma {
     equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
     staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
     emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type AlertRecipientUpsertWithWhereUniqueWithoutAlertInput = {
@@ -63220,8 +80340,10 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubCreateNestedManyWithoutAccountInput
     staffProfiles?: StaffCreateNestedManyWithoutAccountInput
+    drills?: DrillCreateNestedManyWithoutAccountInput
   }
 
   export type AccountUncheckedCreateWithoutAlertRecipientsInput = {
@@ -63236,8 +80358,10 @@ export namespace Prisma {
     role?: $Enums.PlatformRole
     resetToken?: string | null
     resetTokenExpiry?: Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUncheckedCreateNestedManyWithoutAccountInput
     staffProfiles?: StaffUncheckedCreateNestedManyWithoutAccountInput
+    drills?: DrillUncheckedCreateNestedManyWithoutAccountInput
   }
 
   export type AccountCreateOrConnectWithoutAlertRecipientsInput = {
@@ -63307,8 +80431,10 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUpdateManyWithoutAccountNestedInput
     staffProfiles?: StaffUpdateManyWithoutAccountNestedInput
+    drills?: DrillUpdateManyWithoutAccountNestedInput
   }
 
   export type AccountUncheckedUpdateWithoutAlertRecipientsInput = {
@@ -63323,8 +80449,1141 @@ export namespace Prisma {
     role?: EnumPlatformRoleFieldUpdateOperationsInput | $Enums.PlatformRole
     resetToken?: NullableStringFieldUpdateOperationsInput | string | null
     resetTokenExpiry?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    drillRecentColors?: NullableJsonNullValueInput | InputJsonValue
     clubs?: AccountClubUncheckedUpdateManyWithoutAccountNestedInput
     staffProfiles?: StaffUncheckedUpdateManyWithoutAccountNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutAccountNestedInput
+  }
+
+  export type ClubCreateWithoutPracticesInput = {
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubCreateNestedManyWithoutClubInput
+    athletes?: AthleteCreateNestedManyWithoutClubInput
+    games?: GameCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
+    teams?: TeamCreateNestedManyWithoutClubInput
+    venues?: VenueCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutPracticesInput = {
+    id?: number
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
+    athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
+    games?: GameUncheckedCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
+    teams?: TeamUncheckedCreateNestedManyWithoutClubInput
+    venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutPracticesInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutPracticesInput, ClubUncheckedCreateWithoutPracticesInput>
+  }
+
+  export type TeamCreateWithoutPracticesInput = {
+    name: string
+    type?: $Enums.TeamType | null
+    fpbTeamId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    club: ClubCreateNestedOneWithoutTeamsInput
+    echelon: EchelonCreateNestedOneWithoutTeamsInput
+    athletes?: TeamAthleteCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffCreateNestedManyWithoutTeamInput
+    games?: GameCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamUncheckedCreateWithoutPracticesInput = {
+    id?: number
+    name: string
+    type?: $Enums.TeamType | null
+    clubId: number
+    echelonId: number
+    fpbTeamId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    athletes?: TeamAthleteUncheckedCreateNestedManyWithoutTeamInput
+    staff?: TeamStaffUncheckedCreateNestedManyWithoutTeamInput
+    games?: GameUncheckedCreateNestedManyWithoutTeamInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutTeamInput
+  }
+
+  export type TeamCreateOrConnectWithoutPracticesInput = {
+    where: TeamWhereUniqueInput
+    create: XOR<TeamCreateWithoutPracticesInput, TeamUncheckedCreateWithoutPracticesInput>
+  }
+
+  export type PracticeAthleteCreateWithoutPracticeInput = {
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceNotes?: string | null
+    absenceReason?: ClubAttendanceReasonCreateNestedOneWithoutAthletesInput
+    athlete: AthleteCreateNestedOneWithoutPracticeAttendancesInput
+  }
+
+  export type PracticeAthleteUncheckedCreateWithoutPracticeInput = {
+    id?: number
+    athleteId: number
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceReasonId?: number | null
+    absenceNotes?: string | null
+  }
+
+  export type PracticeAthleteCreateOrConnectWithoutPracticeInput = {
+    where: PracticeAthleteWhereUniqueInput
+    create: XOR<PracticeAthleteCreateWithoutPracticeInput, PracticeAthleteUncheckedCreateWithoutPracticeInput>
+  }
+
+  export type PracticeAthleteCreateManyPracticeInputEnvelope = {
+    data: PracticeAthleteCreateManyPracticeInput | PracticeAthleteCreateManyPracticeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PracticeItemCreateWithoutPracticeInput = {
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    drill?: DrillCreateNestedOneWithoutPracticeItemsInput
+  }
+
+  export type PracticeItemUncheckedCreateWithoutPracticeInput = {
+    id?: number
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    drillId?: number | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PracticeItemCreateOrConnectWithoutPracticeInput = {
+    where: PracticeItemWhereUniqueInput
+    create: XOR<PracticeItemCreateWithoutPracticeInput, PracticeItemUncheckedCreateWithoutPracticeInput>
+  }
+
+  export type PracticeItemCreateManyPracticeInputEnvelope = {
+    data: PracticeItemCreateManyPracticeInput | PracticeItemCreateManyPracticeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubUpsertWithoutPracticesInput = {
+    update: XOR<ClubUpdateWithoutPracticesInput, ClubUncheckedUpdateWithoutPracticesInput>
+    create: XOR<ClubCreateWithoutPracticesInput, ClubUncheckedCreateWithoutPracticesInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutPracticesInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutPracticesInput, ClubUncheckedUpdateWithoutPracticesInput>
+  }
+
+  export type ClubUpdateWithoutPracticesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUpdateManyWithoutClubNestedInput
+    games?: GameUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
+    teams?: TeamUpdateManyWithoutClubNestedInput
+    venues?: VenueUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutPracticesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
+    games?: GameUncheckedUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
+  }
+
+  export type TeamUpsertWithoutPracticesInput = {
+    update: XOR<TeamUpdateWithoutPracticesInput, TeamUncheckedUpdateWithoutPracticesInput>
+    create: XOR<TeamCreateWithoutPracticesInput, TeamUncheckedCreateWithoutPracticesInput>
+    where?: TeamWhereInput
+  }
+
+  export type TeamUpdateToOneWithWhereWithoutPracticesInput = {
+    where?: TeamWhereInput
+    data: XOR<TeamUpdateWithoutPracticesInput, TeamUncheckedUpdateWithoutPracticesInput>
+  }
+
+  export type TeamUpdateWithoutPracticesInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    club?: ClubUpdateOneRequiredWithoutTeamsNestedInput
+    echelon?: EchelonUpdateOneRequiredWithoutTeamsNestedInput
+    athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUpdateManyWithoutTeamNestedInput
+    games?: GameUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutTeamNestedInput
+  }
+
+  export type TeamUncheckedUpdateWithoutPracticesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
+    clubId?: IntFieldUpdateOperationsInput | number
+    echelonId?: IntFieldUpdateOperationsInput | number
+    fpbTeamId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
+    staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
+    games?: GameUncheckedUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutTeamNestedInput
+  }
+
+  export type PracticeAthleteUpsertWithWhereUniqueWithoutPracticeInput = {
+    where: PracticeAthleteWhereUniqueInput
+    update: XOR<PracticeAthleteUpdateWithoutPracticeInput, PracticeAthleteUncheckedUpdateWithoutPracticeInput>
+    create: XOR<PracticeAthleteCreateWithoutPracticeInput, PracticeAthleteUncheckedCreateWithoutPracticeInput>
+  }
+
+  export type PracticeAthleteUpdateWithWhereUniqueWithoutPracticeInput = {
+    where: PracticeAthleteWhereUniqueInput
+    data: XOR<PracticeAthleteUpdateWithoutPracticeInput, PracticeAthleteUncheckedUpdateWithoutPracticeInput>
+  }
+
+  export type PracticeAthleteUpdateManyWithWhereWithoutPracticeInput = {
+    where: PracticeAthleteScalarWhereInput
+    data: XOR<PracticeAthleteUpdateManyMutationInput, PracticeAthleteUncheckedUpdateManyWithoutPracticeInput>
+  }
+
+  export type PracticeItemUpsertWithWhereUniqueWithoutPracticeInput = {
+    where: PracticeItemWhereUniqueInput
+    update: XOR<PracticeItemUpdateWithoutPracticeInput, PracticeItemUncheckedUpdateWithoutPracticeInput>
+    create: XOR<PracticeItemCreateWithoutPracticeInput, PracticeItemUncheckedCreateWithoutPracticeInput>
+  }
+
+  export type PracticeItemUpdateWithWhereUniqueWithoutPracticeInput = {
+    where: PracticeItemWhereUniqueInput
+    data: XOR<PracticeItemUpdateWithoutPracticeInput, PracticeItemUncheckedUpdateWithoutPracticeInput>
+  }
+
+  export type PracticeItemUpdateManyWithWhereWithoutPracticeInput = {
+    where: PracticeItemScalarWhereInput
+    data: XOR<PracticeItemUpdateManyMutationInput, PracticeItemUncheckedUpdateManyWithoutPracticeInput>
+  }
+
+  export type PracticeCreateWithoutItemsInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    club: ClubCreateNestedOneWithoutPracticesInput
+    team: TeamCreateNestedOneWithoutPracticesInput
+    attendances?: PracticeAthleteCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeUncheckedCreateWithoutItemsInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId: number
+    teamId: number
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    attendances?: PracticeAthleteUncheckedCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeCreateOrConnectWithoutItemsInput = {
+    where: PracticeWhereUniqueInput
+    create: XOR<PracticeCreateWithoutItemsInput, PracticeUncheckedCreateWithoutItemsInput>
+  }
+
+  export type DrillCreateWithoutPracticeItemsInput = {
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    club?: ClubCreateNestedOneWithoutDrillsInput
+    account?: AccountCreateNestedOneWithoutDrillsInput
+    echelon?: EchelonCreateNestedOneWithoutDrillsInput
+    graphics?: DrillGraphicCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillUncheckedCreateWithoutPracticeItemsInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    accountId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+    graphics?: DrillGraphicUncheckedCreateNestedManyWithoutDrillInput
+    topics?: DrillTopicLinkUncheckedCreateNestedManyWithoutDrillInput
+  }
+
+  export type DrillCreateOrConnectWithoutPracticeItemsInput = {
+    where: DrillWhereUniqueInput
+    create: XOR<DrillCreateWithoutPracticeItemsInput, DrillUncheckedCreateWithoutPracticeItemsInput>
+  }
+
+  export type PracticeUpsertWithoutItemsInput = {
+    update: XOR<PracticeUpdateWithoutItemsInput, PracticeUncheckedUpdateWithoutItemsInput>
+    create: XOR<PracticeCreateWithoutItemsInput, PracticeUncheckedCreateWithoutItemsInput>
+    where?: PracticeWhereInput
+  }
+
+  export type PracticeUpdateToOneWithWhereWithoutItemsInput = {
+    where?: PracticeWhereInput
+    data: XOR<PracticeUpdateWithoutItemsInput, PracticeUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type PracticeUpdateWithoutItemsInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    club?: ClubUpdateOneRequiredWithoutPracticesNestedInput
+    team?: TeamUpdateOneRequiredWithoutPracticesNestedInput
+    attendances?: PracticeAthleteUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type PracticeUncheckedUpdateWithoutItemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    attendances?: PracticeAthleteUncheckedUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type DrillUpsertWithoutPracticeItemsInput = {
+    update: XOR<DrillUpdateWithoutPracticeItemsInput, DrillUncheckedUpdateWithoutPracticeItemsInput>
+    create: XOR<DrillCreateWithoutPracticeItemsInput, DrillUncheckedCreateWithoutPracticeItemsInput>
+    where?: DrillWhereInput
+  }
+
+  export type DrillUpdateToOneWithWhereWithoutPracticeItemsInput = {
+    where?: DrillWhereInput
+    data: XOR<DrillUpdateWithoutPracticeItemsInput, DrillUncheckedUpdateWithoutPracticeItemsInput>
+  }
+
+  export type DrillUpdateWithoutPracticeItemsInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutDrillsNestedInput
+    account?: AccountUpdateOneWithoutDrillsNestedInput
+    echelon?: EchelonUpdateOneWithoutDrillsNestedInput
+    graphics?: DrillGraphicUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateWithoutPracticeItemsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    graphics?: DrillGraphicUncheckedUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUncheckedUpdateManyWithoutDrillNestedInput
+  }
+
+  export type ClubAttendanceReasonCreateWithoutAthletesInput = {
+    key?: string | null
+    name: string
+    order?: number
+    club: ClubCreateNestedOneWithoutAttendanceReasonsInput
+  }
+
+  export type ClubAttendanceReasonUncheckedCreateWithoutAthletesInput = {
+    id?: number
+    clubId: number
+    key?: string | null
+    name: string
+    order?: number
+  }
+
+  export type ClubAttendanceReasonCreateOrConnectWithoutAthletesInput = {
+    where: ClubAttendanceReasonWhereUniqueInput
+    create: XOR<ClubAttendanceReasonCreateWithoutAthletesInput, ClubAttendanceReasonUncheckedCreateWithoutAthletesInput>
+  }
+
+  export type PracticeCreateWithoutAttendancesInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    club: ClubCreateNestedOneWithoutPracticesInput
+    team: TeamCreateNestedOneWithoutPracticesInput
+    items?: PracticeItemCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeUncheckedCreateWithoutAttendancesInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId: number
+    teamId: number
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    items?: PracticeItemUncheckedCreateNestedManyWithoutPracticeInput
+  }
+
+  export type PracticeCreateOrConnectWithoutAttendancesInput = {
+    where: PracticeWhereUniqueInput
+    create: XOR<PracticeCreateWithoutAttendancesInput, PracticeUncheckedCreateWithoutAttendancesInput>
+  }
+
+  export type AthleteCreateWithoutPracticeAttendancesInput = {
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    number?: string | null
+    name: string
+    birthdate?: Date | string | null
+    fpbNumber?: number | null
+    idNumber?: number | null
+    idType?: $Enums.IdType | null
+    active?: boolean
+    shirtSize?: $Enums.Size | null
+    photo?: string | null
+    club: ClubCreateNestedOneWithoutAthletesInput
+    athleteReports?: AthleteReportCreateNestedManyWithoutAthleteInput
+    reviewedReports?: AthleteReportCreateNestedManyWithoutReviewedAthleteInput
+    gameAthletes?: GameAthleteCreateNestedManyWithoutAthleteInput
+    statistics?: StatisticCreateNestedManyWithoutAthleteInput
+    timeEntries?: TimeEntryCreateNestedManyWithoutAthleteInput
+    teams?: TeamAthleteCreateNestedManyWithoutAthleteInput
+    preferredNumbers?: AthletePreferredNumberCreateNestedManyWithoutAthleteInput
+    gameEquipments?: GameEquipmentCreateNestedManyWithoutAthleteInput
+  }
+
+  export type AthleteUncheckedCreateWithoutPracticeAttendancesInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    number?: string | null
+    name: string
+    birthdate?: Date | string | null
+    fpbNumber?: number | null
+    idNumber?: number | null
+    idType?: $Enums.IdType | null
+    active?: boolean
+    shirtSize?: $Enums.Size | null
+    photo?: string | null
+    clubId: number
+    athleteReports?: AthleteReportUncheckedCreateNestedManyWithoutAthleteInput
+    reviewedReports?: AthleteReportUncheckedCreateNestedManyWithoutReviewedAthleteInput
+    gameAthletes?: GameAthleteUncheckedCreateNestedManyWithoutAthleteInput
+    statistics?: StatisticUncheckedCreateNestedManyWithoutAthleteInput
+    timeEntries?: TimeEntryUncheckedCreateNestedManyWithoutAthleteInput
+    teams?: TeamAthleteUncheckedCreateNestedManyWithoutAthleteInput
+    preferredNumbers?: AthletePreferredNumberUncheckedCreateNestedManyWithoutAthleteInput
+    gameEquipments?: GameEquipmentUncheckedCreateNestedManyWithoutAthleteInput
+  }
+
+  export type AthleteCreateOrConnectWithoutPracticeAttendancesInput = {
+    where: AthleteWhereUniqueInput
+    create: XOR<AthleteCreateWithoutPracticeAttendancesInput, AthleteUncheckedCreateWithoutPracticeAttendancesInput>
+  }
+
+  export type ClubAttendanceReasonUpsertWithoutAthletesInput = {
+    update: XOR<ClubAttendanceReasonUpdateWithoutAthletesInput, ClubAttendanceReasonUncheckedUpdateWithoutAthletesInput>
+    create: XOR<ClubAttendanceReasonCreateWithoutAthletesInput, ClubAttendanceReasonUncheckedCreateWithoutAthletesInput>
+    where?: ClubAttendanceReasonWhereInput
+  }
+
+  export type ClubAttendanceReasonUpdateToOneWithWhereWithoutAthletesInput = {
+    where?: ClubAttendanceReasonWhereInput
+    data: XOR<ClubAttendanceReasonUpdateWithoutAthletesInput, ClubAttendanceReasonUncheckedUpdateWithoutAthletesInput>
+  }
+
+  export type ClubAttendanceReasonUpdateWithoutAthletesInput = {
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    club?: ClubUpdateOneRequiredWithoutAttendanceReasonsNestedInput
+  }
+
+  export type ClubAttendanceReasonUncheckedUpdateWithoutAthletesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    clubId?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type PracticeUpsertWithoutAttendancesInput = {
+    update: XOR<PracticeUpdateWithoutAttendancesInput, PracticeUncheckedUpdateWithoutAttendancesInput>
+    create: XOR<PracticeCreateWithoutAttendancesInput, PracticeUncheckedCreateWithoutAttendancesInput>
+    where?: PracticeWhereInput
+  }
+
+  export type PracticeUpdateToOneWithWhereWithoutAttendancesInput = {
+    where?: PracticeWhereInput
+    data: XOR<PracticeUpdateWithoutAttendancesInput, PracticeUncheckedUpdateWithoutAttendancesInput>
+  }
+
+  export type PracticeUpdateWithoutAttendancesInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    club?: ClubUpdateOneRequiredWithoutPracticesNestedInput
+    team?: TeamUpdateOneRequiredWithoutPracticesNestedInput
+    items?: PracticeItemUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type PracticeUncheckedUpdateWithoutAttendancesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: IntFieldUpdateOperationsInput | number
+    teamId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    items?: PracticeItemUncheckedUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type AthleteUpsertWithoutPracticeAttendancesInput = {
+    update: XOR<AthleteUpdateWithoutPracticeAttendancesInput, AthleteUncheckedUpdateWithoutPracticeAttendancesInput>
+    create: XOR<AthleteCreateWithoutPracticeAttendancesInput, AthleteUncheckedCreateWithoutPracticeAttendancesInput>
+    where?: AthleteWhereInput
+  }
+
+  export type AthleteUpdateToOneWithWhereWithoutPracticeAttendancesInput = {
+    where?: AthleteWhereInput
+    data: XOR<AthleteUpdateWithoutPracticeAttendancesInput, AthleteUncheckedUpdateWithoutPracticeAttendancesInput>
+  }
+
+  export type AthleteUpdateWithoutPracticeAttendancesInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fpbNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    idNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    club?: ClubUpdateOneRequiredWithoutAthletesNestedInput
+    athleteReports?: AthleteReportUpdateManyWithoutAthleteNestedInput
+    reviewedReports?: AthleteReportUpdateManyWithoutReviewedAthleteNestedInput
+    gameAthletes?: GameAthleteUpdateManyWithoutAthleteNestedInput
+    statistics?: StatisticUpdateManyWithoutAthleteNestedInput
+    timeEntries?: TimeEntryUpdateManyWithoutAthleteNestedInput
+    teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
+    preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
+    gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+  }
+
+  export type AthleteUncheckedUpdateWithoutPracticeAttendancesInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    birthdate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    fpbNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    idNumber?: NullableIntFieldUpdateOperationsInput | number | null
+    idType?: NullableEnumIdTypeFieldUpdateOperationsInput | $Enums.IdType | null
+    active?: BoolFieldUpdateOperationsInput | boolean
+    shirtSize?: NullableEnumSizeFieldUpdateOperationsInput | $Enums.Size | null
+    photo?: NullableStringFieldUpdateOperationsInput | string | null
+    clubId?: IntFieldUpdateOperationsInput | number
+    athleteReports?: AthleteReportUncheckedUpdateManyWithoutAthleteNestedInput
+    reviewedReports?: AthleteReportUncheckedUpdateManyWithoutReviewedAthleteNestedInput
+    gameAthletes?: GameAthleteUncheckedUpdateManyWithoutAthleteNestedInput
+    statistics?: StatisticUncheckedUpdateManyWithoutAthleteNestedInput
+    timeEntries?: TimeEntryUncheckedUpdateManyWithoutAthleteNestedInput
+    teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
+    preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
+    gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+  }
+
+  export type ClubCreateWithoutAttendanceReasonsInput = {
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubCreateNestedManyWithoutClubInput
+    athletes?: AthleteCreateNestedManyWithoutClubInput
+    games?: GameCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
+    teams?: TeamCreateNestedManyWithoutClubInput
+    venues?: VenueCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsCreateNestedOneWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutAttendanceReasonsInput = {
+    id?: number
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
+    athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
+    games?: GameUncheckedCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
+    teams?: TeamUncheckedCreateNestedManyWithoutClubInput
+    venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    practiceSettings?: ClubPracticeSettingsUncheckedCreateNestedOneWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutAttendanceReasonsInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutAttendanceReasonsInput, ClubUncheckedCreateWithoutAttendanceReasonsInput>
+  }
+
+  export type PracticeAthleteCreateWithoutAbsenceReasonInput = {
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceNotes?: string | null
+    practice: PracticeCreateNestedOneWithoutAttendancesInput
+    athlete: AthleteCreateNestedOneWithoutPracticeAttendancesInput
+  }
+
+  export type PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput = {
+    id?: number
+    practiceId: number
+    athleteId: number
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceNotes?: string | null
+  }
+
+  export type PracticeAthleteCreateOrConnectWithoutAbsenceReasonInput = {
+    where: PracticeAthleteWhereUniqueInput
+    create: XOR<PracticeAthleteCreateWithoutAbsenceReasonInput, PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput>
+  }
+
+  export type PracticeAthleteCreateManyAbsenceReasonInputEnvelope = {
+    data: PracticeAthleteCreateManyAbsenceReasonInput | PracticeAthleteCreateManyAbsenceReasonInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ClubUpsertWithoutAttendanceReasonsInput = {
+    update: XOR<ClubUpdateWithoutAttendanceReasonsInput, ClubUncheckedUpdateWithoutAttendanceReasonsInput>
+    create: XOR<ClubCreateWithoutAttendanceReasonsInput, ClubUncheckedCreateWithoutAttendanceReasonsInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutAttendanceReasonsInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutAttendanceReasonsInput, ClubUncheckedUpdateWithoutAttendanceReasonsInput>
+  }
+
+  export type ClubUpdateWithoutAttendanceReasonsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUpdateManyWithoutClubNestedInput
+    games?: GameUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
+    teams?: TeamUpdateManyWithoutClubNestedInput
+    venues?: VenueUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUpdateOneWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutAttendanceReasonsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
+    games?: GameUncheckedUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    practiceSettings?: ClubPracticeSettingsUncheckedUpdateOneWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
+  }
+
+  export type PracticeAthleteUpsertWithWhereUniqueWithoutAbsenceReasonInput = {
+    where: PracticeAthleteWhereUniqueInput
+    update: XOR<PracticeAthleteUpdateWithoutAbsenceReasonInput, PracticeAthleteUncheckedUpdateWithoutAbsenceReasonInput>
+    create: XOR<PracticeAthleteCreateWithoutAbsenceReasonInput, PracticeAthleteUncheckedCreateWithoutAbsenceReasonInput>
+  }
+
+  export type PracticeAthleteUpdateWithWhereUniqueWithoutAbsenceReasonInput = {
+    where: PracticeAthleteWhereUniqueInput
+    data: XOR<PracticeAthleteUpdateWithoutAbsenceReasonInput, PracticeAthleteUncheckedUpdateWithoutAbsenceReasonInput>
+  }
+
+  export type PracticeAthleteUpdateManyWithWhereWithoutAbsenceReasonInput = {
+    where: PracticeAthleteScalarWhereInput
+    data: XOR<PracticeAthleteUpdateManyMutationInput, PracticeAthleteUncheckedUpdateManyWithoutAbsenceReasonInput>
+  }
+
+  export type ClubCreateWithoutPracticeSettingsInput = {
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubCreateNestedManyWithoutClubInput
+    athletes?: AthleteCreateNestedManyWithoutClubInput
+    games?: GameCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleCreateNestedManyWithoutClubInput
+    teams?: TeamCreateNestedManyWithoutClubInput
+    venues?: VenueCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorCreateNestedManyWithoutClubInput
+    staff?: StaffCreateNestedManyWithoutClubInput
+    alerts?: AlertCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsCreateNestedOneWithoutClubInput
+    practices?: PracticeCreateNestedManyWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonCreateNestedManyWithoutClubInput
+    drills?: DrillCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubUncheckedCreateWithoutPracticeSettingsInput = {
+    id?: number
+    name: string
+    shortName?: string | null
+    image?: string | null
+    federationLogo?: string | null
+    backgroundColor?: string | null
+    foregroundColor?: string | null
+    courtBackground?: string | null
+    courtKeyColor?: string | null
+    courtCenterColor?: string | null
+    courtLineColor?: string | null
+    courtMarginColor?: string | null
+    courtShowLogo?: boolean
+    courtLogoRotation?: number
+    fpbClubId?: number | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountClubUncheckedCreateNestedManyWithoutClubInput
+    athletes?: AthleteUncheckedCreateNestedManyWithoutClubInput
+    games?: GameUncheckedCreateNestedManyWithoutClubInput
+    macrocycles?: MacrocycleUncheckedCreateNestedManyWithoutClubInput
+    teams?: TeamUncheckedCreateNestedManyWithoutClubInput
+    venues?: VenueUncheckedCreateNestedManyWithoutClubInput
+    equipmentColors?: EquipmentColorUncheckedCreateNestedManyWithoutClubInput
+    staff?: StaffUncheckedCreateNestedManyWithoutClubInput
+    alerts?: AlertUncheckedCreateNestedManyWithoutClubInput
+    emailSettings?: ClubEmailSettingsUncheckedCreateNestedOneWithoutClubInput
+    practices?: PracticeUncheckedCreateNestedManyWithoutClubInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedCreateNestedManyWithoutClubInput
+    drills?: DrillUncheckedCreateNestedManyWithoutClubInput
+    drillTopics?: DrillTopicUncheckedCreateNestedManyWithoutClubInput
+  }
+
+  export type ClubCreateOrConnectWithoutPracticeSettingsInput = {
+    where: ClubWhereUniqueInput
+    create: XOR<ClubCreateWithoutPracticeSettingsInput, ClubUncheckedCreateWithoutPracticeSettingsInput>
+  }
+
+  export type ClubUpsertWithoutPracticeSettingsInput = {
+    update: XOR<ClubUpdateWithoutPracticeSettingsInput, ClubUncheckedUpdateWithoutPracticeSettingsInput>
+    create: XOR<ClubCreateWithoutPracticeSettingsInput, ClubUncheckedCreateWithoutPracticeSettingsInput>
+    where?: ClubWhereInput
+  }
+
+  export type ClubUpdateToOneWithWhereWithoutPracticeSettingsInput = {
+    where?: ClubWhereInput
+    data: XOR<ClubUpdateWithoutPracticeSettingsInput, ClubUncheckedUpdateWithoutPracticeSettingsInput>
+  }
+
+  export type ClubUpdateWithoutPracticeSettingsInput = {
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUpdateManyWithoutClubNestedInput
+    games?: GameUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutClubNestedInput
+    teams?: TeamUpdateManyWithoutClubNestedInput
+    venues?: VenueUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUpdateManyWithoutClubNestedInput
+    staff?: StaffUpdateManyWithoutClubNestedInput
+    alerts?: AlertUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUpdateOneWithoutClubNestedInput
+    practices?: PracticeUpdateManyWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUpdateManyWithoutClubNestedInput
+    drills?: DrillUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUpdateManyWithoutClubNestedInput
+  }
+
+  export type ClubUncheckedUpdateWithoutPracticeSettingsInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: StringFieldUpdateOperationsInput | string
+    shortName?: NullableStringFieldUpdateOperationsInput | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    federationLogo?: NullableStringFieldUpdateOperationsInput | string | null
+    backgroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    foregroundColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtBackground?: NullableStringFieldUpdateOperationsInput | string | null
+    courtKeyColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtCenterColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtLineColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtMarginColor?: NullableStringFieldUpdateOperationsInput | string | null
+    courtShowLogo?: BoolFieldUpdateOperationsInput | boolean
+    courtLogoRotation?: IntFieldUpdateOperationsInput | number
+    fpbClubId?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountClubUncheckedUpdateManyWithoutClubNestedInput
+    athletes?: AthleteUncheckedUpdateManyWithoutClubNestedInput
+    games?: GameUncheckedUpdateManyWithoutClubNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutClubNestedInput
+    teams?: TeamUncheckedUpdateManyWithoutClubNestedInput
+    venues?: VenueUncheckedUpdateManyWithoutClubNestedInput
+    equipmentColors?: EquipmentColorUncheckedUpdateManyWithoutClubNestedInput
+    staff?: StaffUncheckedUpdateManyWithoutClubNestedInput
+    alerts?: AlertUncheckedUpdateManyWithoutClubNestedInput
+    emailSettings?: ClubEmailSettingsUncheckedUpdateOneWithoutClubNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutClubNestedInput
+    attendanceReasons?: ClubAttendanceReasonUncheckedUpdateManyWithoutClubNestedInput
+    drills?: DrillUncheckedUpdateManyWithoutClubNestedInput
+    drillTopics?: DrillTopicUncheckedUpdateManyWithoutClubNestedInput
   }
 
   export type AthleteReportCreateManyAthleteInput = {
@@ -63402,6 +81661,16 @@ export namespace Prisma {
     equipmentId: number
     equipmentColorId: number
     manualOverride?: boolean
+  }
+
+  export type PracticeAthleteCreateManyAthleteInput = {
+    id?: number
+    practiceId: number
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceReasonId?: number | null
+    absenceNotes?: string | null
   }
 
   export type AthleteReportUpdateWithoutAthleteInput = {
@@ -63626,6 +81895,35 @@ export namespace Prisma {
     equipmentId?: IntFieldUpdateOperationsInput | number
     equipmentColorId?: IntFieldUpdateOperationsInput | number
     manualOverride?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type PracticeAthleteUpdateWithoutAthleteInput = {
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    absenceReason?: ClubAttendanceReasonUpdateOneWithoutAthletesNestedInput
+    practice?: PracticeUpdateOneRequiredWithoutAttendancesNestedInput
+  }
+
+  export type PracticeAthleteUncheckedUpdateWithoutAthleteInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceReasonId?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PracticeAthleteUncheckedUpdateManyWithoutAthleteInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceReasonId?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type GameAthleteCreateManyGameInput = {
@@ -64072,6 +82370,34 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type DrillCreateManyAccountInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+  }
+
   export type AccountClubUpdateWithoutAccountInput = {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     club?: ClubUpdateOneRequiredWithoutAccountsNestedInput
@@ -64158,6 +82484,95 @@ export namespace Prisma {
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DrillUpdateWithoutAccountInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutDrillsNestedInput
+    echelon?: EchelonUpdateOneWithoutDrillsNestedInput
+    graphics?: DrillGraphicUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateWithoutAccountInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    graphics?: DrillGraphicUncheckedUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUncheckedUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUncheckedUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateManyWithoutAccountInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type MesocycleCreateManyMacrocycleInput = {
@@ -64269,6 +82684,124 @@ export namespace Prisma {
     order?: IntFieldUpdateOperationsInput | number
   }
 
+  export type DrillGraphicCreateManyDrillInput = {
+    id?: number
+    order?: number
+    svg: string
+    notes?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DrillTopicLinkCreateManyDrillInput = {
+    topicId: number
+  }
+
+  export type PracticeItemCreateManyDrillInput = {
+    id?: number
+    practiceId: number
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type DrillGraphicUpdateWithoutDrillInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    svg?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DrillGraphicUncheckedUpdateWithoutDrillInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    svg?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DrillGraphicUncheckedUpdateManyWithoutDrillInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    svg?: StringFieldUpdateOperationsInput | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DrillTopicLinkUpdateWithoutDrillInput = {
+    topic?: DrillTopicUpdateOneRequiredWithoutDrillsNestedInput
+  }
+
+  export type DrillTopicLinkUncheckedUpdateWithoutDrillInput = {
+    topicId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type DrillTopicLinkUncheckedUpdateManyWithoutDrillInput = {
+    topicId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type PracticeItemUpdateWithoutDrillInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    practice?: PracticeUpdateOneRequiredWithoutItemsNestedInput
+  }
+
+  export type PracticeItemUncheckedUpdateWithoutDrillInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PracticeItemUncheckedUpdateManyWithoutDrillInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DrillTopicLinkCreateManyTopicInput = {
+    drillId: number
+  }
+
+  export type DrillTopicLinkUpdateWithoutTopicInput = {
+    drill?: DrillUpdateOneRequiredWithoutTopicsNestedInput
+  }
+
+  export type DrillTopicLinkUncheckedUpdateWithoutTopicInput = {
+    drillId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type DrillTopicLinkUncheckedUpdateManyWithoutTopicInput = {
+    drillId?: IntFieldUpdateOperationsInput | number
+  }
+
   export type TeamCreateManyEchelonInput = {
     id?: number
     name: string
@@ -64300,6 +82833,34 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type DrillCreateManyEchelonInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId?: number | null
+    accountId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+  }
+
   export type TeamUpdateWithoutEchelonInput = {
     name?: StringFieldUpdateOperationsInput | string
     type?: NullableEnumTeamTypeFieldUpdateOperationsInput | $Enums.TeamType | null
@@ -64310,6 +82871,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
     staff?: TeamStaffUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutEchelonInput = {
@@ -64323,6 +82886,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
     staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateManyWithoutEchelonInput = {
@@ -64404,6 +82969,95 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type DrillUpdateWithoutEchelonInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    club?: ClubUpdateOneWithoutDrillsNestedInput
+    account?: AccountUpdateOneWithoutDrillsNestedInput
+    graphics?: DrillGraphicUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateWithoutEchelonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    graphics?: DrillGraphicUncheckedUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUncheckedUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUncheckedUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateManyWithoutEchelonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: NullableIntFieldUpdateOperationsInput | number | null
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type AccountClubCreateManyClubInput = {
     id?: number
     accountId: number
@@ -64460,6 +83114,7 @@ export namespace Prisma {
     notes?: string | null
     number?: number | null
     name?: string | null
+    teamId?: number | null
   }
 
   export type TeamCreateManyClubInput = {
@@ -64520,6 +83175,64 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
+  export type PracticeCreateManyClubInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    teamId: number
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type ClubAttendanceReasonCreateManyClubInput = {
+    id?: number
+    key?: string | null
+    name: string
+    order?: number
+  }
+
+  export type DrillCreateManyClubInput = {
+    id?: number
+    name?: string | null
+    title?: string | null
+    svg?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accountId?: number | null
+    echelonId?: number | null
+    description?: string | null
+    goals?: string | null
+    variations?: string | null
+    tips?: string | null
+    defaultText?: string | null
+    ballsCount?: number
+    basketsCount?: number
+    conesCount?: number
+    extraEquipment?: string | null
+    playersCount?: number
+    coachesCount?: number
+    typeFundamental?: boolean
+    typeIndividual?: boolean
+    typeTeam?: boolean
+    posGuard?: boolean
+    posForward?: boolean
+    posCenter?: boolean
+  }
+
+  export type DrillTopicCreateManyClubInput = {
+    id?: number
+    key?: string | null
+    name: string
+    order?: number
+  }
+
   export type AccountClubUpdateWithoutClubInput = {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     account?: AccountUpdateOneRequiredWithoutClubsNestedInput
@@ -64559,6 +83272,7 @@ export namespace Prisma {
     teams?: TeamAthleteUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateWithoutClubInput = {
@@ -64582,6 +83296,7 @@ export namespace Prisma {
     teams?: TeamAthleteUncheckedUpdateManyWithoutAthleteNestedInput
     preferredNumbers?: AthletePreferredNumberUncheckedUpdateManyWithoutAthleteNestedInput
     gameEquipments?: GameEquipmentUncheckedUpdateManyWithoutAthleteNestedInput
+    practiceAttendances?: PracticeAthleteUncheckedUpdateManyWithoutAthleteNestedInput
   }
 
   export type AthleteUncheckedUpdateManyWithoutClubInput = {
@@ -64700,6 +83415,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: NullableIntFieldUpdateOperationsInput | number | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    team?: TeamUpdateOneWithoutMacrocyclesNestedInput
     mesocycles?: MesocycleUpdateManyWithoutMacrocycleNestedInput
   }
 
@@ -64710,6 +83426,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: NullableIntFieldUpdateOperationsInput | number | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    teamId?: NullableIntFieldUpdateOperationsInput | number | null
     mesocycles?: MesocycleUncheckedUpdateManyWithoutMacrocycleNestedInput
   }
 
@@ -64720,6 +83437,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     number?: NullableIntFieldUpdateOperationsInput | number | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
+    teamId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type TeamUpdateWithoutClubInput = {
@@ -64732,6 +83450,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUpdateManyWithoutTeamNestedInput
     staff?: TeamStaffUpdateManyWithoutTeamNestedInput
     games?: GameUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateWithoutClubInput = {
@@ -64745,6 +83465,8 @@ export namespace Prisma {
     athletes?: TeamAthleteUncheckedUpdateManyWithoutTeamNestedInput
     staff?: TeamStaffUncheckedUpdateManyWithoutTeamNestedInput
     games?: GameUncheckedUpdateManyWithoutTeamNestedInput
+    macrocycles?: MacrocycleUncheckedUpdateManyWithoutTeamNestedInput
+    practices?: PracticeUncheckedUpdateManyWithoutTeamNestedInput
   }
 
   export type TeamUncheckedUpdateManyWithoutClubInput = {
@@ -64905,6 +83627,190 @@ export namespace Prisma {
     triggerDate?: DateTimeFieldUpdateOperationsInput | Date | string
     expiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PracticeUpdateWithoutClubInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    team?: TeamUpdateOneRequiredWithoutPracticesNestedInput
+    attendances?: PracticeAthleteUpdateManyWithoutPracticeNestedInput
+    items?: PracticeItemUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type PracticeUncheckedUpdateWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    attendances?: PracticeAthleteUncheckedUpdateManyWithoutPracticeNestedInput
+    items?: PracticeItemUncheckedUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type PracticeUncheckedUpdateManyWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    teamId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type ClubAttendanceReasonUpdateWithoutClubInput = {
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    athletes?: PracticeAthleteUpdateManyWithoutAbsenceReasonNestedInput
+  }
+
+  export type ClubAttendanceReasonUncheckedUpdateWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    athletes?: PracticeAthleteUncheckedUpdateManyWithoutAbsenceReasonNestedInput
+  }
+
+  export type ClubAttendanceReasonUncheckedUpdateManyWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type DrillUpdateWithoutClubInput = {
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    account?: AccountUpdateOneWithoutDrillsNestedInput
+    echelon?: EchelonUpdateOneWithoutDrillsNestedInput
+    graphics?: DrillGraphicUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+    graphics?: DrillGraphicUncheckedUpdateManyWithoutDrillNestedInput
+    topics?: DrillTopicLinkUncheckedUpdateManyWithoutDrillNestedInput
+    practiceItems?: PracticeItemUncheckedUpdateManyWithoutDrillNestedInput
+  }
+
+  export type DrillUncheckedUpdateManyWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    svg?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accountId?: NullableIntFieldUpdateOperationsInput | number | null
+    echelonId?: NullableIntFieldUpdateOperationsInput | number | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: NullableStringFieldUpdateOperationsInput | string | null
+    variations?: NullableStringFieldUpdateOperationsInput | string | null
+    tips?: NullableStringFieldUpdateOperationsInput | string | null
+    defaultText?: NullableStringFieldUpdateOperationsInput | string | null
+    ballsCount?: IntFieldUpdateOperationsInput | number
+    basketsCount?: IntFieldUpdateOperationsInput | number
+    conesCount?: IntFieldUpdateOperationsInput | number
+    extraEquipment?: NullableStringFieldUpdateOperationsInput | string | null
+    playersCount?: IntFieldUpdateOperationsInput | number
+    coachesCount?: IntFieldUpdateOperationsInput | number
+    typeFundamental?: BoolFieldUpdateOperationsInput | boolean
+    typeIndividual?: BoolFieldUpdateOperationsInput | boolean
+    typeTeam?: BoolFieldUpdateOperationsInput | boolean
+    posGuard?: BoolFieldUpdateOperationsInput | boolean
+    posForward?: BoolFieldUpdateOperationsInput | boolean
+    posCenter?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type DrillTopicUpdateWithoutClubInput = {
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    drills?: DrillTopicLinkUpdateManyWithoutTopicNestedInput
+  }
+
+  export type DrillTopicUncheckedUpdateWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
+    drills?: DrillTopicLinkUncheckedUpdateManyWithoutTopicNestedInput
+  }
+
+  export type DrillTopicUncheckedUpdateManyWithoutClubInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key?: NullableStringFieldUpdateOperationsInput | string | null
+    name?: StringFieldUpdateOperationsInput | string
+    order?: IntFieldUpdateOperationsInput | number
   }
 
   export type EquipmentColorCreateManySeasonInput = {
@@ -65135,6 +84041,32 @@ export namespace Prisma {
     image4?: string | null
   }
 
+  export type MacrocycleCreateManyTeamInput = {
+    id?: number
+    startDate: Date | string
+    endDate: Date | string
+    notes?: string | null
+    number?: number | null
+    name?: string | null
+    clubId: number
+  }
+
+  export type PracticeCreateManyTeamInput = {
+    id?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    clubId: number
+    date: Date | string
+    endTime: Date | string
+    subtitle?: string | null
+    topic: string
+    offensiveGoals?: string | null
+    defensiveGoals?: string | null
+    notes?: string | null
+    completed?: boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+  }
+
   export type TeamAthleteUpdateWithoutTeamInput = {
     athlete?: AthleteUpdateOneRequiredWithoutTeamsNestedInput
   }
@@ -65259,6 +84191,88 @@ export namespace Prisma {
     image2?: NullableStringFieldUpdateOperationsInput | string | null
     image3?: NullableStringFieldUpdateOperationsInput | string | null
     image4?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type MacrocycleUpdateWithoutTeamInput = {
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    club?: ClubUpdateOneRequiredWithoutMacrocyclesNestedInput
+    mesocycles?: MesocycleUpdateManyWithoutMacrocycleNestedInput
+  }
+
+  export type MacrocycleUncheckedUpdateWithoutTeamInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    clubId?: IntFieldUpdateOperationsInput | number
+    mesocycles?: MesocycleUncheckedUpdateManyWithoutMacrocycleNestedInput
+  }
+
+  export type MacrocycleUncheckedUpdateManyWithoutTeamInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    startDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    endDate?: DateTimeFieldUpdateOperationsInput | Date | string
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    number?: NullableIntFieldUpdateOperationsInput | number | null
+    name?: NullableStringFieldUpdateOperationsInput | string | null
+    clubId?: IntFieldUpdateOperationsInput | number
+  }
+
+  export type PracticeUpdateWithoutTeamInput = {
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    club?: ClubUpdateOneRequiredWithoutPracticesNestedInput
+    attendances?: PracticeAthleteUpdateManyWithoutPracticeNestedInput
+    items?: PracticeItemUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type PracticeUncheckedUpdateWithoutTeamInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
+    attendances?: PracticeAthleteUncheckedUpdateManyWithoutPracticeNestedInput
+    items?: PracticeItemUncheckedUpdateManyWithoutPracticeNestedInput
+  }
+
+  export type PracticeUncheckedUpdateManyWithoutTeamInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    clubId?: IntFieldUpdateOperationsInput | number
+    date?: DateTimeFieldUpdateOperationsInput | Date | string
+    endTime?: DateTimeFieldUpdateOperationsInput | Date | string
+    subtitle?: NullableStringFieldUpdateOperationsInput | string | null
+    topic?: StringFieldUpdateOperationsInput | string
+    offensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    defensiveGoals?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    completed?: BoolFieldUpdateOperationsInput | boolean
+    groups?: NullableJsonNullValueInput | InputJsonValue
   }
 
   export type TeamStaffCreateManyStaffInput = {
@@ -65691,6 +84705,135 @@ export namespace Prisma {
     readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PracticeAthleteCreateManyPracticeInput = {
+    id?: number
+    athleteId: number
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceReasonId?: number | null
+    absenceNotes?: string | null
+  }
+
+  export type PracticeItemCreateManyPracticeInput = {
+    id?: number
+    order: number
+    duration?: number
+    type?: $Enums.PracticeItemType
+    title?: string | null
+    text?: string | null
+    drillId?: number | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PracticeAthleteUpdateWithoutPracticeInput = {
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    absenceReason?: ClubAttendanceReasonUpdateOneWithoutAthletesNestedInput
+    athlete?: AthleteUpdateOneRequiredWithoutPracticeAttendancesNestedInput
+  }
+
+  export type PracticeAthleteUncheckedUpdateWithoutPracticeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    athleteId?: IntFieldUpdateOperationsInput | number
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceReasonId?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PracticeAthleteUncheckedUpdateManyWithoutPracticeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    athleteId?: IntFieldUpdateOperationsInput | number
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceReasonId?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PracticeItemUpdateWithoutPracticeInput = {
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    drill?: DrillUpdateOneWithoutPracticeItemsNestedInput
+  }
+
+  export type PracticeItemUncheckedUpdateWithoutPracticeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    drillId?: NullableIntFieldUpdateOperationsInput | number | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PracticeItemUncheckedUpdateManyWithoutPracticeInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    duration?: IntFieldUpdateOperationsInput | number
+    type?: EnumPracticeItemTypeFieldUpdateOperationsInput | $Enums.PracticeItemType
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    text?: NullableStringFieldUpdateOperationsInput | string | null
+    drillId?: NullableIntFieldUpdateOperationsInput | number | null
+    graphics?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PracticeAthleteCreateManyAbsenceReasonInput = {
+    id?: number
+    practiceId: number
+    athleteId: number
+    attending?: boolean
+    attended?: boolean | null
+    lateMinutes?: number | null
+    absenceNotes?: string | null
+  }
+
+  export type PracticeAthleteUpdateWithoutAbsenceReasonInput = {
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+    practice?: PracticeUpdateOneRequiredWithoutAttendancesNestedInput
+    athlete?: AthleteUpdateOneRequiredWithoutPracticeAttendancesNestedInput
+  }
+
+  export type PracticeAthleteUncheckedUpdateWithoutAbsenceReasonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    athleteId?: IntFieldUpdateOperationsInput | number
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type PracticeAthleteUncheckedUpdateManyWithoutAbsenceReasonInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    practiceId?: IntFieldUpdateOperationsInput | number
+    athleteId?: IntFieldUpdateOperationsInput | number
+    attending?: BoolFieldUpdateOperationsInput | boolean
+    attended?: NullableBoolFieldUpdateOperationsInput | boolean | null
+    lateMinutes?: NullableIntFieldUpdateOperationsInput | number | null
+    absenceNotes?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
 

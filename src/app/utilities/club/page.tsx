@@ -41,10 +41,13 @@ import { useSession } from 'next-auth/react';
 import ClubDetails from './assets/clubDetails';
 import ClubAccounts from './assets/clubAccounts';
 import ClubEmailSettings from './assets/clubEmailSettings';
-import { log } from '@/lib/logger';
+import ClubCourtTheme from './assets/clubCourtTheme';
+import ClubAttendanceReasons from './assets/clubAttendanceReasons';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
+import { useClubs, useCreateClub, useDeleteClub, useUpdateClub } from '@/hooks/useClubs';
+import { useMyClubs } from '@/hooks/useMyClubs';
 
 const getInitials = (name: string): string => {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -56,10 +59,14 @@ const getInitials = (name: string): string => {
 const ClubPage = (): ReactElement => {
   const { t } = useTranslation();
 
-  const [clubs, setClubs] = useState<ClubInterface[]>([]);
+  const { data: clubs = [], isLoading: loading, error: clubsError } = useClubs();
+  const createClubMutation = useCreateClub();
+  const updateClubMutation = useUpdateClub();
+  const deleteClubMutation = useDeleteClub();
+  const myClubsQuery = useMyClubs();
+
   const [selectedClub, setSelectedClub] = useState<ClubInterface | null>(null);
   const [editing, setEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const { data: session } = useSession();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -68,22 +75,8 @@ const ClubPage = (): ReactElement => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
-    async function fetchClubs(): Promise<void> {
-      try {
-        const response = await fetch('/api/clubs');
-        if (response.ok) {
-          const data: ClubInterface[] = await response.json();
-          setClubs(data.sort((a, b) => (a.id ?? 0) - (b.id ?? 0)));
-        }
-      } catch (error) {
-        log.error('Failed to fetch clubs:', error);
-        setErrorMessage(t('messages.fetchError'));
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchClubs();
-  }, [t]);
+    if (clubsError) setErrorMessage(t('messages.fetchError'));
+  }, [clubsError, t]);
 
   const handleNewClub = (): void => {
     setSelectedClub({
@@ -131,74 +124,56 @@ const ClubPage = (): ReactElement => {
     setSuccessMessage('');
     setErrorMessage('');
 
-    if (selectedClub) {
-      try {
-        const method = selectedClub.id === 0 ? 'POST' : 'PUT';
-        const url = selectedClub.id === 0 ? '/api/clubs' : `/api/clubs/${selectedClub.id}`;
-        const response = await fetch(url, {
-          method,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(selectedClub),
+    if (!selectedClub) return;
+
+    try {
+      if (selectedClub.id === 0) {
+        const savedClub = await createClubMutation.mutateAsync(selectedClub);
+        const addUserResponse = await fetch(`/api/clubs/${savedClub.id}/accounts`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            accountId: session?.user?.id,
+            clubId: savedClub.id,
+            roles: [{ role: 'ADMIN' }],
+          }),
         });
-        if (response.ok) {
-          const savedClub = await response.json();
-          if (selectedClub.id === 0) {
-            setClubs((prev) => [...prev, savedClub]);
-            const addUserResponse = await fetch(`/api/clubs/${savedClub.id}/accounts`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                accountId: session?.user?.id,
-                clubId: savedClub.id,
-                roles: [{ role: 'ADMIN' }],
-              }),
-            });
-            if (!addUserResponse.ok) {
-              const errorData = await addUserResponse.json();
-              setErrorMessage(`${t('club.save.addUserError')}: ${errorData.error}`);
-            } else {
-              setSuccessMessage(t('club.save.createSuccess'));
-            }
-            setSelectedClub(savedClub);
-          } else {
-            setClubs((prev) => prev.map((club) => (club.id === savedClub.id ? savedClub : club)));
-            setSelectedClub(savedClub);
-            setSuccessMessage(t('club.save.updateSuccess'));
-          }
-          setEditing(false);
+        if (!addUserResponse.ok) {
+          const errorData = await addUserResponse.json();
+          setErrorMessage(`${t('club.save.addUserError')}: ${errorData.error}`);
         } else {
-          setErrorMessage(t('club.save.error'));
+          setSuccessMessage(t('club.save.createSuccess'));
         }
-      } catch (error) {
-        setErrorMessage(`${t('club.save.error')}: ${error}`);
+        setSelectedClub(savedClub);
+      } else {
+        const savedClub = await updateClubMutation.mutateAsync({
+          id: selectedClub.id!,
+          payload: selectedClub,
+        });
+        setSelectedClub(savedClub);
+        setSuccessMessage(t('club.save.updateSuccess'));
       }
+      setEditing(false);
+    } catch (error) {
+      setErrorMessage(`${t('club.save.error')}: ${(error as Error).message}`);
     }
   };
 
-  const handleDeleteClub = async (): Promise<void> => {
+  const handleDeleteClub = (): void => {
     setSuccessMessage('');
     setErrorMessage('');
 
-    if (!selectedClub) return;
-    try {
-      const response = await fetch(`/api/clubs/${selectedClub.id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        setClubs((prev) => prev.filter((club) => club.id !== selectedClub.id));
+    if (!selectedClub?.id) return;
+    deleteClubMutation.mutate(selectedClub.id, {
+      onSuccess: () => {
         setSelectedClub(null);
         setEditing(false);
         setSuccessMessage(t('club.save.deleteSuccess'));
-      } else {
-        setErrorMessage(t('club.save.deleteError'));
-      }
-    } catch (error) {
-      setErrorMessage(`${t('club.save.deleteError')}: ${error}`);
-    }
+      },
+      onError: (error) => {
+        setErrorMessage(`${t('club.save.deleteError')}: ${(error as Error).message}`);
+      },
+    });
   };
 
   const filteredClubs = useMemo(() => {
@@ -441,6 +416,29 @@ const ClubPage = (): ReactElement => {
                     }
                   />
                 )}
+                <ClubCourtTheme
+                  selectedClub={selectedClub}
+                  onEditChange={handleEditChange}
+                  expanded={expandedSection === 'appearance'}
+                  onExpandedChange={(isExpanded) =>
+                    setExpandedSection(isExpanded ? 'appearance' : false)
+                  }
+                />
+                {selectedClub.id &&
+                selectedClub.id !== 0 &&
+                selectedClub.id === Number(session?.user?.selectedClubId) ? (
+                  <ClubAttendanceReasons
+                    canManage={
+                      myClubsQuery.data?.clubs.some(
+                        (c) => c.id === selectedClub.id && c.roles.includes('ADMIN')
+                      ) ?? false
+                    }
+                    expanded={expandedSection === 'attendance'}
+                    onExpandedChange={(isExpanded) =>
+                      setExpandedSection(isExpanded ? 'attendance' : false)
+                    }
+                  />
+                ) : null}
 
                 {/* Action bar - always at the bottom */}
                 <Paper
@@ -492,7 +490,7 @@ const ClubPage = (): ReactElement => {
             <Button
               onClick={() => {
                 setDeleteDialogOpen(false);
-                void handleDeleteClub();
+                handleDeleteClub();
               }}
               color="error"
               variant="contained"

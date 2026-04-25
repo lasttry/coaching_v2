@@ -7,7 +7,6 @@ import {
   TextField,
   Typography,
   Alert,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -32,6 +31,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import { useMessage } from '@/hooks/useMessage';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 const TeamsPage = (): ReactElement => {
   const { t } = useTranslation();
@@ -50,6 +50,8 @@ const TeamsPage = (): ReactElement => {
   });
   const { message: errorMessage, setTimedMessage: setErrorMessage } = useMessage(10000);
   const { message: successMessage, setTimedMessage: setSuccessMessage } = useMessage(5000);
+
+  const isFormDirty = useFormSnapshotDirty(dialogOpen, form);
 
   useEffect(() => {
     fetchTeams();
@@ -194,7 +196,7 @@ const TeamsPage = (): ReactElement => {
       <Button variant="contained" onClick={() => setDialogOpen(true)} sx={{ mt: 3 }}>
         {t('team.add')}
       </Button>
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+      <GuardedDialog open={dialogOpen} onClose={() => setDialogOpen(false)} isDirty={isFormDirty}>
         <DialogTitle>{t('team.add')}</DialogTitle>
         <DialogContent>
           {/* Team Name */}
@@ -243,7 +245,7 @@ const TeamsPage = (): ReactElement => {
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Athletes List for Adding */}
       {selectedTeam && (

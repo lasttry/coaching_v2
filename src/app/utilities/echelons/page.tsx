@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -44,6 +44,8 @@ import '@/lib/i18n.client';
 import { EchelonInterface } from '@/types/echelons/types';
 import { Gender } from '@prisma/client';
 import { log } from '@/lib/logger';
+import { useDeleteEchelon, useEchelons, useSaveEchelon } from '@/hooks/useEchelons';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 const initialEchelon: EchelonInterface = {
   id: null,
@@ -71,8 +73,9 @@ const genderColorHex = (gender: Gender | null): string => {
 export default function EchelonsPage(): React.JSX.Element {
   const { t } = useTranslation();
 
-  const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: echelons = [], isLoading: loading, error: fetchError } = useEchelons();
+  const saveMutation = useSaveEchelon();
+  const deleteMutation = useDeleteEchelon();
   const [genderFilter, setGenderFilter] = useState<Gender | 'ALL'>('ALL');
   const [search, setSearch] = useState('');
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -82,6 +85,10 @@ export default function EchelonsPage(): React.JSX.Element {
   const [deleteId, setDeleteId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Snapshot the editing form when the dialog opens so we know whether the
+  // coach has touched anything before they try to dismiss the dialog.
+  const isEditDirty = useFormSnapshotDirty(dialogOpen, formData);
 
   const genderLabel = useCallback(
     (gender: Gender | null): string => {
@@ -93,22 +100,12 @@ export default function EchelonsPage(): React.JSX.Element {
     [t]
   );
 
-  useEffect(() => {
-    const fetchEchelons = async (): Promise<void> => {
-      try {
-        const res = await fetch('/api/echelons');
-        if (!res.ok) throw new Error('Failed to fetch echelons');
-        const data = await res.json();
-        setEchelons(data);
-      } catch (err) {
-        log.error('Error fetching echelons:', err);
-        setErrorMessage(t('echelon.failedFetch'));
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEchelons();
-  }, [t]);
+  React.useEffect(() => {
+    if (fetchError) {
+      log.error('Error fetching echelons:', fetchError);
+      setErrorMessage(fetchError instanceof Error ? fetchError.message : t('echelon.failedFetch'));
+    }
+  }, [fetchError, t]);
 
   const handleOpenDialog = useCallback((echelon?: EchelonInterface): void => {
     if (echelon) {
@@ -127,53 +124,32 @@ export default function EchelonsPage(): React.JSX.Element {
     setFormData(initialEchelon);
   }, []);
 
-  const handleSave = async (): Promise<void> => {
+  const handleSave = (): void => {
     if (!formData.name?.trim() || !formData.minAge || !formData.gender) {
       setErrorMessage(t('messages.missingFields'));
       return;
     }
 
-    try {
-      let res: Response;
-      if (editingEchelon?.id) {
-        res = await fetch(`/api/echelons/${editingEchelon.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        });
-      } else {
-        res = await fetch('/api/echelons', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
-        });
-      }
-
-      if (!res.ok) throw new Error(await res.text());
-      const saved: EchelonInterface = await res.json();
-
-      setEchelons((prev) => {
-        const exists = prev.some((e) => e.id === saved.id);
-        if (exists) {
-          return prev.map((e) => (e.id === saved.id ? saved : e));
-        }
-        return [...prev, saved];
-      });
-
-      setSuccessMessage(
-        t('echelon.save.success', {
-          status: editingEchelon ? t('status.updated') : t('status.created'),
-        })
-      );
-      handleCloseDialog();
-    } catch (err) {
-      log.error('Error saving echelon:', err);
-      setErrorMessage(
-        t('echelon.save.error', {
-          status: editingEchelon ? t('actions.update') : t('actions.create'),
-        })
-      );
-    }
+    saveMutation.mutate(formData, {
+      onSuccess: () => {
+        setSuccessMessage(
+          t('echelon.save.success', {
+            status: editingEchelon ? t('status.updated') : t('status.created'),
+          })
+        );
+        handleCloseDialog();
+      },
+      onError: (err) => {
+        log.error('Error saving echelon:', err);
+        setErrorMessage(
+          err instanceof Error
+            ? err.message
+            : t('echelon.save.error', {
+                status: editingEchelon ? t('actions.update') : t('actions.create'),
+              })
+        );
+      },
+    });
   };
 
   const confirmDelete = useCallback((id: number | null): void => {
@@ -211,21 +187,24 @@ export default function EchelonsPage(): React.JSX.Element {
     };
   }, [echelons]);
 
-  const handleDelete = async (): Promise<void> => {
+  const handleDelete = (): void => {
     if (!deleteId) return;
 
-    try {
-      const res = await fetch(`/api/echelons/${deleteId}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error(await res.text());
-
-      setEchelons((prev) => prev.filter((e) => e.id !== deleteId));
-      setSuccessMessage(t('echelon.save.success', { status: t('status.deleted') }));
-      setDeleteConfirmOpen(false);
-      setDeleteId(null);
-    } catch (err) {
-      log.error('Error deleting echelon:', err);
-      setErrorMessage(t('echelon.save.error', { status: t('actions.delete') }));
-    }
+    deleteMutation.mutate(deleteId, {
+      onSuccess: () => {
+        setSuccessMessage(t('echelon.save.success', { status: t('status.deleted') }));
+        setDeleteConfirmOpen(false);
+        setDeleteId(null);
+      },
+      onError: (err) => {
+        log.error('Error deleting echelon:', err);
+        setErrorMessage(
+          err instanceof Error
+            ? err.message
+            : t('echelon.save.error', { status: t('actions.delete') })
+        );
+      },
+    });
   };
 
   return (
@@ -441,7 +420,13 @@ export default function EchelonsPage(): React.JSX.Element {
       </Grid>
 
       {/* Create/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={handleCloseDialog} fullWidth maxWidth="sm">
+      <GuardedDialog
+        open={dialogOpen}
+        onClose={handleCloseDialog}
+        isDirty={isEditDirty}
+        fullWidth
+        maxWidth="sm"
+      >
         <DialogTitle>{editingEchelon ? t('echelon.update') : t('echelon.create')}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
@@ -511,7 +496,7 @@ export default function EchelonsPage(): React.JSX.Element {
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteConfirmOpen} onClose={() => setDeleteConfirmOpen(false)}>

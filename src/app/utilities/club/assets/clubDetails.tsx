@@ -18,11 +18,9 @@ import {
   Place as PlaceIcon,
   AddCircleOutlined as AddCircleIcon,
   Business as BusinessIcon,
-  Palette as PaletteIcon,
   Image as ImageIcon,
 } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { CompactPicker } from 'react-color';
 import { ClubInterface } from '@/types/club/types';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
@@ -290,106 +288,6 @@ const ClubDetails: React.FC<ClubDetailsProps> = ({
                     </Button>
                   )}
                 </Stack>
-              </Box>
-            </Grid>
-          </Grid>
-        </AccordionDetails>
-      </Accordion>
-
-      {/* Cores */}
-      <Accordion expanded={expanded === 'colors'} onChange={handleChange('colors')} sx={{ mb: 1 }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <SectionHeader
-            icon={<PaletteIcon />}
-            title={t('club.backgroundColor') + ' / ' + t('club.foregroundColor')}
-            badge={
-              <Stack direction="row" spacing={0.5}>
-                <Box
-                  sx={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 0.5,
-                    backgroundColor: bg,
-                    border: '1px solid',
-                    borderColor: 'divider',
-                  }}
-                />
-                <Box
-                  sx={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 0.5,
-                    backgroundColor: fg,
-                    border: '1px solid',
-                    borderColor: 'divider',
-                  }}
-                />
-              </Stack>
-            }
-          />
-        </AccordionSummary>
-        <AccordionDetails>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
-                {t('club.backgroundColor')}
-              </Typography>
-              <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                <Box
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 1,
-                    backgroundColor: bg,
-                    border: '1px solid',
-                    borderColor: 'divider',
-                  }}
-                />
-                <CompactPicker
-                  color={bg}
-                  onChangeComplete={(color) => onEditChange('backgroundColor', color.hex)}
-                />
-              </Stack>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
-                {t('club.foregroundColor')}
-              </Typography>
-              <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
-                <Box
-                  sx={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 1,
-                    backgroundColor: fg,
-                    border: '1px solid',
-                    borderColor: 'divider',
-                  }}
-                />
-                <CompactPicker
-                  color={fg}
-                  onChangeComplete={(color) => onEditChange('foregroundColor', color.hex)}
-                />
-              </Stack>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <Box
-                sx={{
-                  p: 2,
-                  borderRadius: 1,
-                  backgroundColor: bg,
-                  color: fg,
-                  textAlign: 'center',
-                  border: '1px solid',
-                  borderColor: 'divider',
-                }}
-              >
-                <Typography variant="h6" sx={{ color: 'inherit', fontWeight: 700 }}>
-                  {selectedClub.name || t('club.singular')}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'inherit', opacity: 0.8 }}>
-                  {bg} / {fg}
-                </Typography>
               </Box>
             </Grid>
           </Grid>

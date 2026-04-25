@@ -11,6 +11,13 @@ export function mapClubToInterface(club: Club): ClubInterface {
     federationLogo: club.federationLogo ?? undefined,
     backgroundColor: club.backgroundColor ?? undefined,
     foregroundColor: club.foregroundColor ?? undefined,
+    courtBackground: club.courtBackground ?? undefined,
+    courtKeyColor: club.courtKeyColor ?? undefined,
+    courtCenterColor: club.courtCenterColor ?? undefined,
+    courtLineColor: club.courtLineColor ?? undefined,
+    courtMarginColor: club.courtMarginColor ?? undefined,
+    courtShowLogo: club.courtShowLogo,
+    courtLogoRotation: club.courtLogoRotation,
     fpbClubId: club.fpbClubId ?? undefined,
     createdAt: club.createdAt ?? undefined,
     updatedAt: club.updatedAt ?? undefined,
@@ -25,6 +32,13 @@ export interface ClubInterface {
   federationLogo?: string;
   backgroundColor?: string;
   foregroundColor?: string;
+  courtBackground?: string;
+  courtKeyColor?: string;
+  courtCenterColor?: string;
+  courtLineColor?: string;
+  courtMarginColor?: string;
+  courtShowLogo?: boolean;
+  courtLogoRotation?: number;
   fpbClubId?: number | null;
 
   venues?: VenueInterface[];

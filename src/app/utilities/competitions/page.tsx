@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -35,6 +35,9 @@ import { log } from '@/lib/logger';
 import { useMessage } from '@/hooks/useMessage';
 import { CompetitionInterface, CompetitionSerieInterface } from '@/types/competition/types';
 import { EchelonInterface } from '@/types/echelons/types';
+import { useCompetitions, useDeleteCompetition, useSaveCompetition } from '@/hooks/useCompetitions';
+import { useEchelons } from '@/hooks/useEchelons';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 import { motion, AnimatePresence } from 'framer-motion';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import EditIcon from '@mui/icons-material/Edit';
@@ -73,11 +76,17 @@ const CompetitionsPage: React.FC = () => {
   const { message: errorMessage, setTimedMessage: setErrorMessage } = useMessage(5000);
   const { message: successMessage, setTimedMessage: setSuccessMessage } = useMessage(5000);
 
-  const [competitions, setCompetitions] = useState<CompetitionInterface[]>([]);
-  const [echelons, setEchelons] = useState<EchelonInterface[]>([]);
+  const {
+    data: competitions = [] as CompetitionInterface[],
+    isLoading: loadingCompetitions,
+    error: competitionsError,
+  } = useCompetitions();
+  const { data: echelons = [] as EchelonInterface[], error: echelonsError } = useEchelons();
+  const saveMutation = useSaveCompetition();
+  const deleteMutation = useDeleteCompetition();
+  const loading = loadingCompetitions;
   const [filteredEchelon, setFilteredEchelon] = useState<number | ''>('');
   const [search, setSearch] = useState('');
-  const [loading, setLoading] = useState(true);
   const [expandedEchelon, setExpandedEchelon] = useState<string | false>(false);
   const [initialExpandDone, setInitialExpandDone] = useState(false);
 
@@ -86,73 +95,48 @@ const CompetitionsPage: React.FC = () => {
   const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
   const [newSeries, setNewSeries] = useState<CompetitionSerieInterface>(initialSeries);
 
+  const isCompetitionDirty = useFormSnapshotDirty(openDialog, {
+    selectedCompetition,
+    newSeries,
+  });
+
   const [editingSerie, setEditingSerie] = useState<CompetitionSerieInterface | null>(null);
 
   const formatSerie = (serie: CompetitionSerieInterface): string => {
     return serie.fpbSerieId ? `${serie.name} (${serie.fpbSerieId})` : serie.name;
   };
 
-  const fetchData = useCallback(async (): Promise<void> => {
-    try {
-      setLoading(true);
-      const [compRes, echRes] = await Promise.all([
-        fetch('/api/competition'),
-        fetch('/api/echelons'),
-      ]);
-      const [compData, echData] = await Promise.all([compRes.json(), echRes.json()]);
-      if (!compRes.ok || !echRes.ok) throw new Error('Failed to fetch data');
-      setCompetitions(compData);
-      setEchelons(echData);
-    } catch (err) {
-      log.error('Error fetching competitions:', err);
-      setErrorMessage(t('messages.fetchError'));
-    } finally {
-      setLoading(false);
-    }
-  }, [t, setErrorMessage]);
-
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  const handleSaveCompetition = async (): Promise<void> => {
-    if (!selectedCompetition) return;
-    try {
-      const method = selectedCompetition.id ? 'PUT' : 'POST';
-      const url = selectedCompetition.id
-        ? `/api/competition/${selectedCompetition.id}`
-        : '/api/competition';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(selectedCompetition),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save competition');
-
-      setSuccessMessage(
-        selectedCompetition.id ? t('messages.saveSuccess') : t('messages.addSuccess')
-      );
-      setOpenDialog(false);
-      await fetchData();
-    } catch (err) {
-      log.error('Error saving competition:', err);
-      setErrorMessage(t('messages.saveError'));
+    const err = competitionsError || echelonsError;
+    if (err) {
+      log.error('Error fetching competitions:', err);
+      setErrorMessage(err instanceof Error ? err.message : t('messages.fetchError'));
     }
+  }, [competitionsError, echelonsError, setErrorMessage, t]);
+
+  const handleSaveCompetition = (): void => {
+    if (!selectedCompetition) return;
+    const isEditing = !!selectedCompetition.id;
+    saveMutation.mutate(selectedCompetition, {
+      onSuccess: () => {
+        setSuccessMessage(isEditing ? t('messages.saveSuccess') : t('messages.addSuccess'));
+        setOpenDialog(false);
+      },
+      onError: (err) => {
+        log.error('Error saving competition:', err);
+        setErrorMessage(err instanceof Error ? err.message : t('messages.saveError'));
+      },
+    });
   };
 
-  const handleDeleteCompetition = async (id: number): Promise<void> => {
-    try {
-      const res = await fetch(`/api/competition/${id}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error((await res.json()).error || t('messages.deleteError'));
-      setCompetitions((prev) => prev.filter((c) => c.id !== id));
-      setSuccessMessage(t('messages.deleteSuccess'));
-    } catch (err) {
-      log.error('Error deleting competition:', err);
-      setErrorMessage(t('messages.deleteError'));
-    }
+  const handleDeleteCompetition = (id: number): void => {
+    deleteMutation.mutate(id, {
+      onSuccess: () => setSuccessMessage(t('messages.deleteSuccess')),
+      onError: (err) => {
+        log.error('Error deleting competition:', err);
+        setErrorMessage(err instanceof Error ? err.message : t('messages.deleteError'));
+      },
+    });
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -493,7 +477,13 @@ const CompetitionsPage: React.FC = () => {
         ))}
 
       {/* Dialog Add/Edit */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="md" fullWidth>
+      <GuardedDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        isDirty={isCompetitionDirty}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle>
           {selectedCompetition?.id ? t('competition.edit') : t('competition.add')}
         </DialogTitle>
@@ -756,7 +746,7 @@ const CompetitionsPage: React.FC = () => {
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Confirm Delete Dialog */}
       <Dialog open={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)}>

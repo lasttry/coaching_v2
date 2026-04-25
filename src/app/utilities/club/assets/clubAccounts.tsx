@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { log } from '@/lib/logger';
 import {
+  useClubAccounts,
+  useAddClubAccount,
+  useUpdateClubAccountRole,
+  useRemoveClubAccount,
+} from '@/hooks/useClubs';
+import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
@@ -32,7 +38,7 @@ import {
 } from '@mui/icons-material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { RoleDisplayNames } from '@/types/club/types';
-import { AccountInterface, AccountClubInterface } from '@/types/accounts/types';
+import { AccountInterface } from '@/types/accounts/types';
 import { Role } from '@prisma/client';
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
@@ -89,32 +95,19 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({
   const [emailInput, setEmailInput] = useState<string>('');
   const [addAccount, setAddAccount] = useState<AccountInterface | null>(null);
   const [filteredAccounts, setFilteredAccounts] = useState<AccountInterface[]>([]);
-  const [accounts, setAccounts] = useState<AccountClubInterface[]>([]);
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<string>('');
 
+  const { data: accounts = [], error: accountsError } = useClubAccounts(clubId);
+  const addAccountMutation = useAddClubAccount();
+  const updateRoleMutation = useUpdateClubAccountRole();
+  const removeAccountMutation = useRemoveClubAccount();
+
   useEffect(() => {
-    if (!clubId) return;
-
-    const fetchAccounts = async (): Promise<void> => {
-      onError?.('');
-      try {
-        const response = await fetch(`/api/clubs/${clubId}/accounts`);
-        if (response.ok) {
-          const data: AccountClubInterface[] = await response.json();
-          setAccounts(data);
-        } else {
-          log.error('Failed to fetch accounts for the club');
-          onError?.(t('account.fetch.error'));
-        }
-      } catch (error) {
-        log.error('Error fetching accounts:', error);
-        onError?.(t('fetchAccountsNetworkError', { error: String(error) }));
-      }
-    };
-
-    fetchAccounts();
-  }, [clubId, onError, t]);
+    if (accountsError) {
+      onError?.(t('account.fetch.error'));
+    }
+  }, [accountsError, onError, t]);
 
   const handleEmailChange = async (email: string): Promise<void> => {
     setEmailInput(email);
@@ -141,99 +134,51 @@ const ClubAccounts: React.FC<ClubAccountsProps> = ({
     }
   };
 
-  const handleAddAccount = async (): Promise<void> => {
-    if (!clubId || !addAccount) return;
-    try {
-      onError?.('');
-      const role = Role.ADMIN;
-      const response = await fetch(`/api/clubs/${clubId}/accounts`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+  const handleAddAccount = (): void => {
+    if (!clubId || !addAccount?.id) return;
+    onError?.('');
+    addAccountMutation.mutate(
+      { clubId, accountId: addAccount.id, roles: [{ role: Role.ADMIN }] },
+      {
+        onSuccess: () => {
+          setEmailInput('');
+          setAddAccount(null);
+          setFilteredAccounts([]);
         },
-        body: JSON.stringify({ accountId: addAccount.id, roles: [{ role }] }),
-      });
-      if (response.ok) {
-        const newAccount = await response.json();
-        setAccounts((prev) => [...prev, newAccount]);
-        setEmailInput('');
-        setAddAccount(null);
-        setFilteredAccounts([]);
-      } else {
-        const errorData = await response.json();
-        if (errorData?.error) {
-          onError?.(t('addAccountFailedWithReason', { reason: errorData.error }));
-        } else {
-          log.error('Failed to add account to the club');
-          onError?.(t('account.save.addError'));
-        }
+        onError: (error) => {
+          const message = error instanceof Error ? error.message : String(error);
+          onError?.(t('addAccountFailedWithReason', { reason: message }));
+        },
       }
-    } catch (error) {
-      log.error('Error adding account to the club:', error);
-      onError?.(t('addAccountNetworkError', { error: String(error) }));
-    }
+    );
   };
 
-  const handleRoleChange = async (
-    accountId: number,
-    role: Role,
-    checked: boolean
-  ): Promise<void> => {
+  const handleRoleChange = (accountId: number, role: Role, checked: boolean): void => {
     if (!clubId) return;
-    try {
-      onError?.('');
-      const response = await fetch(`/api/clubs/${clubId}/accounts/${accountId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+    onError?.('');
+    updateRoleMutation.mutate(
+      { clubId, accountId, role, checked },
+      {
+        onError: (error) => {
+          log.error('Error updating role:', error);
+          onError?.(t('account.save.updateRoleError'));
         },
-        body: JSON.stringify({ role, checked }),
-      });
-      if (response.ok) {
-        setAccounts((prev) =>
-          prev.map((account) =>
-            account.id === accountId
-              ? {
-                  ...account,
-                  roles: checked
-                    ? [...account.roles, role]
-                    : account.roles.filter((r) => r !== role),
-                }
-              : account
-          )
-        );
-      } else {
-        log.error('Failed to update role');
-        onError?.(t('account.save.updateRoleError'));
       }
-    } catch (error) {
-      log.error('Error updating role:', error);
-      onError?.(t('updateRoleNetworkError', { error: String(error) }));
-    }
+    );
   };
 
-  const handleRemoveAccount = async (accountId: number): Promise<void> => {
+  const handleRemoveAccount = (accountId: number): void => {
     if (!clubId) return;
-    try {
-      onError?.('');
-      const response = await fetch(`/api/clubs/${clubId}/accounts/${accountId}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        setAccounts((prev) => prev.filter((account) => account.id !== accountId));
-      } else {
-        const errorData = await response.json();
-        if (errorData?.error) {
-          onError?.(t('removeAccountFailedWithReason', { reason: errorData.error }));
-        } else {
-          log.error('Failed to remove account from the club');
-          onError?.(t('account.save.removeError'));
-        }
+    onError?.('');
+    removeAccountMutation.mutate(
+      { clubId, accountId },
+      {
+        onError: (error) => {
+          const message = error instanceof Error ? error.message : String(error);
+          onError?.(t('removeAccountFailedWithReason', { reason: message }));
+        },
       }
-    } catch (error) {
-      log.error('Error removing account from the club:', error);
-      onError?.(t('removeAccountNetworkError', { error: String(error) }));
-    }
+    );
   };
 
   if (!clubId) {

@@ -60,10 +60,20 @@ export default {
             return null;
           }
 
-          const selectedClubRelation = user.clubs.find((c) => c.clubId === user.defaultClubId);
-          if (!selectedClubRelation || !selectedClubRelation.club) {
-            log.warn('Login failed: default club not configured');
-            return null;
+          // Compute selectedClubId with fallbacks:
+          // 1) the stored defaultClubId if the user still belongs to that club
+          // 2) the only club the user belongs to (auto-select)
+          // 3) null -> the user will be redirected to /utilities/chooseClub
+          let selectedClubId: number | null = null;
+          if (user.clubs.length > 0) {
+            const defaultRelation = user.clubs.find(
+              (c) => c.clubId === user.defaultClubId && !!c.club
+            );
+            if (defaultRelation) {
+              selectedClubId = defaultRelation.clubId;
+            } else if (user.clubs.length === 1 && user.clubs[0].club) {
+              selectedClubId = user.clubs[0].clubId;
+            }
           }
 
           const currentSeason = await prisma.season.findFirst({
@@ -75,7 +85,7 @@ export default {
             id: String(user.id),
             name: user.name,
             email: user.email,
-            selectedClubId: user.defaultClubId,
+            selectedClubId,
             selectedSeasonId: currentSeason?.id,
             role: user.role,
           };

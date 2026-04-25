@@ -92,31 +92,45 @@ enum AlertRecipientStatus {
   DELETED
 }
 
+enum AttendanceDefault {
+  ALL
+  NONE
+}
+
+enum PracticeItemType {
+  FREETEXT
+  DRILL
+  PLAY
+  BREAKDOWN
+  MY_DRILL
+}
+
 // Models
 
 model Athlete {
-  id               Int                      @id @default(autoincrement())
-  createdAt        DateTime                 @default(now())
-  updatedAt        DateTime                 @updatedAt
-  number           String?                  @db.VarChar(2)
-  name             String                   @db.VarChar(50)
-  birthdate        DateTime?
-  fpbNumber        Int?
-  idNumber         Int?
-  idType           IdType?
-  active           Boolean                  @default(true)
-  shirtSize        Size?
-  photo            String?                  @db.Text
-  clubId           Int
-  club             Club                     @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  athleteReports   AthleteReport[]
-  reviewedReports  AthleteReport[]          @relation("ReviewedAthlete")
-  gameAthletes     GameAthlete[]
-  statistics       Statistic[]
-  timeEntries      TimeEntry[]
-  teams            TeamAthlete[]
-  preferredNumbers AthletePreferredNumber[]
-  gameEquipments   GameEquipment[]
+  id                  Int                      @id @default(autoincrement())
+  createdAt           DateTime                 @default(now())
+  updatedAt           DateTime                 @updatedAt
+  number              String?                  @db.VarChar(2)
+  name                String                   @db.VarChar(50)
+  birthdate           DateTime?
+  fpbNumber           Int?
+  idNumber            Int?
+  idType              IdType?
+  active              Boolean                  @default(true)
+  shirtSize           Size?
+  photo               String?                  @db.Text
+  clubId              Int
+  club                Club                     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  athleteReports      AthleteReport[]
+  reviewedReports     AthleteReport[]          @relation("ReviewedAthlete")
+  gameAthletes        GameAthlete[]
+  statistics          Statistic[]
+  timeEntries         TimeEntry[]
+  teams               TeamAthlete[]
+  preferredNumbers    AthletePreferredNumber[]
+  gameEquipments      GameEquipment[]
+  practiceAttendances PracticeAthlete[]
 }
 
 model GameAthlete {
@@ -134,39 +148,39 @@ model GameAthlete {
 }
 
 model Game {
-  id                 Int               @id @default(autoincrement())
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @updatedAt
-  number             Int?
-  date               DateTime
-  away               Boolean
-  notes              String?           @db.VarChar(1000)
-  clubId             Int
-  club               Club              @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  teamId             Int?
-  team               Team?             @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  competitionId      Int?
-  competition        Competition?      @relation(fields: [competitionId], references: [id], onDelete: Cascade)
-  competitionSerieId Int?
-  competitionSerie   CompetitionSerie? @relation(fields: [competitionSerieId], references: [id])
-  opponentId         Int
-  opponent           Opponent          @relation(fields: [opponentId], references: [id])
-  venueId            Int?
-  venue              Venue?            @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  gameAthletes       GameAthlete[]
-  gameEquipments     GameEquipment[]
-  objectives         Objective[]       @relation("Objectives")
-  athleteReports     AthleteReport[]
-  statistics         Statistic[]
-  timeEntries        TimeEntry[]
-  refereeMain           String?
-  referee1              String?
-  scorer                String?
-  timer                 String?
-  shotClock             String?
-  opponentResultsCount  Int     @default(5)
-  speech                String? @db.Text
-  completed             Boolean @default(false)
+  id                   Int               @id @default(autoincrement())
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  number               Int?
+  date                 DateTime
+  away                 Boolean
+  notes                String?           @db.VarChar(1000)
+  clubId               Int
+  club                 Club              @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  teamId               Int?
+  team                 Team?             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  competitionId        Int?
+  competition          Competition?      @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+  competitionSerieId   Int?
+  competitionSerie     CompetitionSerie? @relation(fields: [competitionSerieId], references: [id])
+  opponentId           Int
+  opponent             Opponent          @relation(fields: [opponentId], references: [id])
+  venueId              Int?
+  venue                Venue?            @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  gameAthletes         GameAthlete[]
+  gameEquipments       GameEquipment[]
+  objectives           Objective[]       @relation("Objectives")
+  athleteReports       AthleteReport[]
+  statistics           Statistic[]
+  timeEntries          TimeEntry[]
+  refereeMain          String?
+  referee1             String?
+  scorer               String?
+  timer                String?
+  shotClock            String?
+  opponentResultsCount Int               @default(5)
+  speech               String?           @db.Text
+  completed            Boolean           @default(false)
 
   fpbGameId Int? @unique
 
@@ -190,20 +204,24 @@ model Opponent {
 }
 
 model Account {
-  id                 Int              @id @default(autoincrement())
-  name               String?          @db.VarChar(100)
-  email              String           @unique @db.VarChar(100)
-  password           String
-  image              String?
-  createdAt          DateTime         @default(now())
-  updatedAt          DateTime         @updatedAt
-  clubs              AccountClub[]    @relation("AccountToClubs")
-  defaultClubId      Int              @default(0)
-  role               PlatformRole     @default(USER)
-  resetToken         String?          @unique
-  resetTokenExpiry   DateTime?
-  staffProfiles      Staff[]
-  alertRecipients    AlertRecipient[]
+  id                Int              @id @default(autoincrement())
+  name              String?          @db.VarChar(100)
+  email             String           @unique @db.VarChar(100)
+  password          String
+  image             String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  clubs             AccountClub[]    @relation("AccountToClubs")
+  defaultClubId     Int              @default(0)
+  role              PlatformRole     @default(USER)
+  resetToken        String?          @unique
+  resetTokenExpiry  DateTime?
+  staffProfiles     Staff[]
+  alertRecipients   AlertRecipient[]
+  drills            Drill[]          @relation("DrillAuthor")
+  /// List of the last custom colours the user has applied in the drill
+  /// editor. Stored as JSON `{ color: string, pinned: boolean }[]`.
+  drillRecentColors Json?
 }
 
 model Statistic {
@@ -271,6 +289,8 @@ model Macrocycle {
   name       String?
   clubId     Int
   club       Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  teamId     Int?
+  team       Team?       @relation(fields: [teamId], references: [id], onDelete: SetNull)
   mesocycles Mesocycle[]
 }
 
@@ -323,43 +343,142 @@ model Objective {
 model Drill {
   id        Int      @id @default(autoincrement())
   name      String?
-  svg       String
+  title     String?  @db.VarChar(255)
+  svg       String?  @db.Text
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  clubId    Int?
+  club      Club?    @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  accountId Int?
+  account   Account? @relation("DrillAuthor", fields: [accountId], references: [id], onDelete: SetNull)
+  echelonId Int?
+  echelon   Echelon? @relation(fields: [echelonId], references: [id], onDelete: SetNull)
+
+  description String? @db.Text
+  goals       String? @db.Text
+  variations  String? @db.Text
+  tips        String? @db.Text
+  defaultText String? @db.Text
+
+  ballsCount     Int     @default(0)
+  basketsCount   Int     @default(0)
+  conesCount     Int     @default(0)
+  extraEquipment String? @db.VarChar(255)
+
+  playersCount Int @default(0)
+  coachesCount Int @default(0)
+
+  typeFundamental Boolean @default(false)
+  typeIndividual  Boolean @default(false)
+  typeTeam        Boolean @default(false)
+
+  posGuard   Boolean @default(false)
+  posForward Boolean @default(false)
+  posCenter  Boolean @default(false)
+
+  graphics      DrillGraphic[]
+  topics        DrillTopicLink[]
+  practiceItems PracticeItem[]
+
+  @@index([clubId])
+}
+
+model DrillGraphic {
+  id        Int      @id @default(autoincrement())
+  drillId   Int
+  drill     Drill    @relation(fields: [drillId], references: [id], onDelete: Cascade)
+  order     Int      @default(0)
+  svg       String   @db.Text
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@index([drillId, order])
+}
+
+/// Drill topic / category. Every topic belongs to a club — the defaults
+/// are auto-seeded the first time a club's topics are read, and club
+/// admins are free to add/rename/delete additional ones.
+///
+/// `key` is a stable identifier only present on seeded defaults, so the
+/// UI can localise their name (e.g. `drill.topicNames.transition`).
+/// Admin-created topics have `key = null` and the raw `name` is shown
+/// verbatim.
+model DrillTopic {
+  id     Int              @id @default(autoincrement())
+  clubId Int
+  club   Club             @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  key    String?          @db.VarChar(80)
+  name   String           @db.VarChar(120)
+  order  Int              @default(0)
+  drills DrillTopicLink[]
+
+  @@unique([clubId, key])
+  @@index([clubId, order])
+}
+
+model DrillTopicLink {
+  drillId Int
+  topicId Int
+  drill   Drill      @relation(fields: [drillId], references: [id], onDelete: Cascade)
+  topic   DrillTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  @@id([drillId, topicId])
+  @@index([topicId])
 }
 
 model Echelon {
-  id           Int           @id @default(autoincrement())
-  minAge       Int
-  maxAge       Int?
-  name         String        @db.VarChar(50)
-  description  String?       @db.VarChar(255)
-  gender       Gender
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  teams        Team[]
-  competitions Competition[]
+  id              Int              @id @default(autoincrement())
+  minAge          Int
+  maxAge          Int?
+  name            String           @db.VarChar(50)
+  description     String?          @db.VarChar(255)
+  gender          Gender
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  teams           Team[]
+  competitions    Competition[]
   equipmentColors EquipmentColor[]
+  drills          Drill[]
 }
 
 model Club {
-  id              Int           @id @default(autoincrement())
-  name            String        @unique @db.VarChar(50)
-  shortName       String?       @db.VarChar(6)
-  image           String?
-  federationLogo  String?       @db.Text
-  backgroundColor String?       @db.VarChar(7)
-  foregroundColor String?       @db.VarChar(7)
-  fpbClubId       Int?
-  accounts        AccountClub[] @relation("ClubToAccounts")
-  athletes        Athlete[]
-  games           Game[]
-  macrocycles     Macrocycle[]
-  teams           Team[]
-  venues          Venue[]
-  equipmentColors EquipmentColor[]
-  staff           Staff[]
-  alerts          Alert[]
-  emailSettings   ClubEmailSettings?
+  id               Int                   @id @default(autoincrement())
+  name             String                @unique @db.VarChar(50)
+  shortName        String?               @db.VarChar(6)
+  image            String?
+  federationLogo   String?               @db.Text
+  backgroundColor  String?               @db.VarChar(7)
+  foregroundColor  String?               @db.VarChar(7)
+  // Court theme used by the drill graphic editor. Background may be either
+  // a hex colour or a pattern id (`wood`, `parquet`, `concrete`, `clay`),
+  // hence VarChar(16) instead of (7). Other colour fields are hex only.
+  courtBackground  String?               @db.VarChar(16)
+  courtKeyColor    String?               @db.VarChar(7)
+  courtCenterColor String?               @db.VarChar(7)
+  courtLineColor   String?               @db.VarChar(7)
+  courtMarginColor String?               @db.VarChar(7)
+  courtShowLogo    Boolean               @default(true)
+  /* Rotation (degrees, 0/90/180/270) applied to the centre-circle logo so
+   * the crest can sit upright when viewed from either end of the court. */
+  courtLogoRotation Int                  @default(90)
+  fpbClubId        Int?
+  accounts         AccountClub[]         @relation("ClubToAccounts")
+  athletes         Athlete[]
+  games            Game[]
+  macrocycles      Macrocycle[]
+  teams            Team[]
+  venues           Venue[]
+  equipmentColors  EquipmentColor[]
+  staff            Staff[]
+  alerts           Alert[]
+  emailSettings    ClubEmailSettings?
+  practices         Practice[]
+  practiceSettings  ClubPracticeSettings?
+  attendanceReasons ClubAttendanceReason[]
+  drills           Drill[]
+  drillTopics      DrillTopic[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -428,19 +547,21 @@ model AccountClubRole {
 }
 
 model Team {
-  id        Int           @id @default(autoincrement())
-  name      String        @db.VarChar(50)
-  type      TeamType?
-  clubId    Int
-  club      Club          @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  echelonId Int
-  echelon   Echelon       @relation(fields: [echelonId], references: [id], onDelete: Cascade)
-  fpbTeamId Int?
-  athletes  TeamAthlete[]
-  staff     TeamStaff[]
-  createdAt DateTime      @default(now())
-  updatedAt DateTime      @updatedAt
-  games     Game[]
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(50)
+  type        TeamType?
+  clubId      Int
+  club        Club          @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  echelonId   Int
+  echelon     Echelon       @relation(fields: [echelonId], references: [id], onDelete: Cascade)
+  fpbTeamId   Int?
+  athletes    TeamAthlete[]
+  staff       TeamStaff[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  games       Game[]
+  macrocycles Macrocycle[]
+  practices   Practice[]
 }
 
 model TeamAthlete {
@@ -454,33 +575,33 @@ model TeamAthlete {
 }
 
 model Staff {
-  id          Int         @id @default(autoincrement())
-  name        String      @db.VarChar(100)
-  birthdate   DateTime?
-  tptdNumber  Int?        // Carteira TPTD
-  fpbLicense  Int?        // Licença FPB
-  grade       CoachGrade?
-  role        StaffRole
-  active      Boolean     @default(true)
-  clubId      Int
-  club        Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
-  teams       TeamStaff[]
-  accountId   Int?
-  account     Account?    @relation(fields: [accountId], references: [id], onDelete: SetNull)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id         Int         @id @default(autoincrement())
+  name       String      @db.VarChar(100)
+  birthdate  DateTime?
+  tptdNumber Int? // Carteira TPTD
+  fpbLicense Int? // Licença FPB
+  grade      CoachGrade?
+  role       StaffRole
+  active     Boolean     @default(true)
+  clubId     Int
+  club       Club        @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  teams      TeamStaff[]
+  accountId  Int?
+  account    Account?    @relation(fields: [accountId], references: [id], onDelete: SetNull)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 
   @@unique([clubId, accountId])
   @@index([accountId])
 }
 
 model TeamStaff {
-  id        Int       @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   teamId    Int
   staffId   Int
-  isPrimary Boolean   @default(false) // Treinador principal vs adjunto
-  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  staff     Staff     @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  isPrimary Boolean @default(false) // Treinador principal vs adjunto
+  team      Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  staff     Staff   @relation(fields: [staffId], references: [id], onDelete: Cascade)
 
   @@unique([teamId, staffId])
 }
@@ -534,9 +655,9 @@ model EquipmentColor {
   season  Season  @relation(fields: [seasonId], references: [id], onDelete: Cascade)
   echelon Echelon @relation(fields: [echelonId], references: [id], onDelete: Cascade)
 
-  color           String
-  colorHex        String @default("#000000")
-  numberColorHex  String @default("#FFFFFF")
+  color          String
+  colorHex       String @default("#000000")
+  numberColorHex String @default("#FFFFFF")
 
   equipments     Equipment[]
   gameEquipments GameEquipment[]
@@ -587,18 +708,18 @@ model GameEquipment {
 }
 
 model Alert {
-  id            Int              @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   clubId        Int
   type          AlertType
   category      AlertCategory
-  title         String           @db.VarChar(200)
-  message       String           @db.Text
-  linkUrl       String?          @db.VarChar(500)
-  referenceType String?          @db.VarChar(50)
+  title         String        @db.VarChar(200)
+  message       String        @db.Text
+  linkUrl       String?       @db.VarChar(500)
+  referenceType String?       @db.VarChar(50)
   referenceId   Int?
   triggerDate   DateTime
   expiresAt     DateTime?
-  createdAt     DateTime         @default(now())
+  createdAt     DateTime      @default(now())
 
   club       Club             @relation(fields: [clubId], references: [id], onDelete: Cascade)
   recipients AlertRecipient[]
@@ -622,4 +743,112 @@ model AlertRecipient {
 
   @@unique([alertId, accountId])
   @@index([accountId, status])
+}
+
+model Practice {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  clubId         Int
+  club           Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  teamId         Int
+  team           Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  date           DateTime
+  endTime        DateTime
+  subtitle       String?  @db.VarChar(255)
+  topic          String   @db.VarChar(255)
+  offensiveGoals String?  @db.VarChar(500)
+  defensiveGoals String?  @db.VarChar(500)
+  notes          String?  @db.Text
+  completed      Boolean  @default(false)
+  /// Optional JSON describing one or more independent group sets the
+  /// coach uses to split the squad into teams during the session.
+  /// Shape: `{ sets: Array<{ id, name, teams: Array<{ id, name, players: (athleteId|null)[] }> }> }`.
+  /// Athlete IDs are validated against the practice's roster on save.
+  groups         Json?
+
+  attendances PracticeAthlete[]
+  items       PracticeItem[]
+
+  @@index([clubId, date])
+  @@index([teamId, date])
+}
+
+model PracticeItem {
+  id         Int              @id @default(autoincrement())
+  practiceId Int
+  practice   Practice         @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+  order      Int
+  duration   Int              @default(0)
+  type       PracticeItemType @default(FREETEXT)
+  title      String?          @db.VarChar(255)
+  text       String?          @db.Text
+  drillId    Int?
+  drill      Drill?           @relation(fields: [drillId], references: [id], onDelete: SetNull)
+  /// Per-graphic overrides stored as a JSON array of
+  /// `{ drillGraphicId, caption, printFirst, printOther }`. Captions and
+  /// print flags live on the practice item so the same drill can be used
+  /// in multiple practice plans with different annotations. The SVGs
+  /// themselves are never duplicated here — the UI looks them up from
+  /// the linked drill at render time.
+  graphics   Json?
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@index([practiceId, order])
+}
+
+model PracticeAthlete {
+  id         Int      @id @default(autoincrement())
+  practiceId Int
+  athleteId  Int
+  /// Whether the coach expected this athlete to be present at the session.
+  attending  Boolean  @default(true)
+  /// null = not yet filled in, true = attended, false = did not show up.
+  attended   Boolean?
+  /// How many minutes late the athlete showed up (only meaningful when
+  /// `attended == true`).
+  lateMinutes     Int?
+  /// Reason for the absence when `attended == false`. Points at a
+  /// club-scoped reason which may be one of the seeded defaults or a
+  /// custom one.
+  absenceReasonId Int?
+  absenceReason   ClubAttendanceReason? @relation(fields: [absenceReasonId], references: [id], onDelete: SetNull)
+  /// Free-form clarification entered next to the reason ("Other | Reason:").
+  absenceNotes    String?               @db.Text
+  practice   Practice @relation(fields: [practiceId], references: [id], onDelete: Cascade)
+  athlete    Athlete  @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+
+  @@unique([practiceId, athleteId])
+  @@index([practiceId])
+  @@index([athleteId])
+  @@index([absenceReasonId])
+}
+
+/// Club-scoped list of pre-canned reasons for absence. Seeded with a
+/// default set (Injured / Sick / Unexcused / Other) the first time it is
+/// read; clubs can add, rename and remove entries.
+model ClubAttendanceReason {
+  id     Int    @id @default(autoincrement())
+  clubId Int
+  club   Club   @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  /// Localisation key for seeded defaults. `null` for custom reasons.
+  key    String? @db.VarChar(40)
+  name   String  @db.VarChar(120)
+  order  Int     @default(0)
+  athletes PracticeAthlete[]
+
+  @@unique([clubId, key])
+  @@index([clubId, order])
+}
+
+model ClubPracticeSettings {
+  id                      Int               @id @default(autoincrement())
+  clubId                  Int               @unique
+  club                    Club              @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  defaultAttendanceMale   AttendanceDefault @default(ALL)
+  defaultAttendanceFemale AttendanceDefault @default(ALL)
+  defaultAttendanceCoed   AttendanceDefault @default(ALL)
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
 }

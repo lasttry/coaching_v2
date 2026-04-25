@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -30,11 +30,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { Size } from '@prisma/client';
 import type { EquipmentColorInterface, EquipmentItemInterface } from '@/types/equipmentColor/types';
-
-interface SimpleEchelon {
-  id: number;
-  name: string;
-}
+import { useEchelons } from '@/hooks/useEchelons';
+import {
+  useClubEquipmentColors,
+  useCreateColor,
+  useUpdateColor,
+  useDeleteColor,
+  useCreateEquipment,
+  useUpdateEquipment,
+  useDeleteEquipment,
+} from '@/hooks/useEquipments';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 const EquipmentsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -43,14 +49,10 @@ const EquipmentsPage: React.FC = () => {
   const clubId = session?.user?.selectedClubId;
   const seasonId = session?.user?.selectedSeasonId;
 
-  const [echelons, setEchelons] = useState<SimpleEchelon[]>([]);
   const [selectedEchelonId, setSelectedEchelonId] = useState<number | ''>('');
-  const [equipmentColors, setEquipmentColors] = useState<EquipmentColorInterface[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Add color dialog
   const [openAddColorDialog, setOpenAddColorDialog] = useState<boolean>(false);
   const [newColor, setNewColor] = useState({
     color: '',
@@ -58,89 +60,73 @@ const EquipmentsPage: React.FC = () => {
     numberColorHex: '#FFFFFF',
   });
 
-  // Edit color dialog
   const [openEditColorDialog, setOpenEditColorDialog] = useState<boolean>(false);
   const [editColor, setEditColor] = useState<EquipmentColorInterface | null>(null);
 
-  // Add equipment dialog
   const [openAddEquipmentDialog, setOpenAddEquipmentDialog] = useState<boolean>(false);
   const [addEquipmentColorId, setAddEquipmentColorId] = useState<number | null>(null);
   const [newEquipment, setNewEquipment] = useState({ number: '', size: '' });
 
-  // Edit equipment dialog
   const [openEditEquipmentDialog, setOpenEditEquipmentDialog] = useState<boolean>(false);
   const [editEquipment, setEditEquipment] = useState<{
     colorId: number;
     equipment: EquipmentItemInterface;
   } | null>(null);
 
-  // Delete confirmations
   const [deleteColorId, setDeleteColorId] = useState<number | null>(null);
   const [deleteEquipmentInfo, setDeleteEquipmentInfo] = useState<{
     colorId: number;
     equipmentId: number;
   } | null>(null);
 
-  // Expanded accordions (like games page)
   const [expandedEchelon, setExpandedEchelon] = useState<string | false>(false);
   const [expandedColor, setExpandedColor] = useState<string | false>(false);
   const [initialExpandDone, setInitialExpandDone] = useState<boolean>(false);
 
-  const fetchEquipmentColors = useCallback(async (): Promise<void> => {
+  const isAddColorDirty = useFormSnapshotDirty(openAddColorDialog, newColor);
+  const isEditColorDirty = useFormSnapshotDirty(openEditColorDialog, editColor);
+  const isAddEquipmentDirty = useFormSnapshotDirty(openAddEquipmentDialog, newEquipment);
+  const isEditEquipmentDirty = useFormSnapshotDirty(openEditEquipmentDialog, editEquipment);
+
+  const { data: echelons = [], error: echelonsError } = useEchelons();
+  const {
+    data: equipmentColors = [],
+    isFetching: equipmentsLoading,
+    error: equipmentsError,
+  } = useClubEquipmentColors(clubId, seasonId, selectedEchelonId === '' ? null : selectedEchelonId);
+
+  useEffect(() => {
+    if (echelons.length > 0 && selectedEchelonId === '' && echelons[0].id != null) {
+      setSelectedEchelonId(echelons[0].id);
+    }
+  }, [echelons, selectedEchelonId]);
+
+  useEffect(() => {
     if (status !== 'authenticated') return;
     if (!clubId || !seasonId) {
-      setEquipmentColors([]);
       setErrorMessage(t('equipment.validation.missingClubOrSeason'));
-      return;
     }
-
-    setLoading(true);
-    setErrorMessage(null);
-
-    try {
-      const url = selectedEchelonId
-        ? `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors?echelonId=${selectedEchelonId}`
-        : `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors`;
-
-      const res = await fetch(url, { cache: 'no-store' });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setErrorMessage((data as { error?: string }).error ?? t('equipment.fetch.error'));
-        return;
-      }
-
-      setEquipmentColors(data as EquipmentColorInterface[]);
-    } catch {
-      setErrorMessage(t('equipment.fetch.networkError'));
-    } finally {
-      setLoading(false);
-    }
-  }, [status, clubId, seasonId, selectedEchelonId, t]);
+  }, [status, clubId, seasonId, t]);
 
   useEffect(() => {
-    void fetchEquipmentColors();
-  }, [fetchEquipmentColors]);
+    if (equipmentsError) {
+      setErrorMessage((equipmentsError as Error).message || t('equipment.fetch.error'));
+    }
+  }, [equipmentsError, t]);
 
   useEffect(() => {
-    if (status !== 'authenticated') return;
+    if (echelonsError) {
+      setErrorMessage((echelonsError as Error).message);
+    }
+  }, [echelonsError]);
 
-    const loadEchelons = async (): Promise<void> => {
-      try {
-        const res = await fetch('/api/echelons', { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = (await res.json()) as SimpleEchelon[];
-        setEchelons(data);
-        setSelectedEchelonId((prev) => (prev === '' && data.length > 0 ? data[0].id : prev));
-      } catch {
-        // Silent
-      }
-    };
+  const createColorMutation = useCreateColor();
+  const updateColorMutation = useUpdateColor();
+  const deleteColorMutation = useDeleteColor();
+  const createEquipmentMutation = useCreateEquipment();
+  const updateEquipmentMutation = useUpdateEquipment();
+  const deleteEquipmentMutation = useDeleteEquipment();
 
-    void loadEchelons();
-  }, [status]);
-
-  // Group by echelon
   const groupedByEchelon = useMemo(() => {
     const grouped: Record<string, EquipmentColorInterface[]> = {};
     equipmentColors.forEach((ec) => {
@@ -175,8 +161,7 @@ const EquipmentsPage: React.FC = () => {
     setInitialExpandDone(false);
   };
 
-  // Add color
-  const handleAddColor = async (): Promise<void> => {
+  const handleAddColor = (): void => {
     if (!newColor.color.trim()) {
       setErrorMessage(t('equipment.color.required'));
       return;
@@ -185,176 +170,131 @@ const EquipmentsPage: React.FC = () => {
       setErrorMessage(t('equipment.echelon.missing'));
       return;
     }
+    if (!clubId || !seasonId) return;
 
-    try {
-      const res = await fetch(`/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          color: newColor.color.trim(),
-          colorHex: newColor.colorHex,
-          numberColorHex: newColor.numberColorHex,
-          echelonId: selectedEchelonId,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMessage((data as { error?: string }).error ?? t('equipment.save.createError'));
-        return;
+    createColorMutation.mutate(
+      {
+        clubId,
+        seasonId,
+        echelonId: selectedEchelonId,
+        color: newColor.color.trim(),
+        colorHex: newColor.colorHex,
+        numberColorHex: newColor.numberColorHex,
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage(t('equipment.color.createdSuccess'));
+          setNewColor({ color: '', colorHex: '#000000', numberColorHex: '#FFFFFF' });
+          setOpenAddColorDialog(false);
+        },
+        onError: (err) => {
+          setErrorMessage((err as Error).message || t('equipment.save.createError'));
+        },
       }
-
-      setSuccessMessage(t('equipment.color.createdSuccess'));
-      setNewColor({ color: '', colorHex: '#000000', numberColorHex: '#FFFFFF' });
-      setOpenAddColorDialog(false);
-      void fetchEquipmentColors();
-    } catch {
-      setErrorMessage(t('equipment.save.createNetworkError'));
-    }
+    );
   };
 
-  // Update color
-  const handleUpdateColor = async (): Promise<void> => {
-    if (!editColor) return;
+  const handleUpdateColor = (): void => {
+    if (!editColor || !clubId || !seasonId) return;
 
-    try {
-      const res = await fetch(
-        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${editColor.id}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            color: editColor.color,
-            colorHex: editColor.colorHex,
-            numberColorHex: editColor.numberColorHex,
-          }),
-        }
-      );
-
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMessage((data as { error?: string }).error ?? t('equipment.save.updateError'));
-        return;
+    updateColorMutation.mutate(
+      {
+        clubId,
+        seasonId,
+        id: editColor.id,
+        color: editColor.color,
+        colorHex: editColor.colorHex ?? '#000000',
+        numberColorHex: editColor.numberColorHex ?? '#FFFFFF',
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage(t('equipment.save.updateSuccess'));
+          setOpenEditColorDialog(false);
+          setEditColor(null);
+        },
+        onError: (err) => {
+          setErrorMessage((err as Error).message || t('equipment.save.updateError'));
+        },
       }
-
-      setSuccessMessage(t('equipment.save.updateSuccess'));
-      setOpenEditColorDialog(false);
-      setEditColor(null);
-      void fetchEquipmentColors();
-    } catch {
-      setErrorMessage(t('equipment.save.updateNetworkError'));
-    }
+    );
   };
 
-  // Delete color
-  const handleDeleteColor = async (colorId: number): Promise<void> => {
-    try {
-      const res = await fetch(
-        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${colorId}`,
-        { method: 'DELETE' }
-      );
-
-      if (!res.ok) {
-        const data = await res.json();
-        setErrorMessage((data as { error?: string }).error ?? t('equipment.save.deleteError'));
-        return;
+  const handleDeleteColor = (colorId: number): void => {
+    if (!clubId || !seasonId) return;
+    deleteColorMutation.mutate(
+      { clubId, seasonId, id: colorId },
+      {
+        onSuccess: () => setSuccessMessage(t('equipment.save.deleteSuccess')),
+        onError: (err) =>
+          setErrorMessage((err as Error).message || t('equipment.save.deleteError')),
       }
-
-      setSuccessMessage(t('equipment.save.deleteSuccess'));
-      void fetchEquipmentColors();
-    } catch {
-      setErrorMessage(t('equipment.save.deleteNetworkError'));
-    }
+    );
   };
 
-  // Add equipment item
-  const handleAddEquipment = async (): Promise<void> => {
-    if (!addEquipmentColorId) return;
+  const handleAddEquipment = (): void => {
+    if (!addEquipmentColorId || !clubId || !seasonId) return;
     if (!newEquipment.number || !newEquipment.size) {
       setErrorMessage(t('equipment.validation.formRequiredFields'));
       return;
     }
 
-    try {
-      const res = await fetch(
-        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${addEquipmentColorId}/equipments`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            number: Number(newEquipment.number),
-            size: newEquipment.size,
-          }),
-        }
-      );
-
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMessage((data as { error?: string }).error ?? t('equipment.save.createError'));
-        return;
+    createEquipmentMutation.mutate(
+      {
+        clubId,
+        seasonId,
+        colorId: addEquipmentColorId,
+        number: Number(newEquipment.number),
+        size: newEquipment.size,
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage(t('equipment.save.createSuccess'));
+          setNewEquipment({ number: '', size: '' });
+          setOpenAddEquipmentDialog(false);
+          setAddEquipmentColorId(null);
+        },
+        onError: (err) => {
+          setErrorMessage((err as Error).message || t('equipment.save.createError'));
+        },
       }
-
-      setSuccessMessage(t('equipment.save.createSuccess'));
-      setNewEquipment({ number: '', size: '' });
-      setOpenAddEquipmentDialog(false);
-      setAddEquipmentColorId(null);
-      void fetchEquipmentColors();
-    } catch {
-      setErrorMessage(t('equipment.save.createNetworkError'));
-    }
+    );
   };
 
-  // Update equipment item
-  const handleUpdateEquipment = async (): Promise<void> => {
-    if (!editEquipment) return;
+  const handleUpdateEquipment = (): void => {
+    if (!editEquipment || !clubId || !seasonId) return;
 
-    try {
-      const res = await fetch(
-        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${editEquipment.colorId}/equipments/${editEquipment.equipment.id}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            number: editEquipment.equipment.number,
-            size: editEquipment.equipment.size,
-          }),
-        }
-      );
-
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorMessage((data as { error?: string }).error ?? t('equipment.save.updateError'));
-        return;
+    updateEquipmentMutation.mutate(
+      {
+        clubId,
+        seasonId,
+        colorId: editEquipment.colorId,
+        equipmentId: editEquipment.equipment.id,
+        number: editEquipment.equipment.number,
+        size: editEquipment.equipment.size,
+      },
+      {
+        onSuccess: () => {
+          setSuccessMessage(t('equipment.save.updateSuccess'));
+          setOpenEditEquipmentDialog(false);
+          setEditEquipment(null);
+        },
+        onError: (err) => {
+          setErrorMessage((err as Error).message || t('equipment.save.updateError'));
+        },
       }
-
-      setSuccessMessage(t('equipment.save.updateSuccess'));
-      setOpenEditEquipmentDialog(false);
-      setEditEquipment(null);
-      void fetchEquipmentColors();
-    } catch {
-      setErrorMessage(t('equipment.save.updateNetworkError'));
-    }
+    );
   };
 
-  // Delete equipment item
-  const handleDeleteEquipment = async (colorId: number, equipmentId: number): Promise<void> => {
-    try {
-      const res = await fetch(
-        `/api/clubs/${clubId}/seasons/${seasonId}/equipment-colors/${colorId}/equipments/${equipmentId}`,
-        { method: 'DELETE' }
-      );
-
-      if (!res.ok) {
-        const data = await res.json();
-        setErrorMessage((data as { error?: string }).error ?? t('equipment.save.deleteError'));
-        return;
+  const handleDeleteEquipment = (colorId: number, equipmentId: number): void => {
+    if (!clubId || !seasonId) return;
+    deleteEquipmentMutation.mutate(
+      { clubId, seasonId, colorId, equipmentId },
+      {
+        onSuccess: () => setSuccessMessage(t('equipment.save.deleteSuccess')),
+        onError: (err) =>
+          setErrorMessage((err as Error).message || t('equipment.save.deleteError')),
       }
-
-      setSuccessMessage(t('equipment.save.deleteSuccess'));
-      void fetchEquipmentColors();
-    } catch {
-      setErrorMessage(t('equipment.save.deleteNetworkError'));
-    }
+    );
   };
 
   return (
@@ -387,11 +327,13 @@ const EquipmentsPage: React.FC = () => {
             }}
           >
             <MenuItem value="">{t('equipment.echelon.all')}</MenuItem>
-            {echelons.map((ech) => (
-              <MenuItem key={ech.id} value={ech.id}>
-                {ech.name}
-              </MenuItem>
-            ))}
+            {echelons
+              .filter((ech): ech is typeof ech & { id: number } => ech.id != null)
+              .map((ech) => (
+                <MenuItem key={ech.id} value={ech.id}>
+                  {ech.name}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
       )}
@@ -408,13 +350,13 @@ const EquipmentsPage: React.FC = () => {
         </Alert>
       )}
 
-      {loading && <Typography variant="body2">{t('equipment.list.loading')}</Typography>}
+      {equipmentsLoading && <Typography variant="body2">{t('equipment.list.loading')}</Typography>}
 
-      {!loading && equipmentColors.length === 0 && !errorMessage && (
+      {!equipmentsLoading && equipmentColors.length === 0 && !errorMessage && (
         <Typography color="text.secondary">{t('equipment.list.empty')}</Typography>
       )}
 
-      {!loading &&
+      {!equipmentsLoading &&
         Object.keys(groupedByEchelon)
           .sort()
           .map((echelonName) => (
@@ -576,10 +518,10 @@ const EquipmentsPage: React.FC = () => {
             </Accordion>
           ))}
 
-      {/* Add Color Dialog */}
-      <Dialog
+      <GuardedDialog
         open={openAddColorDialog}
         onClose={() => setOpenAddColorDialog(false)}
+        isDirty={isAddColorDirty}
         maxWidth="xs"
         fullWidth
       >
@@ -654,16 +596,20 @@ const EquipmentsPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddColorDialog(false)}>{t('actions.cancel')}</Button>
-          <Button onClick={() => void handleAddColor()} variant="contained">
+          <Button
+            onClick={handleAddColor}
+            variant="contained"
+            disabled={createColorMutation.isPending}
+          >
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
-      {/* Edit Color Dialog */}
-      <Dialog
+      <GuardedDialog
         open={openEditColorDialog && !!editColor}
         onClose={() => setOpenEditColorDialog(false)}
+        isDirty={isEditColorDirty}
         maxWidth="xs"
         fullWidth
       >
@@ -742,16 +688,20 @@ const EquipmentsPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEditColorDialog(false)}>{t('actions.cancel')}</Button>
-          <Button onClick={() => void handleUpdateColor()} variant="contained">
+          <Button
+            onClick={handleUpdateColor}
+            variant="contained"
+            disabled={updateColorMutation.isPending}
+          >
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
-      {/* Add Equipment Item Dialog */}
-      <Dialog
+      <GuardedDialog
         open={openAddEquipmentDialog}
         onClose={() => setOpenAddEquipmentDialog(false)}
+        isDirty={isAddEquipmentDirty}
         maxWidth="xs"
         fullWidth
       >
@@ -782,16 +732,20 @@ const EquipmentsPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenAddEquipmentDialog(false)}>{t('actions.cancel')}</Button>
-          <Button onClick={() => void handleAddEquipment()} variant="contained">
+          <Button
+            onClick={handleAddEquipment}
+            variant="contained"
+            disabled={createEquipmentMutation.isPending}
+          >
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
-      {/* Edit Equipment Item Dialog */}
-      <Dialog
+      <GuardedDialog
         open={openEditEquipmentDialog && !!editEquipment}
         onClose={() => setOpenEditEquipmentDialog(false)}
+        isDirty={isEditEquipmentDirty}
         maxWidth="xs"
         fullWidth
       >
@@ -834,13 +788,16 @@ const EquipmentsPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenEditEquipmentDialog(false)}>{t('actions.cancel')}</Button>
-          <Button onClick={() => void handleUpdateEquipment()} variant="contained">
+          <Button
+            onClick={handleUpdateEquipment}
+            variant="contained"
+            disabled={updateEquipmentMutation.isPending}
+          >
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
-      {/* Delete Color Confirmation */}
       <Dialog open={deleteColorId !== null} onClose={() => setDeleteColorId(null)}>
         <DialogTitle>{t('equipment.delete.confirmTitle')}</DialogTitle>
         <DialogContent>
@@ -851,7 +808,7 @@ const EquipmentsPage: React.FC = () => {
           <Button
             onClick={() => {
               if (deleteColorId !== null) {
-                void handleDeleteColor(deleteColorId);
+                handleDeleteColor(deleteColorId);
                 setDeleteColorId(null);
               }
             }}
@@ -863,7 +820,6 @@ const EquipmentsPage: React.FC = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Delete Equipment Confirmation */}
       <Dialog open={deleteEquipmentInfo !== null} onClose={() => setDeleteEquipmentInfo(null)}>
         <DialogTitle>{t('equipment.delete.confirmTitle')}</DialogTitle>
         <DialogContent>
@@ -874,10 +830,7 @@ const EquipmentsPage: React.FC = () => {
           <Button
             onClick={() => {
               if (deleteEquipmentInfo !== null) {
-                void handleDeleteEquipment(
-                  deleteEquipmentInfo.colorId,
-                  deleteEquipmentInfo.equipmentId
-                );
+                handleDeleteEquipment(deleteEquipmentInfo.colorId, deleteEquipmentInfo.equipmentId);
                 setDeleteEquipmentInfo(null);
               }
             }}

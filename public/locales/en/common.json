@@ -1,4 +1,69 @@
 {
+  "chooseClub": {
+    "title": "Choose Club",
+    "description": "Select the club you want to work with",
+    "subtitle": "These are the clubs you have access to",
+    "pickOneHint": "Click to pick one",
+    "enter": "Enter",
+    "defaultBadge": "Default",
+    "noDefaultAlert": "You don't have a default club yet. Pick one of your clubs to get started.",
+    "noRoles": "No roles assigned",
+    "clearDefault": "Clear default",
+    "clearDefaultHint": "You will stop being logged in to a club automatically",
+    "setAsDefault": {
+      "title": "Set as default club",
+      "hint": "You'll enter this club automatically on next logins"
+    },
+    "empty": {
+      "title": "No clubs linked",
+      "description": "Your account is not linked to any club yet. Please contact an administrator."
+    }
+  },
+  "roles": {
+    "ADMIN": "Admin",
+    "DIRECTOR": "Director",
+    "COACH": "Coach",
+    "PLAYER": "Player",
+    "PARENT": "Parent",
+    "TEAM_MANAGER": "Team Manager"
+  },
+  "home": {
+    "title": "Home",
+    "description": "Club home dashboard",
+    "subtitle": "A quick look at what is going on in your club",
+    "goTo": "Go to Home",
+    "fetch": {
+      "error": "Failed to load home data"
+    },
+    "stats": {
+      "athletes": "Active athletes",
+      "teams": "Teams",
+      "upcomingGames": "Upcoming games"
+    },
+    "upcomingGames": {
+      "title": "Upcoming games",
+      "subtitle": "The next 10 scheduled games",
+      "none": "No scheduled games.",
+      "next": "Next"
+    },
+    "birthdays": {
+      "title": "Upcoming birthdays",
+      "subtitle": "Athletes turning a year older in the next 60 days",
+      "none": "No birthdays in the coming days.",
+      "today": "Today!",
+      "tomorrow": "Tomorrow",
+      "inDays": "In {{days}} days",
+      "turning": "Turning {{age}}"
+    },
+    "chart": {
+      "title": "Athletes by birth year",
+      "subtitle": "Active roster distribution by birth year",
+      "none": "Not enough data to display.",
+      "xAxis": "Year",
+      "yAxis": "Athletes",
+      "series": "Athletes"
+    }
+  },
   "common": {
     "loading": "Loading",
     "name": "Name",
@@ -11,6 +76,8 @@
     "start": "Start",
     "end": "End",
     "current": "Current",
+    "weeks": "weeks",
+    "sessions": "sessions",
     "active": "Active",
     "inactive": "Inactive",
     "role": "Role",
@@ -36,6 +103,7 @@
     "all": "All",
     "none": "None",
     "other": "Other",
+    "today": "Today",
     "team": "Team",
     "opponent": "Opponent",
     "venue": "Venue",
@@ -43,7 +111,6 @@
     "search": "Search...",
     "visible": "visible"
   },
-
   "actions": {
     "add": "Add",
     "edit": "Edit",
@@ -62,7 +129,6 @@
     "close": "Close",
     "back": "Back"
   },
-
   "status": {
     "created": "created",
     "updated": "updated",
@@ -73,7 +139,6 @@
     "success": "Success",
     "error": "Error"
   },
-
   "messages": {
     "missingFields": "Missing required fields",
     "saveSuccess": "Saved successfully",
@@ -89,7 +154,12 @@
     "deleteConfirmation": "Are you sure you want to delete? This action cannot be undone.",
     "noData": "No data to display"
   },
-
+  "discardChanges": {
+    "title": "Discard changes?",
+    "message": "You have unsaved changes. Leaving now will lose them.",
+    "confirm": "Discard changes",
+    "keepEditing": "Keep editing"
+  },
   "images": {
     "remove": "Remove Image",
     "notSelected": "No image selected",
@@ -97,7 +167,6 @@
     "uploadPhoto": "Upload Photo",
     "invalid": "Invalid image"
   },
-
   "filters": {
     "title": "Filters",
     "startDate": "Start Date",
@@ -106,7 +175,6 @@
     "selectAll": "Select All",
     "deselectAll": "Clear Selection"
   },
-
   "alerts": {
     "title": "Alerts",
     "empty": "No alerts",
@@ -146,14 +214,12 @@
       }
     }
   },
-
   "gender": {
     "label": "Gender",
     "coed": "Coed",
     "female": "Female",
     "male": "Male"
   },
-
   "menu": {
     "configuration": "Configuration",
     "settings": "Settings",
@@ -163,7 +229,367 @@
     "practices": "Practices",
     "drills": "Drills"
   },
-
+  "drill": {
+    "title": "Drills",
+    "singular": "Drill",
+    "plural": "Drills",
+    "description": "Drills and plays library",
+    "add": "New Drill",
+    "new": "New Drill",
+    "edit": "Edit Drill",
+    "backToList": "Back to list",
+    "author": "Author",
+    "createdAt": "Created on",
+    "updatedAt": "Updated on",
+    "status": {
+      "createdModified": "Created / Modified",
+      "created": "Created"
+    },
+    "fields": {
+      "title": "Title",
+      "titleRequired": "Title is required",
+      "description": "Description",
+      "goals": "Goals / purpose / skills",
+      "variations": "Variations",
+      "tips": "Tips / Hints / Emphasis",
+      "defaultText": "Default text for your Practice Plans",
+      "ageGroup": "Age Group",
+      "type": "Type",
+      "position": "Position",
+      "equipment": "Equipment",
+      "balls": "Balls",
+      "baskets": "Baskets",
+      "cones": "Cones",
+      "extra": "Other",
+      "playersCoaches": "Players / Coaches",
+      "players": "Players",
+      "coaches": "Coaches",
+      "noEchelon": "No age group"
+    },
+    "type": {
+      "fundamental": "Fundamental",
+      "individual": "Individual",
+      "team": "Team"
+    },
+    "position": {
+      "guard": "Guard",
+      "forward": "Forward",
+      "center": "Center"
+    },
+    "filters": {
+      "search": "Search by title or description",
+      "topic": "Topic",
+      "allTopics": "All topics",
+      "echelon": "Age group",
+      "allEchelons": "All",
+      "type": "Type",
+      "allTypes": "All",
+      "position": "Position",
+      "allPositions": "All",
+      "clear": "Clear filters"
+    },
+    "list": {
+      "empty": "No drills yet. Create your first!",
+      "emptyFiltered": "No drills match the filters.",
+      "columns": {
+        "title": "Title",
+        "topics": "Topics",
+        "date": "Date",
+        "author": "Author",
+        "age": "Age",
+        "position": "Pos.",
+        "type": "Type",
+        "graphics": "Grf.",
+        "actions": "Actions"
+      }
+    },
+    "topics": {
+      "title": "Topics",
+      "none": "No topics",
+      "picker": "Pick topics",
+      "save": "Save topics",
+      "addPlaceholder": "New topic...",
+      "deleteConfirm": "Remove this topic?"
+    },
+    "topicNames": {
+      "transition": "Transition",
+      "individual_position": "Individual Position Training",
+      "defence": "Defence",
+      "screens": "Screens",
+      "rebounding": "Rebounding",
+      "ballhandling": "Ballhandling / Dribbling",
+      "passing": "Passing / Catching",
+      "shooting": "Shooting",
+      "warmup": "Warm Up",
+      "conditioning": "Basketball Conditioning",
+      "mini": "Mini Basketball",
+      "little_games": "Little Games"
+    },
+    "graphics": {
+      "title": "Graphics",
+      "empty": "No graphics yet. Add the first one.",
+      "add": "Add graphic",
+      "edit": "Edit graphic",
+      "delete": "Delete graphic",
+      "number": "Graphic #{{n}}",
+      "svgInput": "SVG code",
+      "svgPlaceholder": "Paste the SVG code of the graphic here...",
+      "notes": "Notes",
+      "preview": "Preview",
+      "noPreview": "No preview",
+      "openFull": "Open in full page",
+      "downloadAll": "Download all",
+      "deleteConfirmTitle": "Delete graphic?",
+      "deleteConfirm": "This action cannot be undone."
+    },
+    "delete": {
+      "confirm": "Are you sure you want to delete this drill?",
+      "title": "Delete drill"
+    },
+    "save": {
+      "createSuccess": "Drill created successfully",
+      "updateSuccess": "Drill saved",
+      "deleteSuccess": "Drill deleted",
+      "error": "Failed to save drill",
+      "deleteError": "Failed to delete drill",
+      "notFound": "Drill not found"
+    },
+    "graphicSave": {
+      "success": "Graphic saved",
+      "addSuccess": "Graphic added",
+      "deleteSuccess": "Graphic deleted",
+      "error": "Failed to save graphic"
+    }
+  },
+  "drillEditor": {
+    "undo": "Undo (⌘Z)",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "zoomReset": "Reset zoom (100%)",
+    "toggleCourt": "Half / full court",
+    "menu": "Menu",
+    "color": "Color",
+    "basicColors": "Basic",
+    "recentColors": "Recent",
+    "recentColorsHint": "Custom colours are saved only after you use them on an element.",
+    "clearRecent": "Clear",
+    "customColor": "Custom",
+    "pinColor": "Pin colour",
+    "unpinColor": "Unpin colour",
+    "removeColor": "Remove colour",
+    "arrowVariant": "Line type",
+    "finishArrow": "Finish line (Enter)",
+    "selection": "Selected",
+    "objects": "Objects",
+    "noObjects": "No objects",
+    "size": "Size",
+    "width": "Width",
+    "height": "Height",
+    "clubLogoCenter": "Club logo on center circle",
+    "saveClubTheme": "Save colors to club",
+    "courtThemeHint": "Edit court colors in the club settings page.",
+    "goToClubSettings": "Open club settings",
+    "courtTheme": "Court colors",
+    "courtCourt": "Background",
+    "courtKey": "Key",
+    "courtCenter": "Centre circle",
+    "number": "Number",
+    "rotation": "Rotation (°)",
+    "rotationHint": "0° points up. You can also drag the blue triangle on court to rotate.",
+    "textLabel": "Text",
+    "textMultilineHint": "Press Enter to add a line break.",
+    "fontSize": "Font size",
+    "dragToMove": "Drag on the court to move",
+    "downloadSvg": "Download SVG",
+    "changeOffenseColor": "Change offense color",
+    "changeDefenseColor": "Change defense color",
+    "newOffenseColor": "New offense color (hex)",
+    "newDefenseColor": "New defense color (hex)",
+    "changeLineColor": "Change line color",
+    "newLineColor": "New line color (hex)",
+    "linePointsHint": "Press Space to add a point at the cursor · Alt-click a point (or −) to remove",
+    "tools": {
+      "select": "Select",
+      "eraser": "Erase",
+      "offense": "Offense",
+      "defense": "Defense",
+      "ball": "Ball",
+      "cone": "Cone",
+      "coach": "Coach",
+      "text": "Text",
+      "area": "Area (circle/square/triangle)",
+      "movement": "Movement",
+      "passing": "Pass",
+      "dribbling": "Dribble",
+      "screen": "Screen",
+      "line": "Line",
+      "shooting": "Shooting",
+      "handoff": "Handoff"
+    },
+    "variants": {
+      "movement": "Movement",
+      "passing": "Pass",
+      "dribbling": "Dribble",
+      "screen": "Screen",
+      "line": "Line"
+    }
+  },
+  "practice": {
+    "title": "Practices",
+    "singular": "Practice",
+    "description": "Training calendar and plans",
+    "add": "Add Practice",
+    "edit": "Edit Practice",
+    "topic": "Topic",
+    "subtitle": "Subtitle",
+    "startTime": "Start",
+    "endTime": "End",
+    "offensiveGoals": "Offensive Goals",
+    "defensiveGoals": "Defensive Goals",
+    "notes": "Notes",
+    "completed": "Plan completed",
+    "attendance": {
+      "title": "Attending Athletes",
+      "rosterTitle": "Attendance",
+      "playerCol": "Player",
+      "hasToAttend": "Has to attend",
+      "attended": "Attended",
+      "notAttended": "Not attended",
+      "markAttended": "Mark attended",
+      "markAbsent": "Mark absent",
+      "lateBy": "Late by",
+      "min": "min",
+      "reason": "Reason",
+      "notePlaceholder": "Notes...",
+      "expectedCount": "Expected: {{count}} of {{total}}",
+      "attendedCount": "Attended: {{count}} of {{total}}",
+      "selectAll": "Select All",
+      "deselectAll": "Deselect All",
+      "noAthletes": "This team has no athletes assigned",
+      "selectTeamFirst": "Please select a team first",
+      "reasons": {
+        "injured": "Injured",
+        "sick": "Sick",
+        "excused": "Excused",
+        "school": "School / Study",
+        "family": "Family reason",
+        "work": "Work",
+        "personal": "Personal",
+        "unexcused": "Unexcused",
+        "other": "Other"
+      },
+      "settings": {
+        "title": "Absence reasons",
+        "description": "Reasons available to mark absent athletes. Default reasons can be renamed.",
+        "addPlaceholder": "New reason",
+        "deleteConfirm": "Delete the reason \"{{name}}\"?"
+      }
+    },
+    "delete": {
+      "title": "Delete Practice",
+      "confirm": "Are you sure you want to delete the practice on {{date}}?",
+      "success": "Practice deleted successfully",
+      "error": "Failed to delete practice"
+    },
+    "copy": {
+      "button": "Duplicate",
+      "title": "Duplicate Practice",
+      "confirm": "Duplicate",
+      "sourceInfo": "Duplicating practice from {{team}} on {{date}}",
+      "copyItems": "Copy plan items",
+      "copyAttendance": "Copy attendance",
+      "success": "Practice duplicated successfully",
+      "error": "Failed to duplicate practice"
+    },
+    "save": {
+      "createSuccess": "Practice created successfully",
+      "updateSuccess": "Practice updated successfully",
+      "error": "Failed to save practice"
+    },
+    "validation": {
+      "teamRequired": "Team is required",
+      "dateRequired": "Date is required",
+      "topicRequired": "Topic is required",
+      "endBeforeStart": "End time must be after start time"
+    },
+    "settings": {
+      "button": "Settings",
+      "title": "Practice Settings",
+      "description": "Set the default attendance status for athletes according to the team echelon gender",
+      "defaultAll": "All selected",
+      "defaultNone": "All deselected",
+      "coed": "Coed",
+      "saveSuccess": "Settings saved successfully",
+      "saveError": "Failed to save settings"
+    },
+    "items": {
+      "title": "Practice Plan",
+      "add": "Add item",
+      "addFreetext": "Free text",
+      "addDrill": "Add exercise",
+      "pickDrill": "Choose an exercise",
+      "searchDrill": "Search your library...",
+      "remaining": "{{minutes}} min left",
+      "overBy": "{{minutes}} min over",
+      "empty": "No items in the plan. Add the first one to get started.",
+      "availableAfterSave": "Save the practice first to start adding items to the plan.",
+      "time": "Time",
+      "min": "Min",
+      "details": "Details",
+      "graphics": "Graphics",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "dragHint": "Drag to reorder",
+      "titlePlaceholder": "Title...",
+      "detailsPlaceholder": "Description...",
+      "graphicCaptionPlaceholder": "Caption for this image...",
+      "printFirstPage": "Print on first page",
+      "printOtherPages": "Print on other pages",
+      "addSuccess": "Item added",
+      "addError": "Failed to add item",
+      "saveError": "Failed to save item",
+      "deleteSuccess": "Item removed",
+      "deleteError": "Failed to remove item",
+      "reorderError": "Failed to reorder items",
+      "types": {
+        "FREETEXT": "Freetext",
+        "DRILL": "Drill",
+        "PLAY": "Play",
+        "BREAKDOWN": "Breakdown",
+        "MY_DRILL": "My Drill"
+      }
+    },
+    "groups": {
+      "title": "Practice groups",
+      "addGroup": "Add group",
+      "numberOfGroups": "Number of groups",
+      "playersPerGroup": "Players per group",
+      "groupName": "Group {{number}}",
+      "playerSlot": "Player {{number}}",
+      "selectPlayer": "Select player",
+      "noAthletes": "No athletes available to create groups.",
+      "capacityWarning": "Current capacity: {{count}} of {{total}} athletes.",
+      "hint": "Each athlete can only be selected once across groups.",
+      "groupSize": "Players in this team",
+      "autoBalance": "Balance evenly",
+      "assignedCount": "Assigned: {{count}} of {{total}}",
+      "capacityCount": "Capacity: {{count}}",
+      "addSet": "Add set",
+      "setName": "Set {{number}}",
+      "noSets": "No sets yet. Create your first team set.",
+      "hintUnsaved": "Each athlete can be picked once. Groups are persisted when you save the practice."
+    },
+    "cycleSummary": {
+      "title": "Current cycle",
+      "selectTeamFirst": "Select a team to see the current cycle.",
+      "noActive": "No active cycle covers this date for the selected team.",
+      "macrocycle": "Macrocycle",
+      "mesocycle": "Mesocycle",
+      "microcycle": "Microcycle",
+      "noNotes": "No notes",
+      "dateRange": "{{start}} – {{end}}"
+    }
+  },
   "echelon": {
     "title": "Echelons",
     "singular": "Echelon",
@@ -192,7 +618,6 @@
       "minAgePositive": "Min age needs to be positive"
     }
   },
-
   "athlete": {
     "title": "Athletes",
     "singular": "Athlete",
@@ -232,7 +657,6 @@
       "birthdateRequired": "Birth date is required"
     }
   },
-
   "team": {
     "title": "Teams",
     "plural": "Teams",
@@ -258,11 +682,11 @@
       "error": "Failed to delete team"
     }
   },
-
   "club": {
     "title": "Clubs",
     "singular": "Club",
     "settings": "Club Settings",
+    "switch": "Switch club",
     "create": "Create Club",
     "fetch": {
       "error": "Error fetching clubs"
@@ -280,6 +704,30 @@
     "foregroundColor": "Text Color",
     "fpbClubId": "FPB Club ID",
     "fpbClubIdHelper": "Club ID on the FPB website (optional)",
+    "appearance": {
+      "title": "Club colours & appearance",
+      "brandSection": "Club colours",
+      "courtSection": "Court appearance"
+    },
+    "courtTheme": {
+      "title": "Court appearance",
+      "backgroundHint": "Pick a pattern or a solid color for the playing surface.",
+      "backgroundColor": "Floor color",
+      "backgroundColorHint": "Leave unset to use the selected pattern.",
+      "lineColor": "Court line color",
+      "marginColor": "Out-of-bounds color",
+      "keyFill": "Restricted area",
+      "centerFill": "Center circle",
+      "showLogo": "Show the club logo on the center circle",
+      "logoRotation": "Logo rotation",
+      "patternDefault": "Wood (default)",
+      "patterns": {
+        "wood": "Wood",
+        "parquet": "Parquet",
+        "concrete": "Concrete",
+        "clay": "Clay"
+      }
+    },
     "save": {
       "createSuccess": "Club created successfully",
       "updateSuccess": "Club saved successfully",
@@ -292,7 +740,6 @@
       "invalidId": "Invalid club ID in session"
     }
   },
-
   "opponent": {
     "title": "Opponents",
     "singular": "Opponent",
@@ -319,7 +766,6 @@
     "noVenues": "No venues",
     "newVenue": "New Venue"
   },
-
   "game": {
     "title": "Games",
     "singular": "Game",
@@ -336,6 +782,8 @@
     "updatedSuccess": "Game updated successfully",
     "deletedSuccess": "Game deleted successfully",
     "home": "Home",
+    "vs": "vs",
+    "awayShort": "(A)",
     "management": "Games Management",
     "pageTitle": "Games",
     "pageDescription": "Manage all games",
@@ -345,7 +793,6 @@
     "add": "Add Game",
     "edit": "Edit Game",
     "id": "Game ID",
-    "number": "Game Number",
     "sheet": "Game sheet",
     "registrationSheet": "Registration Sheet",
     "away": "Away",
@@ -389,7 +836,6 @@
       "notFound": "Game not found"
     }
   },
-
   "competition": {
     "title": "Competitions",
     "singular": "Competition",
@@ -406,7 +852,6 @@
     "fpbId": "FPB Competition ID",
     "fpbSerieId": "FPB Serie ID"
   },
-
   "season": {
     "title": "Seasons",
     "management": "Seasons Management",
@@ -460,7 +905,6 @@
       "formRequired": "Name, start date and end date are required"
     }
   },
-
   "venue": {
     "title": "Venues",
     "singular": "Venue",
@@ -468,7 +912,6 @@
     "add": "Add Venue",
     "new": "New Venue"
   },
-
   "staff": {
     "title": "Staff",
     "singular": "Member",
@@ -494,9 +937,9 @@
       "fetchError": "Failed to load available accounts"
     }
   },
-
   "cycles": {
     "title": "Cycles",
+    "description": "Planning of Macrocycles, Mesocycles, and Microcycles",
     "macrocycle": {
       "title": "Macrocycles",
       "singular": "Macrocycle",
@@ -521,8 +964,10 @@
         "error": "Error deleting macrocycle"
       },
       "validation": {
-        "datesRequired": "Start date and end date are required"
-      }
+        "datesRequired": "Start date and end date are required",
+        "teamRequired": "Team is required"
+      },
+      "noTeam": "No team"
     },
     "mesocycle": {
       "title": "Mesocycles",
@@ -577,7 +1022,6 @@
       }
     }
   },
-
   "account": {
     "management": "Accounts Management",
     "manage": "Manage accounts",
@@ -614,7 +1058,6 @@
       "removeNetworkError": "Error removing account from club: {{error}}"
     }
   },
-
   "profile": {
     "title": "User Profile",
     "my": "My profile",
@@ -630,6 +1073,8 @@
     "update": "Update Profile",
     "passwordMismatch": "Passwords do not match",
     "selectedClub": "Selected Club (ID)",
+    "currentClub": "Current club",
+    "language": "Language",
     "currentLanguage": "Current Language",
     "languagePortuguese": "Portuguese",
     "languageEnglish": "English",
@@ -648,7 +1093,6 @@
     "updateError": "Error updating profile",
     "updatedSuccess": "Profile updated successfully"
   },
-
   "deploy": {
     "title": "Deploy and Updates",
     "statusTitle": "Current Status",
@@ -689,7 +1133,6 @@
     "lastCommitInProduction": "Last commit in production",
     "streamNotAvailable": "Stream not available"
   },
-
   "fpb": {
     "clubId": "FPB Club ID",
     "teamId": "FPB Team ID",
@@ -700,7 +1143,6 @@
     "getInfos": "Get Infos",
     "linked": "Linked to FPB"
   },
-
   "equipment": {
     "title": "Equipment",
     "managementTitle": "Equipment Management",
@@ -790,7 +1232,6 @@
       "confirmMessage": "Are you sure you want to delete this equipment?"
     }
   },
-
   "validation": {
     "nameRequired": "Name is required",
     "nameMaxLength": "Name cannot exceed 50 characters",
@@ -814,7 +1255,6 @@
     "echelonIdPositive": "Echelon ID must be positive",
     "imageInvalid": "Invalid image"
   },
-
   "email": {
     "settings": {
       "title": "Email server (SMTP)",
@@ -873,7 +1313,6 @@
     },
     "saveClubFirst": "Save the club first to configure the email server."
   },
-
   "fpbImport": {
     "title": "Import games from FPB",
     "button": "Import from FPB",

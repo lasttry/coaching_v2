@@ -43,23 +43,8 @@ const SignInPage = (): ReactElement => {
         return;
       }
 
-      const accountResponse = await fetch(`/api/accounts?email=${encodeURIComponent(username)}`);
-      const data = await accountResponse.json();
-
-      if (!accountResponse.ok) {
-        const errorText = data?.error || 'Failed to fetch user details';
-        log.error(errorText);
-        setErrorMessage(errorText);
-        return;
-      }
-
-      if (data.length >= 1 && data[0].defaultClubId !== 0) {
-        router.push('/utilities/games');
-      } else if (data[0].clubs.length === 1) {
-        router.push('/utilities/games');
-      } else {
-        router.push('/utilities/chooseClub');
-      }
+      // Middleware redirects to /utilities/chooseClub if no club is selected.
+      router.push('/');
     } catch (error) {
       log.error('Unexpected error during login:', error);
       setErrorMessage('An unexpected error occurred. Please try again.');

@@ -111,6 +111,16 @@ export async function PUT(
       federationLogo: clubPayload.federationLogo || null,
       backgroundColor: clubPayload.backgroundColor || '#ffffff',
       foregroundColor: clubPayload.foregroundColor || '#000000',
+      courtBackground: clubPayload.courtBackground || null,
+      courtKeyColor: clubPayload.courtKeyColor || null,
+      courtCenterColor: clubPayload.courtCenterColor || null,
+      courtLineColor: clubPayload.courtLineColor || null,
+      courtMarginColor: clubPayload.courtMarginColor || null,
+      courtShowLogo: clubPayload.courtShowLogo === undefined ? true : !!clubPayload.courtShowLogo,
+      courtLogoRotation:
+        clubPayload.courtLogoRotation === undefined || clubPayload.courtLogoRotation === null
+          ? 90
+          : Number(clubPayload.courtLogoRotation),
       fpbClubId:
         clubPayload.fpbClubId === undefined || clubPayload.fpbClubId === null
           ? null

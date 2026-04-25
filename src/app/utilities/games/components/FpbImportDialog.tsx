@@ -9,7 +9,6 @@ import {
   Checkbox,
   Chip,
   CircularProgress,
-  Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
@@ -27,6 +26,9 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
 import { log } from '@/lib/logger';
+import { useOpponents } from '@/hooks/useOpponents';
+import { useCompetitions } from '@/hooks/useCompetitions';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 interface FpbImportDialogProps {
   open: boolean;
@@ -113,8 +115,29 @@ const FpbImportDialog: React.FC<FpbImportDialogProps> = ({
   const [importing, setImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [plan, setPlan] = useState<PlanEntry[] | null>(null);
-  const [opponents, setOpponents] = useState<OpponentOption[]>([]);
-  const [competitions, setCompetitions] = useState<CompetitionOption[]>([]);
+  const { data: opponentsData = [] } = useOpponents();
+  const { data: competitionsData = [] } = useCompetitions();
+  const opponents = useMemo<OpponentOption[]>(
+    () =>
+      opponentsData.map((o) => ({
+        id: Number(o.id),
+        name: o.name,
+        shortName: o.shortName ?? '',
+      })),
+    [opponentsData]
+  );
+  const competitions = useMemo<CompetitionOption[]>(
+    () =>
+      competitionsData.map((c) => ({
+        id: Number(c.id),
+        name: c.name,
+        competitionSeries: c.competitionSeries?.map((s) => ({
+          id: Number(s.id),
+          name: s.name,
+        })),
+      })),
+    [competitionsData]
+  );
   const [selections, setSelections] = useState<Record<string, RowSelection>>({});
   const [result, setResult] = useState<ImportResult | null>(null);
 
@@ -131,11 +154,7 @@ const FpbImportDialog: React.FC<FpbImportDialogProps> = ({
     setPlan(null);
     setResult(null);
     try {
-      const [planRes, opponentsRes, competitionsRes] = await Promise.all([
-        fetch(`/api/teams/${teamId}/fpb-import`),
-        fetch('/api/opponents'),
-        fetch('/api/competition'),
-      ]);
+      const planRes = await fetch(`/api/teams/${teamId}/fpb-import`);
 
       if (!planRes.ok) {
         const data = await planRes.json().catch(() => ({}));
@@ -143,12 +162,6 @@ const FpbImportDialog: React.FC<FpbImportDialogProps> = ({
       }
 
       const planData = (await planRes.json()) as { plan: PlanEntry[] };
-      const opponentsData = opponentsRes.ok
-        ? ((await opponentsRes.json()) as OpponentOption[])
-        : [];
-      const competitionsData = competitionsRes.ok
-        ? ((await competitionsRes.json()) as CompetitionOption[])
-        : [];
 
       const freshSelections: Record<string, RowSelection> = {};
       planData.plan.forEach((entry) => {
@@ -162,8 +175,6 @@ const FpbImportDialog: React.FC<FpbImportDialogProps> = ({
       });
 
       setPlan(planData.plan);
-      setOpponents(opponentsData);
-      setCompetitions(competitionsData);
       setSelections(freshSelections);
     } catch (err) {
       log.error('FPB preview failed:', err);
@@ -259,8 +270,16 @@ const FpbImportDialog: React.FC<FpbImportDialogProps> = ({
     }
   };
 
+  // Guard the dialog only while there are user-editable selections in flight.
+  // Snapshot is captured the moment the preview finishes loading, so any
+  // toggle from the suggested defaults marks the form as dirty. Once an
+  // import finishes the dialog only displays a result and no longer needs
+  // the prompt.
+  const guardOpen = open && !!plan && !result;
+  const isImportDirty = useFormSnapshotDirty(guardOpen, selections);
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
+    <GuardedDialog open={open} onClose={onClose} isDirty={isImportDirty} maxWidth="lg" fullWidth>
       <DialogTitle>
         {t('fpbImport.title')}
         {teamName ? ` — ${teamName}` : ''}
@@ -476,7 +495,7 @@ const FpbImportDialog: React.FC<FpbImportDialogProps> = ({
           </Button>
         )}
       </DialogActions>
-    </Dialog>
+    </GuardedDialog>
   );
 };
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -81,8 +81,15 @@ import dayjs from 'dayjs';
 import { Size } from '@prisma/client';
 import { log } from '@/lib/logger';
 import { useMessage } from '@/hooks/useMessage';
+import {
+  useAthletes,
+  useEquipmentColors,
+  useSaveAthlete,
+  useDeleteAthlete,
+} from '@/hooks/useAthletes';
 import { AthleteInterface } from '@/types/athlete/types';
 import { AthletePreferredNumberInterface } from '@/types/athletePreferredNumber/types';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 const buildEmptyAthlete = (): AthleteInterface => ({
   id: null,
@@ -99,8 +106,16 @@ const buildEmptyAthlete = (): AthleteInterface => ({
 const AthletesPage: React.FC = () => {
   const { t } = useTranslation();
 
-  const [athletes, setAthletes] = useState<AthleteInterface[]>([]);
-  const [loading, setLoading] = useState(false);
+  const {
+    data: athletes = [],
+    isLoading: loading,
+    isFetching: refetching,
+    error: fetchError,
+    refetch: refetchAthletes,
+  } = useAthletes();
+  const { data: equipmentColors = [] } = useEquipmentColors();
+  const saveAthleteMutation = useSaveAthlete();
+  const deleteAthleteMutation = useDeleteAthlete();
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedAthlete, setSelectedAthlete] = useState<AthleteInterface>(buildEmptyAthlete());
@@ -111,9 +126,24 @@ const AthletesPage: React.FC = () => {
   const { message: successMessage, setTimedMessage: setSuccessMessage } = useMessage(5000);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [equipmentColors, setEquipmentColors] = useState<{ color: string; colorHex: string }[]>([]);
   const [newPrefColor, setNewPrefColor] = useState<string>('');
   const [newPrefNumber, setNewPrefNumber] = useState<string>('');
+
+  // Pre-fill rules add a few preferred-number rows automatically when editing
+  // an existing athlete; the snapshot guarantees those auto-additions are
+  // ignored when computing dirtiness.
+  const isAthleteFormDirty = useFormSnapshotDirty(openDialog, {
+    selectedAthlete,
+    newPrefColor,
+    newPrefNumber,
+  });
+
+  useEffect(() => {
+    if (fetchError) {
+      log.error('Error fetching athletes:', fetchError);
+      setErrorMessage(t('athlete.fetch.singleError'));
+    }
+  }, [fetchError, setErrorMessage, t]);
 
   const [search, setSearch] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('active');
@@ -258,46 +288,8 @@ const AthletesPage: React.FC = () => {
 
   const handleSaveFromForm = (): void => {
     if (!validateAll()) return;
-    void handleSaveAthlete(selectedAthlete);
+    handleSaveAthlete(selectedAthlete);
   };
-
-  const fetchAthletes = useCallback(async (): Promise<void> => {
-    setLoading(true);
-    try {
-      const response = await fetch('/api/athletes');
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch athletes');
-      }
-
-      setAthletes(data as AthleteInterface[]);
-    } catch (err) {
-      log.error('Error fetching athletes:', err);
-      setErrorMessage(t('athlete.fetch.singleError'));
-    } finally {
-      setLoading(false);
-    }
-  }, [t, setErrorMessage]);
-
-  const fetchEquipmentColors = useCallback(async (): Promise<void> => {
-    try {
-      const response = await fetch('/api/equipments/colors');
-      const data = await response.json();
-      if (response.ok && Array.isArray(data)) {
-        setEquipmentColors(data);
-      }
-    } catch (err) {
-      log.error('Error fetching equipment colors:', err);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      fetchAthletes();
-      fetchEquipmentColors();
-    }
-  }, [fetchAthletes, fetchEquipmentColors]);
 
   const handleOpenNewAthleteDialog = (): void => {
     setSelectedAthlete(buildEmptyAthlete());
@@ -321,46 +313,30 @@ const AthletesPage: React.FC = () => {
     setOpenDialog(false);
   };
 
-  const handleSaveAthlete = async (athlete: AthleteInterface): Promise<void> => {
-    try {
-      const hasId = !!athlete.id;
-      const method = hasId ? 'PUT' : 'POST';
-      const url = hasId ? `/api/athletes/${athlete.id}` : '/api/athletes';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(athlete),
-      });
-
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to save athlete');
-      }
-
-      setSuccessMessage(hasId ? t('messages.saveSuccess') : t('athlete.save.success'));
-      setOpenDialog(false);
-      fetchAthletes();
-    } catch (err) {
-      log.error('Error saving athlete:', err);
-      setErrorMessage(t('messages.saveError'));
-    }
+  const handleSaveAthlete = (athlete: AthleteInterface): void => {
+    const hasId = !!athlete.id;
+    saveAthleteMutation.mutate(athlete, {
+      onSuccess: () => {
+        setSuccessMessage(hasId ? t('messages.saveSuccess') : t('athlete.save.success'));
+        setOpenDialog(false);
+      },
+      onError: (err) => {
+        log.error('Error saving athlete:', err);
+        setErrorMessage(t('messages.saveError'));
+      },
+    });
   };
 
-  const handleDeleteAthlete = async (id: number): Promise<void> => {
-    try {
-      const response = await fetch(`/api/athletes/${id}`, { method: 'DELETE' });
-      if (!response.ok) {
-        const body = await response.json().catch(() => null);
-        throw new Error(body?.error || t('messages.deleteError'));
-      }
-
-      setAthletes((prev) => prev.filter((a) => a.id !== id));
-      setSuccessMessage(t('messages.deleteSuccess'));
-    } catch (err) {
-      log.error('Error deleting athlete:', err);
-      setErrorMessage(t('messages.deleteError'));
-    }
+  const handleDeleteAthlete = (id: number): void => {
+    deleteAthleteMutation.mutate(id, {
+      onSuccess: () => {
+        setSuccessMessage(t('messages.deleteSuccess'));
+      },
+      onError: (err) => {
+        log.error('Error deleting athlete:', err);
+        setErrorMessage(t('messages.deleteError'));
+      },
+    });
   };
 
   const filteredAthletes = useMemo(() => {
@@ -446,8 +422,8 @@ const AthletesPage: React.FC = () => {
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
-            onClick={fetchAthletes}
-            disabled={loading}
+            onClick={() => void refetchAthletes()}
+            disabled={loading || refetching}
           >
             {t('actions.refresh')}
           </Button>
@@ -717,7 +693,13 @@ const AthletesPage: React.FC = () => {
         })}
 
       {/* Dialog Add/Edit */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
+      <GuardedDialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        isDirty={isAthleteFormDirty}
+        maxWidth="md"
+        fullWidth
+      >
         <DialogTitle>{selectedAthlete?.id ? t('athlete.edit') : t('athlete.addNew')}</DialogTitle>
         <DialogContent>
           {selectedAthlete && (
@@ -946,7 +928,7 @@ const AthletesPage: React.FC = () => {
             {selectedAthlete?.id ? t('actions.save') : t('actions.add')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Dialog de confirmação de delete */}
       <Dialog open={!!deleteConfirmId} onClose={() => setDeleteConfirmId(null)}>

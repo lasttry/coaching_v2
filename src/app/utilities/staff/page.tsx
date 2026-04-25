@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   Autocomplete,
   Box,
@@ -32,13 +32,11 @@ import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
 import dayjs from 'dayjs';
 import { StaffRole, CoachGrade } from '@prisma/client';
-import {
-  StaffInterface,
-  STAFF_ROLE_LABELS,
-  COACH_GRADE_LABELS,
-  AvailableAccount,
-} from '@/types/staff/types';
-import { TeamInterface } from '@/types/teams/types';
+import { StaffInterface, STAFF_ROLE_LABELS, COACH_GRADE_LABELS } from '@/types/staff/types';
+import { useDeleteStaff, useSaveStaff, useStaff, useStaffAccounts } from '@/hooks/useStaff';
+import { useTeams } from '@/hooks/useTeams';
+import type { TeamInterface } from '@/types/teams/types';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -55,10 +53,11 @@ const menuProps: NonNullable<SelectProps<number[]>['MenuProps']> = {
 
 export default function StaffPage(): React.JSX.Element {
   const { t } = useTranslation();
-  const [staff, setStaff] = useState<StaffInterface[]>([]);
-  const [teams, setTeams] = useState<TeamInterface[]>([]);
-  const [accounts, setAccounts] = useState<AvailableAccount[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: staff = [], isLoading: loading } = useStaff();
+  const { data: teams = [] } = useTeams();
+  const { data: accounts = [] } = useStaffAccounts();
+  const saveMutation = useSaveStaff();
+  const deleteMutation = useDeleteStaff();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<StaffInterface | null>(null);
@@ -84,49 +83,7 @@ export default function StaffPage(): React.JSX.Element {
     teamIds: [],
   });
 
-  const fetchStaff = useCallback(async () => {
-    try {
-      const res = await fetch('/api/staff');
-      if (res.ok) {
-        const data = await res.json();
-        setStaff(data);
-      }
-    } catch (error) {
-      console.error('Error fetching staff:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  const fetchTeams = useCallback(async () => {
-    try {
-      const res = await fetch('/api/teams');
-      if (res.ok) {
-        const data = await res.json();
-        setTeams(data);
-      }
-    } catch (error) {
-      console.error('Error fetching teams:', error);
-    }
-  }, []);
-
-  const fetchAccounts = useCallback(async () => {
-    try {
-      const res = await fetch('/api/staff/accounts');
-      if (res.ok) {
-        const data = (await res.json()) as AvailableAccount[];
-        setAccounts(data);
-      }
-    } catch (error) {
-      console.error('Error fetching accounts:', error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchStaff();
-    fetchTeams();
-    fetchAccounts();
-  }, [fetchStaff, fetchTeams, fetchAccounts]);
+  const isFormDirty = useFormSnapshotDirty(dialogOpen, formData);
 
   const handleAdd = useCallback(() => {
     setSelectedStaff(null);
@@ -165,51 +122,38 @@ export default function StaffPage(): React.JSX.Element {
     setDeleteDialogOpen(true);
   }, []);
 
-  const handleSave = async () => {
-    try {
-      const url = selectedStaff ? `/api/staff/${selectedStaff.id}` : '/api/staff';
-      const method = selectedStaff ? 'PUT' : 'POST';
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      });
-
-      if (res.ok) {
-        setSnackbar({
-          open: true,
-          message: selectedStaff ? t('staff.updated') : t('staff.created'),
-          severity: 'success',
-        });
-        setDialogOpen(false);
-        fetchStaff();
-        fetchAccounts();
-      } else {
-        const body = (await res.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(body?.error || 'Failed to save');
+  const handleSave = (): void => {
+    saveMutation.mutate(
+      { id: selectedStaff?.id, payload: formData },
+      {
+        onSuccess: () => {
+          setSnackbar({
+            open: true,
+            message: selectedStaff ? t('staff.updated') : t('staff.created'),
+            severity: 'success',
+          });
+          setDialogOpen(false);
+        },
+        onError: (error) => {
+          const message = error instanceof Error ? error.message : t('messages.errorSaving');
+          setSnackbar({ open: true, message, severity: 'error' });
+        },
       }
-    } catch (error) {
-      const message = error instanceof Error ? error.message : t('messages.errorSaving');
-      setSnackbar({ open: true, message, severity: 'error' });
-    }
+    );
   };
 
-  const confirmDelete = async () => {
-    if (!selectedStaff) return;
-
-    try {
-      const res = await fetch(`/api/staff/${selectedStaff.id}`, { method: 'DELETE' });
-      if (res.ok) {
+  const confirmDelete = (): void => {
+    if (!selectedStaff?.id) return;
+    deleteMutation.mutate(selectedStaff.id, {
+      onSuccess: () => {
         setSnackbar({ open: true, message: t('staff.deleted'), severity: 'success' });
         setDeleteDialogOpen(false);
-        fetchStaff();
-      } else {
-        throw new Error('Failed to delete');
-      }
-    } catch (error) {
-      setSnackbar({ open: true, message: t('messages.errorDeleting'), severity: 'error' });
-    }
+      },
+      onError: (error) => {
+        const message = error instanceof Error ? error.message : t('messages.errorDeleting');
+        setSnackbar({ open: true, message, severity: 'error' });
+      },
+    });
   };
 
   const handleTeamChange = (event: SelectChangeEvent<number[]>) => {
@@ -345,7 +289,13 @@ export default function StaffPage(): React.JSX.Element {
       />
 
       {/* Add/Edit Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+      <GuardedDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        isDirty={isFormDirty}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>{selectedStaff ? t('staff.edit') : t('staff.add')}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
@@ -518,7 +468,7 @@ export default function StaffPage(): React.JSX.Element {
             {t('actions.save')}
           </Button>
         </DialogActions>
-      </Dialog>
+      </GuardedDialog>
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>

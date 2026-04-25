@@ -5,6 +5,8 @@ export interface MacrocycleInterface {
   startDate: Date;
   endDate: Date;
   notes?: string | null;
+  teamId?: number | null;
+  team?: { id: number; name: string } | null;
   mesocycles: MesocycleInterface[];
 }
 

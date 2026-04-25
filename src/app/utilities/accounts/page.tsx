@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, ReactElement } from 'react';
+import React, { useEffect, useState, ReactElement } from 'react';
 import {
   Alert,
   Box,
@@ -14,7 +14,6 @@ import {
   TableRow,
   Paper,
   IconButton,
-  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -27,9 +26,16 @@ import PageContainer from '@/app/components/container/PageContainer';
 import { AccountInterface } from '@/types/accounts/types';
 import ChangePasswordDialog from './assets/changePasswordDialog';
 import { log } from '@/lib/logger';
+import {
+  useAccounts,
+  useCreateAccount,
+  useDeleteAccount,
+  useUpdateAccount,
+} from '@/hooks/useAccounts';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 interface AddAccountDialogProps {
   open: boolean;
@@ -48,6 +54,8 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
+  const isDirty = useFormSnapshotDirty(open, { name, email, password });
+
   const handleAddAccount = (): void => {
     onAddAccount({ name, email, password });
     setName('');
@@ -57,7 +65,7 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <GuardedDialog open={open} onClose={onClose} isDirty={isDirty}>
       <DialogTitle>{t('account.add')}</DialogTitle>
       <DialogContent>
         <TextField
@@ -94,7 +102,7 @@ const AddAccountDialog: React.FC<AddAccountDialogProps> = ({
           {t('actions.add')}
         </Button>
       </DialogActions>
-    </Dialog>
+    </GuardedDialog>
   );
 };
 
@@ -102,7 +110,11 @@ const AccountsPage = (): ReactElement => {
   const { t } = useTranslation();
 
   const { data: session } = useSession();
-  const [accounts, setAccounts] = useState<AccountInterface[]>([]);
+  const { data: accounts = [], error: fetchError } = useAccounts();
+  const createMutation = useCreateAccount();
+  const updateMutation = useUpdateAccount();
+  const deleteMutation = useDeleteAccount();
+
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [addAccountOpen, setAddAccountOpen] = useState(false);
@@ -110,87 +122,46 @@ const AccountsPage = (): ReactElement => {
   const [selectedAccount, setSelectedAccount] = useState<AccountInterface | null>(null);
 
   useEffect(() => {
-    const fetchAccounts = async (): Promise<void> => {
-      try {
-        const response = await fetch('/api/accounts');
-        if (response.ok) {
-          const data = await response.json();
-          setAccounts(data);
-        } else {
-          const errorData = await response.json();
-          if (errorData?.error) {
-            setErrorMessage(`${t('account.failedDelete')}: ${errorData.error}`);
-          } else {
-            setErrorMessage(t('account.failedDelete'));
-          }
-        }
-      } catch (error) {
-        setErrorMessage(`${t('account.failedFetch')}: ${error}`);
-      }
-    };
+    if (fetchError) {
+      setErrorMessage(
+        fetchError instanceof Error
+          ? `${t('account.failedFetch')}: ${fetchError.message}`
+          : t('account.failedFetch')
+      );
+    }
+  }, [fetchError, t]);
 
-    fetchAccounts();
-  }, [t]);
-
-  const handleDeleteAccount = async (accountId?: number): Promise<void> => {
-    if (session?.user.id === accountId) {
+  const handleDeleteAccount = (accountId?: number): void => {
+    if (!accountId) return;
+    if (session?.user.id && Number(session.user.id) === accountId) {
       setErrorMessage(t('account.deleteOwn'));
       return;
     }
 
-    try {
-      const response = await fetch(`/api/accounts/${accountId}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        setAccounts((prev) => prev.filter((account) => account.id !== accountId));
-        setSuccessMessage(t('account.deletedSuccess'));
-      } else {
-        const errorData = await response.json();
-        if (errorData?.error) {
-          setErrorMessage(`${t('account.failedDelete')}: ${errorData.error}`);
-        } else {
-          setErrorMessage(t('account.failedDelete'));
-        }
-      }
-    } catch (error) {
-      setErrorMessage(`${t('account.errorDeleting')}: ${error}`);
-    }
+    deleteMutation.mutate(accountId, {
+      onSuccess: () => setSuccessMessage(t('account.deletedSuccess')),
+      onError: (err) => {
+        setErrorMessage(
+          err instanceof Error
+            ? `${t('account.failedDelete')}: ${err.message}`
+            : t('account.failedDelete')
+        );
+      },
+    });
   };
 
-  const handleAddAccount = async ({
-    name,
-    email,
-    password,
-  }: {
-    name: string;
-    email: string;
-    password: string;
-  }): Promise<void> => {
-    try {
-      const response = await fetch('/api/accounts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, password }),
-      });
-      if (response.ok) {
-        const newAccount = await response.json();
-        setAccounts((prev) => [...prev, newAccount]);
-        setSuccessMessage(t('account.addedSuccess'));
-      } else {
-        const errorData = await response.json();
-        if (errorData?.error) {
-          setErrorMessage(`${t('account.failedAdd')}: ${errorData.error}`);
-        } else {
-          log.error('Failed to add account');
-          setErrorMessage(t('account.failedAdd'));
-        }
-      }
-    } catch (error) {
-      setErrorMessage(`${t('account.errorAdding')}: ${error}`);
-    }
+  const handleAddAccount = (input: { name: string; email: string; password: string }): void => {
+    createMutation.mutate(input, {
+      onSuccess: () => setSuccessMessage(t('account.addedSuccess')),
+      onError: (err) => {
+        log.error('Failed to add account', err);
+        setErrorMessage(
+          err instanceof Error
+            ? `${t('account.failedAdd')}: ${err.message}`
+            : t('account.failedAdd')
+        );
+      },
+    });
   };
 
   const handleUpdateAccount = async (
@@ -203,37 +174,22 @@ const AccountsPage = (): ReactElement => {
     oldPassword?: string
   ): Promise<void> => {
     try {
-      const data = JSON.stringify({
+      await updateMutation.mutateAsync({
+        id: accountId,
         name,
         email,
         defaultClubId,
         image,
-        oldPassword,
         password,
+        oldPassword,
       });
-      const response = await fetch(`/api/accounts/${accountId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: data,
-      });
-      if (response.ok) {
-        const updatedAccount = await response.json();
-        setAccounts((prev) =>
-          prev.map((account) => (account.id === accountId ? updatedAccount : account))
-        );
-        setSuccessMessage(t('account.updatedSuccess'));
-      } else {
-        const errorData = await response.json();
-        if (errorData?.error) {
-          setErrorMessage(`${t('account.failedUpdate')}: ${errorData.error}`);
-        } else {
-          setErrorMessage(t('account.failedUpdate'));
-        }
-      }
+      setSuccessMessage(t('account.updatedSuccess'));
     } catch (error) {
-      setErrorMessage(`${t('account.errorUpdating')}: ${error}`);
+      setErrorMessage(
+        error instanceof Error
+          ? `${t('account.failedUpdate')}: ${error.message}`
+          : t('account.failedUpdate')
+      );
     }
   };
 

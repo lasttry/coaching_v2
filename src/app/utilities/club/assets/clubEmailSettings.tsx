@@ -1,6 +1,11 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import {
+  useClubEmailSettings,
+  useUpdateClubEmailSettings,
+  useSendTestEmail,
+} from '@/hooks/useClubs';
 import {
   Accordion,
   AccordionDetails,
@@ -26,18 +31,6 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
 import { log } from '@/lib/logger';
-
-interface PublicEmailSettings {
-  enabled: boolean;
-  host: string | null;
-  port: number | null;
-  secure: boolean;
-  user: string | null;
-  fromEmail: string | null;
-  fromName: string | null;
-  replyTo: string | null;
-  hasPassword: boolean;
-}
 
 interface FormState {
   enabled: boolean;
@@ -74,45 +67,44 @@ interface Props {
 const ClubEmailSettings: React.FC<Props> = ({ clubId, expanded, onExpandedChange }) => {
   const { t } = useTranslation();
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
-  const [loading, setLoading] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [testing, setTesting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [testEmail, setTestEmail] = useState('');
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const loadSettings = useCallback(async () => {
-    if (!clubId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/clubs/${clubId}/email-settings`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = (await res.json()) as PublicEmailSettings;
-      setForm({
-        enabled: data.enabled,
-        host: data.host ?? '',
-        port: data.port != null ? String(data.port) : '587',
-        secure: data.secure,
-        user: data.user ?? '',
-        password: '',
-        fromEmail: data.fromEmail ?? '',
-        fromName: data.fromName ?? '',
-        replyTo: data.replyTo ?? '',
-        hasPassword: data.hasPassword,
-      });
-    } catch (err) {
-      log.error('Failed to load email settings:', err);
-      setError(t('email.fetch.error'));
-    } finally {
-      setLoading(false);
-    }
-  }, [clubId, t]);
+  const {
+    data: settingsData,
+    isLoading: loading,
+    error: settingsError,
+  } = useClubEmailSettings(clubId);
+  const updateMutation = useUpdateClubEmailSettings();
+  const testMutation = useSendTestEmail();
+  const saving = updateMutation.isPending;
+  const testing = testMutation.isPending;
 
   useEffect(() => {
-    void loadSettings();
-  }, [loadSettings]);
+    if (settingsData) {
+      setForm({
+        enabled: settingsData.enabled,
+        host: settingsData.host ?? '',
+        port: settingsData.port != null ? String(settingsData.port) : '587',
+        secure: settingsData.secure,
+        user: settingsData.user ?? '',
+        password: '',
+        fromEmail: settingsData.fromEmail ?? '',
+        fromName: settingsData.fromName ?? '',
+        replyTo: settingsData.replyTo ?? '',
+        hasPassword: settingsData.hasPassword,
+      });
+    }
+  }, [settingsData]);
+
+  useEffect(() => {
+    if (settingsError) {
+      log.error('Failed to load email settings:', settingsError);
+      setError(t('email.fetch.error'));
+    }
+  }, [settingsError, t]);
 
   const handleChange = <K extends keyof FormState>(field: K, value: FormState[K]): void => {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -120,95 +112,74 @@ const ClubEmailSettings: React.FC<Props> = ({ clubId, expanded, onExpandedChange
     setError(null);
   };
 
-  const handleSave = async (): Promise<void> => {
-    setSaving(true);
+  const handleSave = (): void => {
     setError(null);
     setSuccess(null);
-    try {
-      const body: Record<string, unknown> = {
-        enabled: form.enabled,
-        host: form.host || null,
-        port: form.port ? Number(form.port) : null,
-        secure: form.secure,
-        user: form.user || null,
-        fromEmail: form.fromEmail || null,
-        fromName: form.fromName || null,
-        replyTo: form.replyTo || null,
-      };
-      if (form.password.length > 0) {
-        body.password = form.password;
-      }
-
-      const res = await fetch(`/api/clubs/${clubId}/email-settings`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-      if (!res.ok) {
-        const data = (await res.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(data?.error || `HTTP ${res.status}`);
-      }
-      const updated = (await res.json()) as PublicEmailSettings;
-      setForm((prev) => ({
-        ...prev,
-        password: '',
-        hasPassword: updated.hasPassword,
-      }));
-      setSuccess(t('email.save.success'));
-    } catch (err) {
-      log.error('Failed to save email settings:', err);
-      setError(err instanceof Error ? err.message : t('email.save.error'));
-    } finally {
-      setSaving(false);
+    const body: Record<string, unknown> = {
+      enabled: form.enabled,
+      host: form.host || null,
+      port: form.port ? Number(form.port) : null,
+      secure: form.secure,
+      user: form.user || null,
+      fromEmail: form.fromEmail || null,
+      fromName: form.fromName || null,
+      replyTo: form.replyTo || null,
+    };
+    if (form.password.length > 0) {
+      body.password = form.password;
     }
+    updateMutation.mutate(
+      { clubId, body },
+      {
+        onSuccess: (updated) => {
+          setForm((prev) => ({
+            ...prev,
+            password: '',
+            hasPassword: updated.hasPassword,
+          }));
+          setSuccess(t('email.save.success'));
+        },
+        onError: (err) => {
+          log.error('Failed to save email settings:', err);
+          setError(err instanceof Error ? err.message : t('email.save.error'));
+        },
+      }
+    );
   };
 
-  const handleClearPassword = async (): Promise<void> => {
-    setSaving(true);
+  const handleClearPassword = (): void => {
     setError(null);
-    try {
-      const res = await fetch(`/api/clubs/${clubId}/email-settings`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ clearPassword: true }),
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const updated = (await res.json()) as PublicEmailSettings;
-      setForm((prev) => ({ ...prev, password: '', hasPassword: updated.hasPassword }));
-      setSuccess(t('email.password.cleared'));
-    } catch (err) {
-      log.error('Failed to clear password:', err);
-      setError(t('email.save.error'));
-    } finally {
-      setSaving(false);
-    }
+    updateMutation.mutate(
+      { clubId, body: { clearPassword: true } },
+      {
+        onSuccess: (updated) => {
+          setForm((prev) => ({ ...prev, password: '', hasPassword: updated.hasPassword }));
+          setSuccess(t('email.password.cleared'));
+        },
+        onError: (err) => {
+          log.error('Failed to clear password:', err);
+          setError(t('email.save.error'));
+        },
+      }
+    );
   };
 
-  const handleSendTest = async (): Promise<void> => {
+  const handleSendTest = (): void => {
     if (!testEmail) return;
-    setTesting(true);
     setError(null);
     setSuccess(null);
-    try {
-      const res = await fetch(`/api/clubs/${clubId}/email-settings/test`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ to: testEmail }),
-      });
-      const data = (await res.json().catch(() => null)) as {
-        error?: string;
-        messageId?: string;
-      } | null;
-      if (!res.ok) {
-        throw new Error(data?.error || `HTTP ${res.status}`);
+    testMutation.mutate(
+      { clubId, to: testEmail },
+      {
+        onSuccess: () => {
+          setSuccess(t('email.test.success', { to: testEmail }));
+        },
+        onError: (err) => {
+          log.error('Failed to send test email:', err);
+          setError(err instanceof Error ? err.message : t('email.test.error'));
+        },
       }
-      setSuccess(t('email.test.success', { to: testEmail }));
-    } catch (err) {
-      log.error('Failed to send test email:', err);
-      setError(err instanceof Error ? err.message : t('email.test.error'));
-    } finally {
-      setTesting(false);
-    }
+    );
   };
 
   if (!clubId) {

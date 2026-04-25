@@ -7,10 +7,12 @@ import { AccountInterface } from '@/types/accounts/types';
 import { log } from '@/lib/logger';
 import { useTranslation } from 'react-i18next';
 import '@/lib/i18n.client';
+import { useAccount, useUpdateAccount } from '@/hooks/useAccounts';
 
 const ProfilePage = (): ReactElement => {
   const { t } = useTranslation();
   const { data: session } = useSession();
+  const userId = session?.user?.id ? Number(session.user.id) : null;
 
   const [userDetails, setUserDetails] = useState<AccountInterface>({
     name: session?.user?.name || '',
@@ -27,43 +29,37 @@ const ProfilePage = (): ReactElement => {
   const [userClubs, setUserClubs] = useState<{ id: number; name: string }[]>([]);
   const [defaultClubId, setDefaultClubId] = useState<number>(0);
 
+  const { data: profileData, error: profileError } = useAccount(userId);
+  const updateAccountMutation = useUpdateAccount();
+
   useEffect(() => {
-    if (!session) {
-      return;
-    }
-    const fetchProfile = async (): Promise<void> => {
-      try {
-        const response = await fetch(`/api/accounts/${session?.user?.id}`);
-        const data = await response.json();
-
-        if (response.ok) {
-          setUserDetails((prev) => ({
-            ...prev,
-            ...data,
-          }));
-          if (data.image) {
-            setPhotoPreview(`data:image/png;base64,${data.image}`);
-          }
-
-          // Fetch user clubs
-          if (data.clubs) {
-            setUserClubs(data.clubs);
-            if (data.clubs.length === 1) {
-              setDefaultClubId(data.clubs[0].id);
-              setUserDetails((prev) => prev);
-            }
-          }
-        } else {
-          setError(data.error || t('profile.fetchError'));
-        }
-      } catch (error) {
-        log.error('Error fetching profile:', error);
-        setError(t('profile.fetchNetworkError'));
+    if (profileData) {
+      setUserDetails((prev) => ({
+        ...prev,
+        ...profileData,
+      }));
+      if (profileData.image) {
+        setPhotoPreview(`data:image/png;base64,${profileData.image}`);
       }
-    };
+      const clubs = (profileData as AccountInterface & { clubs?: { id: number; name: string }[] })
+        .clubs;
+      if (clubs) {
+        setUserClubs(clubs);
+        if (clubs.length === 1) {
+          setDefaultClubId(clubs[0].id);
+        }
+      }
+    }
+  }, [profileData]);
 
-    fetchProfile();
-  }, [session]);
+  useEffect(() => {
+    if (profileError) {
+      log.error('Error fetching profile:', profileError);
+      setError(
+        profileError instanceof Error ? profileError.message : t('profile.fetchNetworkError')
+      );
+    }
+  }, [profileError, t]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -81,41 +77,42 @@ const ProfilePage = (): ReactElement => {
         const base64String = reader.result as string;
         setUserDetails((prev) => ({
           ...prev,
-          image: base64String.split(',')[1], // Strip off the data URL prefix
+          image: base64String.split(',')[1],
         }));
-        setPhotoPreview(base64String); // Update preview
+        setPhotoPreview(base64String);
       };
-      reader.readAsDataURL(file); // Read file as Base64
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
+  const handleSubmit = (e: React.FormEvent): void => {
     e.preventDefault();
+    if (!userId) return;
 
-    try {
-      const response = await fetch(`/api/accounts/${session?.user?.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...userDetails,
-          defaultClubId: defaultClubId === 0 ? userClubs[0].id : defaultClubId,
-        }),
-      });
+    const resolvedDefaultClubId =
+      defaultClubId === 0 && userClubs.length > 0 ? userClubs[0].id : defaultClubId;
 
-      const data = await response.json();
-
-      if (response.ok) {
-        setSuccess(t('profile.updatedSuccess'));
-        setError(null);
-      } else {
-        setError(data.error || t('profile.fetchError'));
-        setSuccess(null);
+    updateAccountMutation.mutate(
+      {
+        id: userId,
+        name: userDetails.name || '',
+        email: userDetails.email || '',
+        defaultClubId: resolvedDefaultClubId || null,
+        image: userDetails.image || null,
+        password: userDetails.password || undefined,
+      },
+      {
+        onSuccess: () => {
+          setSuccess(t('profile.updatedSuccess'));
+          setError(null);
+        },
+        onError: (err) => {
+          log.error('Error updating profile:', err);
+          setError(err instanceof Error ? err.message : t('profile.updateError'));
+          setSuccess(null);
+        },
       }
-    } catch (err) {
-      log.error('Error updating profile:', err);
-      setError(t('profile.updateError'));
-      setSuccess(null);
-    }
+    );
   };
 
   return (
@@ -124,7 +121,6 @@ const ProfilePage = (): ReactElement => {
         {t('profile.title')}
       </Typography>
 
-      {/* Success/Error Messages */}
       {success ? (
         <Typography variant="body1" sx={{ color: (theme) => theme.palette.success.main }}>
           {success}
@@ -138,7 +134,6 @@ const ProfilePage = (): ReactElement => {
 
       <form onSubmit={handleSubmit}>
         <Stack spacing={2}>
-          {/* Profile Photo Section */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Avatar
               src={photoPreview || undefined}
@@ -213,7 +208,12 @@ const ProfilePage = (): ReactElement => {
             </TextField>
           )}
 
-          <Button variant="contained" color="primary" type="submit">
+          <Button
+            variant="contained"
+            color="primary"
+            type="submit"
+            disabled={updateAccountMutation.isPending}
+          >
             {t('profile.update')}
           </Button>
         </Stack>

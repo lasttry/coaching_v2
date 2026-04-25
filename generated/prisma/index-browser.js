@@ -24,12 +24,12 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 7.7.0
- * Query Engine version: 75cbdc1eb7150937890ad5465d861175c6624711
+ * Prisma Client JS version: 7.8.0
+ * Query Engine version: 3c6e192761c0362d496ed980de936e2f3cebcd3a
  */
 Prisma.prismaVersion = {
-  client: "7.7.0",
-  engine: "75cbdc1eb7150937890ad5465d861175c6624711"
+  client: "7.8.0",
+  engine: "3c6e192761c0362d496ed980de936e2f3cebcd3a"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
@@ -197,7 +197,8 @@ exports.Prisma.AccountScalarFieldEnum = {
   defaultClubId: 'defaultClubId',
   role: 'role',
   resetToken: 'resetToken',
-  resetTokenExpiry: 'resetTokenExpiry'
+  resetTokenExpiry: 'resetTokenExpiry',
+  drillRecentColors: 'drillRecentColors'
 };
 
 exports.Prisma.StatisticScalarFieldEnum = {
@@ -249,7 +250,8 @@ exports.Prisma.MacrocycleScalarFieldEnum = {
   notes: 'notes',
   number: 'number',
   name: 'name',
-  clubId: 'clubId'
+  clubId: 'clubId',
+  teamId: 'teamId'
 };
 
 exports.Prisma.MesocycleScalarFieldEnum = {
@@ -295,8 +297,53 @@ exports.Prisma.ObjectiveScalarFieldEnum = {
 exports.Prisma.DrillScalarFieldEnum = {
   id: 'id',
   name: 'name',
+  title: 'title',
   svg: 'svg',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  clubId: 'clubId',
+  accountId: 'accountId',
+  echelonId: 'echelonId',
+  description: 'description',
+  goals: 'goals',
+  variations: 'variations',
+  tips: 'tips',
+  defaultText: 'defaultText',
+  ballsCount: 'ballsCount',
+  basketsCount: 'basketsCount',
+  conesCount: 'conesCount',
+  extraEquipment: 'extraEquipment',
+  playersCount: 'playersCount',
+  coachesCount: 'coachesCount',
+  typeFundamental: 'typeFundamental',
+  typeIndividual: 'typeIndividual',
+  typeTeam: 'typeTeam',
+  posGuard: 'posGuard',
+  posForward: 'posForward',
+  posCenter: 'posCenter'
+};
+
+exports.Prisma.DrillGraphicScalarFieldEnum = {
+  id: 'id',
+  drillId: 'drillId',
+  order: 'order',
+  svg: 'svg',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.DrillTopicScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  key: 'key',
+  name: 'name',
+  order: 'order'
+};
+
+exports.Prisma.DrillTopicLinkScalarFieldEnum = {
+  drillId: 'drillId',
+  topicId: 'topicId'
 };
 
 exports.Prisma.EchelonScalarFieldEnum = {
@@ -318,6 +365,13 @@ exports.Prisma.ClubScalarFieldEnum = {
   federationLogo: 'federationLogo',
   backgroundColor: 'backgroundColor',
   foregroundColor: 'foregroundColor',
+  courtBackground: 'courtBackground',
+  courtKeyColor: 'courtKeyColor',
+  courtCenterColor: 'courtCenterColor',
+  courtLineColor: 'courtLineColor',
+  courtMarginColor: 'courtMarginColor',
+  courtShowLogo: 'courtShowLogo',
+  courtLogoRotation: 'courtLogoRotation',
   fpbClubId: 'fpbClubId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -491,9 +545,74 @@ exports.Prisma.AlertRecipientScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.PracticeScalarFieldEnum = {
+  id: 'id',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  clubId: 'clubId',
+  teamId: 'teamId',
+  date: 'date',
+  endTime: 'endTime',
+  subtitle: 'subtitle',
+  topic: 'topic',
+  offensiveGoals: 'offensiveGoals',
+  defensiveGoals: 'defensiveGoals',
+  notes: 'notes',
+  completed: 'completed',
+  groups: 'groups'
+};
+
+exports.Prisma.PracticeItemScalarFieldEnum = {
+  id: 'id',
+  practiceId: 'practiceId',
+  order: 'order',
+  duration: 'duration',
+  type: 'type',
+  title: 'title',
+  text: 'text',
+  drillId: 'drillId',
+  graphics: 'graphics',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PracticeAthleteScalarFieldEnum = {
+  id: 'id',
+  practiceId: 'practiceId',
+  athleteId: 'athleteId',
+  attending: 'attending',
+  attended: 'attended',
+  lateMinutes: 'lateMinutes',
+  absenceReasonId: 'absenceReasonId',
+  absenceNotes: 'absenceNotes'
+};
+
+exports.Prisma.ClubAttendanceReasonScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  key: 'key',
+  name: 'name',
+  order: 'order'
+};
+
+exports.Prisma.ClubPracticeSettingsScalarFieldEnum = {
+  id: 'id',
+  clubId: 'clubId',
+  defaultAttendanceMale: 'defaultAttendanceMale',
+  defaultAttendanceFemale: 'defaultAttendanceFemale',
+  defaultAttendanceCoed: 'defaultAttendanceCoed',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -504,6 +623,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.IdType = exports.$Enums.IdType = {
   PASSPORT: 'PASSPORT',
@@ -588,6 +713,19 @@ exports.AlertRecipientStatus = exports.$Enums.AlertRecipientStatus = {
   DELETED: 'DELETED'
 };
 
+exports.PracticeItemType = exports.$Enums.PracticeItemType = {
+  FREETEXT: 'FREETEXT',
+  DRILL: 'DRILL',
+  PLAY: 'PLAY',
+  BREAKDOWN: 'BREAKDOWN',
+  MY_DRILL: 'MY_DRILL'
+};
+
+exports.AttendanceDefault = exports.$Enums.AttendanceDefault = {
+  ALL: 'ALL',
+  NONE: 'NONE'
+};
+
 exports.Prisma.ModelName = {
   Athlete: 'Athlete',
   GameAthlete: 'GameAthlete',
@@ -603,6 +741,9 @@ exports.Prisma.ModelName = {
   SessionGoal: 'SessionGoal',
   Objective: 'Objective',
   Drill: 'Drill',
+  DrillGraphic: 'DrillGraphic',
+  DrillTopic: 'DrillTopic',
+  DrillTopicLink: 'DrillTopicLink',
   Echelon: 'Echelon',
   Club: 'Club',
   ClubEmailSettings: 'ClubEmailSettings',
@@ -621,7 +762,12 @@ exports.Prisma.ModelName = {
   Equipment: 'Equipment',
   GameEquipment: 'GameEquipment',
   Alert: 'Alert',
-  AlertRecipient: 'AlertRecipient'
+  AlertRecipient: 'AlertRecipient',
+  Practice: 'Practice',
+  PracticeItem: 'PracticeItem',
+  PracticeAthlete: 'PracticeAthlete',
+  ClubAttendanceReason: 'ClubAttendanceReason',
+  ClubPracticeSettings: 'ClubPracticeSettings'
 };
 
 /**

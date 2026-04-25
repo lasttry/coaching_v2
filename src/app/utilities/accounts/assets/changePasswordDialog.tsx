@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
-  Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
@@ -19,6 +18,7 @@ import { AccountInterface } from '@/types/accounts/types';
 
 import '@/lib/i18n.client';
 import { useTranslation } from 'react-i18next';
+import { GuardedDialog, useFormSnapshotDirty } from '@/app/components/shared/GuardedDialog';
 
 interface ChangePasswordDialogProps {
   open: boolean;
@@ -52,6 +52,16 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
   const [defaultClubId, setDefaultClubId] = useState<number | null>(account?.defaultClubId || null);
   const [clubs, setClubs] = useState<{ id: number; name: string }[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const isDirty = useFormSnapshotDirty(open, {
+    oldPassword,
+    newPassword,
+    confirmPassword,
+    name,
+    email,
+    image,
+    defaultClubId,
+  });
 
   useLayoutEffect(() => {
     if (account) {
@@ -127,7 +137,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <GuardedDialog open={open} onClose={onClose} isDirty={isDirty}>
       <DialogTitle>Change Password</DialogTitle>
       <DialogContent>
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
@@ -217,7 +227,7 @@ const ChangePasswordDialog: React.FC<ChangePasswordDialogProps> = ({
           {'Update'}
         </Button>
       </DialogActions>
-    </Dialog>
+    </GuardedDialog>
   );
 };
 

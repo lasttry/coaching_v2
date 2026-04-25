@@ -20,7 +20,8 @@ export async function GET(): Promise<NextResponse> {
         clubId: Number(session.user.selectedClubId),
       },
       include: {
-        mesocycles: true, // Include related mesocycles
+        mesocycles: true,
+        team: { select: { id: true, name: true } },
       },
     });
 
@@ -45,13 +46,24 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const data = await request.json();
 
-    // Validate required fields
-    const { name, startDate, endDate, notes } = data;
+    const { name, startDate, endDate, notes, teamId } = data;
     if (!startDate || !endDate) {
       return NextResponse.json({ error: 'Start date and end date are required' }, { status: 400 });
     }
+    if (!teamId || isNaN(Number(teamId))) {
+      return NextResponse.json({ error: 'Team is required' }, { status: 400 });
+    }
 
     const clubId = Number(session.user.selectedClubId);
+
+    const team = await prisma.team.findUnique({
+      where: { id: Number(teamId) },
+      select: { id: true, clubId: true },
+    });
+    if (!team || team.clubId !== clubId) {
+      return NextResponse.json({ error: 'Team does not belong to this club' }, { status: 400 });
+    }
+
     const lastMacrocycle = await prisma.macrocycle.findFirst({
       where: {
         clubId,
@@ -66,19 +78,21 @@ export async function POST(request: Request): Promise<NextResponse> {
     });
     const nextNumber = (lastMacrocycle?.number ?? 0) + 1;
 
-    const payload = {
+    const newMacrocycle = await prisma.macrocycle.create({
       data: {
         name,
         number: nextNumber,
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         notes,
-        club: {
-          connect: { id: clubId },
-        },
+        club: { connect: { id: clubId } },
+        team: { connect: { id: Number(teamId) } },
       },
-    };
-    const newMacrocycle = await prisma.macrocycle.create(payload);
+      include: {
+        mesocycles: true,
+        team: { select: { id: true, name: true } },
+      },
+    });
 
     return NextResponse.json(newMacrocycle, { status: 201 });
   } catch (error) {
