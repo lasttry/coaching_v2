@@ -1,5 +1,31 @@
 # Changelog
 
+## v1.2.9 — 2026-04-25 (hotfix: migração SQL em falta para v1.2.8)
+
+### Sintoma
+
+- Após o deploy de v1.2.8, todas as páginas do dashboard que usam tabelas/colunas novas (Games, Clubs, Drills, Practices, ...) devolviam `500 Internal Server Error` em produção: `Failed to fetch games`, `Failed to fetch club data`, etc.
+
+### Causa
+
+- Durante o desenvolvimento de v1.2.1→v1.2.8 o schema foi sincronizado localmente com `prisma db push`, que aplica directamente sem criar uma migration. O `deploy.sh` em produção corre `npx prisma migrate deploy`, ou seja, só aplica ficheiros de migração presentes no repositório. Como nenhum foi gerado, a base de dados de produção ficou sem todas as colunas/tabelas novas (`Drill.title`, `Account.drillRecentColors`, `Club.court*`, `Practice`, `PracticeItem`, `PracticeAthlete`, `ClubAttendanceReason`, `ClubPracticeSettings`, `DrillGraphic`, `DrillTopic`, `DrillTopicLink`, `Macrocycle.teamId`, enums `AttendanceDefault` / `PracticeItemType`).
+
+### Correcção
+
+- Nova migration `prisma/migrations/20260425110000_v1_2_8_drills_practices_court/migration.sql` gerada com `prisma migrate diff --from-migrations ./prisma/migrations --to-schema ./prisma/schema.prisma --script`. Cobre todos os deltas acumulados (252 linhas de SQL: novos enums, ALTER TABLE de Account/Club/Drill/Macrocycle/EquipmentColor, CREATE TABLE de DrillGraphic/DrillTopic/DrillTopicLink/Practice/PracticeItem/PracticeAthlete/ClubAttendanceReason/ClubPracticeSettings, índices únicos e foreign keys).
+- Localmente já estava no schema (via `db push`); marcado como aplicado com `prisma migrate resolve --applied 20260425110000_v1_2_8_drills_practices_court`. Em produção o próximo `prisma migrate deploy` aplica-a automaticamente.
+- `prisma.config.ts` passa a aceitar `SHADOW_DATABASE_URL` opcional para suportar `prisma migrate diff` / `migrate dev` localmente. Se a variável não estiver definida (caso de produção, que só corre `migrate deploy`), o config trata-a como ausente e não rebenta.
+- `.env.example` documenta a nova variável e o procedimento `CREATE DATABASE coaching_shadow;`.
+
+### Como verificar pós-deploy
+
+```bash
+ssh prod
+cd /var/www/coaching
+git pull origin main
+npx prisma migrate status   # deve listar a nova migration como applied
+```
+
 ## v1.2.8 — 2026-04-25 (guard contra perda de dados em todos os diálogos)
 
 ### Problema
